@@ -2,6 +2,8 @@
 
 ## How to run locally
 
+### Backend
+
 1. Create a virtual environment:
 
 ```bash
@@ -26,12 +28,18 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
-Then open `http://127.0.0.1:8000` on your browser of choice and you should be able to see the application.
-
 When you are done with the virtual environment, deactivate it by using:
 
 ```bash
 deactivate
+```
+
+### Frontend
+
+Enter frontend folder and start the program by running:
+
+```bash
+cd frontend && npm start
 ```
 
 phac@cpho2

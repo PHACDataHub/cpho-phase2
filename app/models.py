@@ -1,11 +1,19 @@
 from django.db import models
 
+
 class Indicator(models.Model):
     category = models.CharField(max_length=50)
     topic = models.CharField(max_length=50)
     indicator = models.CharField(max_length=50)
     detailed_indicator = models.CharField(max_length=300)
     sub_indicator_measurement = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.detailed_indicator
+
+
+class IndicatorData(models.Model):
+    indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
     country = models.CharField(max_length=50)
     geography = models.CharField(max_length=50)
     sex = models.CharField(max_length=50)
@@ -21,9 +29,8 @@ class Indicator(models.Model):
     multi_year_timeframe = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.detailed_indicator
+        return self.country+' '+self.sex+' '+self.age_group+' '+self.single_year_timeframe+self.multi_year_timeframe+' '+self.value
 
-    
 
 class Benchmarking(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
@@ -38,6 +45,7 @@ class Benchmarking(models.Model):
     def __str__(self):
         return self.detailed_indicator
 
+
 class TrendAnalysis(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
     detailed_indicator = models.CharField(max_length=250)
@@ -47,4 +55,3 @@ class TrendAnalysis(models.Model):
 
     def __str__(self):
         return self.detailed_indicator
-    

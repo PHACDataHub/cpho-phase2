@@ -1,6 +1,9 @@
+import csv
+import json
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import loader
+from models import IndicatorData, Indicator
 
 
 def index(request):
@@ -65,9 +68,19 @@ def indicator(request, indicator_id):
 def pastSubmissions(request):
     return render(request, 'app/pastsubmissions.html')
 
-
 def importPage(request):
-    return render(request, 'app/import.html')
+    print("===== Import Request")
+    print(request.body)
+    print(request.POST)
+    print(request.FILES)
+    for file in request.FILES.values():
+        reader = csv.reader(file)
+        objects = []
+        for row in reader:
+            Indicator.objects.update_or_create(
+                
+            )
+    return JsonResponse({'import': 'import'})
 
 
 def exportPage(request):

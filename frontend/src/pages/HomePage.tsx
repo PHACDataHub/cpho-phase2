@@ -21,7 +21,7 @@ export function HomePage() {
   let navigate = useNavigate();
   const pages = [
     {
-      title: "Add Indicator",
+      title: "New Indicator",
       path: "/add-indicator",
       icon: <AddIcon />,
     },
@@ -52,6 +52,7 @@ export function HomePage() {
             key={title}
             leftIcon={icon}
             fontSize={22}
+            fontWeight={500}
             size="lg"
             onClick={() => navigate(path)}
           >

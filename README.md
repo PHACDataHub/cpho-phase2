@@ -2,16 +2,24 @@
 
 ## How to run locally
 
+Assumes you have Python installed in system.
+
 ### Backend
 
 1. Create a virtual environment:
 
 ```bash
-virtualenv --python=python3.9.13 venv
+python -m venv venv
 ```
 
-2. Activate it:
+1. Activate it:
 
+Windows
+```
+.\venv\Scripts\activate
+```
+
+Mac/Linux
 ```bash
 source venv/bin/activate
 ```
@@ -36,10 +44,24 @@ deactivate
 
 ### Frontend
 
-Enter frontend folder and start the program by running:
+While starting just the Django app does let you interact with the app, it uses the latest *build* project in the frontend.
+To develop frontend without having to rebuild the project every time, open another terminal and use the following commands:
 
+Enter frontend folder
 ```bash
-cd frontend && npm start
+cd frontend
 ```
+
+Install dependencies
+```bash
+npm install
+```
+
+Start development app
+```bash
+npm start
+```
+
+Access `` to see the app in the browser.
 
 phac@cpho2

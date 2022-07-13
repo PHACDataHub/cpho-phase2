@@ -1,4 +1,4 @@
-import { Category, SubCategory } from "./types";
+import { Category, DataPoint, DataPointField, SubCategory } from "./types";
 
 export const categories: Category[] = [
   {
@@ -45,5 +45,63 @@ export const sub_categories: SubCategory[] = [
     id: 6,
     label: "Communicable Diseases",
     category: 3,
+  },
+];
+
+export const IndicatorDataFields: DataPointField[] = [
+  {
+    name: "Country",
+    id: "dp_country",
+    type: "text",
+  },
+  {
+    name: "Geography",
+    id: "dp_geography",
+    type: "text",
+  },
+  {
+    name: "Sex",
+    id: "dp_sex",
+    type: "text",
+  },
+  {
+    name: "Gender",
+    id: "dp_gender",
+    type: "text",
+  },
+  {
+    name: "Age Group",
+    id: "dp_age_group",
+    type: "text",
+  },
+  {
+    name: "Age Group Type",
+    id: "dp_age_group_type",
+    type: "text",
+  },
+  {
+    name: "Data Quality",
+    id: "dp_data_quality",
+    type: "text",
+  },
+  {
+    name: "Value",
+    id: "dp_value",
+    type: "number",
+  },
+  {
+    name: "Value Lower Bound",
+    id: "dp_value_lower_bound",
+    type: "number,",
+  },
+  {
+    name: "Value Upper Bound",
+    id: "dp_value_upper_bound",
+    type: "number",
+  },
+  {
+    name: "Value Unit",
+    id: "dp_value_unit",
+    type: "text",
   },
 ];

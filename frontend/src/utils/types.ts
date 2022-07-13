@@ -25,3 +25,9 @@ export type DataPoint = {
   single_year_timeframe: string;
   multi_year_timeframe: string;
 };
+
+export type DataPointField = {
+  name: string;
+  id: string;
+  type: string;
+};

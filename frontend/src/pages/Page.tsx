@@ -19,33 +19,31 @@ export function Page({
 }) {
   let navigate = useNavigate();
   return (
-    // <Box textAlign="center">
-    //   <VStack backgroundColor={"red.200"} py={10} spacing={8}>
-    //     {backButton && backButton.show && (
-    //       <Button onClick={() => navigate(backButton.redirectUrl)}>Back</Button>
-    //     )}
-    //     <Heading fontWeight={700} size="2xl">{title}</Heading>
-    //     {subTitle && <Heading fontWeight={700} size="lg">{subTitle}</Heading>}
-    //   </VStack>
-    //   <>{children}</>
-    // </Box>
-    <>
-    <Header />
-    <hr style={{
-      marginTop: 10,
-      marginBottom: 10,
-    }} />
-    <Box p={5}>
-    {backButton && backButton.show && (<Button onClick={() => navigate(backButton.redirectUrl)}>Back</Button>)}
-    <VStack spacing={3} p={5} align="flex-start">
-    <Heading fontWeight={700} size="2xl">{title}</Heading>
-    {subTitle && <Heading fontWeight={500} size="lg">{subTitle}</Heading>}
-    </VStack>
-    
-    
-    {children}
+    <Box minHeight="100vh" display="flex" flexDir="column">
+      <Header />
+      <hr
+        style={{
+          marginTop: 10,
+          marginBottom: 10,
+        }}
+      />
+      <Box p={5}>
+        {backButton && backButton.show && (
+          <Button onClick={() => navigate(backButton.redirectUrl)}>Back</Button>
+        )}
+        <VStack spacing={3} align="flex-start" p={5}>
+          <Heading fontWeight={700} size="xl">
+            {title}
+          </Heading>
+          {subTitle && (
+            <Heading fontWeight={500} size="md">
+              {subTitle}
+            </Heading>
+          )}
+        </VStack>
+        <Box px={5}>{children}</Box>
+      </Box>
+      <Footer />
     </Box>
-    <Footer />
-    </>
   );
 }

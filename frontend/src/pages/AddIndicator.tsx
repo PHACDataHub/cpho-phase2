@@ -38,15 +38,15 @@ export function AddIndicator() {
   const smallScreen = useSmallScreen();
 
   useEffect(() => {
-    console.log("Selected category: ", category);
-    console.log("Looking through", sub_categories);
-    console.log(
-      "Filtered: ",
-      sub_categories.filter((c) => {
-        console.log("Comparing ", c.category, " to ", category);
-        return c.category === category;
-      })
-    );
+    // console.log("Selected category: ", category);
+    // console.log("Looking through", sub_categories);
+    // console.log(
+    //   "Filtered: ",
+    //   sub_categories.filter((c) => {
+    //     console.log("Comparing ", c.category, " to ", category);
+    //     return c.category === category;
+    //   })
+    // );
     setFilteredSubCategories(
       sub_categories.filter((c) => c.category === category)
     );

@@ -2,7 +2,7 @@
 
 ## How to run locally
 
-Assumes you have Python installed in system.
+Assumes you have Python installed in system (check using `python --version` or `py --version`).
 
 ### Backend
 
@@ -12,14 +12,22 @@ Assumes you have Python installed in system.
 python -m venv venv
 ```
 
+If the command above does not work, try:
+
+```bash
+py -m venv venv
+```
+
 1. Activate it:
 
 Windows
+
 ```
 .\venv\Scripts\activate
 ```
 
 Mac/Linux
+
 ```bash
 source venv/bin/activate
 ```
@@ -44,20 +52,24 @@ deactivate
 
 ### Frontend
 
-While starting just the Django app does let you interact with the app, it uses the latest *build* project in the frontend.
+While starting just the Django app does let you interact with the app, it uses the latest _build_ project in the frontend.
+To run the frontend, you need to have [Node.js](https://nodejs.org/en/) installed in your machine. You can check if it is installed by running `node --version` and `npm --version`.
 To develop frontend without having to rebuild the project every time, open another terminal and use the following commands:
 
 Enter frontend folder
+
 ```bash
 cd frontend
 ```
 
 Install dependencies
+
 ```bash
 npm install
 ```
 
 Start development app
+
 ```bash
 npm start
 ```

@@ -84,7 +84,7 @@ export function FileTypeChoice({
             </Text>
             <List my={3}>
               {FileColumnData[activeType].map((field: string, idx: number) => (
-                <ListItem>
+                <ListItem key={field}>
                   {idx + 1}. {field}
                 </ListItem>
               ))}

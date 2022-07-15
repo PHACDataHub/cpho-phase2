@@ -44,7 +44,7 @@ export function ImportPage() {
       if (fileToUpload) {
         fetch(
           process.env.REACT_APP_SERVER_URL ||
-            "http://localhost:8000/api/import",
+          "http://localhost:8000/" + "api/import",
           {
             method: "POST",
             body: formData,
@@ -99,10 +99,10 @@ export function ImportPage() {
                 {status === "success"
                   ? `Successfully uploaded ${(fileToUpload as any).name}`
                   : status === "failure"
-                  ? `Could not upload ${(fileToUpload as any).name}`
-                  : fileToUpload
-                  ? (fileToUpload as any).name
-                  : "Click to select a file"}
+                    ? `Could not upload ${(fileToUpload as any).name}`
+                    : fileToUpload
+                      ? (fileToUpload as any).name
+                      : "Click to select a file"}
               </Heading>
             </VStack>
           )}

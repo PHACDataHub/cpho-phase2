@@ -12,7 +12,7 @@ Assumes you have Python installed in system.
 python -m venv venv
 ```
 
-1. Activate it:
+2. Activate it:
 
 Windows
 ```

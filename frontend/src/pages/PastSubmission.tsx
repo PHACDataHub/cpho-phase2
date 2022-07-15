@@ -1,25 +1,23 @@
-import { VStack, Text, Box, Heading } from "@chakra-ui/react";
+import { VStack, Text, Box, Heading, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { Page } from "./Page";
 
 export function PastSubmissions() {
-  const [indicators, setIndicators] = useState();
+  const [indicators, setIndicators] = useState([]);
 
   useEffect(() => {
     fetch(
       process.env.REACT_APP_SERVER_URL ||
-        "http://localhost:8000/api/pastsubmissions",
+      "http://localhost:8000/api/pastsubmissions",
       {
         method: "GET",
       }
     )
       .then(async (res) => {
         const obj = await res.json();
+        setIndicators(obj);
         console.log(obj);
-        if (obj.status === "resolved") {
-          console.log("Got indicators");
-        }
       })
       .catch((err) => {
         console.log("ERROR", err);
@@ -30,7 +28,11 @@ export function PastSubmissions() {
       title="Past Submissions"
       backButton={{ show: true, redirectUrl: "/" }}
     >
-      {indicators}
+      <VStack>
+        {indicators ? (
+          indicators.map(({ id, indicator }) => <Text key={id}>{indicator}</Text>)
+        ) : <Spinner />}
+      </VStack>
     </Page>
   );
 }

@@ -23,8 +23,8 @@ const getCleanName = (type: string) => {
   return type === "indicator"
     ? "Indicator"
     : type === "trendAnalysis"
-    ? "Trend Analysis"
-    : "Benchmarking";
+      ? "Trend Analysis"
+      : "Benchmarking";
 };
 
 export function FileTypeChoice({
@@ -75,7 +75,7 @@ export function FileTypeChoice({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>
+            <Text as="div">
               The CSV file format must have the following fields{" "}
               <Box display="inline" fontWeight="bold">
                 in this exact order
@@ -84,7 +84,7 @@ export function FileTypeChoice({
             </Text>
             <List my={3}>
               {FileColumnData[activeType].map((field: string, idx: number) => (
-                <ListItem>
+                <ListItem key={idx}>
                   {idx + 1}. {field}
                 </ListItem>
               ))}

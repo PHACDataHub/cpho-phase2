@@ -15,6 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
+import { FileFormat } from "../utils/types";
+import { FileTypeChoice } from "./components/FileTypeChoice";
 import { Page } from "./Page";
 
 export function ImportPage() {
@@ -23,9 +25,7 @@ export function ImportPage() {
     "idle" | "loading" | "failure" | "success"
   >("idle");
 
-  const [activeType, setActiveType] = useState<
-    "indicator" | "trendAnalysis" | "benchmarking"
-  >("indicator");
+  const [activeType, setActiveType] = useState<FileFormat>("indicator");
 
   const handleFile = (event: any) => {
     event.preventDefault();
@@ -74,34 +74,7 @@ export function ImportPage() {
       backButton={{ show: true, redirectUrl: "/" }}
     >
       <VStack align="flex-start" spacing={4}>
-        <ButtonGroup isAttached>
-          <Button
-            onClick={() => setActiveType("indicator")}
-            isActive={activeType === "indicator"}
-          >
-            Indicator
-          </Button>
-          <Button
-            onClick={() => setActiveType("trendAnalysis")}
-            isActive={activeType === "trendAnalysis"}
-          >
-            Trend Analysis
-          </Button>
-          <Button
-            onClick={() => setActiveType("benchmarking")}
-            isActive={activeType === "benchmarking"}
-          >
-            Benchmarking
-          </Button>
-        </ButtonGroup>
-        <Button variant="link" leftIcon={<InfoIcon />}>
-          View expected format for{" "}
-          {activeType === "indicator"
-            ? "Indicator"
-            : activeType === "trendAnalysis"
-            ? "Trend Analysis"
-            : "Benchmarking"}
-        </Button>
+        <FileTypeChoice activeType={activeType} setActiveType={setActiveType} />
         <Center
           cursor={status === "success" ? "default" : "pointer"}
           backgroundColor="gray.100"

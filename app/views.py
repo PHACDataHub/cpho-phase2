@@ -66,7 +66,8 @@ def indicator(request, indicator_id):
 
 
 def pastSubmissions(request):
-    return render(request, 'app/pastsubmissions.html')
+    indicators = Indicator.objects.all().values()
+    return JsonResponse(list(indicators), safe=False)
 
 def importPage(request):
     print("===== Import Request")

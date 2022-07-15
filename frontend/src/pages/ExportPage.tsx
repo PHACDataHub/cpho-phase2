@@ -1,5 +1,3 @@
-import { VStack, Text, Box } from "@chakra-ui/react";
-import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { Page } from "./Page";
 
 export function ExportPage() {

@@ -1,3 +1,5 @@
+import { FileColumnData } from "./constants";
+
 export type Category = {
   id: number;
   label: string;
@@ -31,3 +33,5 @@ export type DataPointField = {
   id: string;
   type: string;
 };
+
+export type FileFormat = keyof typeof FileColumnData;

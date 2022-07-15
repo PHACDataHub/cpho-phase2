@@ -1,4 +1,4 @@
-import { Category, DataPoint, DataPointField, SubCategory } from "./types";
+import { Category, DataPointField, SubCategory } from "./types";
 
 export const categories: Category[] = [
   {
@@ -105,3 +105,43 @@ export const IndicatorDataFields: DataPointField[] = [
     type: "text",
   },
 ];
+
+export const FileColumnData = {
+  indicator: [
+    "Category",
+    "Topic",
+    "Indicator",
+    "Detailed_Indicator",
+    "Sub_Indicator_Measurement",
+    "Country",
+    "Geography",
+    "Sex",
+    "Gender",
+    "Age_Group",
+    "Age_Group_Type",
+    "Data_Quality",
+    "Value",
+    "Value_LowerCI",
+    "Value_UpperCI",
+    "Value_Units",
+    "SingleYear_TimeFrame",
+    "MultiYear_TimeFrame",
+  ],
+  trendAnalysis: [
+    "Indicator",
+    "Detailed_Indicator",
+    "Year",
+    "DataPoint",
+    "LineOfBestFitPoint",
+  ],
+  benchmarking: [
+    "Indicator",
+    "Detailed_Indicator",
+    "Unit",
+    "OCED_Country",
+    "Value",
+    "Year",
+    "Standard_Deviation",
+    "Comparison_to_OECD_average",
+  ],
+};

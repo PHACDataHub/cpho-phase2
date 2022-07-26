@@ -31,6 +31,7 @@ export function ImportPage() {
     event.preventDefault();
     const file = event.target.files[0];
     setFileToUpload(file);
+    setStatus("idle");
     console.log("GOT IT!", file);
   };
 
@@ -43,8 +44,8 @@ export function ImportPage() {
       console.log("Submit");
       if (fileToUpload) {
         fetch(
-          process.env.REACT_APP_SERVER_URL ||
-          "http://localhost:8000/" + "api/import",
+          (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
+            "api/import",
           {
             method: "POST",
             body: formData,
@@ -99,10 +100,10 @@ export function ImportPage() {
                 {status === "success"
                   ? `Successfully uploaded ${(fileToUpload as any).name}`
                   : status === "failure"
-                    ? `Could not upload ${(fileToUpload as any).name}`
-                    : fileToUpload
-                      ? (fileToUpload as any).name
-                      : "Click to select a file"}
+                  ? `Could not upload ${(fileToUpload as any).name}`
+                  : fileToUpload
+                  ? (fileToUpload as any).name
+                  : "Click to select a file"}
               </Heading>
             </VStack>
           )}

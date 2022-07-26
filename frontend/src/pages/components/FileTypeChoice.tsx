@@ -15,6 +15,7 @@ import {
   Box,
   List,
   ListItem,
+  Link,
 } from "@chakra-ui/react";
 import { FileColumnData } from "../../utils/constants";
 import { FileFormat } from "../../utils/types";
@@ -23,8 +24,8 @@ const getCleanName = (type: string) => {
   return type === "indicator"
     ? "Indicator"
     : type === "trendAnalysis"
-      ? "Trend Analysis"
-      : "Benchmarking";
+    ? "Trend Analysis"
+    : "Benchmarking";
 };
 
 export function FileTypeChoice({
@@ -47,12 +48,14 @@ export function FileTypeChoice({
         <Button
           onClick={() => setActiveType("trendAnalysis")}
           isActive={activeType === "trendAnalysis"}
+          disabled
         >
           Trend Analysis
         </Button>
         <Button
           onClick={() => setActiveType("benchmarking")}
           isActive={activeType === "benchmarking"}
+          disabled
         >
           Benchmarking
         </Button>
@@ -91,9 +94,14 @@ export function FileTypeChoice({
             </List>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
+            <Link
+              download
+              href="sampleFiles/indicators.csv"
+              colorScheme="blue"
+              mr={3}
+            >
               Export empty CSV
-            </Button>
+            </Link>
             <Button colorScheme="red" onClick={onClose}>
               Close
             </Button>

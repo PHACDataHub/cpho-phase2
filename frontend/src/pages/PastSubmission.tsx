@@ -1,6 +1,5 @@
-import { VStack, Text, Box, Heading, Spinner } from "@chakra-ui/react";
+import { VStack, Text, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { Page } from "./Page";
 
 export function PastSubmissions() {
@@ -9,7 +8,7 @@ export function PastSubmissions() {
   useEffect(() => {
     fetch(
       process.env.REACT_APP_SERVER_URL ||
-      "http://localhost:8000/api/pastsubmissions",
+        "http://localhost:8000/api/pastsubmissions",
       {
         method: "GET",
       }
@@ -23,6 +22,7 @@ export function PastSubmissions() {
         console.log("ERROR", err);
       });
   }, []);
+
   return (
     <Page
       title="Past Submissions"
@@ -30,8 +30,12 @@ export function PastSubmissions() {
     >
       <VStack>
         {indicators ? (
-          indicators.map(({ id, indicator }) => <Text key={id}>{indicator}</Text>)
-        ) : <Spinner />}
+          indicators.map(({ id, indicator }) => (
+            <Text key={id}>{indicator}</Text>
+          ))
+        ) : (
+          <Spinner />
+        )}
       </VStack>
     </Page>
   );

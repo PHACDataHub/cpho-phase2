@@ -64,6 +64,8 @@ def indicator(request, indicator_id):
         'sub_categories': sub_categories
     })
 
+def addIndicator(request):
+    return JsonResponse(request, safe=False)
 
 def pastSubmissions(request):
     indicators = Indicator.objects.all().values()

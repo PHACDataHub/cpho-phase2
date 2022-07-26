@@ -50,59 +50,183 @@ export const sub_categories: SubCategory[] = [
 
 export const IndicatorDataFields: DataPointField[] = [
   {
-    name: "Country",
-    id: "dp_country",
-    type: "text",
-  },
-  {
     name: "Geography",
     id: "dp_geography",
-    type: "text",
+    type: "select",
+    dpField: "geography",
+    required: true,
+    options: [
+      {
+        value: "country",
+        label: "Country",
+      },
+      {
+        value: "province",
+        label: "Province or Territory",
+      },
+      {
+        value: "region",
+        label: "Region",
+      },
+    ],
+    placeholder: "e.g. Country, Province",
+  },
+  {
+    name: "Location",
+    id: "dp_location",
+    type: "select",
+    dpField: "country",
+    required: true,
+    options: [
+      {
+        value: "alberta",
+        label: "Alberta",
+      },
+      {
+        value: "britishColumbia",
+        label: "British Columbia",
+      },
+      {
+        value: "manitoba",
+        label: "Manitoba",
+      },
+      {
+        value: "newBrunswick",
+        label: "New Brunswick",
+      },
+      {
+        value: "newfoundlandAndLabrador",
+        label: "Newfoundland and Labrador",
+      },
+      {
+        value: "northwestTerritories",
+        label: "Northwest Territories",
+      },
+      {
+        value: "novaScotia",
+        label: "Nova Scotia",
+      },
+      {
+        value: "nunavut",
+        label: "Nunavut",
+      },
+      {
+        value: "ontario",
+        label: "Ontario",
+      },
+      {
+        value: "princeEdwardIsland",
+        label: "Prince Edward Island",
+      },
+      {
+        value: "quebec",
+        label: "Quebec",
+      },
+      {
+        value: "saskatchewan",
+        label: "Saskatchewan",
+      },
+      {
+        value: "yukon",
+        label: "Yukon",
+      },
+      {
+        value: "canada",
+        label: "Canada",
+      },
+      {
+        value: "atlantic",
+        label: "Atlantic",
+      },
+      {
+        value: "prairie",
+        label: "Prairie",
+      },
+      {
+        value: "territories",
+        label: "Territories",
+      },
+    ],
+    placeholder: "e.g. Canada; Ontario",
   },
   {
     name: "Sex",
     id: "dp_sex",
+    dpField: "sex",
     type: "text",
+    placeholder: "e.g. Males",
   },
   {
     name: "Gender",
     id: "dp_gender",
+    dpField: "gender",
     type: "text",
   },
   {
     name: "Age Group",
     id: "dp_age_group",
     type: "text",
+    dpField: "age_group",
+    placeholder: "e.g. 14-24; 8th grade",
   },
   {
     name: "Age Group Type",
     id: "dp_age_group_type",
+    dpField: "age_group_type",
     type: "text",
+    placeholder: "e.g. decade; grade",
   },
   {
     name: "Data Quality",
     id: "dp_data_quality",
-    type: "text",
+    dpField: "data_quality",
+    type: "select",
+    required: true,
+    options: [
+      {
+        value: "caution",
+        label: "Caution",
+      },
+      {
+        value: "acceptable",
+        label: "Acceptable",
+      },
+      {
+        value: "good",
+        label: "Good",
+      },
+      {
+        value: "veryGood",
+        label: "Very Good",
+      },
+    ],
   },
   {
     name: "Value",
     id: "dp_value",
+    dpField: "value",
     type: "number",
+    required: true,
   },
   {
     name: "Value Lower Bound",
     id: "dp_value_lower_bound",
-    type: "number,",
+    dpField: "value_lower_bound",
+    type: "number",
   },
   {
     name: "Value Upper Bound",
     id: "dp_value_upper_bound",
+    dpField: "value_upper_bound",
     type: "number",
   },
   {
     name: "Value Unit",
     id: "dp_value_unit",
+    dpField: "value_unit",
     type: "text",
+    required: true,
+    placeholder: "e.g. percentage; years; rate per 100,000",
   },
 ];
 

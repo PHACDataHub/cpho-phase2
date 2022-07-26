@@ -12,7 +12,7 @@ export type SubCategory = {
 };
 
 export type DataPoint = {
-  indicator_id: number;
+  indicator_id?: number;
   country: string;
   geography: string;
   sex: string;
@@ -24,14 +24,21 @@ export type DataPoint = {
   value_lower_bound: number;
   value_upper_bound: number;
   value_unit: string;
-  single_year_timeframe: string;
-  multi_year_timeframe: string;
+  single_year_timeframe?: string;
+  multi_year_timeframe?: string;
 };
 
 export type DataPointField = {
   name: string;
   id: string;
-  type: string;
+  required?: boolean;
+  dpField: keyof DataPoint;
+  type: "text" | "number" | "select";
+  options?: {
+    value: string;
+    label: string;
+  }[];
+  placeholder?: string;
 };
 
 export type FileFormat = keyof typeof FileColumnData;

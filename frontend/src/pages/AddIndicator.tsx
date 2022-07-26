@@ -1,31 +1,17 @@
 import {
   VStack,
-  Text,
-  Box,
   Heading,
   Input,
   Select,
-  SelectField,
   HStack,
-  Button,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  FormControl,
-  FormLabel,
-  FormHelperText,
+  Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { categories, sub_categories } from "../utils/constants";
 import { useSmallScreen } from "../utils/hooks";
-import { Category, SubCategory } from "../utils/types";
+import { DataPoint, SubCategory } from "../utils/types";
 import { AddDataPointButton } from "./components/AddDataPointButton";
+import { DataPointContainer } from "./components/DataPointContainer";
 import { Page } from "./Page";
 
 export function AddIndicator() {
@@ -33,7 +19,7 @@ export function AddIndicator() {
   const [subCategory, setSubCategory] = useState<number>(1);
   const [filteredSubCategories, setFilteredSubCategories] =
     useState<SubCategory[]>(sub_categories);
-  const [dataPoints, setDataPoints] = useState([]);
+  const [dataPoints, setDataPoints] = useState<DataPoint[]>([]);
 
   const smallScreen = useSmallScreen();
 
@@ -53,7 +39,7 @@ export function AddIndicator() {
   }, [category]);
 
   const generalInfo = (
-    <VStack spacing={5} w="40%">
+    <VStack spacing={5} w="50%">
       <Heading>Indicator Name</Heading>
       <Input required variant="filled" placeholder="Enter indicator name" />
       <Heading>Category</Heading>
@@ -85,12 +71,26 @@ export function AddIndicator() {
 
   return (
     <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Indicator">
-      <VStack w={smallScreen ? "95%" : "90%"} margin="auto" my={10}>
-        <HStack w="100%" justify="space-around" align="flex-start">
-          {generalInfo}
-          <AddDataPointButton />
-        </HStack>
-      </VStack>
+      <HStack
+        w={smallScreen ? "95%" : "90%"}
+        margin="auto"
+        my={10}
+        display="flex"
+        justify="space-around"
+        align="flex-start"
+      >
+        {generalInfo}
+        <VStack w="50%">
+          <AddDataPointButton
+            dataPoints={dataPoints}
+            setDataPoints={setDataPoints}
+          />
+          <DataPointContainer
+            setDataPoints={setDataPoints}
+            dataPoints={dataPoints}
+          />
+        </VStack>
+      </HStack>
     </Page>
   );
 }

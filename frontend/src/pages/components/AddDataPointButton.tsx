@@ -20,15 +20,23 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Box,
+  ButtonGroup,
+  Stack,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { IndicatorDataFields } from "../../utils/constants";
 import { useSmallScreen } from "../../utils/hooks";
+import { DataPoint } from "../../utils/types";
+import { AddDataPointModal } from "./AddDataPointModal";
 
-export function AddDataPointButton() {
+export function AddDataPointButton({
+  dataPoints,
+  setDataPoints,
+}: {
+  dataPoints: DataPoint[];
+  setDataPoints: (dataPoints: DataPoint[]) => void;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const smallScreen = useSmallScreen();
-
-  const handleSubmit = () => {};
 
   return (
     <>
@@ -38,44 +46,15 @@ export function AddDataPointButton() {
           Add Data Point
         </Button>
       </VStack>
-
-      <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Data Point</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl display="flex" flexWrap="wrap">
-              {IndicatorDataFields.map((field) => {
-                return (
-                  <Box key={field.id} w={smallScreen ? "100%" : "45%"} m={3}>
-                    <FormLabel htmlFor={field.id}>{field.name}</FormLabel>
-                    {field.type === "text" ? (
-                      <Input id={field.id} />
-                    ) : (
-                      <NumberInput id={field.id} precision={2} step={0.01}>
-                        <NumberInputField />
-                        <NumberInputStepper>
-                          <NumberIncrementStepper />
-                          <NumberDecrementStepper />
-                        </NumberInputStepper>
-                      </NumberInput>
-                    )}
-                  </Box>
-                );
-              })}
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button type="submit" colorScheme="green" mr={3} onClick={onClose}>
-              Save
-            </Button>
-            <Button colorScheme="red" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <VStack>
+        <Heading size="md">Count: {dataPoints.length}</Heading>
+        <AddDataPointModal
+          dataPoints={dataPoints}
+          setDataPoints={setDataPoints}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
+      </VStack>
     </>
   );
 }

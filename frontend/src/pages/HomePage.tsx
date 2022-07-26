@@ -1,14 +1,5 @@
-import {
-  VStack,
-  Text,
-  Box,
-  Heading,
-  ButtonGroup,
-  Button,
-  HStack,
-} from "@chakra-ui/react";
+import { VStack, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { Page } from "./Page";
 import {
   AddIcon,

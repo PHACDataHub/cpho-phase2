@@ -1,20 +1,13 @@
-import { AttachmentIcon, InfoIcon } from "@chakra-ui/icons";
+import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   VStack,
-  Text,
-  Box,
-  FormControl,
-  FormLabel,
   Input,
   Button,
   Heading,
   Center,
   Spinner,
-  ButtonGroup,
-  HStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { FileFormat } from "../utils/types";
 import { FileTypeChoice } from "./components/FileTypeChoice";
 import { Page } from "./Page";

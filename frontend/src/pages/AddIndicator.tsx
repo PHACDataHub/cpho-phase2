@@ -1,11 +1,4 @@
-import {
-  VStack,
-  Heading,
-  Input,
-  Select,
-  HStack,
-  Stack,
-} from "@chakra-ui/react";
+import { VStack, Heading, Input, Select, HStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { categories, sub_categories } from "../utils/constants";
 import { useSmallScreen } from "../utils/hooks";
@@ -46,6 +39,7 @@ export function AddIndicator() {
       <Select
         required
         variant="filled"
+        value={category}
         onChange={(e) => setCategory(parseInt(e.target.value))}
       >
         {categories.map((category) => (
@@ -58,6 +52,7 @@ export function AddIndicator() {
       <Select
         required
         variant="filled"
+        value={subCategory}
         onChange={(e) => setSubCategory(parseInt(e.target.value))}
       >
         {filteredSubCategories.map((s) => (

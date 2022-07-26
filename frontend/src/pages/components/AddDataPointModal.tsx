@@ -40,12 +40,22 @@ export function AddDataPointModal({
 }): JSX.Element {
   const smallScreen = useSmallScreen();
 
-  const [yearType, setYearType] = useState<"single" | "range">("single");
-  const [year1, setYear1] = useState<number>(2022);
-  const [year2, setYear2] = useState<number>(2023);
-
   const dataPoint = dataPoints[dataPointIdx!];
   if (dataPoint) console.log("GOT ONE", dataPoint);
+
+  const [yearType, setYearType] = useState<"single" | "range">(
+    dataPoint
+      ? dataPoint.single_year_timeframe
+        ? "single"
+        : "range"
+      : "single"
+  );
+  const [year1, setYear1] = useState<number>(
+    dataPoint
+      ? (dataPoint.single_year_timeframe as unknown as number) ?? 2022
+      : 2022
+  );
+  const [year2, setYear2] = useState<number>(2023);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -94,8 +104,8 @@ export function AddDataPointModal({
         setDataPoints(
           dataPoints
             .slice(0, dataPointIdx!)
+            .concat([point])
             .concat(dataPoints.slice(dataPointIdx! + 1))
-            .concat(point)
         );
       } else {
         setDataPoints([...dataPoints, point]);

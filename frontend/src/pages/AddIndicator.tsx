@@ -1,4 +1,11 @@
-import { VStack, Heading, Input, Select, HStack } from "@chakra-ui/react";
+import {
+  VStack,
+  Heading,
+  Input,
+  Select,
+  Button,
+  Stack,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { categories, sub_categories } from "../utils/constants";
 import { useSmallScreen } from "../utils/hooks";
@@ -32,7 +39,7 @@ export function AddIndicator() {
   }, [category]);
 
   const generalInfo = (
-    <VStack spacing={5} w="50%">
+    <VStack spacing={5} w={smallScreen ? "90%" : "50%"}>
       <Heading>Indicator Name</Heading>
       <Input required variant="filled" placeholder="Enter indicator name" />
       <Heading>Category</Heading>
@@ -66,7 +73,8 @@ export function AddIndicator() {
 
   return (
     <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Indicator">
-      <HStack
+      <Stack
+        direction={smallScreen ? "column" : "row"}
         w={smallScreen ? "95%" : "90%"}
         margin="auto"
         my={10}
@@ -75,7 +83,7 @@ export function AddIndicator() {
         align="flex-start"
       >
         {generalInfo}
-        <VStack w="50%">
+        <VStack w={smallScreen ? "90%" : "50%"}>
           <AddDataPointButton
             dataPoints={dataPoints}
             setDataPoints={setDataPoints}
@@ -85,7 +93,12 @@ export function AddIndicator() {
             dataPoints={dataPoints}
           />
         </VStack>
-      </HStack>
+      </Stack>
+      <VStack>
+        <Button w="40%" disabled={dataPoints.length === 0} colorScheme="green">
+          Submit
+        </Button>
+      </VStack>
     </Page>
   );
 }

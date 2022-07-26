@@ -1,7 +1,19 @@
-import { Box, Heading, useDisclosure } from "@chakra-ui/react";
-import { useSmallScreen } from "../../utils/hooks";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
+  Tag,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { getCleanPTName, useSmallScreen } from "../../utils/hooks";
 import { DataPoint } from "../../utils/types";
 import { AddDataPointModal } from "./AddDataPointModal";
+import { BsFillPersonFill } from "react-icons/bs";
+import { FaGenderless } from "react-icons/fa";
+import { AiOutlineNumber } from "react-icons/ai";
 
 function DataPointCard({
   dataPoint,
@@ -13,24 +25,67 @@ function DataPointCard({
   setDataPoints: (dataPoints: DataPoint[]) => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const onDelete = () => {
+    const idx = dataPoints.indexOf(dataPoint);
+    if (idx === -1) return;
+    setDataPoints(dataPoints.slice(0, idx).concat(dataPoints.slice(idx + 1)));
+  };
   return (
     <>
       <Box
+        position="relative"
         boxShadow="md"
         borderRadius="md"
+        maxW="200px"
         flexGrow={1}
-        onClick={onOpen}
-        cursor="pointer"
         transition="all 0.2s ease-in-out"
         _hover={{
-          boxShadow: "xl",
+          boxShadow: "2xl",
         }}
       >
         <Box h="8px" w="100%" bgColor="pink.400" borderTopRadius="md" />
-        <Box p={4}>
-          <Heading size="md">
+        <Box p={2} pl={3}>
+          <HStack justify="flex-end" spacing={1}>
+            <IconButton
+              onClick={onDelete}
+              colorScheme="red"
+              isRound
+              icon={<DeleteIcon />}
+              aria-label={"Delete data point"}
+              size="sm"
+            />
+            <IconButton
+              onClick={onOpen}
+              colorScheme="blue"
+              isRound
+              icon={<EditIcon />}
+              aria-label={"Delete data point"}
+              size="sm"
+            />
+          </HStack>
+          <Heading size="sm">
             {dataPoint.single_year_timeframe ?? dataPoint.multi_year_timeframe}
           </Heading>
+          <Heading size="xs">{getCleanPTName(dataPoint.country)}</Heading>
+          <Box pt={2} display="flex" flexWrap="wrap" gap={1}>
+            {dataPoint.age_group && (
+              <Tag size="sm" colorScheme="blue">
+                <Icon as={BsFillPersonFill} />
+                {dataPoint.age_group}
+              </Tag>
+            )}
+            {dataPoint.sex && (
+              <Tag size="sm" colorScheme="red">
+                <Icon as={FaGenderless} />
+                {dataPoint.sex}
+              </Tag>
+            )}
+            {dataPoint.value && (
+              <Tag size="sm" colorScheme="green">
+                <Icon as={AiOutlineNumber} /> {dataPoint.value}
+              </Tag>
+            )}
+          </Box>
         </Box>
       </Box>
       <AddDataPointModal

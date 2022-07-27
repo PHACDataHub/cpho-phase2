@@ -1,4 +1,4 @@
-import { InfoIcon } from "@chakra-ui/icons";
+import { DownloadIcon, InfoIcon } from "@chakra-ui/icons";
 import {
   Button,
   ButtonGroup,
@@ -15,7 +15,6 @@ import {
   Box,
   List,
   ListItem,
-  Link,
 } from "@chakra-ui/react";
 import { FileColumnData } from "../../utils/constants";
 import { FileFormat } from "../../utils/types";
@@ -94,14 +93,16 @@ export function FileTypeChoice({
             </List>
           </ModalBody>
           <ModalFooter>
-            <Link
+            <Button
+              leftIcon={<DownloadIcon />}
+              as="a"
               download
               href="sampleFiles/indicators.csv"
               colorScheme="blue"
               mr={3}
             >
               Export empty CSV
-            </Link>
+            </Button>
             <Button colorScheme="red" onClick={onClose}>
               Close
             </Button>

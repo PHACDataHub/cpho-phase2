@@ -41,7 +41,6 @@ export function AddDataPointModal({
   const smallScreen = useSmallScreen();
 
   const dataPoint = dataPoints[dataPointIdx!];
-  if (dataPoint) console.log("GOT ONE", dataPoint);
 
   const [yearType, setYearType] = useState<"single" | "range">(
     dataPoint
@@ -92,9 +91,8 @@ export function AddDataPointModal({
       value_upper_bound:
         ((document.getElementById("dp_value_upper_bound") as HTMLInputElement)
           .value as unknown as number) ?? 0,
-      single_year_timeframe: yearType === "single" ? `${year1}` : undefined,
-      multi_year_timeframe:
-        yearType === "range" ? `${year1}-${year2}` : undefined,
+      single_year_timeframe: yearType === "single" ? `${year1}` : "",
+      multi_year_timeframe: yearType === "range" ? `${year1}-${year2}` : "",
     };
 
     if (setDataPoints) {

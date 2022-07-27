@@ -142,9 +142,6 @@ export function AddIndicator() {
     });
   };
 
-  console.log("Status: ", status);
-  console.log("Status message: ", statusMessage);
-
   return (
     <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Indicator">
       <Stack

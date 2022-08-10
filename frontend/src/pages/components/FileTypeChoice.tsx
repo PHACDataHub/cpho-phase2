@@ -47,14 +47,14 @@ export function FileTypeChoice({
         <Button
           onClick={() => setActiveType("trendAnalysis")}
           isActive={activeType === "trendAnalysis"}
-          disabled
+          
         >
           Trend Analysis
         </Button>
         <Button
           onClick={() => setActiveType("benchmarking")}
           isActive={activeType === "benchmarking"}
-          disabled
+          
         >
           Benchmarking
         </Button>
@@ -65,7 +65,7 @@ export function FileTypeChoice({
         leftIcon={<InfoIcon />}
         onClick={onOpen}
       >
-        View expected format for {getCleanName(activeType)}
+        View expected format for {getCleanName(activeType)} files
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />

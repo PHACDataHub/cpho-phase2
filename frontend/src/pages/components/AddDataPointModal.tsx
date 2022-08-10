@@ -91,8 +91,9 @@ export function AddDataPointModal({
       value_upper_bound:
         ((document.getElementById("dp_value_upper_bound") as HTMLInputElement)
           .value as unknown as number) ?? 0,
-      single_year_timeframe: yearType === "single" ? `${year1}` : "",
-      multi_year_timeframe: yearType === "range" ? `${year1}-${year2}` : "",
+      single_year_timeframe: yearType === "single" ? `${year1}` : undefined,
+      multi_year_timeframe:
+        yearType === "range" ? `${year1}-${year2}` : undefined,
     };
 
     if (setDataPoints) {

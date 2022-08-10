@@ -17,11 +17,6 @@ export function HomePage() {
       icon: <AddIcon />,
     },
     {
-      title: "Past Submissions",
-      path: "/past-submissions",
-      icon: <EditIcon />,
-    },
-    {
       title: "Import File",
       path: "/import",
       icon: <AttachmentIcon />,
@@ -31,6 +26,11 @@ export function HomePage() {
       path: "/export",
       icon: <DownloadIcon />,
     },
+    // {
+    //   title: "Past Submissions",
+    //   path: "/past-submissions",
+    //   icon: <EditIcon />,
+    // },
   ];
   return (
     <Page

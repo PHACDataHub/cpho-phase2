@@ -16,17 +16,17 @@ class IndicatorData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
     country = models.CharField(max_length=50)
     geography = models.CharField(max_length=50)
-    sex = models.CharField(max_length=50)
-    gender = models.CharField(max_length=50)
-    age_group = models.CharField(max_length=50)
-    age_group_type = models.CharField(max_length=50)
+    sex = models.CharField(max_length=50, null=True)
+    gender = models.CharField(max_length=50, null=True)
+    age_group = models.CharField(max_length=50, null=True)
+    age_group_type = models.CharField(max_length=50, null=True)
     data_quality = models.CharField(max_length=50)
     value = models.FloatField()
     value_lower_bound = models.FloatField(null=True)
     value_upper_bound = models.FloatField(null=True)
     value_unit = models.CharField(max_length=50)
-    single_year_timeframe = models.CharField(max_length=50)
-    multi_year_timeframe = models.CharField(max_length=50)
+    single_year_timeframe = models.CharField(max_length=50, null=True)
+    multi_year_timeframe = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.country+' '+self.sex+' '+self.age_group+' '+self.single_year_timeframe+self.multi_year_timeframe+' '+self.value

@@ -87,11 +87,11 @@ def addIndicator(request):
                 age_group_type=point['age_group_type'],
                 data_quality=point['data_quality'],
                 value=point['value'] if point['value'] != '' else None,
-                value_lower_bound=point['value_lower_bound'] if point['value_lower_bound'] != '' else None,
-                value_upper_bound=point['value_upper_bound'] if point['value_upper_bound'] != '' else None,
+                value_lower_bound=point['value_lower_bound'] if point['value_lower_bound'] else None,
+                value_upper_bound=point['value_upper_bound'] if point['value_upper_bound'] else None,
                 value_unit=point['value_unit'],
-                single_year_timeframe=point['single_year_timeframe'],
-                multi_year_timeframe=point['multi_year_timeframe'],
+                single_year_timeframe=point.get('single_year_timeframe'),
+                multi_year_timeframe=point.get('multi_year_timeframe'),
             )
     except Exception as e:
         print("ERROR!!")
@@ -103,12 +103,29 @@ def addIndicator(request):
 
     return JsonResponse({
         'status': 'success',
-        'message': 'Successly added indicator!'
+        'message': 'Successfuly added indicator!'
     })
 
 def pastSubmissions(request):
-    indicators = Indicator.objects.all().values()
+    indicators = Indicator.objects.distinct().values()
     return JsonResponse(list(indicators), safe=False)
+
+def possibleIndicators(request):
+    indicators = Indicator.objects.all().values()
+
+    possible = []
+    result = []
+
+    for ind in indicators:
+        if (ind.get('indicator') not in possible):
+            possible.append(ind.get('indicator'))
+            result.append({
+                'id': ind.get('id'),
+                'name': ind.get('indicator'),
+                'dataPointCount': IndicatorData.objects.filter(indicator=ind.get('id')).count()
+            })
+
+    return JsonResponse(list(result), safe=False)
 
 def importPage(request):
     print("===== Import Request")
@@ -150,6 +167,53 @@ def importPage(request):
     print("DONE!!")
     return JsonResponse({'status': '200', 'message': 'Successly imported data!'})
 
-
 def exportPage(request):
-    return render(request, 'app/export.html')
+    indicator_ids = json.loads(request.POST.get('selectedIndicators'))
+    result = []
+
+    with open('names.csv', 'w') as csvfile:
+        fieldnames = ['first_name', 'last_name']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writeheader()
+        writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
+        writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
+        writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
+
+    response = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="results.csv"'},
+    )
+
+    fieldnames = ['category', 'topic', 'indicator', 'detailed_indicator', 'sub_indicator_measurement', 'country', 'geography', 'sex', 'gender', 'age_group', 'age_group_type', 'data_quality', 'value', 'value_lower_bound', 'value_upper_bound', 'value_unit', 'single_year_timeframe', 'multi_year_timeframe']
+    writer = csv.DictWriter(response, fieldnames=fieldnames)
+    writer.writeheader()
+
+    for id in indicator_ids:
+            ind = Indicator.objects.get(id=id)
+            points = IndicatorData.objects.all().filter(indicator=ind.id)
+            for point in points:
+                writer.writerow({
+                    'category': ind.category,
+                    'topic': ind.topic,
+                    'indicator': ind.indicator,
+                    'detailed_indicator': ind.detailed_indicator,
+                    'sub_indicator_measurement': ind.sub_indicator_measurement,
+                    'country': point.country,
+                    'geography': point.geography,
+                    'sex': point.sex,
+                    'gender': point.gender,
+                    'age_group': point.age_group,
+                    'age_group_type': point.age_group_type,
+                    'data_quality': point.data_quality,
+                    'value': point.value,
+                    'value_lower_bound': point.value_lower_bound,
+                    'value_upper_bound': point.value_upper_bound,
+                    'value_unit': point.value_unit,
+                    'single_year_timeframe': point.single_year_timeframe,
+                    'multi_year_timeframe': point.multi_year_timeframe
+                })
+            print(id)
+            print(ind.indicator)
+            print(len(points))
+    return response

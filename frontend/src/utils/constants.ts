@@ -57,15 +57,15 @@ export const IndicatorDataFields: DataPointField[] = [
     required: true,
     options: [
       {
-        value: "country",
+        value: "COUNTRY",
         label: "Country",
       },
       {
-        value: "province",
+        value: "PROVINCE_TERRITORY",
         label: "Province or Territory",
       },
       {
-        value: "region",
+        value: "REGION",
         label: "Region",
       },
     ],
@@ -79,71 +79,71 @@ export const IndicatorDataFields: DataPointField[] = [
     required: true,
     options: [
       {
-        value: "alberta",
+        value: "AB",
         label: "Alberta",
       },
       {
-        value: "britishColumbia",
+        value: "BC",
         label: "British Columbia",
       },
       {
-        value: "manitoba",
+        value: "MN",
         label: "Manitoba",
       },
       {
-        value: "newBrunswick",
+        value: "NB",
         label: "New Brunswick",
       },
       {
-        value: "newfoundlandAndLabrador",
+        value: "NL",
         label: "Newfoundland and Labrador",
       },
       {
-        value: "northwestTerritories",
+        value: "NT",
         label: "Northwest Territories",
       },
       {
-        value: "novaScotia",
+        value: "NS",
         label: "Nova Scotia",
       },
       {
-        value: "nunavut",
+        value: "NU",
         label: "Nunavut",
       },
       {
-        value: "ontario",
+        value: "ON",
         label: "Ontario",
       },
       {
-        value: "princeEdwardIsland",
+        value: "PE",
         label: "Prince Edward Island",
       },
       {
-        value: "quebec",
+        value: "QC",
         label: "Quebec",
       },
       {
-        value: "saskatchewan",
+        value: "SK",
         label: "Saskatchewan",
       },
       {
-        value: "yukon",
+        value: "YT",
         label: "Yukon",
       },
       {
-        value: "canada",
+        value: "CANADA",
         label: "Canada",
       },
       {
-        value: "atlantic",
+        value: "ATLANTIC",
         label: "Atlantic",
       },
       {
-        value: "prairie",
+        value: "PRAIRIE",
         label: "Prairie",
       },
       {
-        value: "territories",
+        value: "TERRITORIES",
         label: "Territories",
       },
     ],
@@ -184,19 +184,19 @@ export const IndicatorDataFields: DataPointField[] = [
     required: true,
     options: [
       {
-        value: "caution",
+        value: "CAUTION",
         label: "Caution",
       },
       {
-        value: "acceptable",
+        value: "ACCEPTABLE",
         label: "Acceptable",
       },
       {
-        value: "good",
+        value: "GOOD",
         label: "Good",
       },
       {
-        value: "veryGood",
+        value: "VERY_GOOD",
         label: "Very Good",
       },
     ],

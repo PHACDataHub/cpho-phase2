@@ -7,8 +7,8 @@ export function PastSubmissions() {
 
   useEffect(() => {
     fetch(
-      process.env.REACT_APP_SERVER_URL ||
-        "http://localhost:8000/api/pastsubmissions",
+      (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
+        "api/pastsubmissions",
       {
         method: "GET",
       }

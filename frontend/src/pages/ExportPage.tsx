@@ -166,14 +166,14 @@ export function ExportPage() {
           gap={3}
           alignContent="flex-start"
         >
-          {possibleIndicators.map((ind) => (
+          {possibleIndicators.length > 0 ? possibleIndicators.map((ind) => (
             <PossibleIndicatorCard
               addSelected={addSelected}
               removeSelected={removeSelected}
               key={ind.id}
               indicator={ind}
             />
-          ))}
+          )) : <Heading size="lg" mx="auto">No data found in database</Heading>}
         </Box>
         <ButtonGroup size="lg" isAttached>
           <Button

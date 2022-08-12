@@ -1,5 +1,4 @@
-import { Heading, HStack, Image, VStack } from "@chakra-ui/react";
-import { ColorModeSwitcher } from "../../../ColorModeSwitcher";
+import { HStack, Image } from "@chakra-ui/react";
 
 export function Header(): JSX.Element {
   return (

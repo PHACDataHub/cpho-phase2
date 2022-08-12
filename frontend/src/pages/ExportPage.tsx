@@ -3,9 +3,7 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Center,
   Heading,
-  HStack,
   IconButton,
   Text,
   useToast,
@@ -15,9 +13,7 @@ import { useEffect, useState } from "react";
 import { Page } from "./Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
-import { ImDatabase } from "react-icons/im";
 import { useSmallScreen } from "../utils/hooks";
-import { writer } from "repl";
 
 const PossibleIndicatorCard = ({
   indicator: { name, dataPointCount, id },

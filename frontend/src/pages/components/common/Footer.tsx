@@ -1,4 +1,4 @@
-import { Heading, Image, VStack } from "@chakra-ui/react";
+import { Image, VStack } from "@chakra-ui/react";
 
 export function Footer(): JSX.Element {
   return (

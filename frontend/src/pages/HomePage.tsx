@@ -5,7 +5,7 @@ import {
   AddIcon,
   AttachmentIcon,
   DownloadIcon,
-  EditIcon,
+  // EditIcon,
 } from "@chakra-ui/icons";
 
 export function HomePage() {

@@ -1,5 +1,7 @@
 # CPHO Phase 2
 
+## Note: This is *very much* a work in progress. Work needs to be done to transform this prototype into an usable production application.
+
 ## How to run locally
 
 Assumes you have Python installed in system (check using `python --version` or `py --version`).

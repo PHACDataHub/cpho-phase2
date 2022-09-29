@@ -5,17 +5,29 @@ import { ExportPage } from "./pages/ExportPage";
 import { HomePage } from "./pages/HomePage";
 import { ImportPage } from "./pages/ImportPage";
 import { PastSubmissions } from "./pages/PastSubmission";
-import '@fontsource/noto-sans/400.css'
-import '@fontsource/noto-sans/700.css'
-import '@fontsource/noto-sans/600.css'
-import '@fontsource/noto-sans/500.css'
+import "@fontsource/noto-sans/400.css";
+import "@fontsource/noto-sans/700.css";
+import "@fontsource/noto-sans/600.css";
+import "@fontsource/noto-sans/500.css";
 
 const theme = extendTheme({
   fonts: {
     body: `'Noto Sans', system-ui, sans-serif`,
     heading: `'Noto Sans', system-ui, sans-serif`,
-  }
-})
+  },
+  colors: {
+    brand: {
+      1: "#00bcd4",
+      2: "#009688",
+      3: "#4caf50",
+      4: "#cddc39",
+      5: "#ffeb3b",
+      6: "#ffc107",
+      7: "#ff9800",
+      8: "#ff5722",
+    },
+  },
+});
 
 export const App = () => (
   <BrowserRouter>

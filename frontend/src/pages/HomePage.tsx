@@ -5,7 +5,7 @@ import {
   AddIcon,
   AttachmentIcon,
   DownloadIcon,
-  // EditIcon,
+  EditIcon,
 } from "@chakra-ui/icons";
 
 export function HomePage() {
@@ -26,11 +26,11 @@ export function HomePage() {
       path: "/export",
       icon: <DownloadIcon />,
     },
-    // {
-    //   title: "Past Submissions",
-    //   path: "/past-submissions",
-    //   icon: <EditIcon />,
-    // },
+    {
+      title: "Past Submissions",
+      path: "/past-submissions",
+      icon: <EditIcon />,
+    },
   ];
   return (
     <Page

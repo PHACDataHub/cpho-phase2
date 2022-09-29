@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -16,19 +16,28 @@ import { FaGenderless } from "react-icons/fa";
 import { AiOutlineNumber } from "react-icons/ai";
 
 function DataPointCard({
+  index,
   dataPoint,
   dataPoints,
   setDataPoints,
 }: {
+  index: number;
   dataPoint: DataPoint;
   dataPoints: DataPoint[];
   setDataPoints: (dataPoints: DataPoint[]) => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const onDelete = () => {
     const idx = dataPoints.indexOf(dataPoint);
     if (idx === -1) return;
     setDataPoints(dataPoints.slice(0, idx).concat(dataPoints.slice(idx + 1)));
+  };
+
+  const onDuplicate = () => {
+    const idx = dataPoints.indexOf(dataPoint);
+    if (idx === -1) return;
+    setDataPoints([...dataPoints, dataPoints[idx]]);
   };
   return (
     <>
@@ -43,7 +52,12 @@ function DataPointCard({
           boxShadow: "2xl",
         }}
       >
-        <Box h="8px" w="100%" bgColor="pink.400" borderTopRadius="md" />
+        <Box
+          h="8px"
+          w="100%"
+          bgColor={`brand.${index + 1}`}
+          borderTopRadius="md"
+        />
         <Box p={2} pl={3}>
           <HStack justify="flex-end" spacing={1}>
             <IconButton
@@ -60,6 +74,14 @@ function DataPointCard({
               isRound
               icon={<EditIcon />}
               aria-label={"Delete data point"}
+              size="sm"
+            />
+            <IconButton
+              onClick={onDuplicate}
+              colorScheme="green"
+              isRound
+              icon={<CopyIcon />}
+              aria-label={"Duplicate data point"}
               size="sm"
             />
           </HStack>
@@ -121,6 +143,7 @@ export function DataPointContainer({
       {dataPoints.map((dataPoint, idx) => (
         <DataPointCard
           key={idx}
+          index={idx}
           dataPoint={dataPoint}
           dataPoints={dataPoints}
           setDataPoints={setDataPoints}

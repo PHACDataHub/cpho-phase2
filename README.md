@@ -24,8 +24,13 @@ py -m venv venv
 
 Windows
 
+bash:
 ```
 .\venv\Scripts\activate
+```
+powershell:
+```
+.\venv\Scripts\activate.ps1
 ```
 
 Mac/Linux

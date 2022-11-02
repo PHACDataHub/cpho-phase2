@@ -1,4 +1,6 @@
 from django.urls import path
+from graphene_django.views import GraphQLView
+from app.schema import schema
 
 from . import views
 
@@ -12,4 +14,5 @@ urlpatterns = [
     path('api/addindicator', views.addIndicator, name='addindicator'),
     path('api/import', views.importPage, name='import'),
     path('api/export', views.exportPage, name='export'),
+    path("graphql", GraphQLView.as_view(graphiql=True, schema=schema)),
 ]

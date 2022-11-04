@@ -1,3 +1,4 @@
+import { gql, useMutation } from "@apollo/client";
 import {
   VStack,
   Heading,
@@ -17,13 +18,32 @@ import { DataPointContainer } from "./components/DataPointContainer";
 import { Page } from "./Page";
 
 export function AddIndicator() {
-  const [indicatorName, setIndicatorName] = useState("");
-  const [detailedIndicator, setDetailedIndicator] = useState("");
-  const [category, setCategory] = useState(1);
-  const [subCategory, setSubCategory] = useState(1);
   const [filteredSubCategories, setFilteredSubCategories] =
     useState<SubCategory[]>(sub_categories);
-  const [dataPoints, setDataPoints] = useState<DataPoint[]>([]);
+
+  const [values, setValues] = useState({
+    indicatorName: "",
+    detailedIndicator: "",
+    category: 1,
+    subCategory: 1,
+    dataPoints: [] as DataPoint[],
+  });
+
+  const {
+    indicatorName,
+    detailedIndicator,
+    category,
+    subCategory,
+    dataPoints,
+  } = values;
+
+  const setField = (field: string, value: any) => {
+    setValues({
+      ...values,
+      [field]: value,
+    });
+  };
+
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
@@ -32,15 +52,6 @@ export function AddIndicator() {
   const smallScreen = useSmallScreen();
 
   useEffect(() => {
-    // console.log("Selected category: ", category);
-    // console.log("Looking through", sub_categories);
-    // console.log(
-    //   "Filtered: ",
-    //   sub_categories.filter((c) => {
-    //     console.log("Comparing ", c.category, " to ", category);
-    //     return c.category === category;
-    //   })
-    // );
     setFilteredSubCategories(
       sub_categories.filter((c) => c.category === category)
     );
@@ -54,7 +65,7 @@ export function AddIndicator() {
         </FormLabel>
         <Input
           value={indicatorName}
-          onChange={(e) => setIndicatorName(e.target.value)}
+          onChange={(e) => setField("indicatorName", e.target.value)}
           required
           variant="filled"
           placeholder="Enter indicator name"
@@ -68,7 +79,7 @@ export function AddIndicator() {
           required
           variant="filled"
           value={category}
-          onChange={(e) => setCategory(parseInt(e.target.value))}
+          onChange={(e) => setField("category", parseInt(e.target.value))}
         >
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
@@ -84,7 +95,7 @@ export function AddIndicator() {
         <Select
           variant="filled"
           value={subCategory}
-          onChange={(e) => setSubCategory(parseInt(e.target.value))}
+          onChange={(e) => setField("subCategory", parseInt(e.target.value))}
         >
           {filteredSubCategories.map((s) => (
             <option key={s.id} value={s.id}>
@@ -99,7 +110,7 @@ export function AddIndicator() {
         </FormLabel>
         <Input
           value={detailedIndicator}
-          onChange={(e) => setDetailedIndicator(e.target.value)}
+          onChange={(e) => setField("detailedIndicator", e.target.value)}
           variant="filled"
           placeholder="Enter detailed indicator"
         />
@@ -107,40 +118,35 @@ export function AddIndicator() {
     </VStack>
   );
 
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    setStatus("loading");
-    // console.log("Submitting form", event);
-    // let formData = new FormData(event.target as HTMLFormElement);
-    let formData = new FormData();
-
-    formData.append("indicator_name", indicatorName);
-    formData.append(
-      "category",
-      categories.find((c) => c.id === category)?.label ?? ""
-    );
-    formData.append(
-      "sub_category",
-      sub_categories.find((c) => (c.id = subCategory))?.label ?? ""
-    );
-    formData.append("detailed_indicator", detailedIndicator);
-    formData.append("data_points", JSON.stringify(dataPoints));
-
-    formData.forEach((value, key) => console.log(key, value));
-    fetch(
-      (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
-        "api/addindicator",
-      {
-        method: "POST",
-        body: formData,
+  const CREATE_INDICATOR = gql`
+    mutation CreateIndicator(
+      $category: String!
+      $detailedIndicator: String!
+      $indicator: String!
+      $subIndicatorMeasurement: String
+      $topic: String!
+      $dataPoints: [DataPointArgsInput]!
+    ) {
+      createIndicator(
+        category: $category
+        detailedIndicator: $detailedIndicator
+        indicator: $indicator
+        subIndicatorMeasurement: $subIndicatorMeasurement
+        topic: $topic
+        dataPoints: $dataPoints
+      ) {
+        indicator {
+          indicator
+          category
+        }
+        dataPoints {
+          id
+        }
       }
-    ).then(async (response) => {
-      const obj = await response.json();
-      console.log("RESPONSE", obj);
-      setStatus(obj.status);
-      setStatusMessage(obj.message);
-    });
-  };
+    }
+  `;
+  const [createIndicator, { loading, error, data }] =
+    useMutation(CREATE_INDICATOR);
 
   return (
     <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Indicator">
@@ -157,10 +163,10 @@ export function AddIndicator() {
         <VStack w={smallScreen ? "90%" : "50%"}>
           <AddDataPointButton
             dataPoints={dataPoints}
-            setDataPoints={setDataPoints}
+            setDataPoints={(d) => setField("dataPoints", d)}
           />
           <DataPointContainer
-            setDataPoints={setDataPoints}
+            setDataPoints={(d) => setField("dataPoints", d)}
             dataPoints={dataPoints}
           />
         </VStack>
@@ -178,7 +184,20 @@ export function AddIndicator() {
           w="40%"
           disabled={dataPoints.length === 0}
           colorScheme="green"
-          onClick={onSubmit}
+          onClick={() => {
+            createIndicator({
+              variables: {
+                category:
+                  categories.find((c) => c.id === category)?.label ?? "",
+                detailedIndicator,
+                indicator: indicatorName,
+                subIndicatorMeasurement: "",
+                topic:
+                  sub_categories.find((c) => c.id === subCategory)?.label ?? "",
+                dataPoints,
+              },
+            });
+          }}
         >
           Submit
         </Button>

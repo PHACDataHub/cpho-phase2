@@ -43,15 +43,11 @@ export function AddDataPointModal({
   const dataPoint = dataPoints[dataPointIdx!];
 
   const [yearType, setYearType] = useState<"single" | "range">(
-    dataPoint
-      ? dataPoint.single_year_timeframe
-        ? "single"
-        : "range"
-      : "single"
+    dataPoint ? (dataPoint.singleYearTimeframe ? "single" : "range") : "single"
   );
   const [year1, setYear1] = useState<number>(
     dataPoint
-      ? (dataPoint.single_year_timeframe as unknown as number) ?? 2022
+      ? (dataPoint.singleYearTimeframe as unknown as number) ?? 2022
       : 2022
   );
   const [year2, setYear2] = useState<number>(2023);
@@ -70,29 +66,29 @@ export function AddDataPointModal({
       sex: (document.getElementById("dp_sex") as HTMLInputElement)?.value ?? "",
       gender:
         (document.getElementById("dp_gender") as HTMLInputElement)?.value ?? "",
-      age_group:
+      ageGroup:
         (document.getElementById("dp_age_group") as HTMLInputElement).value ??
         "",
-      age_group_type:
+      ageGroupType:
         (document.getElementById("dp_age_group_type") as HTMLInputElement)
           .value ?? "",
-      data_quality:
+      dataQuality:
         (document.getElementById("dp_data_quality") as HTMLInputElement)
           .value ?? "",
       value:
         ((document.getElementById("dp_value") as HTMLInputElement)
           .value as unknown as number) ?? 0,
-      value_unit:
+      valueUnit:
         (document.getElementById("dp_value_unit") as HTMLInputElement).value ??
         "",
-      value_lower_bound:
+      valueLowerBound:
         ((document.getElementById("dp_value_lower_bound") as HTMLInputElement)
           .value as unknown as number) ?? 0,
-      value_upper_bound:
+      valueUpperBound:
         ((document.getElementById("dp_value_upper_bound") as HTMLInputElement)
           .value as unknown as number) ?? 0,
-      single_year_timeframe: yearType === "single" ? `${year1}` : undefined,
-      multi_year_timeframe:
+      singleYearTimeframe: yearType === "single" ? `${year1}` : undefined,
+      multiYearTimeframe:
         yearType === "range" ? `${year1}-${year2}` : undefined,
     };
 

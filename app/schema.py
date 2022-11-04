@@ -1,12 +1,20 @@
 import graphene
 from graphene_django import DjangoObjectType
 from .models import Indicator, Benchmarking, IndicatorData, TrendAnalysis
+from graphene_django.rest_framework.serializer_converter import convert_serializer_to_input_type
+from rest_framework import serializers
 
+# DjangoObjectTypes
 
 class IndicatorType(DjangoObjectType):
     class Meta:
         model = Indicator
+        
+class IndicatorDataType(DjangoObjectType):
+    class Meta:
+        model = IndicatorData
 
+# Custom Responses
 
 class PossibleIndicatorResponseType(graphene.ObjectType):
     id = graphene.Int()
@@ -14,41 +22,17 @@ class PossibleIndicatorResponseType(graphene.ObjectType):
     category = graphene.String()
     data_point_count = graphene.Int()
 
-    # def resolve_data_point_count(self, info, **kwargs):
-    #     return IndicatorData.objects.filter(indicator=self).count()
-
-
-class IndicatorDataType(DjangoObjectType):
+# Complex Types to use as Mutation argument
+        
+class DataPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = IndicatorData
+        exclude = ('id','indicator')
+        
+class DataPointArgsInput(convert_serializer_to_input_type(DataPointSerializer)):
+    pass
 
-
-class BenchmarkingType(DjangoObjectType):
-    class Meta:
-        model = Benchmarking
-
-
-class TrendAnalysisType(DjangoObjectType):
-    class Meta:
-        model = TrendAnalysis
-        fields = (
-            "id",
-            "indicator",
-            "detailed_indicator",
-            "year",
-            "data_point",
-            "line_of_best_fit_point",
-        )
-
-
-# class CreateIndicator(graphene.Mutation):
-#     class Arguments:
-#         category = graphene.String(required=True)
-#         topic = graphene.String(required=True)
-#         indicator = graphene.String(required=True)
-#         detailed_indicator = graphene.String(required=True)
-#         sub_indicator_measurement = graphene.String()
-
+# Queries
 
 class Query(graphene.ObjectType):
     indicators = graphene.List(IndicatorType)
@@ -79,5 +63,41 @@ class Query(graphene.ObjectType):
             )
         return response
 
+# Mutations
 
-schema = graphene.Schema(query=Query)
+class CreateIndicator(graphene.Mutation):
+    class Arguments:
+        category = graphene.String(required=True)
+        topic = graphene.String(required=True)
+        indicator = graphene.String(required=True)
+        detailed_indicator = graphene.String(required=True)
+        sub_indicator_measurement = graphene.String()
+        data_points = graphene.List(DataPointArgsInput, required=True)
+        
+    indicator = graphene.Field(IndicatorType)
+    dataPoints = graphene.List(IndicatorDataType)
+    
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        points = kwargs.pop('data_points')
+        indicator = Indicator.objects.create(**kwargs)
+        indicator.save()
+        
+        formattedPoints = []
+        
+        for point in points:
+            p = IndicatorData.objects.create(
+                indicator=indicator,
+                **point
+            )
+            formattedPoints.append(p)
+            p.save()
+
+        return CreateIndicator(indicator=indicator, dataPoints=formattedPoints)
+
+
+class Mutation(graphene.ObjectType):
+    create_indicator = CreateIndicator.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

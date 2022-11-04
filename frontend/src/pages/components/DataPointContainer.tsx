@@ -86,14 +86,14 @@ function DataPointCard({
             />
           </HStack>
           <Heading size="sm">
-            {dataPoint.single_year_timeframe ?? dataPoint.multi_year_timeframe}
+            {dataPoint.singleYearTimeframe ?? dataPoint.multiYearTimeframe}
           </Heading>
           <Heading size="xs">{getCleanPTName(dataPoint.country)}</Heading>
           <Box pt={2} display="flex" flexWrap="wrap" gap={1}>
-            {dataPoint.age_group && (
+            {dataPoint.ageGroup && (
               <Tag size="sm" colorScheme="blue">
                 <Icon as={BsFillPersonFill} />
-                {dataPoint.age_group}
+                {dataPoint.ageGroup}
               </Tag>
             )}
             {dataPoint.sex && (

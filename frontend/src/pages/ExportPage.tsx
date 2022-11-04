@@ -64,9 +64,6 @@ const PossibleIndicatorCard = ({
 export function ExportPage() {
   const toast = useToast();
   const [fileType, setFileType] = useState<"excel" | "csv" | "sql">("csv");
-  // const [possibleIndicators, setPossibleIndicators] = useState<
-  //   { id: number; name: string; dataPointCount: number }[]
-  // >([]);
 
   const isSmallScreen = useSmallScreen();
 
@@ -91,24 +88,6 @@ export function ExportPage() {
       if (csvText) setCsvText("");
     }
   };
-
-  // useEffect(() => {
-  //   fetch(
-  //     (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
-  //       "api/possibleindicators",
-  //     {
-  //       method: "GET",
-  //     }
-  //   )
-  //     .then(async (res) => {
-  //       const obj = await res.json();
-  //       setPossibleIndicators(obj);
-  //       console.log(obj);
-  //     })
-  //     .catch((err) => {
-  //       console.log("ERROR", err);
-  //     });
-  // }, []);
 
   const handleExport = () => {
     const formData = new FormData();

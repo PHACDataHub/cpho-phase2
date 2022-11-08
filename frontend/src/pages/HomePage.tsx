@@ -46,7 +46,6 @@ export function HomePage() {
             fontWeight={500}
             size="lg"
             onClick={() => navigate(path)}
-            disabled={title === "Past Submissions"}
           >
             {title}
           </Button>

@@ -9,61 +9,6 @@ from io import TextIOWrapper
 def index(request):
     return render(request, "index.html")
 
-
-def indicator(request, indicator_id):
-    categories = [
-        {
-            'id': 1,
-            'label': 'Factors Influencing Health'
-        },
-        {
-            'id': 2,
-            'label': 'General Health Status'
-        },
-        {
-            'id': 3,
-            'label': 'Health Outcomes'
-        },
-    ]
-
-    sub_categories = [
-        {
-            'id': 1,
-            'label': 'Childhood and Family Risk and Protective Factors',
-            'category': 1
-        },
-        {
-            'id': 2,
-            'label': 'Social Factors',
-            'category': 1
-        },
-        {
-            'id': 3,
-            'label': 'Substance Use',
-            'category': 1
-        },
-        {
-            'id': 4,
-            'label': 'Health Status',
-            'category': 2
-        },
-        {
-            'id': 5,
-            'label': 'Chronic Diseases and Mental Health',
-            'category': 3
-        },
-        {
-            'id': 6,
-            'label': 'Communicable Diseases',
-            'category': 3
-        }
-    ]
-    return JsonResponse({
-        'indicator': indicator_id,
-        'categories': categories,
-        'sub_categories': sub_categories
-    })
-
 def addIndicator(request):
 
     try:
@@ -105,27 +50,6 @@ def addIndicator(request):
         'status': 'success',
         'message': 'Successfuly added indicator!'
     })
-
-def pastSubmissions(request):
-    indicators = Indicator.objects.distinct().values()
-    return JsonResponse(list(indicators), safe=False)
-
-def possibleIndicators(request):
-    indicators = Indicator.objects.all().values()
-
-    possible = []
-    result = []
-
-    for ind in indicators:
-        if (ind.get('indicator') not in possible):
-            possible.append(ind.get('indicator'))
-            result.append({
-                'id': ind.get('id'),
-                'name': ind.get('indicator'),
-                'dataPointCount': IndicatorData.objects.filter(indicator=ind.get('id')).count()
-            })
-
-    return JsonResponse(list(result), safe=False)
 
 def importPage(request):
     print("===== Import Request")
@@ -169,16 +93,6 @@ def importPage(request):
 
 def exportPage(request):
     indicator_ids = json.loads(request.POST.get('selectedIndicators'))
-    result = []
-
-    with open('names.csv', 'w') as csvfile:
-        fieldnames = ['first_name', 'last_name']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        writer.writeheader()
-        writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
-        writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
-        writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
 
     response = HttpResponse(
         content_type='text/csv',
@@ -213,7 +127,4 @@ def exportPage(request):
                     'single_year_timeframe': point.single_year_timeframe,
                     'multi_year_timeframe': point.multi_year_timeframe
                 })
-            print(id)
-            print(ind.indicator)
-            print(len(points))
     return response

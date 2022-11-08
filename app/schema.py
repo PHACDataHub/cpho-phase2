@@ -83,17 +83,16 @@ class CreateIndicator(graphene.Mutation):
         indicator = Indicator.objects.create(**kwargs)
         indicator.save()
         
-        formattedPoints = []
-        
+        dataPoints = []
         for point in points:
             p = IndicatorData.objects.create(
                 indicator=indicator,
                 **point
             )
-            formattedPoints.append(p)
+            dataPoints.append(p)
             p.save()
 
-        return CreateIndicator(indicator=indicator, dataPoints=formattedPoints)
+        return CreateIndicator(indicator=indicator, dataPoints=dataPoints)
 
 
 class Mutation(graphene.ObjectType):

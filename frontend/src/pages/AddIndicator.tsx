@@ -9,7 +9,7 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { categories, sub_categories } from "../utils/constants";
 import { useSmallScreen } from "../utils/hooks";
 import { DataPoint, SubCategory } from "../utils/types";
@@ -43,11 +43,6 @@ export function AddIndicator() {
       [field]: value,
     });
   };
-
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
-  const [statusMessage, setStatusMessage] = useState("");
 
   const smallScreen = useSmallScreen();
 
@@ -172,14 +167,9 @@ export function AddIndicator() {
         </VStack>
       </Stack>
       <VStack>
-        {statusMessage && (
-          <Heading
-            size="md"
-            color={status === "success" ? "green.500" : "red.500"}
-          >
-            {statusMessage}
-          </Heading>
-        )}
+        {loading && <Heading size="md">Loading...</Heading>}
+        {error && <Heading size="md">Error: {error.message}</Heading>}
+        {data && <Heading size="md">Success!</Heading>}
         <Button
           w="40%"
           disabled={dataPoints.length === 0}
@@ -194,7 +184,12 @@ export function AddIndicator() {
                 subIndicatorMeasurement: "",
                 topic:
                   sub_categories.find((c) => c.id === subCategory)?.label ?? "",
-                dataPoints,
+                dataPoints: dataPoints.map((d) => ({
+                  ...d,
+                  value: +d.value, // Gets number representation for float values to fix GraphQL query error
+                  valueLowerBound: +d.valueLowerBound,
+                  valueUpperBound: +d.valueUpperBound,
+                })),
               },
             });
           }}

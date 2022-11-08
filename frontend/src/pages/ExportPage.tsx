@@ -14,7 +14,8 @@ import { Page } from "./Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
 import { useSmallScreen } from "../utils/hooks";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { GET_INDICATOR_OVERVIEW } from "../utils/graphql/queries";
 
 const PossibleIndicatorCard = ({
   indicator: { name, dataPointCount, id },
@@ -131,17 +132,6 @@ export function ExportPage() {
     }
   };
 
-  const GET_INDICATORS = gql`
-    query {
-      possibleIndicators {
-        id
-        name
-        category
-        dataPointCount
-      }
-    }
-  `;
-
   const { loading, error, data } = useQuery<{
     possibleIndicators: {
       id: number;
@@ -149,7 +139,7 @@ export function ExportPage() {
       category: string;
       dataPointCount: number;
     }[];
-  }>(GET_INDICATORS);
+  }>(GET_INDICATOR_OVERVIEW);
 
   const possibleIndicators = data?.possibleIndicators;
 
@@ -175,20 +165,22 @@ export function ExportPage() {
               Error loading indicators
             </Heading>
           )}
-          {possibleIndicators && possibleIndicators.length > 0 ? (
-            possibleIndicators.map((ind) => (
-              <PossibleIndicatorCard
-                addSelected={addSelected}
-                removeSelected={removeSelected}
-                key={ind.id}
-                indicator={ind}
-              />
-            ))
-          ) : (
-            <Heading size="lg" mx="auto">
-              No data found in database
-            </Heading>
-          )}
+          {possibleIndicators ? (
+            possibleIndicators.length > 0 ? (
+              possibleIndicators.map((ind) => (
+                <PossibleIndicatorCard
+                  addSelected={addSelected}
+                  removeSelected={removeSelected}
+                  key={ind.id}
+                  indicator={ind}
+                />
+              ))
+            ) : (
+              <Heading size="lg" mx="auto">
+                No data found in database
+              </Heading>
+            )
+          ) : null}
         </Box>
         <ButtonGroup size="lg" isAttached>
           <Button

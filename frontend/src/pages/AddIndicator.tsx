@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   VStack,
   Heading,
@@ -11,6 +11,11 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { categories, sub_categories } from "../utils/constants";
+import { CREATE_INDICATOR } from "../utils/graphql/mutations";
+import {
+  GET_INDICATOR_OVERVIEW,
+  GET_INDICATORS_AND_IDS,
+} from "../utils/graphql/queries";
 import { useSmallScreen } from "../utils/hooks";
 import { DataPoint, SubCategory } from "../utils/types";
 import { AddDataPointButton } from "./components/AddDataPointButton";
@@ -113,35 +118,19 @@ export function AddIndicator() {
     </VStack>
   );
 
-  const CREATE_INDICATOR = gql`
-    mutation CreateIndicator(
-      $category: String!
-      $detailedIndicator: String!
-      $indicator: String!
-      $subIndicatorMeasurement: String
-      $topic: String!
-      $dataPoints: [DataPointArgsInput]!
-    ) {
-      createIndicator(
-        category: $category
-        detailedIndicator: $detailedIndicator
-        indicator: $indicator
-        subIndicatorMeasurement: $subIndicatorMeasurement
-        topic: $topic
-        dataPoints: $dataPoints
-      ) {
-        indicator {
-          indicator
-          category
-        }
-        dataPoints {
-          id
-        }
-      }
+  const [createIndicator, { loading, error, data }] = useMutation(
+    CREATE_INDICATOR,
+    {
+      refetchQueries: [
+        {
+          query: GET_INDICATOR_OVERVIEW,
+        },
+        {
+          query: GET_INDICATORS_AND_IDS,
+        },
+      ],
     }
-  `;
-  const [createIndicator, { loading, error, data }] =
-    useMutation(CREATE_INDICATOR);
+  );
 
   return (
     <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Indicator">

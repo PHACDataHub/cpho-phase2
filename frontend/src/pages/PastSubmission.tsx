@@ -1,23 +1,15 @@
 import { VStack, Text, Spinner } from "@chakra-ui/react";
 import { Page } from "./Page";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { GET_INDICATORS_AND_IDS } from "../utils/graphql/queries";
 
 export function PastSubmissions() {
-  const GET_INDICATORS = gql`
-    query {
-      indicators {
-        id
-        indicator
-      }
-    }
-  `;
-
   const { loading, error, data } = useQuery<{
     indicators: {
       id: number;
       indicator: string;
     }[];
-  }>(GET_INDICATORS);
+  }>(GET_INDICATORS_AND_IDS);
 
   const indicators = data?.indicators;
 

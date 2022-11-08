@@ -9,48 +9,6 @@ from io import TextIOWrapper
 def index(request):
     return render(request, "index.html")
 
-def addIndicator(request):
-
-    try:
-        data_points = json.loads(request.POST.get('data_points'))
-
-        obj, created = Indicator.objects.get_or_create(
-            category=request.POST.get('category'),
-            topic=request.POST.get('sub_category'),
-            indicator=request.POST.get('indicator_name'),
-            detailed_indicator=request.POST.get('detailed_indicator'),
-        )
-
-        for point in data_points:
-            IndicatorData.objects.get_or_create(
-                indicator=obj,
-                country=point['geography'],
-                geography=point['country'],
-                sex=point['sex'],
-                gender=point['gender'],
-                age_group=point['age_group'],
-                age_group_type=point['age_group_type'],
-                data_quality=point['data_quality'],
-                value=point['value'] if point['value'] != '' else None,
-                value_lower_bound=point['value_lower_bound'] if point['value_lower_bound'] else None,
-                value_upper_bound=point['value_upper_bound'] if point['value_upper_bound'] else None,
-                value_unit=point['value_unit'],
-                single_year_timeframe=point.get('single_year_timeframe'),
-                multi_year_timeframe=point.get('multi_year_timeframe'),
-            )
-    except Exception as e:
-        print("ERROR!!")
-        print(e)
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Error adding indicator to database'
-        })
-
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Successfuly added indicator!'
-    })
-
 def importPage(request):
     print("===== Import Request")
     print(request.body)

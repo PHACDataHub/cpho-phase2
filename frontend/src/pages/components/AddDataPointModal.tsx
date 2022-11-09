@@ -1,5 +1,4 @@
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -14,7 +13,6 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  Stack,
   ButtonGroup,
   Button,
   ModalFooter,
@@ -23,14 +21,16 @@ import {
   VStack,
   Icon,
   Heading,
+  IconButton,
+  Divider,
 } from "@chakra-ui/react";
-import { FormEvent, useState } from "react";
-import { IndicatorDataFields } from "../../utils/constants";
-import { useSmallScreen } from "../../utils/hooks";
+import { useState } from "react";
 import { DataPoint } from "../../utils/types";
-import { IoIosGlobe } from "react-icons/io";
+import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
-import { AiOutlineCalendar } from "react-icons/ai";
+import { AiOutlineCalendar, AiOutlineWarning } from "react-icons/ai";
+import { BsStar, BsStarFill } from "react-icons/bs";
+import { FaRegThumbsUp } from "react-icons/fa";
 
 export function AddDataPointModal({
   dataPointIdx,
@@ -45,8 +45,6 @@ export function AddDataPointModal({
   isOpen: boolean;
   onClose: () => void;
 }): JSX.Element {
-  const smallScreen = useSmallScreen();
-
   const dataPoint = dataPoints[dataPointIdx!];
 
   const [fields, setFields] = useState<{
@@ -55,6 +53,12 @@ export function AddDataPointModal({
     year2: number;
     geographyType: "COUNTRY" | "REGION" | "PROVINCE_TERRITORY";
     location: string;
+    value: string;
+    valueUnit: string;
+    valueUnitOther: string;
+    valueUpperBound?: string;
+    valueLowerBound?: string;
+    dataQuality: "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
   }>({
     yearType: dataPoint
       ? dataPoint.singleYearTimeframe
@@ -71,67 +75,39 @@ export function AddDataPointModal({
       ? (dataPoint.geography as "COUNTRY" | "REGION" | "PROVINCE_TERRITORY")
       : "COUNTRY",
     location: dataPoint ? dataPoint.country : "",
+    value: dataPoint ? String(dataPoint.value) : "0",
+    valueUnit: dataPoint ? dataPoint.valueUnit : "",
+    valueUnitOther: "",
+    valueUpperBound: dataPoint ? String(dataPoint.valueUpperBound) : "0",
+    valueLowerBound: dataPoint ? String(dataPoint.valueLowerBound) : "0",
+    dataQuality: dataPoint
+      ? (dataPoint.dataQuality as
+          | "CAUTION"
+          | "ACCEPTABLE"
+          | "GOOD"
+          | "EXCELLENT")
+      : "ACCEPTABLE",
   });
 
-  const { yearType, year1, year2, geographyType, location } = fields;
+  const {
+    yearType,
+    year1,
+    year2,
+    geographyType,
+    location,
+    value,
+    valueLowerBound,
+    valueUpperBound,
+    dataQuality,
+    valueUnit,
+    valueUnitOther,
+  } = fields;
 
-  // const handleSubmit = (event: FormEvent) => {
-  // //   event.preventDefault();
-
-  // //   console.log(event);
-  // //   const point: DataPoint = {
-  // //     country:
-  // //       (document.getElementById("dp_location") as HTMLInputElement)?.value ??
-  // //       "",
-  // //     geography:
-  // //       (document.getElementById("dp_geography") as HTMLInputElement)?.value ??
-  // //       "",
-  // //     sex: (document.getElementById("dp_sex") as HTMLInputElement)?.value ?? "",
-  // //     gender:
-  // //       (document.getElementById("dp_gender") as HTMLInputElement)?.value ?? "",
-  // //     ageGroup:
-  // //       (document.getElementById("dp_age_group") as HTMLInputElement).value ??
-  // //       "",
-  // //     ageGroupType:
-  // //       (document.getElementById("dp_age_group_type") as HTMLInputElement)
-  // //         .value ?? "",
-  // //     dataQuality:
-  // //       (document.getElementById("dp_data_quality") as HTMLInputElement)
-  // //         .value ?? "",
-  // //     value:
-  // //       ((document.getElementById("dp_value") as HTMLInputElement)
-  // //         .value as unknown as number) ?? 0,
-  // //     valueUnit:
-  // //       (document.getElementById("dp_value_unit") as HTMLInputElement).value ??
-  // //       "",
-  // //     valueLowerBound:
-  // //       ((document.getElementById("dp_value_lower_bound") as HTMLInputElement)
-  // //         .value as unknown as number) ?? 0,
-  // //     valueUpperBound:
-  // //       ((document.getElementById("dp_value_upper_bound") as HTMLInputElement)
-  // //         .value as unknown as number) ?? 0,
-  // //     singleYearTimeframe: yearType === "single" ? `${year1}` : undefined,
-  // //     multiYearTimeframe:
-  // //       yearType === "range" ? `${year1}-${year2}` : undefined,
-  // //   };
-
-  //   if (setDataPoints) {
-  //     console.log(dataPoint);
-  //     if (dataPoint) {
-  //       console.log("Modifying existing data point at index ", dataPointIdx);
-  //       setDataPoints(
-  //         dataPoints
-  //           .slice(0, dataPointIdx!)
-  //           .concat([point])
-  //           .concat(dataPoints.slice(dataPointIdx! + 1))
-  //       );
-  //     } else {
-  //       setDataPoints([...dataPoints, point]);
-  //     }
-  //   }
-
-  //   onClose();
-  // };
+  const [showUpperBound, setShowUpperBound] = useState(false);
+  const [showLowerBound, setShowLowerBound] = useState(false);
+  const [showAgeInfo, setShowAgeInfo] = useState(false);
+  const [showSexInfo, setShowSexInfo] = useState(false);
+  const [showGenderInfo, setShowGenderInfo] = useState(false);
 
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
@@ -140,7 +116,8 @@ export function AddDataPointModal({
         <ModalHeader>Add Data Point</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack w="100%" align="start" gap={5}>
+          <VStack w="100%" align="start" gap={3}>
+            {/* GEOGRAPHY */}
             <VStack align="start">
               <HStack>
                 <Icon as={IoIosGlobe} fontSize="xl" />
@@ -229,6 +206,9 @@ export function AddDataPointModal({
                 )}
               </HStack>
             </VStack>
+            <Divider />
+
+            {/* VALUE */}
 
             <VStack align="start">
               <HStack>
@@ -236,25 +216,161 @@ export function AddDataPointModal({
                 <Heading size="md" display="flex" alignItems="center">
                   Value
                 </Heading>
+                <NumberInput
+                  maxW="150px"
+                  precision={2}
+                  step={0.01}
+                  value={value}
+                  onChange={(val) =>
+                    setFields({
+                      ...fields,
+                      value: val,
+                    })
+                  }
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <Heading size="md">Unit:</Heading>
+                <ButtonGroup isAttached>
+                  <Button
+                    size="sm"
+                    isActive={valueUnit === "PERCENT"}
+                    onClick={() =>
+                      setFields({ ...fields, valueUnit: "PERCENT" })
+                    }
+                  >
+                    %
+                  </Button>
+                  <Button
+                    size="sm"
+                    isActive={valueUnit === "RATE"}
+                    onClick={() => setFields({ ...fields, valueUnit: "RATE" })}
+                  >
+                    Per 100k
+                  </Button>
+                  <Button
+                    size="sm"
+                    isActive={valueUnit === "OTHER"}
+                    onClick={() => setFields({ ...fields, valueUnit: "OTHER" })}
+                  >
+                    Other
+                  </Button>
+                </ButtonGroup>
               </HStack>
-              <NumberInput
-                value={year2}
-                onChange={(val) =>
-                  setFields({
-                    ...fields,
-                    year2: val as unknown as number,
-                  })
-                }
-                id="dp_date2"
-                precision={0}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
+              <HStack align="end" gap={3}>
+                {valueUnit === "OTHER" && (
+                  <Input
+                    maxW="150px"
+                    size="sm"
+                    value={valueUnitOther}
+                    onChange={(event) =>
+                      setFields({
+                        ...fields,
+                        valueUnitOther: event.target.value,
+                      })
+                    }
+                    placeholder="Enter unit"
+                  />
+                )}
+                {!showUpperBound && (
+                  <Button
+                    px={5}
+                    onClick={() => setShowUpperBound(true)}
+                    size="sm"
+                  >
+                    Add Upper Bound
+                  </Button>
+                )}
+                {showUpperBound && (
+                  <VStack align="start" position="relative">
+                    <HStack
+                      w="100%"
+                      justify="space-between"
+                      position="absolute"
+                      top={-7}
+                    >
+                      <Heading size="sm">Upper Bound</Heading>
+                      <IconButton
+                        size="sm"
+                        aria-label="Remove Upper Bound"
+                        icon={<Icon as={IoMdClose} />}
+                        onClick={() => setShowUpperBound(false)}
+                      />
+                    </HStack>
+                    <NumberInput
+                      precision={2}
+                      step={0.01}
+                      value={valueUpperBound}
+                      onChange={(val) =>
+                        setFields({
+                          ...fields,
+                          valueUpperBound: val,
+                        })
+                      }
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </VStack>
+                )}
+                {!showLowerBound && (
+                  <Button
+                    px={5}
+                    onClick={() => setShowLowerBound(true)}
+                    size="sm"
+                  >
+                    Add Lower Bound
+                  </Button>
+                )}
+                {showLowerBound && (
+                  <VStack align="start" position="relative">
+                    <HStack
+                      w="100%"
+                      justify="space-between"
+                      position="absolute"
+                      top={-7}
+                    >
+                      <Heading size="sm">Lower Bound</Heading>
+
+                      <IconButton
+                        size="sm"
+                        aria-label="Remove Lower Bound"
+                        icon={<Icon as={IoMdClose} />}
+                        onClick={() => setShowLowerBound(false)}
+                      />
+                    </HStack>
+                    <NumberInput
+                      precision={2}
+                      step={0.01}
+                      value={valueLowerBound}
+                      onChange={(val) =>
+                        setFields({
+                          ...fields,
+                          valueLowerBound: val,
+                        })
+                      }
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </VStack>
+                )}
+              </HStack>
             </VStack>
+
+            <Divider />
+
+            {/* YEAR */}
 
             <VStack align="start">
               <HStack>
@@ -341,7 +457,135 @@ export function AddDataPointModal({
                 )}
               </HStack>
             </VStack>
-            {/* </Box> */}
+
+            <Divider />
+
+            {/* DATA QUALITY */}
+
+            <VStack align="start">
+              <Heading size="md" display="flex" alignItems="center">
+                Data Quality
+              </Heading>
+              <ButtonGroup isAttached>
+                <Button
+                  size="sm"
+                  leftIcon={<Icon as={AiOutlineWarning} />}
+                  isActive={dataQuality === "CAUTION"}
+                  onClick={() =>
+                    setFields({ ...fields, dataQuality: "CAUTION" })
+                  }
+                >
+                  Caution
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<Icon as={FaRegThumbsUp} />}
+                  isActive={dataQuality === "ACCEPTABLE"}
+                  onClick={() =>
+                    setFields({ ...fields, dataQuality: "ACCEPTABLE" })
+                  }
+                >
+                  Acceptable
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<Icon as={BsStar} />}
+                  isActive={dataQuality === "GOOD"}
+                  onClick={() => setFields({ ...fields, dataQuality: "GOOD" })}
+                >
+                  Good
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<Icon as={BsStarFill} />}
+                  isActive={dataQuality === "EXCELLENT"}
+                  onClick={() =>
+                    setFields({ ...fields, dataQuality: "EXCELLENT" })
+                  }
+                >
+                  Excellent
+                </Button>
+              </ButtonGroup>
+            </VStack>
+
+            <Divider />
+
+            {showAgeInfo && (
+              <>
+                <VStack align="start" w="100%">
+                  <HStack w="100%" justify="space-between">
+                    <Heading size="md" display="flex" alignItems="center">
+                      Age
+                    </Heading>
+                    <IconButton
+                      size="sm"
+                      aria-label="Remove Age"
+                      icon={<Icon as={IoMdClose} />}
+                      onClick={() => setShowAgeInfo(false)}
+                    />
+                  </HStack>
+                </VStack>
+                <Divider />
+              </>
+            )}
+
+            {showSexInfo && (
+              <>
+                <VStack align="start" w="100%">
+                  <HStack w="100%" justify="space-between">
+                    <Heading size="md" display="flex" alignItems="center">
+                      Sex
+                    </Heading>
+                    <IconButton
+                      size="sm"
+                      aria-label="Remove Sex"
+                      icon={<Icon as={IoMdClose} />}
+                      onClick={() => setShowSexInfo(false)}
+                    />
+                  </HStack>
+                </VStack>
+
+                <Divider />
+              </>
+            )}
+
+            {showGenderInfo && (
+              <>
+                <VStack align="start" w="100%">
+                  <HStack w="100%" justify="space-between">
+                    <Heading size="md" display="flex" alignItems="center">
+                      Gender
+                    </Heading>
+                    <IconButton
+                      size="sm"
+                      aria-label="Remove Gender"
+                      icon={<Icon as={IoMdClose} />}
+                      onClick={() => setShowGenderInfo(false)}
+                    />
+                  </HStack>
+                </VStack>
+
+                <Divider />
+              </>
+            )}
+
+            <ButtonGroup>
+              {!showAgeInfo && (
+                <Button size="sm" onClick={() => setShowAgeInfo(true)}>
+                  Add Age Information
+                </Button>
+              )}
+              {!showSexInfo && (
+                <Button size="sm" onClick={() => setShowSexInfo(true)}>
+                  Add Sex Information
+                </Button>
+              )}
+              {!showGenderInfo && (
+                <Button size="sm" onClick={() => setShowGenderInfo(true)}>
+                  Add Gender Information
+                </Button>
+              )}
+            </ButtonGroup>
           </VStack>
         </ModalBody>
         <ModalFooter>

@@ -269,3 +269,18 @@ export const FileColumnData = {
     "Comparison_to_OECD_average",
   ],
 };
+
+export const PossibleIndicators = [
+  {
+    id: 1,
+    label: "Adult Obesity",
+    category: 3,
+    subCategory: 5,
+  },
+  {
+    id: 2,
+    label: "Cannabis Use",
+    category: 1,
+    subCategory: 3,
+  },
+];

@@ -286,13 +286,8 @@ export function AddDataPointModal({
                   </Button>
                 )}
                 {showUpperBound && (
-                  <VStack align="start" position="relative">
-                    <HStack
-                      w="100%"
-                      justify="space-between"
-                      position="absolute"
-                      top={-7}
-                    >
+                  <VStack align="start">
+                    <HStack w="100%" justify="space-between">
                       <Heading size="sm">Upper Bound</Heading>
                       <IconButton
                         size="sm"
@@ -330,13 +325,8 @@ export function AddDataPointModal({
                   </Button>
                 )}
                 {showLowerBound && (
-                  <VStack align="start" position="relative">
-                    <HStack
-                      w="100%"
-                      justify="space-between"
-                      position="absolute"
-                      top={-7}
-                    >
+                  <VStack align="start">
+                    <HStack w="100%" justify="space-between">
                       <Heading size="sm">Lower Bound</Heading>
 
                       <IconButton
@@ -572,17 +562,17 @@ export function AddDataPointModal({
             <ButtonGroup>
               {!showAgeInfo && (
                 <Button size="sm" onClick={() => setShowAgeInfo(true)}>
-                  Add Age Information
+                  Add Age
                 </Button>
               )}
               {!showSexInfo && (
                 <Button size="sm" onClick={() => setShowSexInfo(true)}>
-                  Add Sex Information
+                  Add Sex
                 </Button>
               )}
               {!showGenderInfo && (
                 <Button size="sm" onClick={() => setShowGenderInfo(true)}>
-                  Add Gender Information
+                  Add Gender
                 </Button>
               )}
             </ButtonGroup>

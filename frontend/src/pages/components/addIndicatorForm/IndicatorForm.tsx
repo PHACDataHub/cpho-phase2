@@ -12,6 +12,7 @@ import { DataPoint } from "../../../utils/types";
 import { AddDataPointButton } from "../AddDataPointButton";
 import { DataPointContainer } from "../DataPointContainer";
 import IndicatorGenInfo from "./IndicatorGenInfo";
+import ReviewSubmit from "./ReviewSubmit";
 
 const IndicatorForm = () => {
   const [values, setValues] = useState({
@@ -38,20 +39,6 @@ const IndicatorForm = () => {
   };
 
   const smallScreen = useSmallScreen();
-
-  const [createIndicator, { loading, error, data }] = useMutation(
-    CREATE_INDICATOR,
-    {
-      refetchQueries: [
-        {
-          query: GET_INDICATOR_OVERVIEW,
-        },
-        {
-          query: GET_INDICATORS_AND_IDS,
-        },
-      ],
-    }
-  );
 
   const [step, setStep] = useState(1);
 
@@ -90,40 +77,7 @@ const IndicatorForm = () => {
           />
         </VStack>
       )}
-      {step === 3 && (
-        <VStack>
-          {loading && <Heading size="md">Loading...</Heading>}
-          {error && <Heading size="md">Error: {error.message}</Heading>}
-          {data && <Heading size="md">Success!</Heading>}
-          <Button
-            w="40%"
-            disabled={dataPoints.length === 0}
-            colorScheme="green"
-            onClick={() => {
-              createIndicator({
-                variables: {
-                  category:
-                    categories.find((c) => c.id === category)?.label ?? "",
-                  detailedIndicator,
-                  indicator: indicatorName,
-                  subIndicatorMeasurement: "",
-                  topic:
-                    sub_categories.find((c) => c.id === subCategory)?.label ??
-                    "",
-                  dataPoints: dataPoints.map((d) => ({
-                    ...d,
-                    value: +d.value, // Gets number representation for float values to fix GraphQL query error
-                    valueLowerBound: +d.valueLowerBound,
-                    valueUpperBound: +d.valueUpperBound,
-                  })),
-                },
-              });
-            }}
-          >
-            Submit
-          </Button>
-        </VStack>
-      )}
+      {step === 3 && <ReviewSubmit values={values} />}
     </VStack>
   );
 };

@@ -12,7 +12,7 @@ export function HomePage() {
   let navigate = useNavigate();
   const pages = [
     {
-      title: "New Indicator",
+      title: "Add Data",
       path: "/add-indicator",
       icon: <AddIcon />,
     },
@@ -27,7 +27,7 @@ export function HomePage() {
       icon: <DownloadIcon />,
     },
     {
-      title: "Past Submissions",
+      title: "Modify and View Past Data",
       path: "/past-submissions",
       icon: <EditIcon />,
     },

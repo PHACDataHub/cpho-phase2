@@ -1,10 +1,10 @@
 from django.urls import path
 from graphene_django.views import GraphQLView
-from app.schema import schema
+from cpho.schema import schema
 
 from . import views
 
-app_name = 'app'
+app_name = 'cpho'
 urlpatterns = [
     path('', views.index, name='index'),
     path('api/import', views.importPage, name='import'),

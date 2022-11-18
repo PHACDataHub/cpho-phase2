@@ -24,7 +24,7 @@ import {
   IconButton,
   Divider,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { DataPoint } from "../../utils/types";
 import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
@@ -108,6 +108,40 @@ export function AddDataPointModal({
   const [showAgeInfo, setShowAgeInfo] = useState(false);
   const [showSexInfo, setShowSexInfo] = useState(false);
   const [showGenderInfo, setShowGenderInfo] = useState(false);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    console.log("HEY");
+    const point: DataPoint = {
+      country: location,
+      geography: geographyType,
+      sex: "",
+      gender: "",
+      ageGroup: "",
+      ageGroupType: "",
+      dataQuality,
+      value: Number(value),
+      valueLowerBound: Number(valueLowerBound),
+      valueUpperBound: Number(valueUpperBound),
+      valueUnit: valueUnit === "OTHER" ? valueUnitOther : valueUnit,
+      singleYearTimeframe: yearType === "SINGLE" ? `${year1}` : undefined,
+      multiYearTimeframe:
+        yearType === "RANGE" ? `${year1}-${year2}` : undefined,
+    };
+
+    if (setDataPoints) {
+      if (dataPoint) {
+        setDataPoints([
+          ...dataPoints.slice(0, dataPointIdx),
+          point,
+          ...dataPoints.slice(dataPointIdx! + 1),
+        ]);
+      } else {
+        setDataPoints([...dataPoints, point]);
+      }
+      onClose();
+    }
+  };
 
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
@@ -584,7 +618,7 @@ export function AddDataPointModal({
             colorScheme="green"
             mr={3}
             float="right"
-            // onClick={handleSubmit}
+            onClick={handleSubmit}
           >
             Save
           </Button>

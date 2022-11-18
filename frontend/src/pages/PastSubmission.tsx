@@ -1,27 +1,17 @@
 import { VStack, Text, Spinner } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { Page } from "./Page";
+import { useQuery } from "@apollo/client";
+import { GET_INDICATORS_AND_IDS } from "../utils/graphql/queries";
 
 export function PastSubmissions() {
-  const [indicators, setIndicators] = useState([]);
+  const { loading, error, data } = useQuery<{
+    indicators: {
+      id: number;
+      indicator: string;
+    }[];
+  }>(GET_INDICATORS_AND_IDS);
 
-  useEffect(() => {
-    fetch(
-      (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
-        "api/pastsubmissions",
-      {
-        method: "GET",
-      }
-    )
-      .then(async (res) => {
-        const obj = await res.json();
-        setIndicators(obj);
-        console.log(obj);
-      })
-      .catch((err) => {
-        console.log("ERROR", err);
-      });
-  }, []);
+  const indicators = data?.indicators;
 
   return (
     <Page
@@ -29,6 +19,8 @@ export function PastSubmissions() {
       backButton={{ show: true, redirectUrl: "/" }}
     >
       <VStack>
+        {loading && <Spinner />}
+        {error && <Text>Error loading indicators</Text>}
         {indicators ? (
           indicators.map(({ id, indicator }) => (
             <Text key={id}>{indicator}</Text>

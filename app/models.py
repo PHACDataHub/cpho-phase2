@@ -29,7 +29,7 @@ class IndicatorData(models.Model):
     multi_year_timeframe = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return self.country+' '+self.sex+' '+self.age_group+' '+self.single_year_timeframe+self.multi_year_timeframe+' '+self.value
+        return " ".join([self.country, self.sex, self.age_group, self.single_year_timeframe, self.multi_year_timeframe, str(self.value)])
 
 
 class Benchmarking(models.Model):

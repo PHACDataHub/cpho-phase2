@@ -14,6 +14,8 @@ import { Page } from "./Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
 import { useSmallScreen } from "../utils/hooks";
+import { useQuery } from "@apollo/client";
+import { GET_INDICATOR_OVERVIEW } from "../utils/graphql/queries";
 
 const PossibleIndicatorCard = ({
   indicator: { name, dataPointCount, id },
@@ -63,9 +65,6 @@ const PossibleIndicatorCard = ({
 export function ExportPage() {
   const toast = useToast();
   const [fileType, setFileType] = useState<"excel" | "csv" | "sql">("csv");
-  const [possibleIndicators, setPossibleIndicators] = useState<
-    { id: number; name: string; dataPointCount: number }[]
-  >([]);
 
   const isSmallScreen = useSmallScreen();
 
@@ -91,24 +90,6 @@ export function ExportPage() {
     }
   };
 
-  useEffect(() => {
-    fetch(
-      (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
-        "api/possibleindicators",
-      {
-        method: "GET",
-      }
-    )
-      .then(async (res) => {
-        const obj = await res.json();
-        setPossibleIndicators(obj);
-        console.log(obj);
-      })
-      .catch((err) => {
-        console.log("ERROR", err);
-      });
-  }, []);
-
   const handleExport = () => {
     const formData = new FormData();
     formData.append("selectedIndicators", JSON.stringify(selectedIndicators));
@@ -131,8 +112,8 @@ export function ExportPage() {
   };
 
   const exportCsv = () => {
-    if(csvText){
-      const blob = new Blob([csvText], {type: "text/csv;charset=utf-8"});
+    if (csvText) {
+      const blob = new Blob([csvText], { type: "text/csv;charset=utf-8" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
@@ -142,13 +123,25 @@ export function ExportPage() {
       document.body.removeChild(link);
       toast({
         title: "Data Downloaded",
-        description: "The data you requested has been downloaded to your computer",
+        description:
+          "The data you requested has been downloaded to your computer",
         status: "success",
         duration: 4000,
         isClosable: true,
-      })
+      });
     }
   };
+
+  const { loading, error, data } = useQuery<{
+    possibleIndicators: {
+      id: number;
+      name: string;
+      category: string;
+      dataPointCount: number;
+    }[];
+  }>(GET_INDICATOR_OVERVIEW);
+
+  const possibleIndicators = data?.possibleIndicators;
 
   return (
     <Page title="Export Data" backButton={{ show: true, redirectUrl: "/" }}>
@@ -162,14 +155,32 @@ export function ExportPage() {
           gap={3}
           alignContent="flex-start"
         >
-          {possibleIndicators.length > 0 ? possibleIndicators.map((ind) => (
-            <PossibleIndicatorCard
-              addSelected={addSelected}
-              removeSelected={removeSelected}
-              key={ind.id}
-              indicator={ind}
-            />
-          )) : <Heading size="lg" mx="auto">No data found in database</Heading>}
+          {loading && (
+            <Heading size="lg" mx="auto">
+              Loading...
+            </Heading>
+          )}
+          {error && (
+            <Heading size="lg" mx="auto">
+              Error loading indicators
+            </Heading>
+          )}
+          {possibleIndicators ? (
+            possibleIndicators.length > 0 ? (
+              possibleIndicators.map((ind) => (
+                <PossibleIndicatorCard
+                  addSelected={addSelected}
+                  removeSelected={removeSelected}
+                  key={ind.id}
+                  indicator={ind}
+                />
+              ))
+            ) : (
+              <Heading size="lg" mx="auto">
+                No data found in database
+              </Heading>
+            )
+          ) : null}
         </Box>
         <ButtonGroup size="lg" isAttached>
           <Button
@@ -195,11 +206,14 @@ export function ExportPage() {
             <Heading size="md">
               You are about to export the following data:
             </Heading>
-            {selectedIndicators.map((ind) => (
-              <Heading key={ind} size="sm">
-                {possibleIndicators.find((i) => i.id === ind)?.name}
-              </Heading>
-            ))}
+            {selectedIndicators.map(
+              (ind) =>
+                possibleIndicators && (
+                  <Heading key={ind} size="sm">
+                    {possibleIndicators.find((i) => i.id === ind)?.name}
+                  </Heading>
+                )
+            )}
           </>
         )}
         <Button
@@ -213,9 +227,16 @@ export function ExportPage() {
         >
           Get Data
         </Button>
-        {csvText && <Text>Your data is ready! Click <Button onClick={exportCsv} variant="link">here</Button> to download</Text>}
+        {csvText && (
+          <Text>
+            Your data is ready! Click{" "}
+            <Button onClick={exportCsv} variant="link">
+              here
+            </Button>{" "}
+            to download
+          </Text>
+        )}
       </VStack>
-
     </Page>
   );
 }

@@ -166,20 +166,20 @@ export const IndicatorDataFields: DataPointField[] = [
     name: "Age Group",
     id: "dp_age_group",
     type: "text",
-    dpField: "age_group",
+    dpField: "ageGroup",
     placeholder: "e.g. 14-24; 8th grade",
   },
   {
     name: "Age Group Type",
     id: "dp_age_group_type",
-    dpField: "age_group_type",
+    dpField: "ageGroupType",
     type: "text",
     placeholder: "e.g. decade; grade",
   },
   {
     name: "Data Quality",
     id: "dp_data_quality",
-    dpField: "data_quality",
+    dpField: "dataQuality",
     type: "select",
     required: true,
     options: [
@@ -211,19 +211,19 @@ export const IndicatorDataFields: DataPointField[] = [
   {
     name: "Value Lower Bound",
     id: "dp_value_lower_bound",
-    dpField: "value_lower_bound",
+    dpField: "valueLowerBound",
     type: "number",
   },
   {
     name: "Value Upper Bound",
     id: "dp_value_upper_bound",
-    dpField: "value_upper_bound",
+    dpField: "valueUpperBound",
     type: "number",
   },
   {
     name: "Value Unit",
     id: "dp_value_unit",
-    dpField: "value_unit",
+    dpField: "valueUnit",
     type: "text",
     required: true,
     placeholder: "e.g. percentage; years; rate per 100,000",
@@ -269,3 +269,18 @@ export const FileColumnData = {
     "Comparison_to_OECD_average",
   ],
 };
+
+export const PossibleIndicators = [
+  {
+    id: 1,
+    label: "Adult Obesity",
+    category: 3,
+    subCategory: 5,
+  },
+  {
+    id: 2,
+    label: "Cannabis Use",
+    category: 1,
+    subCategory: 3,
+  },
+];

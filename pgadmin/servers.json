@@ -1,0 +1,14 @@
+{
+    "Servers": {
+      "1": {
+          "Name": "Development Server",
+          "Group": "Servers",
+          "Port": "$DB_PORT",
+          "Username": "$DB_USER",
+          "Host": "$DB_HOST",
+          "SSLMode": "prefer",
+          "PassFile": "/pgpass",
+          "MaintenanceDB": "$DB_NAME"
+      }
+    }
+}

@@ -12,6 +12,7 @@ export type SubCategory = {
 };
 
 export type DataPoint = {
+  uuid: string;
   indicatorId?: number;
   country: string;
   geography: string;

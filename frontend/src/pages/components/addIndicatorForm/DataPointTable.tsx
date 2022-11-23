@@ -41,8 +41,7 @@ export function DataPointTable({
         <Tbody>
           {dataPoints.map((dataPoint, idx) => (
             <DataPointRow
-              key={idx}
-              idx={idx}
+              key={dataPoint.uuid}
               dataPoint={dataPoint}
               dataPoints={dataPoints}
               setDataPoints={setDataPoints}

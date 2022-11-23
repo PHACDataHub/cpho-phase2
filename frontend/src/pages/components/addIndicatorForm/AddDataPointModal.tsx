@@ -24,30 +24,34 @@ import {
   IconButton,
   Divider,
 } from "@chakra-ui/react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { DataPoint } from "../../../utils/types";
 import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
 import { AiOutlineCalendar, AiOutlineWarning } from "react-icons/ai";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { FaRegThumbsUp } from "react-icons/fa";
+import { v4 as uuidv4 } from "uuid";
 
 export function AddDataPointModal({
-  dataPointIdx,
+  dataPointUuid,
   dataPoints,
   setDataPoints,
   isOpen,
   onClose,
 }: {
-  dataPointIdx?: number;
+  dataPointUuid?: string;
   dataPoints: DataPoint[];
   setDataPoints?: (dataPoints: DataPoint[]) => void;
   isOpen: boolean;
   onClose: () => void;
 }): JSX.Element {
-  const dataPoint = dataPoints[dataPointIdx!];
+  const dataPoint = dataPointUuid
+    ? dataPoints.find((dp) => dp.uuid === dataPointUuid)
+    : undefined;
 
   const [fields, setFields] = useState<{
+    uuid: string;
     yearType: "SINGLE" | "RANGE";
     year1: number;
     year2: number;
@@ -60,6 +64,7 @@ export function AddDataPointModal({
     valueLowerBound?: string;
     dataQuality: "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
   }>({
+    uuid: dataPoint ? dataPoint.uuid : uuidv4(),
     yearType: dataPoint
       ? dataPoint.singleYearTimeframe
         ? "SINGLE"
@@ -90,6 +95,7 @@ export function AddDataPointModal({
   });
 
   const {
+    uuid,
     yearType,
     year1,
     year2,
@@ -112,6 +118,7 @@ export function AddDataPointModal({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const point: DataPoint = {
+      uuid,
       country: location,
       geography: geographyType,
       sex: "",
@@ -128,6 +135,8 @@ export function AddDataPointModal({
         yearType === "RANGE" ? `${year1}-${year2}` : undefined,
     };
 
+    const dataPointIdx = dataPoints.findIndex((dp) => dp.uuid === uuid);
+
     if (setDataPoints) {
       if (dataPoint) {
         setDataPoints([
@@ -136,18 +145,18 @@ export function AddDataPointModal({
           ...dataPoints.slice(dataPointIdx! + 1),
         ]);
       } else {
-        setDataPoints([...dataPoints, point]);
+        setDataPoints([point, ...dataPoints]);
       }
       onClose();
     }
   };
 
-  useEffect(() => {
-    setFields((f) => ({
-      ...f,
-      location: "",
-    }));
-  }, [geographyType]);
+  // useEffect(() => {
+  //   setFields((f) => ({
+  //     ...f,
+  //     location: "",
+  //   }));
+  // }, [geographyType]);
 
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
@@ -172,7 +181,11 @@ export function AddDataPointModal({
                       size="sm"
                       isActive={geographyType === "COUNTRY"}
                       onClick={() => {
-                        setFields({ ...fields, geographyType: "COUNTRY" });
+                        setFields({
+                          ...fields,
+                          geographyType: "COUNTRY",
+                          location: "",
+                        });
                       }}
                     >
                       Canada
@@ -184,6 +197,7 @@ export function AddDataPointModal({
                         setFields({
                           ...fields,
                           geographyType: "PROVINCE_TERRITORY",
+                          location: "",
                         })
                       }
                     >
@@ -193,7 +207,11 @@ export function AddDataPointModal({
                       size="sm"
                       isActive={geographyType === "REGION"}
                       onClick={() =>
-                        setFields({ ...fields, geographyType: "REGION" })
+                        setFields({
+                          ...fields,
+                          geographyType: "REGION",
+                          location: "",
+                        })
                       }
                     >
                       Region

@@ -6,6 +6,7 @@ import { AddDataPointButton } from "./AddDataPointButton";
 import { DataPointTable } from "./DataPointTable";
 import IndicatorGenInfo from "./IndicatorGenInfo";
 import ReviewSubmit from "./ReviewSubmit";
+import { v4 as uuid } from "uuid";
 
 const IndicatorForm = () => {
   const [values, setValues] = useState({
@@ -38,6 +39,7 @@ const IndicatorForm = () => {
 
   const addBlankDataPoint = () => {
     const dataPoint: DataPoint = {
+      uuid: uuid(),
       country: "",
       geography: "COUNTRY",
       sex: "",

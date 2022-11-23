@@ -29,19 +29,30 @@ const DataPointRow = ({
 
   const onDuplicate = () => {
     setDataPoints(
-      dataPoints
-        .slice(0, idx + 1)
-        .concat(dataPoints[idx], dataPoints.slice(idx + 1))
+      dataPoints.slice(0, idx + 1).concat(dataPoint, dataPoints.slice(idx + 1))
     );
   };
+
+  const isDuplicate = (() => {
+    let result = [];
+
+    dataPoints.forEach((dp, idx) => {
+      if (dp === dataPoint) {
+        result.push(idx);
+      }
+    });
+
+    return result.length > 1;
+  })();
 
   return (
     <>
       <Tr
         key={idx}
         _hover={{
-          bgColor: "gray.100",
+          bgColor: isDuplicate ? "red.200" : "gray.100",
         }}
+        bgColor={isDuplicate ? "red.100" : "white"}
       >
         <Td isNumeric>{idx + 1}</Td>
         <Td>

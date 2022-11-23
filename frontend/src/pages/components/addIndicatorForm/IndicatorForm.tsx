@@ -2,7 +2,7 @@ import { VStack, Button, ButtonGroup, Box } from "@chakra-ui/react";
 import { useState } from "react";
 import { DataPoint } from "../../../utils/types";
 import { AddDataPointButton } from "../AddDataPointButton";
-import { DataPointContainer } from "../DataPointContainer";
+import { DataPointTable } from "../DataPointTable";
 import IndicatorGenInfo from "./IndicatorGenInfo";
 import ReviewSubmit from "./ReviewSubmit";
 
@@ -63,7 +63,7 @@ const IndicatorForm = () => {
             dataPoints={dataPoints}
             setDataPoints={(d) => setField("dataPoints", d)}
           />
-          <DataPointContainer
+          <DataPointTable
             setDataPoints={(d) => setField("dataPoints", d)}
             dataPoints={dataPoints}
           />

@@ -111,7 +111,6 @@ export function AddDataPointModal({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("HEY");
     const point: DataPoint = {
       country: location,
       geography: geographyType,
@@ -626,6 +625,7 @@ export function AddDataPointModal({
             mr={3}
             float="right"
             onClick={handleSubmit}
+            disabled={!value}
           >
             Save
           </Button>

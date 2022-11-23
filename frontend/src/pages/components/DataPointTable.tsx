@@ -118,7 +118,7 @@ import { DataPoint } from "../../utils/types";
 //   );
 // }
 
-export function DataPointContainer({
+export function DataPointTable({
   dataPoints,
   setDataPoints,
 }: {
@@ -136,19 +136,22 @@ export function DataPointContainer({
         </TableCaption>
         <Thead>
           <Tr>
-            <Th isNumeric>Index</Th>
+            <Th isNumeric>#</Th>
+            <Th>Actions</Th>
             <Th>Geography</Th>
             <Th>Location</Th>
             <Th isNumeric>Value</Th>
             <Th>Data Quality</Th>
             <Th>Year</Th>
-            <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
           {dataPoints.map((dataPoint, idx) => (
             <Tr key={idx}>
               <Td isNumeric>{idx + 1}</Td>
+              <Td>
+                <HStack spacing={2}></HStack>
+              </Td>
               <Td>{dataPoint.geography}</Td>
               <Td>{dataPoint.country}</Td>
               <Td isNumeric>
@@ -158,9 +161,6 @@ export function DataPointContainer({
               <Td>{dataPoint.dataQuality}</Td>
               <Td>
                 {dataPoint.singleYearTimeframe ?? dataPoint.multiYearTimeframe}
-              </Td>
-              <Td>
-                <HStack spacing={2}></HStack>
               </Td>
             </Tr>
           ))}

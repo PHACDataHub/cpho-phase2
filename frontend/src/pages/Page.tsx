@@ -27,7 +27,7 @@ export function Page({
           marginBottom: 10,
         }}
       />
-      <Box p={3}>
+      <Box p={[1, 2, 3]}>
         {backButton && backButton.show && (
           <Button onClick={() => navigate(backButton.redirectUrl)}>Back</Button>
         )}
@@ -41,7 +41,7 @@ export function Page({
             </Heading>
           )}
         </VStack>
-        <Box px={3}>{children}</Box>
+        <Box>{children}</Box>
       </Box>
       <Footer />
     </Box>

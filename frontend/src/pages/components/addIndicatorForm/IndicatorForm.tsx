@@ -1,13 +1,5 @@
-import { useMutation } from "@apollo/client";
-import { VStack, Button, Heading, ButtonGroup } from "@chakra-ui/react";
+import { VStack, Button, ButtonGroup, Box } from "@chakra-ui/react";
 import { useState } from "react";
-import { categories, sub_categories } from "../../../utils/constants";
-import { CREATE_INDICATOR } from "../../../utils/graphql/mutations";
-import {
-  GET_INDICATOR_OVERVIEW,
-  GET_INDICATORS_AND_IDS,
-} from "../../../utils/graphql/queries";
-import { useSmallScreen } from "../../../utils/hooks";
 import { DataPoint } from "../../../utils/types";
 import { AddDataPointButton } from "../AddDataPointButton";
 import { DataPointContainer } from "../DataPointContainer";
@@ -38,35 +30,35 @@ const IndicatorForm = () => {
     });
   };
 
-  const smallScreen = useSmallScreen();
-
   const [step, setStep] = useState(1);
 
   const nextStep = () => step < 3 && setStep(step + 1);
   const prevStep = () => step > 1 && setStep(step - 1);
 
   return (
-    <VStack flexGrow={1}>
-      <ButtonGroup>
+    <VStack w="100%">
+      <ButtonGroup py={4}>
         <Button disabled={step <= 1} onClick={prevStep}>
           Previous
         </Button>
-        <Button disabled={step >= 3} onClick={nextStep}>
+        <Button disabled={step >= 3 || indicatorName === ""} onClick={nextStep}>
           Next
         </Button>
       </ButtonGroup>
 
       {step === 1 && (
-        <IndicatorGenInfo
-          indicatorName={indicatorName}
-          detailedIndicator={detailedIndicator}
-          category={category}
-          subCategory={subCategory}
-          setField={setField}
-        />
+        <Box>
+          <IndicatorGenInfo
+            indicatorName={indicatorName}
+            detailedIndicator={detailedIndicator}
+            category={category}
+            subCategory={subCategory}
+            setField={setField}
+          />
+        </Box>
       )}
       {step === 2 && (
-        <VStack w={smallScreen ? "90%" : "50%"}>
+        <VStack w="100%">
           <AddDataPointButton
             dataPoints={dataPoints}
             setDataPoints={(d) => setField("dataPoints", d)}

@@ -1,4 +1,4 @@
-import { VStack, Heading, Button, useDisclosure } from "@chakra-ui/react";
+import { Button, useDisclosure } from "@chakra-ui/react";
 import { DataPoint } from "../../utils/types";
 import { AddDataPointModal } from "./AddDataPointModal";
 
@@ -13,21 +13,15 @@ export function AddDataPointButton({
 
   return (
     <>
-      <VStack spacing={5}>
-        <Heading>Data Points</Heading>
-        <Button size="lg" colorScheme="blue" onClick={onOpen}>
-          Add Data Point
-        </Button>
-      </VStack>
-      <VStack>
-        <Heading size="md">Count: {dataPoints.length}</Heading>
-        <AddDataPointModal
-          dataPoints={dataPoints}
-          setDataPoints={setDataPoints}
-          isOpen={isOpen}
-          onClose={onClose}
-        />
-      </VStack>
+      <Button size="lg" colorScheme="blue" onClick={onOpen}>
+        Add Data Point
+      </Button>
+      <AddDataPointModal
+        dataPoints={dataPoints}
+        setDataPoints={setDataPoints}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </>
   );
 }

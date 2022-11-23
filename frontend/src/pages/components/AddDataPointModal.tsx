@@ -24,7 +24,7 @@ import {
   IconButton,
   Divider,
 } from "@chakra-ui/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { DataPoint } from "../../utils/types";
 import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
@@ -53,7 +53,7 @@ export function AddDataPointModal({
     year2: number;
     geographyType: "COUNTRY" | "REGION" | "PROVINCE_TERRITORY";
     location: string;
-    value: string;
+    value?: string;
     valueUnit: string;
     valueUnitOther: string;
     valueUpperBound?: string;
@@ -75,7 +75,7 @@ export function AddDataPointModal({
       ? (dataPoint.geography as "COUNTRY" | "REGION" | "PROVINCE_TERRITORY")
       : "COUNTRY",
     location: dataPoint ? dataPoint.country : "",
-    value: dataPoint ? String(dataPoint.value) : "0",
+    value: dataPoint ? String(dataPoint.value) : undefined,
     valueUnit: dataPoint ? dataPoint.valueUnit : "",
     valueUnitOther: "",
     valueUpperBound: dataPoint ? String(dataPoint.valueUpperBound) : "0",
@@ -143,6 +143,13 @@ export function AddDataPointModal({
     }
   };
 
+  useEffect(() => {
+    setFields((f) => ({
+      ...f,
+      location: "",
+    }));
+  }, [geographyType]);
+
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -165,9 +172,9 @@ export function AddDataPointModal({
                     <Button
                       size="sm"
                       isActive={geographyType === "COUNTRY"}
-                      onClick={() =>
-                        setFields({ ...fields, geographyType: "COUNTRY" })
-                      }
+                      onClick={() => {
+                        setFields({ ...fields, geographyType: "COUNTRY" });
+                      }}
                     >
                       Canada
                     </Button>

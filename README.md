@@ -52,6 +52,8 @@ Now, you can do the following:
 
 - and `localhost:5433` to view the PGAdmin interface (note that this may take a few minutes to load, you can check the Docker container logs to see its progress)
 
+When you're done working, you can run `docker compose down` to stop the containers
+
 # Without Docker
 
 Assumes you have Python installed in system (check using `python --version` or `py --version`).

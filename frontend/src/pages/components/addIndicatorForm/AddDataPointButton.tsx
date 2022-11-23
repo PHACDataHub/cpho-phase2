@@ -1,5 +1,6 @@
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { Button, useDisclosure } from "@chakra-ui/react";
-import { DataPoint } from "../../utils/types";
+import { DataPoint } from "../../../utils/types";
 import { AddDataPointModal } from "./AddDataPointModal";
 
 export function AddDataPointButton({
@@ -13,8 +14,8 @@ export function AddDataPointButton({
 
   return (
     <>
-      <Button size="lg" colorScheme="blue" onClick={onOpen}>
-        Add Data Point
+      <Button leftIcon={<HamburgerIcon />} colorScheme="blue" onClick={onOpen}>
+        Add custom data point
       </Button>
       <AddDataPointModal
         dataPoints={dataPoints}

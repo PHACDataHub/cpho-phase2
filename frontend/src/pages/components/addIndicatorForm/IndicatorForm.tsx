@@ -1,8 +1,9 @@
-import { VStack, Button, ButtonGroup, Box } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { VStack, Button, ButtonGroup, Box, HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { DataPoint } from "../../../utils/types";
-import { AddDataPointButton } from "../AddDataPointButton";
-import { DataPointTable } from "../DataPointTable";
+import { AddDataPointButton } from "./AddDataPointButton";
+import { DataPointTable } from "./DataPointTable";
 import IndicatorGenInfo from "./IndicatorGenInfo";
 import ReviewSubmit from "./ReviewSubmit";
 
@@ -35,6 +36,28 @@ const IndicatorForm = () => {
   const nextStep = () => step < 3 && setStep(step + 1);
   const prevStep = () => step > 1 && setStep(step - 1);
 
+  const addBlankDataPoint = () => {
+    const dataPoint: DataPoint = {
+      country: "",
+      geography: "COUNTRY",
+      sex: "",
+      gender: "",
+      ageGroup: "",
+      ageGroupType: "",
+      dataQuality: "ACCEPTABLE",
+      value: 0,
+      valueLowerBound: 0,
+      valueUpperBound: 0,
+      valueUnit: "PERCENT",
+      singleYearTimeframe: "2022",
+      multiYearTimeframe: "",
+    };
+    setValues({
+      ...values,
+      dataPoints: [dataPoint, ...dataPoints],
+    });
+  };
+
   return (
     <VStack w="100%">
       <ButtonGroup py={4}>
@@ -59,10 +82,19 @@ const IndicatorForm = () => {
       )}
       {step === 2 && (
         <VStack w="100%">
-          <AddDataPointButton
-            dataPoints={dataPoints}
-            setDataPoints={(d) => setField("dataPoints", d)}
-          />
+          <HStack>
+            <AddDataPointButton
+              dataPoints={dataPoints}
+              setDataPoints={(d) => setField("dataPoints", d)}
+            />
+            <Button
+              colorScheme="green"
+              leftIcon={<AddIcon />}
+              onClick={addBlankDataPoint}
+            >
+              New blank data point
+            </Button>
+          </HStack>
           <DataPointTable
             setDataPoints={(d) => setField("dataPoints", d)}
             dataPoints={dataPoints}

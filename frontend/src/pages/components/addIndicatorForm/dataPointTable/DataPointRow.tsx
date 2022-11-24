@@ -7,8 +7,8 @@ import {
   ButtonGroup,
   useDisclosure,
 } from "@chakra-ui/react";
-import { DataPoint } from "../../../utils/types";
-import { AddDataPointModal } from "./AddDataPointModal";
+import { DataPoint } from "../../../../utils/types";
+import { AddDataPointModal } from "../AddDataPointModal";
 import { v4 as uuidv4 } from "uuid";
 
 const DataPointRow = ({

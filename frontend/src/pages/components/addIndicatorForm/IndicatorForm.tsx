@@ -3,7 +3,7 @@ import { VStack, Button, ButtonGroup, Box, HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { DataPoint } from "../../../utils/types";
 import { AddDataPointButton } from "./AddDataPointButton";
-import { DataPointTable } from "./DataPointTable";
+import { DataPointTable } from "./dataPointTable/DataPointTable";
 import IndicatorGenInfo from "./IndicatorGenInfo";
 import ReviewSubmit from "./ReviewSubmit";
 import { v4 as uuid } from "uuid";

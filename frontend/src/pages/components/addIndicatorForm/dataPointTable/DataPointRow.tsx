@@ -10,6 +10,10 @@ import {
 import { DataPoint } from "../../../../utils/types";
 import { AddDataPointModal } from "../AddDataPointModal";
 import { v4 as uuidv4 } from "uuid";
+import GeographyTag from "./tags/GeographyTag";
+import LocationTag from "./tags/LocationTag";
+import DataQualityTag from "./tags/DataQualityTag";
+import YearTag from "./tags/YearTag";
 
 const DataPointRow = ({
   dataPoint,
@@ -57,7 +61,7 @@ const DataPointRow = ({
     <Tr
       key={idx}
       _hover={{
-        bgColor: isDuplicate ? "red.200" : "gray.100",
+        bgColor: isDuplicate ? "red.200" : "gray.50",
       }}
       bgColor={isDuplicate ? "red.100" : "white"}
     >
@@ -96,14 +100,22 @@ const DataPointRow = ({
           onClose={onClose}
         />
       </Td>
-      <Td>{dataPoint.geography}</Td>
-      <Td>{dataPoint.country}</Td>
-      <Td isNumeric>
-        {dataPoint.value}
-        {dataPoint.valueUnit === "PERCENT" ? " %" : ""}
+      <Td>
+        <GeographyTag type={dataPoint.geography} />
       </Td>
-      <Td>{dataPoint.dataQuality}</Td>
-      <Td>{dataPoint.singleYearTimeframe ?? dataPoint.multiYearTimeframe}</Td>
+      <Td>
+        <LocationTag location={dataPoint.country} />
+      </Td>
+      <Td isNumeric>{dataPoint.value}</Td>
+      <Td>{dataPoint.valueUnit === "PERCENT" ? " %" : ""}</Td>
+      <Td>
+        <DataQualityTag dataQuality={dataPoint.dataQuality} />
+      </Td>
+      <Td>
+        <YearTag
+          year={dataPoint.singleYearTimeframe ?? dataPoint.multiYearTimeframe!}
+        />
+      </Td>
     </Tr>
   );
 };

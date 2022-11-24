@@ -40,7 +40,7 @@ const IndicatorForm = () => {
   const addBlankDataPoint = () => {
     const dataPoint: DataPoint = {
       uuid: uuid(),
-      country: "",
+      country: "CANADA",
       geography: "COUNTRY",
       sex: "",
       gender: "",
@@ -51,8 +51,8 @@ const IndicatorForm = () => {
       valueLowerBound: 0,
       valueUpperBound: 0,
       valueUnit: "PERCENT",
-      singleYearTimeframe: "2022",
-      multiYearTimeframe: "",
+      singleYearTimeframe: 2022,
+      multiYearTimeframe: undefined,
     };
     setValues({
       ...values,

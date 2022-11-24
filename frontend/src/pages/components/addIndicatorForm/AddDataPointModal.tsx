@@ -25,7 +25,12 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { FormEvent, useState } from "react";
-import { DataPoint } from "../../../utils/types";
+import {
+  DataPoint,
+  DataQualityType,
+  GeographyType,
+  LocationType,
+} from "../../../utils/types";
 import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
 import { AiOutlineCalendar, AiOutlineWarning } from "react-icons/ai";
@@ -55,14 +60,14 @@ export function AddDataPointModal({
     yearType: "SINGLE" | "RANGE";
     year1: number;
     year2: number;
-    geographyType: "COUNTRY" | "REGION" | "PROVINCE_TERRITORY";
-    location: string;
+    geographyType: GeographyType;
+    location: LocationType;
     value?: string;
     valueUnit: string;
     valueUnitOther: string;
     valueUpperBound?: string;
     valueLowerBound?: string;
-    dataQuality: "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
+    dataQuality: DataQualityType;
   }>({
     uuid: dataPoint ? dataPoint.uuid : uuidv4(),
     yearType: dataPoint
@@ -79,7 +84,7 @@ export function AddDataPointModal({
     geographyType: dataPoint
       ? (dataPoint.geography as "COUNTRY" | "REGION" | "PROVINCE_TERRITORY")
       : "COUNTRY",
-    location: dataPoint ? dataPoint.country : "",
+    location: dataPoint ? dataPoint.country : "CANADA",
     value: dataPoint ? String(dataPoint.value) : undefined,
     valueUnit: dataPoint ? dataPoint.valueUnit : "",
     valueUnitOther: "",
@@ -130,9 +135,8 @@ export function AddDataPointModal({
       valueLowerBound: Number(valueLowerBound),
       valueUpperBound: Number(valueUpperBound),
       valueUnit: valueUnit === "OTHER" ? valueUnitOther : valueUnit,
-      singleYearTimeframe: yearType === "SINGLE" ? `${year1}` : undefined,
-      multiYearTimeframe:
-        yearType === "RANGE" ? `${year1}-${year2}` : undefined,
+      singleYearTimeframe: yearType === "SINGLE" ? year1 : undefined,
+      multiYearTimeframe: yearType === "RANGE" ? [year1, year2] : undefined,
     };
 
     const dataPointIdx = dataPoints.findIndex((dp) => dp.uuid === uuid);
@@ -184,7 +188,7 @@ export function AddDataPointModal({
                         setFields({
                           ...fields,
                           geographyType: "COUNTRY",
-                          location: "",
+                          location: "CANADA",
                         });
                       }}
                     >
@@ -197,7 +201,7 @@ export function AddDataPointModal({
                         setFields({
                           ...fields,
                           geographyType: "PROVINCE_TERRITORY",
-                          location: "",
+                          location: "AB",
                         })
                       }
                     >
@@ -210,7 +214,7 @@ export function AddDataPointModal({
                         setFields({
                           ...fields,
                           geographyType: "REGION",
-                          location: "",
+                          location: "ATLANTIC",
                         })
                       }
                     >
@@ -232,7 +236,10 @@ export function AddDataPointModal({
                         (geographyType === "REGION" ? "ATLANTIC" : "AB")
                       }
                       onChange={(event) =>
-                        setFields({ ...fields, location: event.target.value })
+                        setFields({
+                          ...fields,
+                          location: event.target.value as LocationType,
+                        })
                       }
                     >
                       {geographyType === "PROVINCE_TERRITORY" && (

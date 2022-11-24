@@ -34,6 +34,7 @@ export function DataPointTable({
             <Th>Geography</Th>
             <Th>Location</Th>
             <Th isNumeric>Value</Th>
+            <Th>Unit</Th>
             <Th>Data Quality</Th>
             <Th>Year</Th>
           </Tr>

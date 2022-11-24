@@ -3,7 +3,7 @@ import { Page } from "./Page";
 
 export function AddIndicator() {
   return (
-    <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Indicator">
+    <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Data">
       <IndicatorForm />
     </Page>
   );

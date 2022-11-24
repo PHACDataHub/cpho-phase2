@@ -14,6 +14,8 @@ import GeographyTag from "./tags/GeographyTag";
 import LocationTag from "./tags/LocationTag";
 import DataQualityTag from "./tags/DataQualityTag";
 import YearTag from "./tags/YearTag";
+import UnitTag from "./tags/UnitTag";
+import ValueTag from "./tags/ValueTag";
 
 const DataPointRow = ({
   dataPoint,
@@ -106,8 +108,12 @@ const DataPointRow = ({
       <Td>
         <LocationTag location={dataPoint.country} />
       </Td>
-      <Td isNumeric>{dataPoint.value}</Td>
-      <Td>{dataPoint.valueUnit === "PERCENT" ? " %" : ""}</Td>
+      <Td isNumeric>
+        <ValueTag value={dataPoint.value} />
+      </Td>
+      <Td>
+        <UnitTag unit={dataPoint.valueUnit} />
+      </Td>
       <Td>
         <DataQualityTag dataQuality={dataPoint.dataQuality} />
       </Td>

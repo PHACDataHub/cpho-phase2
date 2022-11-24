@@ -61,16 +61,19 @@ export function ImportPage() {
   };
 
   return (
-    <Page
-      title="Import File"
-      subTitle="The format of the file must align with the order and presence of the
-      expected columns"
-      backButton={{ show: true, redirectUrl: "/" }}
-    >
+    <Page title="Import File" backButton={{ show: true, redirectUrl: "/" }}>
+      <Heading size="md" fontWeight={500} mb={4}>
+        The format of the file must align with the order and presence of the
+        expected columns
+      </Heading>
       <VStack align="flex-start" spacing={4}>
         <FileTypeChoice activeType={activeType} setActiveType={setActiveType} />
         <Center
-          cursor={status === "success" || activeType !== "indicator" ? "default" : "pointer"}
+          cursor={
+            status === "success" || activeType !== "indicator"
+              ? "default"
+              : "pointer"
+          }
           backgroundColor="gray.100"
           w="100%"
           py={8}
@@ -88,7 +91,7 @@ export function ImportPage() {
           {status === "loading" ? (
             <Spinner />
           ) : (
-            <VStack color={activeType==="indicator" ? "initial" : "gray.400"}>
+            <VStack color={activeType === "indicator" ? "initial" : "gray.400"}>
               {status !== "success" && <AttachmentIcon boxSize="8" />}
               <Heading size="lg" fontWeight={600}>
                 {status === "success"
@@ -97,7 +100,13 @@ export function ImportPage() {
                   ? `Could not upload ${(fileToUpload as any).name}`
                   : fileToUpload
                   ? (fileToUpload as any).name
-                  : activeType === "indicator" ? "Click to select a file" : `Import not available for ${activeType === "benchmarking" ? "Benchmarking" : "Trend Analysis"} yet`}
+                  : activeType === "indicator"
+                  ? "Click to select a file"
+                  : `Import not available for ${
+                      activeType === "benchmarking"
+                        ? "Benchmarking"
+                        : "Trend Analysis"
+                    } yet`}
               </Heading>
             </VStack>
           )}

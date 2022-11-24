@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
+import { Box, Heading, HStack } from "@chakra-ui/react";
 
 const YearTag = ({ year }: { year: number | number[] }) => {
   if (Array.isArray(year)) {

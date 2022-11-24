@@ -1,4 +1,4 @@
-import { VStack, Button } from "@chakra-ui/react";
+import { VStack, Button, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Page } from "./Page";
 import {
@@ -33,10 +33,10 @@ export function HomePage() {
     },
   ];
   return (
-    <Page
-      title="CPHO Phase 2"
-      subTitle="Data Collection and Retrieval Application"
-    >
+    <Page title="CPHO Phase 2">
+      <Heading size="lg" fontWeight="semibold">
+        Data Collection and Retrieval Application
+      </Heading>
       <VStack py={10} justify="center" spacing={6}>
         {pages.map(({ title, path, icon }) => (
           <Button

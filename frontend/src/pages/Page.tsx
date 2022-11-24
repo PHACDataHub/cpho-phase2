@@ -1,16 +1,14 @@
-import { VStack, Heading, Box, Button } from "@chakra-ui/react";
+import { Heading, Box, Button, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "./components/common/Footer";
 import { Header } from "./components/common/Header";
 
 export function Page({
   title,
-  subTitle,
   children,
   backButton,
 }: {
   title: String;
-  subTitle?: String;
   children?: any;
   backButton?: {
     show: boolean;
@@ -28,19 +26,16 @@ export function Page({
         }}
       />
       <Box p={[1, 2, 3]}>
-        {backButton && backButton.show && (
-          <Button onClick={() => navigate(backButton.redirectUrl)}>Back</Button>
-        )}
-        <VStack spacing={3} align="flex-start" p={5}>
+        <HStack align="start" mb={4}>
+          {backButton && backButton.show && (
+            <Button onClick={() => navigate(backButton.redirectUrl)}>
+              Back
+            </Button>
+          )}
           <Heading fontWeight={700} size="xl">
             {title}
           </Heading>
-          {subTitle && (
-            <Heading fontWeight={500} size="md">
-              {subTitle}
-            </Heading>
-          )}
-        </VStack>
+        </HStack>
         <Box>{children}</Box>
       </Box>
       <Footer />

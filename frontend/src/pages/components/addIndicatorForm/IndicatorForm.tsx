@@ -1,5 +1,12 @@
 import { AddIcon } from "@chakra-ui/icons";
-import { VStack, Button, ButtonGroup, Box, HStack } from "@chakra-ui/react";
+import {
+  VStack,
+  Button,
+  ButtonGroup,
+  Box,
+  HStack,
+  Heading,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { DataPoint } from "../../../utils/types";
 import { AddDataPointButton } from "./AddDataPointButton";
@@ -84,6 +91,15 @@ const IndicatorForm = () => {
       )}
       {step === 2 && (
         <VStack w="100%">
+          <Heading size="lg" mb={4}>
+            <Box display="inline" color="red.500">
+              {dataPoints.length}
+            </Box>{" "}
+            data points for{" "}
+            <Box display="inline" color="red.500">
+              {indicatorName}
+            </Box>
+          </Heading>
           <HStack>
             <AddDataPointButton
               dataPoints={dataPoints}

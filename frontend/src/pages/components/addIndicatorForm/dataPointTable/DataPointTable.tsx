@@ -1,13 +1,4 @@
-import {
-  Heading,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import { DataPoint } from "../../../../utils/types";
 import DataPointRow from "./DataPointRow";
 
@@ -21,12 +12,6 @@ export function DataPointTable({
   return (
     <TableContainer w={["100%", "95%", "90%", "85%", "75%"]}>
       <Table variant="simple">
-        <TableCaption placement="top">
-          <Heading size="md">
-            {dataPoints.length} Data Point
-            {dataPoints.length === 1 ? "" : "s"}
-          </Heading>
-        </TableCaption>
         <Thead>
           <Tr>
             <Th isNumeric>#</Th>

@@ -139,7 +139,9 @@ export function ExportPage() {
       category: string;
       dataPointCount: number;
     }[];
-  }>(GET_INDICATOR_OVERVIEW);
+  }>(GET_INDICATOR_OVERVIEW, {
+    fetchPolicy: "network-only",
+  });
 
   const possibleIndicators = data?.possibleIndicators;
 

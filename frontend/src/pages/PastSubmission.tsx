@@ -9,7 +9,9 @@ export function PastSubmissions() {
       id: number;
       indicator: string;
     }[];
-  }>(GET_INDICATORS_AND_IDS);
+  }>(GET_INDICATORS_AND_IDS, {
+    fetchPolicy: "network-only",
+  });
 
   const indicators = data?.indicators;
 

@@ -1,5 +1,7 @@
 # CPHO Phase 2
 
+[![Docker Image CI](https://github.com/PHACDataHub/cpho-phase2/actions/workflows/docker-image.yml/badge.svg)](https://github.com/PHACDataHub/cpho-phase2/actions/workflows/docker-image.yml)
+
 ### Note: This is _very much_ a work in progress. Work needs to be done to transform this prototype into an usable production application.
 
 # How to run locally

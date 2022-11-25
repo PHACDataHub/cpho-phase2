@@ -1,6 +1,6 @@
 import { VStack, Button, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { Page } from "./Page";
+import { Page } from "../template/Page";
 import {
   AddIcon,
   AttachmentIcon,

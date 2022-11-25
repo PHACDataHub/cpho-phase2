@@ -1,7 +1,7 @@
 import { Heading, Box, Button, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { Footer } from "./components/common/Footer";
-import { Header } from "./components/common/Header";
+import { Footer } from "../organisms/Footer";
+import { Header } from "../organisms/Header";
 
 export function Page({
   title,

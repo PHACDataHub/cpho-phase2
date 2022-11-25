@@ -25,7 +25,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { FormEvent, useEffect, useState } from "react";
-import { DataPoint, LocationType } from "../../../utils/types";
+import { DataPoint, LocationType } from "../../utils/types";
 import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
 import { AiOutlineCalendar, AiOutlineWarning } from "react-icons/ai";

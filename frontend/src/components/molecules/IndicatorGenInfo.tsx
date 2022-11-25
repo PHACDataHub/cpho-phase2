@@ -6,8 +6,8 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { categories, sub_categories } from "../../../utils/constants";
-import { SubCategory } from "../../../utils/types";
+import { categories, sub_categories } from "../../utils/constants";
+import { SubCategory } from "../../utils/types";
 
 type Props = {
   indicatorName: string;

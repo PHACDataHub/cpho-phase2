@@ -8,8 +8,8 @@ import {
   PopoverTrigger,
   VStack,
 } from "@chakra-ui/react";
-import { ProvincesTerritories, Regions } from "../../../../../utils/constants";
-import { GeographyType, LocationType } from "../../../../../utils/types";
+import { ProvincesTerritories, Regions } from "../../../utils/constants";
+import { GeographyType, LocationType } from "../../../utils/types";
 
 const LocationTag = ({
   location,

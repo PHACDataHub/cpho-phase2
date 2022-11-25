@@ -1,12 +1,12 @@
 import { useMutation } from "@apollo/client";
 import { Button, Heading, VStack } from "@chakra-ui/react";
-import { categories, sub_categories } from "../../../utils/constants";
-import { CREATE_INDICATOR } from "../../../utils/graphql/mutations";
+import { categories, sub_categories } from "../../utils/constants";
+import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
 import {
   GET_INDICATOR_OVERVIEW,
   GET_INDICATORS_AND_IDS,
-} from "../../../utils/graphql/queries";
-import { DataPoint } from "../../../utils/types";
+} from "../../utils/graphql/queries";
+import { DataPoint } from "../../utils/types";
 
 const ReviewSubmit = ({
   values,

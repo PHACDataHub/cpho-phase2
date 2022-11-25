@@ -10,12 +10,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Page } from "./Page";
+import { Page } from "../template/Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
-import { useSmallScreen } from "../utils/hooks";
+import { useSmallScreen } from "../../utils/hooks";
 import { useQuery } from "@apollo/client";
-import { GET_INDICATOR_OVERVIEW } from "../utils/graphql/queries";
+import { GET_INDICATOR_OVERVIEW } from "../../utils/graphql/queries";
 
 const PossibleIndicatorCard = ({
   indicator: { name, dataPointCount, id },

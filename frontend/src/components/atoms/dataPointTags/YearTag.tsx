@@ -5,7 +5,6 @@ import {
   Editable,
   EditableInput,
   EditablePreview,
-  Heading,
   HStack,
   Popover,
   PopoverArrow,

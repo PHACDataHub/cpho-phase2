@@ -1,7 +1,7 @@
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Button, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
-import { DataPoint } from "../../../utils/types";
+import { DataPoint } from "../../utils/types";
 import { AddDataPointModal } from "./AddDataPointModal";
 
 export function AddDataPointButton({

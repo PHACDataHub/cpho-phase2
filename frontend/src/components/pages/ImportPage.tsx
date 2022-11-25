@@ -8,9 +8,9 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FileFormat } from "../utils/types";
-import { FileTypeChoice } from "./components/FileTypeChoice";
-import { Page } from "./Page";
+import { FileFormat } from "../../utils/types";
+import { FileTypeChoice } from "../organisms/FileTypeChoice";
+import { Page } from "../template/Page";
 
 export function ImportPage() {
   const [fileToUpload, setFileToUpload] = useState();

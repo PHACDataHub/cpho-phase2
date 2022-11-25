@@ -13,7 +13,7 @@ import { IconType } from "react-icons";
 import { AiOutlineWarning } from "react-icons/ai";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { FaRegThumbsUp } from "react-icons/fa";
-import { DataQualityType } from "../../../../../utils/types";
+import { DataQualityType } from "../../../utils/types";
 
 const DataQualityTag = ({
   dataQuality,

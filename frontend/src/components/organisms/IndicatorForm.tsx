@@ -8,11 +8,11 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { DataPoint, LocationType } from "../../../utils/types";
-import { AddDataPointButton } from "./AddDataPointButton";
-import { DataPointTable } from "./dataPointTable/DataPointTable";
-import IndicatorGenInfo from "./IndicatorGenInfo";
-import ReviewSubmit from "./ReviewSubmit";
+import { DataPoint, LocationType } from "../../utils/types";
+import { AddDataPointButton } from "../molecules/AddDataPointButton";
+import { DataPointTable } from "./DataPointTable";
+import IndicatorGenInfo from "../molecules/IndicatorGenInfo";
+import ReviewSubmit from "../molecules/ReviewSubmit";
 import { v4 as uuidv4 } from "uuid";
 
 const IndicatorForm = () => {

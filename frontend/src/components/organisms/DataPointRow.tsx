@@ -7,14 +7,14 @@ import {
   ButtonGroup,
   useDisclosure,
 } from "@chakra-ui/react";
-import { DataPoint, LocationType } from "../../../../utils/types";
-import { AddDataPointModal } from "../AddDataPointModal";
-import GeographyTag from "./tags/GeographyTag";
-import LocationTag from "./tags/LocationTag";
-import DataQualityTag from "./tags/DataQualityTag";
-import YearTag from "./tags/YearTag";
-import UnitTag from "./tags/UnitTag";
-import ValueTag from "./tags/ValueTag";
+import { DataPoint, LocationType } from "../../utils/types";
+import { AddDataPointModal } from "../molecules/AddDataPointModal";
+import GeographyTag from "../atoms/dataPointTags/GeographyTag";
+import LocationTag from "../atoms/dataPointTags/LocationTag";
+import DataQualityTag from "../atoms/dataPointTags/DataQualityTag";
+import YearTag from "../atoms/dataPointTags/YearTag";
+import UnitTag from "../atoms/dataPointTags/UnitTag";
+import ValueTag from "../atoms/dataPointTags/ValueTag";
 import { useState } from "react";
 
 const DataPointRow = ({

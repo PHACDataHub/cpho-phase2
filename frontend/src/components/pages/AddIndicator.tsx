@@ -1,5 +1,5 @@
-import IndicatorForm from "./components/addIndicatorForm/IndicatorForm";
-import { Page } from "./Page";
+import IndicatorForm from "../organisms/IndicatorForm";
+import { Page } from "../template/Page";
 
 export function AddIndicator() {
   return (

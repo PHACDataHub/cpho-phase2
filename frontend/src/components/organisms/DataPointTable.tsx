@@ -1,5 +1,5 @@
 import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
-import { DataPoint } from "../../../../utils/types";
+import { DataPoint } from "../../utils/types";
 import DataPointRow from "./DataPointRow";
 
 export function DataPointTable({

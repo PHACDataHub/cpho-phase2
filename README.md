@@ -52,6 +52,14 @@ Now, you can do the following:
 
 - and `localhost:5433` to view the PGAdmin interface (note that this may take a few minutes to load, you can check the Docker container logs to see its progress)
 
+When you're done working, you can run `docker compose down` to stop the containers
+
+## Known issue with Windows
+
+If you run into `exec /server/entrypoint.sh: no such file or directory` while starting the server container, please do the following:
+<br/><img src="https://user-images.githubusercontent.com/50898635/203863894-190861e9-9d18-4d97-8d32-4ff653d7eb70.png" width="500"/>
+[source](https://stackoverflow.com/questions/40452508/docker-error-on-an-entrypoint-script-no-such-file-or-directory)
+
 # Without Docker
 
 Assumes you have Python installed in system (check using `python --version` or `py --version`).

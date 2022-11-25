@@ -66,7 +66,7 @@ const YearTag = ({
             <Box bgColor="gray.200" p={2} borderRightRadius="md">
               <Editable
                 value={year2}
-                onChange={(val) => setYear1(val)}
+                onChange={(val) => setYear2(val)}
                 onSubmit={(val) => setMultiYear([Number(year1), Number(val)])}
               >
                 <EditablePreview />

@@ -7,15 +7,15 @@ export function DataPointTable({
   editDataPoint,
   replaceDataPoint,
   addDataPoint,
-  onDelete,
-  onDuplicate,
+  deleteDataPoint,
+  duplicateDataPoint,
 }: {
   dataPoints: DataPoint[];
   editDataPoint: (uuid: string, field: string, value: any) => void;
   replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
   addDataPoint: (dataPoint: DataPoint) => void;
-  onDelete: (uuid: string) => void;
-  onDuplicate: (uuid: string) => void;
+  deleteDataPoint: (uuid: string) => void;
+  duplicateDataPoint: (uuid: string) => void;
 }) {
   return (
     <TableContainer w={["100%", "95%", "90%", "85%", "75%"]}>
@@ -39,8 +39,8 @@ export function DataPointTable({
               dataPoint={dataPoint}
               dataPoints={dataPoints}
               editDataPoint={editDataPoint}
-              onDelete={() => onDelete(dataPoint.uuid)}
-              onDuplicate={() => onDuplicate(dataPoint.uuid)}
+              onDelete={() => deleteDataPoint(dataPoint.uuid)}
+              onDuplicate={() => duplicateDataPoint(dataPoint.uuid)}
               replaceDataPoint={replaceDataPoint}
               addDataPoint={addDataPoint}
             />

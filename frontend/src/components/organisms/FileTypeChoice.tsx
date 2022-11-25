@@ -32,7 +32,7 @@ export function FileTypeChoice({
   setActiveType,
 }: {
   activeType: FileFormat;
-  setActiveType: (type: "indicator" | "trendAnalysis" | "benchmarking") => void;
+  setActiveType: (type: FileFormat) => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
@@ -47,14 +47,12 @@ export function FileTypeChoice({
         <Button
           onClick={() => setActiveType("trendAnalysis")}
           isActive={activeType === "trendAnalysis"}
-          
         >
           Trend Analysis
         </Button>
         <Button
           onClick={() => setActiveType("benchmarking")}
           isActive={activeType === "benchmarking"}
-          
         >
           Benchmarking
         </Button>

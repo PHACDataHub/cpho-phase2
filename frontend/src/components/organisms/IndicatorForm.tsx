@@ -1,12 +1,5 @@
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  VStack,
-  Button,
-  ButtonGroup,
-  Box,
-  HStack,
-  Heading,
-} from "@chakra-ui/react";
+import { VStack, Button, Box, HStack, Heading } from "@chakra-ui/react";
 import { useState } from "react";
 import { DataPoint, LocationType } from "../../utils/types";
 import { AddDataPointButton } from "../molecules/AddDataPointButton";
@@ -14,6 +7,7 @@ import { DataPointTable } from "./DataPointTable";
 import IndicatorGenInfo from "../molecules/IndicatorGenInfo";
 import ReviewSubmit from "../molecules/ReviewSubmit";
 import { v4 as uuidv4 } from "uuid";
+import StepController from "../molecules/StepController";
 
 const IndicatorForm = () => {
   const [values, setValues] = useState({
@@ -40,9 +34,6 @@ const IndicatorForm = () => {
   };
 
   const [step, setStep] = useState(1);
-
-  const nextStep = () => step < 3 && setStep(step + 1);
-  const prevStep = () => step > 1 && setStep(step - 1);
 
   const addBlankDataPoint = () => {
     const dataPoint: DataPoint = {
@@ -117,14 +108,14 @@ const IndicatorForm = () => {
     setField("dataPoints", [newDataPoint, ...dataPoints]);
   };
 
-  const onDelete = (uuid: string) => {
+  const deleteDataPoint = (uuid: string) => {
     const newDataPoints = dataPoints.filter(
       (dataPoint) => dataPoint.uuid !== uuid
     );
     setField("dataPoints", newDataPoints);
   };
 
-  const onDuplicate = (uuid: string) => {
+  const duplicateDataPoint = (uuid: string) => {
     const idx = dataPoints.findIndex((dataPoint) => dataPoint.uuid === uuid);
     const dataPoint = dataPoints[idx];
     if (dataPoint) {
@@ -139,15 +130,12 @@ const IndicatorForm = () => {
 
   return (
     <VStack w="100%">
-      <ButtonGroup py={4}>
-        <Button disabled={step <= 1} onClick={prevStep}>
-          Previous
-        </Button>
-        <Button disabled={step >= 3 || indicatorName === ""} onClick={nextStep}>
-          Next
-        </Button>
-      </ButtonGroup>
-
+      <StepController
+        step={step}
+        setStep={setStep}
+        isPrevDisabled={step === 1}
+        isNextDisabled={step === 3 || indicatorName === ""}
+      />
       {step === 1 && (
         <Box>
           <IndicatorGenInfo
@@ -185,8 +173,8 @@ const IndicatorForm = () => {
           </HStack>
           <DataPointTable
             editDataPoint={editDataPoint}
-            onDelete={onDelete}
-            onDuplicate={onDuplicate}
+            deleteDataPoint={deleteDataPoint}
+            duplicateDataPoint={duplicateDataPoint}
             dataPoints={dataPoints}
             addDataPoint={addDataPoint}
             replaceDataPoint={replaceDataPoint}

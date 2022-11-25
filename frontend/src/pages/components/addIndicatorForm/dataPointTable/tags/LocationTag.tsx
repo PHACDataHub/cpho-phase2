@@ -62,7 +62,7 @@ const LocationTag = ({
   })();
 
   return (
-    <Popover placement="right">
+    <Popover placement="right" trigger="hover">
       <PopoverTrigger>
         <Box
           bgColor={color}
@@ -76,9 +76,9 @@ const LocationTag = ({
           <Heading size="xs">{label}</Heading>
         </Box>
       </PopoverTrigger>
-      <PopoverContent w="100%" background="transparent" border="none">
-        <PopoverArrow />
-        <VStack align="stretch" spacing={0}>
+      <PopoverContent w="100%">
+        <PopoverArrow bgColor="gray.100" />
+        <VStack align="stretch" spacing={0} shadow="lg">
           {geographyType === "PROVINCE_TERRITORY" &&
             ProvincesTerritories.map((option, idx) => (
               <Button

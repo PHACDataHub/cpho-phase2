@@ -9,68 +9,37 @@ import {
 } from "@chakra-ui/react";
 import { DataPoint, LocationType } from "../../../../utils/types";
 import { AddDataPointModal } from "../AddDataPointModal";
-import { v4 as uuidv4 } from "uuid";
 import GeographyTag from "./tags/GeographyTag";
 import LocationTag from "./tags/LocationTag";
 import DataQualityTag from "./tags/DataQualityTag";
 import YearTag from "./tags/YearTag";
 import UnitTag from "./tags/UnitTag";
 import ValueTag from "./tags/ValueTag";
+import { useState } from "react";
 
 const DataPointRow = ({
   dataPoint,
   dataPoints,
-  setDataPoints,
+  editDataPoint,
+  replaceDataPoint,
+  addDataPoint,
+  onDelete,
+  onDuplicate,
 }: {
   dataPoint: DataPoint;
   dataPoints: DataPoint[];
-  setDataPoints: (dataPoints: DataPoint[]) => void;
+  editDataPoint: (uuid: string, field: string, value: any) => void;
+  replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
+  addDataPoint: (dataPoint: DataPoint) => void;
+  onDelete: (uuid: string) => void;
+  onDuplicate: (uuid: string) => void;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const idx = dataPoints.indexOf(dataPoint);
 
-  const onDelete = () => {
-    setDataPoints(dataPoints.slice(0, idx).concat(dataPoints.slice(idx + 1)));
-  };
-
-  const onDuplicate = () => {
-    const newDataPoint: DataPoint = {
-      ...dataPoint,
-      uuid: uuidv4(),
-    };
-    setDataPoints(
-      dataPoints
-        .slice(0, idx + 1)
-        .concat(newDataPoint, dataPoints.slice(idx + 1))
-    );
-  };
-
-  const editDataPoint = (uuid: string, field: string, value: any) => {
-    const newDataPoints = dataPoints.map((dataPoint) => {
-      if (dataPoint.uuid === uuid) {
-        if (field === "geography") {
-          const country: LocationType =
-            value === "COUNTRY"
-              ? "CANADA"
-              : value === "REGION"
-              ? "ATLANTIC"
-              : "AB";
-
-          return {
-            ...dataPoint,
-            geography: value,
-            country,
-          };
-        }
-        return {
-          ...dataPoint,
-          [field]: value,
-        };
-      }
-      return dataPoint;
-    });
-    setDataPoints(newDataPoints);
-  };
+  const [yearType, setYearType] = useState<"SINGLE" | "RANGE">(
+    dataPoint.multiYearTimeframe === undefined ? "SINGLE" : "RANGE"
+  );
 
   return (
     <Tr
@@ -89,14 +58,14 @@ const DataPointRow = ({
               aria-label="Delete Data Point"
               colorScheme="red"
               icon={<DeleteIcon />}
-              onClick={onDelete}
+              onClick={() => onDelete(dataPoint.uuid)}
             />
             <IconButton
               size="sm"
               aria-label="Duplicate Data Point"
               colorScheme="blue"
               icon={<CopyIcon />}
-              onClick={onDuplicate}
+              onClick={() => onDuplicate(dataPoint.uuid)}
             />
             <IconButton
               size="sm"
@@ -109,10 +78,12 @@ const DataPointRow = ({
         </HStack>
         <AddDataPointModal
           dataPoint={dataPoint}
-          dataPoints={dataPoints}
-          setDataPoints={setDataPoints}
           isOpen={isOpen}
           onClose={onClose}
+          replaceDataPoint={replaceDataPoint}
+          addDataPoint={addDataPoint}
+          yearType={yearType}
+          setYearType={setYearType}
         />
       </Td>
       <Td>
@@ -133,17 +104,41 @@ const DataPointRow = ({
         />
       </Td>
       <Td isNumeric>
-        <ValueTag value={dataPoint.value} />
+        <ValueTag
+          value={dataPoint.value}
+          setValue={(value: number) => {
+            editDataPoint(dataPoint.uuid, "value", value);
+          }}
+        />
       </Td>
       <Td>
-        <UnitTag unit={dataPoint.valueUnit} />
+        <UnitTag
+          unit={dataPoint.valueUnit}
+          setUnit={(unit: string) => {
+            editDataPoint(dataPoint.uuid, "valueUnit", unit);
+          }}
+        />
       </Td>
       <Td>
-        <DataQualityTag dataQuality={dataPoint.dataQuality} />
+        <DataQualityTag
+          dataQuality={dataPoint.dataQuality}
+          setDataQuality={(dataQuality: string) => {
+            editDataPoint(dataPoint.uuid, "dataQuality", dataQuality);
+          }}
+        />
       </Td>
       <Td>
         <YearTag
-          year={dataPoint.singleYearTimeframe ?? dataPoint.multiYearTimeframe!}
+          singleYear={dataPoint.singleYearTimeframe}
+          multiYear={dataPoint.multiYearTimeframe}
+          setSingleYear={(singleYear?: number) => {
+            editDataPoint(dataPoint.uuid, "singleYearTimeframe", singleYear);
+          }}
+          setMultiYear={(multiYear?: number[]) => {
+            editDataPoint(dataPoint.uuid, "multiYearTimeframe", multiYear);
+          }}
+          yearType={yearType}
+          setYearType={setYearType}
         />
       </Td>
     </Tr>

@@ -4,10 +4,18 @@ import DataPointRow from "./DataPointRow";
 
 export function DataPointTable({
   dataPoints,
-  setDataPoints,
+  editDataPoint,
+  replaceDataPoint,
+  addDataPoint,
+  onDelete,
+  onDuplicate,
 }: {
   dataPoints: DataPoint[];
-  setDataPoints: (dataPoints: DataPoint[]) => void;
+  editDataPoint: (uuid: string, field: string, value: any) => void;
+  replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
+  addDataPoint: (dataPoint: DataPoint) => void;
+  onDelete: (uuid: string) => void;
+  onDuplicate: (uuid: string) => void;
 }) {
   return (
     <TableContainer w={["100%", "95%", "90%", "85%", "75%"]}>
@@ -25,12 +33,16 @@ export function DataPointTable({
           </Tr>
         </Thead>
         <Tbody>
-          {dataPoints.map((dataPoint, idx) => (
+          {dataPoints.map((dataPoint) => (
             <DataPointRow
               key={dataPoint.uuid}
               dataPoint={dataPoint}
               dataPoints={dataPoints}
-              setDataPoints={setDataPoints}
+              editDataPoint={editDataPoint}
+              onDelete={() => onDelete(dataPoint.uuid)}
+              onDuplicate={() => onDuplicate(dataPoint.uuid)}
+              replaceDataPoint={replaceDataPoint}
+              addDataPoint={addDataPoint}
             />
           ))}
         </Tbody>

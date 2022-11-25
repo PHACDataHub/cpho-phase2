@@ -1,12 +1,12 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   Heading,
   Popover,
   PopoverArrow,
   PopoverContent,
   PopoverTrigger,
+  VStack,
 } from "@chakra-ui/react";
 
 const GeographyTag = ({
@@ -41,7 +41,7 @@ const GeographyTag = ({
   const [tagText, tagColor] = [getTagText(), getTagColor()];
 
   return (
-    <Popover placement="top">
+    <Popover placement="right" trigger="hover">
       <PopoverTrigger>
         <Box
           bgColor={tagColor}
@@ -58,9 +58,11 @@ const GeographyTag = ({
         </Box>
       </PopoverTrigger>
       <PopoverContent w="100%">
-        <PopoverArrow />
-        <ButtonGroup isAttached p={2}>
+        <PopoverArrow bgColor="gray.100" />
+        <VStack spacing={0} align="stretch">
           <Button
+            borderRadius={0}
+            borderTopRadius="md"
             isActive={type === "COUNTRY"}
             size="sm"
             onClick={() => setGeography("COUNTRY")}
@@ -68,6 +70,7 @@ const GeographyTag = ({
             Country
           </Button>
           <Button
+            borderRadius={0}
             isActive={type === "REGION"}
             size="sm"
             onClick={() => setGeography("REGION")}
@@ -75,13 +78,15 @@ const GeographyTag = ({
             Region
           </Button>
           <Button
+            borderRadius={0}
+            borderBottomRadius="md"
             isActive={type === "PROVINCE_TERRITORY"}
             size="sm"
             onClick={() => setGeography("PROVINCE_TERRITORY")}
           >
             Province/Territory
           </Button>
-        </ButtonGroup>
+        </VStack>
       </PopoverContent>
     </Popover>
   );

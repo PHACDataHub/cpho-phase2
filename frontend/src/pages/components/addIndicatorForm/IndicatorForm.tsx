@@ -8,12 +8,12 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { DataPoint } from "../../../utils/types";
+import { DataPoint, LocationType } from "../../../utils/types";
 import { AddDataPointButton } from "./AddDataPointButton";
 import { DataPointTable } from "./dataPointTable/DataPointTable";
 import IndicatorGenInfo from "./IndicatorGenInfo";
 import ReviewSubmit from "./ReviewSubmit";
-import { v4 as uuid } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 const IndicatorForm = () => {
   const [values, setValues] = useState({
@@ -46,7 +46,7 @@ const IndicatorForm = () => {
 
   const addBlankDataPoint = () => {
     const dataPoint: DataPoint = {
-      uuid: uuid(),
+      uuid: uuidv4(),
       country: "CANADA",
       geography: "COUNTRY",
       sex: "",
@@ -59,9 +59,82 @@ const IndicatorForm = () => {
       valueUpperBound: 0,
       valueUnit: "PERCENT",
       singleYearTimeframe: 2022,
-      multiYearTimeframe: undefined,
     };
     setField("dataPoints", [dataPoint, ...dataPoints]);
+  };
+
+  const editDataPoint = (uuid: string, field: string, value: any) => {
+    const newDataPoints = dataPoints.map((dataPoint) => {
+      if (dataPoint.uuid === uuid) {
+        if (field === "geography") {
+          const country: LocationType =
+            value === "COUNTRY"
+              ? "CANADA"
+              : value === "REGION"
+              ? "ATLANTIC"
+              : "AB";
+
+          return {
+            ...dataPoint,
+            geography: value,
+            country,
+          };
+        } else if (field === "singleYearTimeframe") {
+          return {
+            ...dataPoint,
+            singleYearTimeframe: value,
+            multiYearTimeframe: undefined,
+          };
+        } else if (field === "multiYearTimeframe") {
+          return {
+            ...dataPoint,
+            singleYearTimeframe: undefined,
+            multiYearTimeframe: value,
+          };
+        } else {
+          return {
+            ...dataPoint,
+            [field]: value,
+          };
+        }
+      }
+      return dataPoint;
+    });
+    setField("dataPoints", newDataPoints);
+  };
+
+  const replaceDataPoint = (uuid: string, newDataPoint: DataPoint) => {
+    const newDataPoints = dataPoints.map((dataPoint) => {
+      if (dataPoint.uuid === uuid) {
+        return newDataPoint;
+      }
+      return dataPoint;
+    });
+    setField("dataPoints", newDataPoints);
+  };
+
+  const addDataPoint = (newDataPoint: DataPoint) => {
+    setField("dataPoints", [newDataPoint, ...dataPoints]);
+  };
+
+  const onDelete = (uuid: string) => {
+    const newDataPoints = dataPoints.filter(
+      (dataPoint) => dataPoint.uuid !== uuid
+    );
+    setField("dataPoints", newDataPoints);
+  };
+
+  const onDuplicate = (uuid: string) => {
+    const idx = dataPoints.findIndex((dataPoint) => dataPoint.uuid === uuid);
+    const dataPoint = dataPoints[idx];
+    if (dataPoint) {
+      setField(
+        "dataPoints",
+        dataPoints
+          .slice(0, idx + 1)
+          .concat({ ...dataPoint, uuid: uuidv4() }, dataPoints.slice(idx + 1))
+      );
+    }
   };
 
   return (
@@ -99,8 +172,8 @@ const IndicatorForm = () => {
           </Heading>
           <HStack>
             <AddDataPointButton
-              dataPoints={dataPoints}
-              setDataPoints={(d) => setField("dataPoints", d)}
+              addDataPoint={addDataPoint}
+              replaceDataPoint={replaceDataPoint}
             />
             <Button
               colorScheme="green"
@@ -111,8 +184,12 @@ const IndicatorForm = () => {
             </Button>
           </HStack>
           <DataPointTable
-            setDataPoints={(d) => setField("dataPoints", d)}
+            editDataPoint={editDataPoint}
+            onDelete={onDelete}
+            onDuplicate={onDuplicate}
             dataPoints={dataPoints}
+            addDataPoint={addDataPoint}
+            replaceDataPoint={replaceDataPoint}
           />
         </VStack>
       )}

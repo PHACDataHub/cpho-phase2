@@ -35,14 +35,18 @@ import { v4 as uuidv4 } from "uuid";
 
 export function AddDataPointModal({
   dataPoint,
-  dataPoints,
-  setDataPoints,
+  yearType,
+  setYearType,
+  replaceDataPoint,
+  addDataPoint,
   isOpen,
   onClose,
 }: {
   dataPoint?: DataPoint;
-  dataPoints: DataPoint[];
-  setDataPoints: (dataPoints: DataPoint[]) => void;
+  yearType: "SINGLE" | "RANGE";
+  setYearType: (yearType: "SINGLE" | "RANGE") => void;
+  replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
+  addDataPoint: (dataPoint: DataPoint) => void;
   isOpen: boolean;
   onClose: () => void;
 }): JSX.Element {
@@ -79,16 +83,28 @@ export function AddDataPointModal({
     valueUnit,
   } = dp ?? {};
 
-  const [yearType, setYearType] = useState<"SINGLE" | "RANGE">(
-    singleYearTimeframe ? "SINGLE" : "RANGE"
-  );
-
   const [fromYear, setFromYear] = useState<number>(
-    singleYearTimeframe ?? dataPoint?.multiYearTimeframe![0] ?? 2022
+    singleYearTimeframe ?? (multiYearTimeframe && multiYearTimeframe[0]) ?? 2022
   );
   const [toYear, setToYear] = useState<number>(
-    singleYearTimeframe ?? multiYearTimeframe![1] ?? 2022
+    singleYearTimeframe ?? (multiYearTimeframe && multiYearTimeframe[1]) ?? 2022
   );
+
+  useEffect(() => {
+    if (yearType === "SINGLE") {
+      setFromYear(singleYearTimeframe ?? 2022);
+      setToYear(singleYearTimeframe ?? 2022);
+    } else {
+      setFromYear((multiYearTimeframe && multiYearTimeframe[0]) ?? 2022);
+      setToYear((multiYearTimeframe && multiYearTimeframe[1]) ?? 2022);
+    }
+  }, [singleYearTimeframe, multiYearTimeframe, yearType]);
+
+  const [tempValue, setTempValue] = useState(String(value));
+
+  useEffect(() => {
+    setTempValue(String(value));
+  }, [value]);
 
   const [showUpperBound, setShowUpperBound] = useState(false);
   const [showLowerBound, setShowLowerBound] = useState(false);
@@ -107,28 +123,20 @@ export function AddDataPointModal({
       ageGroup: "",
       ageGroupType: "",
       dataQuality,
-      value: Number(value),
+      value: Number(tempValue),
       valueLowerBound: Number(valueLowerBound),
       valueUpperBound: Number(valueUpperBound),
       valueUnit: valueUnitOther ? valueUnitOther : valueUnit,
-      singleYearTimeframe,
-      multiYearTimeframe,
+      singleYearTimeframe: yearType === "SINGLE" ? fromYear : undefined,
+      multiYearTimeframe: yearType === "RANGE" ? [fromYear, toYear] : undefined,
     };
 
-    const dataPointIdx = dataPoints.findIndex((dp) => dp.uuid === uuid);
-
-    if (setDataPoints) {
-      if (dataPoint) {
-        setDataPoints([
-          ...dataPoints.slice(0, dataPointIdx),
-          point,
-          ...dataPoints.slice(dataPointIdx! + 1),
-        ]);
-      } else {
-        setDataPoints([point, ...dataPoints]);
-      }
-      onClose();
+    if (dataPoint) {
+      replaceDataPoint(uuid, point);
+    } else {
+      addDataPoint(point);
     }
+    onClose();
   };
 
   useEffect(() => {
@@ -259,13 +267,8 @@ export function AddDataPointModal({
                   maxW="150px"
                   precision={2}
                   step={0.01}
-                  value={value}
-                  onChange={(val) =>
-                    setDp({
-                      ...dp,
-                      value: Number(val),
-                    })
-                  }
+                  value={tempValue}
+                  onChange={(valueString) => setTempValue(valueString)}
                 >
                   <NumberInputField />
                   <NumberInputStepper>

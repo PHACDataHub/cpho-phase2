@@ -61,10 +61,7 @@ const IndicatorForm = () => {
       singleYearTimeframe: 2022,
       multiYearTimeframe: undefined,
     };
-    setValues({
-      ...values,
-      dataPoints: [dataPoint, ...dataPoints],
-    });
+    setField("dataPoints", [dataPoint, ...dataPoints]);
   };
 
   return (

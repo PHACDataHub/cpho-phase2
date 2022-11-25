@@ -1,9 +1,20 @@
-import { Box, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Heading,
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 
 const GeographyTag = ({
   type,
+  setGeography,
 }: {
   type: "COUNTRY" | "REGION" | "PROVINCE_TERRITORY";
+  setGeography: (geography: string) => void;
 }) => {
   const getTagText = () => {
     switch (type) {
@@ -30,9 +41,49 @@ const GeographyTag = ({
   const [tagText, tagColor] = [getTagText(), getTagColor()];
 
   return (
-    <Box bgColor={tagColor} p={2} borderRadius="md" display="inline-block">
-      <Heading size="xs">{tagText}</Heading>
-    </Box>
+    <Popover placement="top">
+      <PopoverTrigger>
+        <Box
+          bgColor={tagColor}
+          p={2}
+          borderRadius="md"
+          display="inline-block"
+          cursor="pointer"
+          transition="all 0.2s ease-in-out"
+          _hover={{
+            transform: "scale(1.075)",
+          }}
+        >
+          <Heading size="xs">{tagText}</Heading>
+        </Box>
+      </PopoverTrigger>
+      <PopoverContent w="100%">
+        <PopoverArrow />
+        <ButtonGroup isAttached p={2}>
+          <Button
+            isActive={type === "COUNTRY"}
+            size="sm"
+            onClick={() => setGeography("COUNTRY")}
+          >
+            Country
+          </Button>
+          <Button
+            isActive={type === "REGION"}
+            size="sm"
+            onClick={() => setGeography("REGION")}
+          >
+            Region
+          </Button>
+          <Button
+            isActive={type === "PROVINCE_TERRITORY"}
+            size="sm"
+            onClick={() => setGeography("PROVINCE_TERRITORY")}
+          >
+            Province/Territory
+          </Button>
+        </ButtonGroup>
+      </PopoverContent>
+    </Popover>
   );
 };
 

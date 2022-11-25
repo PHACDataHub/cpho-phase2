@@ -90,8 +90,12 @@ const ReviewSubmit = ({
                 subIndicatorMeasurement: "",
                 topic:
                   sub_categories.find((c) => c.id === subCategory)?.label ?? "",
-                dataPoints: dataPoints.map((d) => ({
+                dataPoints: dataPoints.map(({ uuid, ...d }) => ({
                   ...d,
+                  singleYearTimeframe: `${d.singleYearTimeframe}`,
+                  multiYearTimeframe: d.multiYearTimeframe
+                    ? `${d.multiYearTimeframe![0]}-${d.multiYearTimeframe![1]}`
+                    : undefined,
                   value: +d.value, // Gets number representation for float values to fix GraphQL query error
                   valueLowerBound: +d.valueLowerBound,
                   valueUpperBound: +d.valueUpperBound,

@@ -7,7 +7,7 @@ import {
   ButtonGroup,
   useDisclosure,
 } from "@chakra-ui/react";
-import { DataPoint } from "../../../../utils/types";
+import { DataPoint, LocationType } from "../../../../utils/types";
 import { AddDataPointModal } from "../AddDataPointModal";
 import { v4 as uuidv4 } from "uuid";
 import GeographyTag from "./tags/GeographyTag";
@@ -45,27 +45,40 @@ const DataPointRow = ({
     );
   };
 
-  const isDuplicate = (() => {
-    let result = [];
+  const editDataPoint = (uuid: string, field: string, value: any) => {
+    const newDataPoints = dataPoints.map((dataPoint) => {
+      if (dataPoint.uuid === uuid) {
+        if (field === "geography") {
+          const country: LocationType =
+            value === "COUNTRY"
+              ? "CANADA"
+              : value === "REGION"
+              ? "ATLANTIC"
+              : "AB";
 
-    dataPoints.forEach((dp, idx) => {
-      const { uuid, ...dpRest } = dp;
-      const { uuid: uuid2, ...dataPointRest } = dataPoint;
-      if (dpRest === dataPointRest) {
-        result.push(idx);
+          return {
+            ...dataPoint,
+            geography: value,
+            country,
+          };
+        }
+        return {
+          ...dataPoint,
+          [field]: value,
+        };
       }
+      return dataPoint;
     });
-
-    return result.length > 1;
-  })();
+    setDataPoints(newDataPoints);
+  };
 
   return (
     <Tr
       key={idx}
       _hover={{
-        bgColor: isDuplicate ? "red.200" : "gray.50",
+        bgColor: "gray.50",
       }}
-      bgColor={isDuplicate ? "red.100" : "white"}
+      bgColor="white"
     >
       <Td isNumeric>{idx + 1}</Td>
       <Td>
@@ -95,7 +108,7 @@ const DataPointRow = ({
           </ButtonGroup>
         </HStack>
         <AddDataPointModal
-          dataPointUuid={dataPoint.uuid}
+          dataPoint={dataPoint}
           dataPoints={dataPoints}
           setDataPoints={setDataPoints}
           isOpen={isOpen}
@@ -103,10 +116,21 @@ const DataPointRow = ({
         />
       </Td>
       <Td>
-        <GeographyTag type={dataPoint.geography} />
+        <GeographyTag
+          type={dataPoint.geography}
+          setGeography={(geography: string) => {
+            editDataPoint(dataPoint.uuid, "geography", geography);
+          }}
+        />
       </Td>
       <Td>
-        <LocationTag location={dataPoint.country} />
+        <LocationTag
+          location={dataPoint.country}
+          setLocation={(location: LocationType) => {
+            editDataPoint(dataPoint.uuid, "country", location);
+          }}
+          geographyType={dataPoint.geography}
+        />
       </Td>
       <Td isNumeric>
         <ValueTag value={dataPoint.value} />

@@ -1,7 +1,25 @@
-import { Box, Heading } from "@chakra-ui/react";
-import { LocationType } from "../../../../../utils/types";
+import {
+  Box,
+  Button,
+  Heading,
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
+  VStack,
+} from "@chakra-ui/react";
+import { ProvincesTerritories, Regions } from "../../../../../utils/constants";
+import { GeographyType, LocationType } from "../../../../../utils/types";
 
-const LocationTag = ({ location }: { location: LocationType }) => {
+const LocationTag = ({
+  location,
+  setLocation,
+  geographyType,
+}: {
+  location: LocationType;
+  setLocation: (location: LocationType) => void;
+  geographyType: GeographyType;
+}) => {
   const [label, color] = (() => {
     switch (location) {
       case "AB":
@@ -44,9 +62,56 @@ const LocationTag = ({ location }: { location: LocationType }) => {
   })();
 
   return (
-    <Box bgColor={color} p={2} borderRadius="md" display="inline-block">
-      <Heading size="xs">{label}</Heading>
-    </Box>
+    <Popover placement="right">
+      <PopoverTrigger>
+        <Box
+          bgColor={color}
+          p={2}
+          borderRadius="md"
+          display="inline-block"
+          cursor={location !== "CANADA" ? "pointer" : "default"}
+          transition="all 0.2s ease-in-out"
+          _hover={{ transform: location !== "CANADA" && "scale(1.075)" }}
+        >
+          <Heading size="xs">{label}</Heading>
+        </Box>
+      </PopoverTrigger>
+      <PopoverContent w="100%" background="transparent" border="none">
+        <PopoverArrow />
+        <VStack align="stretch" spacing={0}>
+          {geographyType === "PROVINCE_TERRITORY" &&
+            ProvincesTerritories.map((option, idx) => (
+              <Button
+                borderRadius={0}
+                borderTopRadius={idx === 0 ? "md" : 0}
+                borderBottomRadius={
+                  idx === ProvincesTerritories.length - 1 ? "md" : 0
+                }
+                key={option.value}
+                size="sm"
+                isActive={location === option.value}
+                onClick={() => setLocation(option.value as LocationType)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          {geographyType === "REGION" &&
+            Regions.map((option, idx) => (
+              <Button
+                borderRadius={0}
+                borderTopRadius={idx === 0 ? "md" : 0}
+                borderBottomRadius={idx === Regions.length - 1 ? "md" : 0}
+                key={option.value}
+                size="sm"
+                isActive={location === option.value}
+                onClick={() => setLocation(option.value as LocationType)}
+              >
+                {option.label}
+              </Button>
+            ))}
+        </VStack>
+      </PopoverContent>
+    </Popover>
   );
 };
 

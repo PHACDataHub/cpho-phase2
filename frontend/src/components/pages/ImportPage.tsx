@@ -25,7 +25,6 @@ export function ImportPage() {
     const file = event.target.files[0];
     setFileToUpload(file);
     setStatus("idle");
-    console.log("GOT IT!", file);
   };
 
   const handleSubmit = (event: any) => {
@@ -34,7 +33,6 @@ export function ImportPage() {
     if (fileToUpload) {
       setStatus("loading");
       formData.append("file", fileToUpload);
-      console.log("Submit");
       if (fileToUpload) {
         fetch(
           (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
@@ -50,7 +48,6 @@ export function ImportPage() {
             } else {
               setStatus("failure");
             }
-            console.log(res);
           })
           .catch((err) => {
             setStatus("failure");

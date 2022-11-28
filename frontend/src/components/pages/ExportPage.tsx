@@ -1,94 +1,71 @@
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   ButtonGroup,
   Heading,
-  IconButton,
+  Stack,
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Page } from "../template/Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
-import { useSmallScreen } from "../../utils/hooks";
 import { useQuery } from "@apollo/client";
 import { GET_INDICATOR_OVERVIEW } from "../../utils/graphql/queries";
-
-const PossibleIndicatorCard = ({
-  indicator: { name, dataPointCount, id },
-  addSelected,
-  removeSelected,
-}: {
-  indicator: { id: number; name: string; dataPointCount: number };
-  addSelected: (id: number) => void;
-  removeSelected: (id: number) => void;
-}) => {
-  const [selected, setSelected] = useState(false);
-
-  useEffect(() => {
-    if (selected) {
-      addSelected(id);
-    } else {
-      removeSelected(id);
-    }
-  }, [selected, id, addSelected, removeSelected]);
-
-  return (
-    <Box
-      flexGrow={1}
-      p={4}
-      borderRadius="md"
-      minW="200px"
-      bgColor={selected ? "gray.400" : "gray.200"}
-      transition="all 0.2s ease-in-out"
-    >
-      <Box w="100%" display="flex" flexDir="row" justifyContent="space-between">
-        <Heading size="sm">{name}</Heading>
-        <IconButton
-          onClick={() => setSelected(!selected)}
-          isRound
-          size="sm"
-          aria-label="Add indicator to export"
-          icon={selected ? <MinusIcon /> : <AddIcon />}
-        />
-      </Box>
-      <Heading size="sm" fontWeight="normal" fontStyle="italic">
-        {dataPointCount} data point{dataPointCount === 1 ? "" : "s"}
-      </Heading>
-    </Box>
-  );
-};
+import { PossibleIndicatorType } from "../../utils/types";
+import PossibleIndicatorBox from "../molecules/PossibleIndicatorBox";
+import ExportIndicatorList from "../organisms/ExportIndicatorList";
 
 export function ExportPage() {
   const toast = useToast();
   const [fileType, setFileType] = useState<"excel" | "csv" | "sql">("csv");
+  const [fileLoad, setFileLoad] = useState(false);
 
-  const isSmallScreen = useSmallScreen();
+  const [selectedIndicators, setSelectedIndicators] = useState<
+    PossibleIndicatorType[]
+  >([]);
 
-  const [selectedIndicators, setSelectedIndicators] = useState<number[]>([]);
+  const addSelected = useCallback(
+    (ind: PossibleIndicatorType) => {
+      if (!selectedIndicators.includes(ind)) {
+        setSelectedIndicators([...selectedIndicators, ind]);
+      }
+    },
+    [selectedIndicators]
+  );
 
-  const addSelected = (indicatorId: number) => {
-    if (!selectedIndicators.includes(indicatorId)) {
-      setSelectedIndicators([...selectedIndicators, indicatorId]);
-    }
-  };
+  const removeSelected = useCallback(
+    (ind: PossibleIndicatorType) => {
+      if (selectedIndicators.includes(ind)) {
+        const idx = selectedIndicators.indexOf(ind);
+        setSelectedIndicators(
+          selectedIndicators
+            .slice(0, idx)
+            .concat(selectedIndicators.slice(idx + 1))
+        );
+      }
+    },
+    [selectedIndicators]
+  );
 
-  const removeSelected = (indicatorId: number) => {
-    if (selectedIndicators.includes(indicatorId)) {
-      const idx = selectedIndicators.indexOf(indicatorId);
-      setSelectedIndicators(
-        selectedIndicators
-          .slice(0, idx)
-          .concat(selectedIndicators.slice(idx + 1))
-      );
-    }
-  };
+  const toggleSelected = useCallback(
+    (ind: PossibleIndicatorType) => {
+      if (selectedIndicators.includes(ind)) {
+        removeSelected(ind);
+      } else {
+        addSelected(ind);
+      }
+    },
+    [selectedIndicators, addSelected, removeSelected]
+  );
 
   const handleExport = () => {
+    setFileLoad(true);
     const formData = new FormData();
-    formData.append("selectedIndicators", JSON.stringify(selectedIndicators));
+    formData.append(
+      "selectedIndicators",
+      JSON.stringify(selectedIndicators.map((ind) => ind.id))
+    );
     fetch(
       (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
         "api/export",
@@ -117,8 +94,8 @@ export function ExportPage() {
             isClosable: true,
           });
         }
-        console.log(obj);
       })
+      .finally(() => setFileLoad(false))
       .catch((err) => {
         console.log("ERROR", err);
       });
@@ -138,44 +115,64 @@ export function ExportPage() {
   const possibleIndicators = data?.possibleIndicators;
 
   return (
-    <Page title="Export Data" backButton={{ show: true, redirectUrl: "/" }}>
+    <Page title="Export data" backButton={{ show: true, redirectUrl: "/" }}>
       <VStack spacing={8}>
-        <Box
-          w={isSmallScreen ? "95%" : "70%"}
-          my={3}
-          mb={10}
-          display="flex"
-          flexWrap="wrap"
-          gap={3}
-          alignContent="flex-start"
-        >
-          {loading && (
-            <Heading size="lg" mx="auto">
-              Loading...
-            </Heading>
-          )}
-          {error && (
-            <Heading size="lg" mx="auto">
-              Error loading indicators
-            </Heading>
-          )}
-          {possibleIndicators ? (
-            possibleIndicators.length > 0 ? (
-              possibleIndicators.map((ind) => (
-                <PossibleIndicatorCard
-                  addSelected={addSelected}
-                  removeSelected={removeSelected}
-                  key={ind.id}
-                  indicator={ind}
-                />
-              ))
-            ) : (
-              <Heading size="lg" mx="auto">
-                No data found in database
-              </Heading>
-            )
-          ) : null}
-        </Box>
+        {loading && (
+          <Heading size="lg" mx="auto">
+            Loading...
+          </Heading>
+        )}
+        {error && (
+          <Heading size="lg" mx="auto">
+            Error loading indicators
+          </Heading>
+        )}
+
+        {!loading && !error && (
+          <Stack
+            direction={["column", "column", "row"]}
+            spacing={[6, 6, 2]}
+            w={["100%", "100%", "80%"]}
+          >
+            <ExportIndicatorList
+              indicators={
+                possibleIndicators?.filter(
+                  (ind) => !selectedIndicators.includes(ind)
+                ) ?? []
+              }
+              addSelected={addSelected}
+              removeSelected={removeSelected}
+              toggleSelected={toggleSelected}
+            />
+            {selectedIndicators && (
+              <VStack
+                overflow="scroll"
+                align="stretch"
+                w={["100%", "100%", "40%"]}
+                h="50vh"
+              >
+                {selectedIndicators.length > 0 && (
+                  <Heading size="md">Selected indicators</Heading>
+                )}
+                {selectedIndicators.length > 0
+                  ? selectedIndicators.map((obj) => {
+                      return (
+                        <PossibleIndicatorBox
+                          addSelected={addSelected}
+                          removeSelected={removeSelected}
+                          key={obj.id}
+                          indicator={obj}
+                          selected={true}
+                          toggleSelect={() => toggleSelected(obj)}
+                        />
+                      );
+                    })
+                  : null}
+              </VStack>
+            )}
+          </Stack>
+        )}
+
         <ButtonGroup size="lg" isAttached>
           <Button
             leftIcon={<FaFileCsv />}
@@ -195,21 +192,6 @@ export function ExportPage() {
             Excel
           </Button>
         </ButtonGroup>
-        {selectedIndicators.length > 0 && (
-          <>
-            <Heading size="md">
-              You are about to export the following data:
-            </Heading>
-            {selectedIndicators.map(
-              (ind) =>
-                possibleIndicators && (
-                  <Heading key={ind} size="sm">
-                    {possibleIndicators.find((i) => i.id === ind)?.name}
-                  </Heading>
-                )
-            )}
-          </>
-        )}
         <Button
           cursor="pointer"
           colorScheme="green"
@@ -218,18 +200,11 @@ export function ExportPage() {
           download
           isDisabled={selectedIndicators.length < 1}
           onClick={handleExport}
+          loadingText="Exporting..."
+          isLoading={fileLoad}
         >
-          Get Data
+          Download data
         </Button>
-        {/* {csvText && (
-          <Text>
-            Your data is ready! Click{" "}
-            <Button onClick={exportCsv} variant="link">
-              here
-            </Button>{" "}
-            to download
-          </Text>
-        )} */}
       </VStack>
     </Page>
   );

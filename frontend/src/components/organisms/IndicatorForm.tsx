@@ -137,15 +137,13 @@ const IndicatorForm = () => {
         isNextDisabled={step === 3 || indicatorName === ""}
       />
       {step === 1 && (
-        <Box>
-          <IndicatorGenInfo
-            indicatorName={indicatorName}
-            detailedIndicator={detailedIndicator}
-            category={category}
-            subCategory={subCategory}
-            setField={setField}
-          />
-        </Box>
+        <IndicatorGenInfo
+          indicatorName={indicatorName}
+          detailedIndicator={detailedIndicator}
+          category={category}
+          subCategory={subCategory}
+          setField={setField}
+        />
       )}
       {step === 2 && (
         <VStack w="100%">

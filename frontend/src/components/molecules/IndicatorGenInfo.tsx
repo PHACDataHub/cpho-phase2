@@ -34,7 +34,7 @@ const IndicatorGenInfo = ({
   }, [category]);
 
   return (
-    <VStack spacing={5} w="100%">
+    <VStack spacing={5} w={["98%", "75%", "65%", "40%"]}>
       <FormControl isRequired>
         <FormLabel fontSize="2xl" fontWeight="bold">
           Indicator Name

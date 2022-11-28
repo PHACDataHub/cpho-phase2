@@ -66,3 +66,10 @@ export type DataPointField = {
 };
 
 export type FileFormat = keyof typeof FileColumnData;
+
+export type PossibleIndicatorType = {
+  id: number;
+  name: string;
+  dataPointCount: number;
+  category: string;
+};

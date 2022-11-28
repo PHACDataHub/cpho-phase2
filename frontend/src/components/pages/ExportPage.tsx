@@ -5,7 +5,6 @@ import {
   ButtonGroup,
   Heading,
   IconButton,
-  Text,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -69,12 +68,10 @@ export function ExportPage() {
   const isSmallScreen = useSmallScreen();
 
   const [selectedIndicators, setSelectedIndicators] = useState<number[]>([]);
-  const [csvText, setCsvText] = useState("");
 
   const addSelected = (indicatorId: number) => {
     if (!selectedIndicators.includes(indicatorId)) {
       setSelectedIndicators([...selectedIndicators, indicatorId]);
-      if (csvText) setCsvText("");
     }
   };
 
@@ -86,7 +83,6 @@ export function ExportPage() {
           .slice(0, idx)
           .concat(selectedIndicators.slice(idx + 1))
       );
-      if (csvText) setCsvText("");
     }
   };
 
@@ -103,33 +99,29 @@ export function ExportPage() {
     )
       .then(async (res) => {
         const obj = await res.text();
-        setCsvText(obj);
+        if (obj) {
+          const blob = new Blob([obj], { type: "text/csv;charset=utf-8" });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.setAttribute("href", url);
+          link.setAttribute("download", "data.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          toast({
+            title: "Data Downloaded",
+            description:
+              "The data you requested has been downloaded to your computer",
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
         console.log(obj);
       })
       .catch((err) => {
         console.log("ERROR", err);
       });
-  };
-
-  const exportCsv = () => {
-    if (csvText) {
-      const blob = new Blob([csvText], { type: "text/csv;charset=utf-8" });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", "data.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast({
-        title: "Data Downloaded",
-        description:
-          "The data you requested has been downloaded to your computer",
-        status: "success",
-        duration: 4000,
-        isClosable: true,
-      });
-    }
   };
 
   const { loading, error, data } = useQuery<{
@@ -229,7 +221,7 @@ export function ExportPage() {
         >
           Get Data
         </Button>
-        {csvText && (
+        {/* {csvText && (
           <Text>
             Your data is ready! Click{" "}
             <Button onClick={exportCsv} variant="link">
@@ -237,7 +229,7 @@ export function ExportPage() {
             </Button>{" "}
             to download
           </Text>
-        )}
+        )} */}
       </VStack>
     </Page>
   );

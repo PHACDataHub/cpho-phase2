@@ -1,7 +1,7 @@
 import { VStack, Text, Spinner } from "@chakra-ui/react";
-import { Page } from "./Page";
+import { Page } from "../template/Page";
 import { useQuery } from "@apollo/client";
-import { GET_INDICATORS_AND_IDS } from "../utils/graphql/queries";
+import { GET_INDICATORS_AND_IDS } from "../../utils/graphql/queries";
 
 export function PastSubmissions() {
   const { loading, error, data } = useQuery<{

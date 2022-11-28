@@ -11,21 +11,45 @@ export type SubCategory = {
   category: number;
 };
 
+export type LocationType =
+  | "AB"
+  | "BC"
+  | "MB"
+  | "NB"
+  | "NL"
+  | "NS"
+  | "NT"
+  | "NU"
+  | "ON"
+  | "PE"
+  | "QC"
+  | "SK"
+  | "YT"
+  | "CANADA"
+  | "ATLANTIC"
+  | "PRAIRIE"
+  | "TERRITORIES";
+
+export type GeographyType = "COUNTRY" | "PROVINCE_TERRITORY" | "REGION";
+
+export type DataQualityType = "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
+
 export type DataPoint = {
+  uuid: string;
   indicatorId?: number;
-  country: string;
-  geography: string;
+  country: LocationType;
+  geography: GeographyType;
   sex: string;
   gender: string;
   ageGroup: string;
   ageGroupType: string;
-  dataQuality: string;
+  dataQuality: DataQualityType;
   value: number;
   valueLowerBound: number;
   valueUpperBound: number;
   valueUnit: string;
-  singleYearTimeframe?: string;
-  multiYearTimeframe?: string;
+  singleYearTimeframe?: number;
+  multiYearTimeframe?: [number, number];
 };
 
 export type DataPointField = {
@@ -42,3 +66,10 @@ export type DataPointField = {
 };
 
 export type FileFormat = keyof typeof FileColumnData;
+
+export type PossibleIndicatorType = {
+  id: number;
+  name: string;
+  dataPointCount: number;
+  category: string;
+};

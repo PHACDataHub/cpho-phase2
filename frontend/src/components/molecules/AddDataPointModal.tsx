@@ -24,84 +24,87 @@ import {
   IconButton,
   Divider,
 } from "@chakra-ui/react";
-import { FormEvent, useState } from "react";
-import { DataPoint } from "../../utils/types";
+import { FormEvent, useEffect, useState } from "react";
+import { DataPoint, LocationType } from "../../utils/types";
 import { IoIosGlobe, IoMdClose } from "react-icons/io";
 import { CgHashtag } from "react-icons/cg";
 import { AiOutlineCalendar, AiOutlineWarning } from "react-icons/ai";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { FaRegThumbsUp } from "react-icons/fa";
+import { v4 as uuidv4 } from "uuid";
 
 export function AddDataPointModal({
-  dataPointIdx,
-  dataPoints,
-  setDataPoints,
+  dataPoint,
+  yearType,
+  setYearType,
+  replaceDataPoint,
+  addDataPoint,
   isOpen,
   onClose,
 }: {
-  dataPointIdx?: number;
-  dataPoints: DataPoint[];
-  setDataPoints?: (dataPoints: DataPoint[]) => void;
+  dataPoint?: DataPoint;
+  yearType: "SINGLE" | "RANGE";
+  setYearType: (yearType: "SINGLE" | "RANGE") => void;
+  replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
+  addDataPoint: (dataPoint: DataPoint) => void;
   isOpen: boolean;
   onClose: () => void;
 }): JSX.Element {
-  const dataPoint = dataPoints[dataPointIdx!];
+  const [dp, setDp] = useState<DataPoint>(
+    dataPoint ?? {
+      uuid: uuidv4(),
+      country: "CANADA",
+      geography: "COUNTRY",
+      sex: "",
+      gender: "",
+      ageGroup: "",
+      ageGroupType: "",
+      dataQuality: "ACCEPTABLE",
+      value: 0,
+      valueLowerBound: 0,
+      valueUpperBound: 0,
+      valueUnit: "PERCENT",
+      singleYearTimeframe: 2022,
+    }
+  );
 
-  const [fields, setFields] = useState<{
-    yearType: "SINGLE" | "RANGE";
-    year1: number;
-    year2: number;
-    geographyType: "COUNTRY" | "REGION" | "PROVINCE_TERRITORY";
-    location: string;
-    value: string;
-    valueUnit: string;
-    valueUnitOther: string;
-    valueUpperBound?: string;
-    valueLowerBound?: string;
-    dataQuality: "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
-  }>({
-    yearType: dataPoint
-      ? dataPoint.singleYearTimeframe
-        ? "SINGLE"
-        : "RANGE"
-      : "SINGLE",
-    year1: dataPoint
-      ? (dataPoint.singleYearTimeframe as unknown as number) ?? 2022
-      : 2022,
-    year2: dataPoint
-      ? (dataPoint.singleYearTimeframe as unknown as number) ?? 2022
-      : 2022,
-    geographyType: dataPoint
-      ? (dataPoint.geography as "COUNTRY" | "REGION" | "PROVINCE_TERRITORY")
-      : "COUNTRY",
-    location: dataPoint ? dataPoint.country : "",
-    value: dataPoint ? String(dataPoint.value) : "0",
-    valueUnit: dataPoint ? dataPoint.valueUnit : "",
-    valueUnitOther: "",
-    valueUpperBound: dataPoint ? String(dataPoint.valueUpperBound) : "0",
-    valueLowerBound: dataPoint ? String(dataPoint.valueLowerBound) : "0",
-    dataQuality: dataPoint
-      ? (dataPoint.dataQuality as
-          | "CAUTION"
-          | "ACCEPTABLE"
-          | "GOOD"
-          | "EXCELLENT")
-      : "ACCEPTABLE",
-  });
+  const [valueUnitOther, setValueUnitOther] = useState<string>("");
 
   const {
-    yearType,
-    year1,
-    year2,
-    geographyType,
-    location,
+    uuid,
+    geography,
+    country,
     value,
+    singleYearTimeframe,
+    multiYearTimeframe,
     valueLowerBound,
     valueUpperBound,
     dataQuality,
     valueUnit,
-    valueUnitOther,
-  } = fields;
+  } = dp ?? {};
+
+  const [fromYear, setFromYear] = useState<number>(
+    singleYearTimeframe ?? (multiYearTimeframe && multiYearTimeframe[0]) ?? 2022
+  );
+  const [toYear, setToYear] = useState<number>(
+    singleYearTimeframe ?? (multiYearTimeframe && multiYearTimeframe[1]) ?? 2022
+  );
+
+  useEffect(() => {
+    if (yearType === "SINGLE") {
+      setFromYear(singleYearTimeframe ?? 2022);
+      setToYear(singleYearTimeframe ?? 2022);
+    } else {
+      setFromYear((multiYearTimeframe && multiYearTimeframe[0]) ?? 2022);
+      setToYear((multiYearTimeframe && multiYearTimeframe[1]) ?? 2022);
+    }
+  }, [singleYearTimeframe, multiYearTimeframe, yearType]);
+
+  const [tempValue, setTempValue] = useState(String(value));
+
+  useEffect(() => {
+    setTempValue(String(value));
+  }, [value]);
 
   const [showUpperBound, setShowUpperBound] = useState(false);
   const [showLowerBound, setShowLowerBound] = useState(false);
@@ -111,37 +114,38 @@ export function AddDataPointModal({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("HEY");
     const point: DataPoint = {
-      country: location,
-      geography: geographyType,
+      uuid,
+      country,
+      geography,
       sex: "",
       gender: "",
       ageGroup: "",
       ageGroupType: "",
       dataQuality,
-      value: Number(value),
+      value: Number(tempValue),
       valueLowerBound: Number(valueLowerBound),
       valueUpperBound: Number(valueUpperBound),
-      valueUnit: valueUnit === "OTHER" ? valueUnitOther : valueUnit,
-      singleYearTimeframe: yearType === "SINGLE" ? `${year1}` : undefined,
-      multiYearTimeframe:
-        yearType === "RANGE" ? `${year1}-${year2}` : undefined,
+      valueUnit: valueUnitOther ? valueUnitOther : valueUnit,
+      singleYearTimeframe: yearType === "SINGLE" ? fromYear : undefined,
+      multiYearTimeframe: yearType === "RANGE" ? [fromYear, toYear] : undefined,
     };
 
-    if (setDataPoints) {
-      if (dataPoint) {
-        setDataPoints([
-          ...dataPoints.slice(0, dataPointIdx),
-          point,
-          ...dataPoints.slice(dataPointIdx! + 1),
-        ]);
-      } else {
-        setDataPoints([...dataPoints, point]);
-      }
-      onClose();
+    if (dataPoint) {
+      replaceDataPoint(uuid, point);
+    } else {
+      addDataPoint(point);
     }
+    onClose();
   };
+
+  useEffect(() => {
+    if (dataPoint) {
+      setDp({
+        ...dataPoint,
+      });
+    }
+  }, [dataPoint]);
 
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
@@ -164,20 +168,25 @@ export function AddDataPointModal({
                   <ButtonGroup isAttached>
                     <Button
                       size="sm"
-                      isActive={geographyType === "COUNTRY"}
-                      onClick={() =>
-                        setFields({ ...fields, geographyType: "COUNTRY" })
-                      }
+                      isActive={geography === "COUNTRY"}
+                      onClick={() => {
+                        setDp({
+                          ...dp,
+                          geography: "COUNTRY",
+                          country: "CANADA",
+                        });
+                      }}
                     >
                       Canada
                     </Button>
                     <Button
                       size="sm"
-                      isActive={geographyType === "PROVINCE_TERRITORY"}
+                      isActive={geography === "PROVINCE_TERRITORY"}
                       onClick={() =>
-                        setFields({
-                          ...fields,
-                          geographyType: "PROVINCE_TERRITORY",
+                        setDp({
+                          ...dp,
+                          geography: "PROVINCE_TERRITORY",
+                          country: "AB",
                         })
                       }
                     >
@@ -185,33 +194,37 @@ export function AddDataPointModal({
                     </Button>
                     <Button
                       size="sm"
-                      isActive={geographyType === "REGION"}
+                      isActive={geography === "REGION"}
                       onClick={() =>
-                        setFields({ ...fields, geographyType: "REGION" })
+                        setDp({
+                          ...dp,
+                          geography: "REGION",
+                          country: "ATLANTIC",
+                        })
                       }
                     >
                       Region
                     </Button>
                   </ButtonGroup>
                 </FormControl>
-                {geographyType !== "COUNTRY" && (
+                {geography !== "COUNTRY" && (
                   <FormControl isRequired>
                     <Select
                       size="sm"
                       placeholder={`Select ${
-                        geographyType === "PROVINCE_TERRITORY"
+                        geography === "PROVINCE_TERRITORY"
                           ? "Province/Territory"
                           : "Region"
                       }`}
-                      value={
-                        location ??
-                        (geographyType === "REGION" ? "ATLANTIC" : "AB")
-                      }
+                      value={country}
                       onChange={(event) =>
-                        setFields({ ...fields, location: event.target.value })
+                        setDp({
+                          ...dp,
+                          country: event.target.value as LocationType,
+                        })
                       }
                     >
-                      {geographyType === "PROVINCE_TERRITORY" && (
+                      {geography === "PROVINCE_TERRITORY" && (
                         <>
                           <option value="AB">Alberta</option>
                           <option value="BC">British Columbia</option>
@@ -228,7 +241,7 @@ export function AddDataPointModal({
                           <option value="YT">Yukon</option>
                         </>
                       )}
-                      {geographyType === "REGION" && (
+                      {geography === "REGION" && (
                         <>
                           <option value="ATLANTIC">Atlantic</option>
                           <option value="PRAIRIE">Prairie</option>
@@ -254,13 +267,8 @@ export function AddDataPointModal({
                   maxW="150px"
                   precision={2}
                   step={0.01}
-                  value={value}
-                  onChange={(val) =>
-                    setFields({
-                      ...fields,
-                      value: val,
-                    })
-                  }
+                  value={tempValue}
+                  onChange={(valueString) => setTempValue(valueString)}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -274,7 +282,10 @@ export function AddDataPointModal({
                     size="sm"
                     isActive={valueUnit === "PERCENT"}
                     onClick={() =>
-                      setFields({ ...fields, valueUnit: "PERCENT" })
+                      setDp({
+                        ...dp,
+                        valueUnit: "PERCENT",
+                      })
                     }
                   >
                     %
@@ -282,14 +293,14 @@ export function AddDataPointModal({
                   <Button
                     size="sm"
                     isActive={valueUnit === "RATE"}
-                    onClick={() => setFields({ ...fields, valueUnit: "RATE" })}
+                    onClick={() => setDp({ ...dp, valueUnit: "RATE" })}
                   >
                     Per 100k
                   </Button>
                   <Button
                     size="sm"
                     isActive={valueUnit === "OTHER"}
-                    onClick={() => setFields({ ...fields, valueUnit: "OTHER" })}
+                    onClick={() => setDp({ ...dp, valueUnit: "OTHER" })}
                   >
                     Other
                   </Button>
@@ -301,12 +312,7 @@ export function AddDataPointModal({
                     maxW="150px"
                     size="sm"
                     value={valueUnitOther}
-                    onChange={(event) =>
-                      setFields({
-                        ...fields,
-                        valueUnitOther: event.target.value,
-                      })
-                    }
+                    onChange={(event) => setValueUnitOther(event.target.value)}
                     placeholder="Enter unit"
                   />
                 )}
@@ -335,9 +341,9 @@ export function AddDataPointModal({
                       step={0.01}
                       value={valueUpperBound}
                       onChange={(val) =>
-                        setFields({
-                          ...fields,
-                          valueUpperBound: val,
+                        setDp({
+                          ...dp,
+                          valueUpperBound: Number(val),
                         })
                       }
                     >
@@ -375,9 +381,9 @@ export function AddDataPointModal({
                       step={0.01}
                       value={valueLowerBound}
                       onChange={(val) =>
-                        setFields({
-                          ...fields,
-                          valueLowerBound: val,
+                        setDp({
+                          ...dp,
+                          valueLowerBound: Number(val),
                         })
                       }
                     >
@@ -409,18 +415,14 @@ export function AddDataPointModal({
                   <ButtonGroup isAttached>
                     <Button
                       size="sm"
-                      onClick={() =>
-                        setFields({ ...fields, yearType: "SINGLE" })
-                      }
+                      onClick={() => setYearType("SINGLE")}
                       isActive={yearType === "SINGLE"}
                     >
                       Single Year
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() =>
-                        setFields({ ...fields, yearType: "RANGE" })
-                      }
+                      onClick={() => setYearType("RANGE")}
                       isActive={yearType === "RANGE"}
                     >
                       Range
@@ -435,13 +437,8 @@ export function AddDataPointModal({
                     <NumberInput
                       min={1900}
                       max={3000}
-                      value={year1}
-                      onChange={(val) =>
-                        setFields({
-                          ...fields,
-                          year1: val as unknown as number,
-                        })
-                      }
+                      value={fromYear}
+                      onChange={(val) => setFromYear(Number(val))}
                       id="dp_date1"
                       precision={0}
                     >
@@ -460,12 +457,11 @@ export function AddDataPointModal({
                       <NumberInput
                         min={1900}
                         max={3000}
-                        value={year2}
+                        value={toYear}
                         onChange={(val) =>
-                          setFields({
-                            ...fields,
-                            year2: val as unknown as number,
-                          })
+                          setToYear(
+                            Number(val) > fromYear ? Number(val) : fromYear
+                          )
                         }
                         id="dp_date2"
                         precision={0}
@@ -496,7 +492,10 @@ export function AddDataPointModal({
                   leftIcon={<Icon as={AiOutlineWarning} />}
                   isActive={dataQuality === "CAUTION"}
                   onClick={() =>
-                    setFields({ ...fields, dataQuality: "CAUTION" })
+                    setDp({
+                      ...dp,
+                      dataQuality: "CAUTION",
+                    })
                   }
                 >
                   Caution
@@ -506,7 +505,10 @@ export function AddDataPointModal({
                   leftIcon={<Icon as={FaRegThumbsUp} />}
                   isActive={dataQuality === "ACCEPTABLE"}
                   onClick={() =>
-                    setFields({ ...fields, dataQuality: "ACCEPTABLE" })
+                    setDp({
+                      ...dp,
+                      dataQuality: "ACCEPTABLE",
+                    })
                   }
                 >
                   Acceptable
@@ -515,7 +517,7 @@ export function AddDataPointModal({
                   size="sm"
                   leftIcon={<Icon as={BsStar} />}
                   isActive={dataQuality === "GOOD"}
-                  onClick={() => setFields({ ...fields, dataQuality: "GOOD" })}
+                  onClick={() => setDp({ ...dp, dataQuality: "GOOD" })}
                 >
                   Good
                 </Button>
@@ -524,7 +526,10 @@ export function AddDataPointModal({
                   leftIcon={<Icon as={BsStarFill} />}
                   isActive={dataQuality === "EXCELLENT"}
                   onClick={() =>
-                    setFields({ ...fields, dataQuality: "EXCELLENT" })
+                    setDp({
+                      ...dp,
+                      dataQuality: "EXCELLENT",
+                    })
                   }
                 >
                   Excellent

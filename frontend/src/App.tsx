@@ -1,10 +1,10 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AddIndicator } from "./pages/AddIndicator";
-import { ExportPage } from "./pages/ExportPage";
-import { HomePage } from "./pages/HomePage";
-import { ImportPage } from "./pages/ImportPage";
-import { PastSubmissions } from "./pages/PastSubmission";
+import { AddIndicator } from "./components/pages/AddIndicator";
+import { ExportPage } from "./components/pages/ExportPage";
+import { HomePage } from "./components/pages/HomePage";
+import { ImportPage } from "./components/pages/ImportPage";
+import { PastSubmissions } from "./components/pages/PastSubmission";
 import "@fontsource/noto-sans/400.css";
 import "@fontsource/noto-sans/700.css";
 import "@fontsource/noto-sans/600.css";

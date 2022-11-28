@@ -48,6 +48,76 @@ export const sub_categories: SubCategory[] = [
   },
 ];
 
+export const ProvincesTerritories = [
+  {
+    value: "AB",
+    label: "Alberta",
+  },
+  {
+    value: "BC",
+    label: "British Columbia",
+  },
+  {
+    value: "MB",
+    label: "Manitoba",
+  },
+  {
+    value: "NB",
+    label: "New Brunswick",
+  },
+  {
+    value: "NL",
+    label: "Newfoundland and Labrador",
+  },
+  {
+    value: "NT",
+    label: "Northwest Territories",
+  },
+  {
+    value: "NS",
+    label: "Nova Scotia",
+  },
+  {
+    value: "NU",
+    label: "Nunavut",
+  },
+  {
+    value: "ON",
+    label: "Ontario",
+  },
+  {
+    value: "PE",
+    label: "Prince Edward Island",
+  },
+  {
+    value: "QC",
+    label: "Quebec",
+  },
+  {
+    value: "SK",
+    label: "Saskatchewan",
+  },
+  {
+    value: "YT",
+    label: "Yukon",
+  },
+];
+
+export const Regions = [
+  {
+    value: "ATLANTIC",
+    label: "Atlantic",
+  },
+  {
+    value: "PRAIRIE",
+    label: "Prairie",
+  },
+  {
+    value: "TERRITORIES",
+    label: "Territories",
+  },
+];
+
 export const IndicatorDataFields: DataPointField[] = [
   {
     name: "Geography",
@@ -77,76 +147,7 @@ export const IndicatorDataFields: DataPointField[] = [
     type: "select",
     dpField: "country",
     required: true,
-    options: [
-      {
-        value: "AB",
-        label: "Alberta",
-      },
-      {
-        value: "BC",
-        label: "British Columbia",
-      },
-      {
-        value: "MN",
-        label: "Manitoba",
-      },
-      {
-        value: "NB",
-        label: "New Brunswick",
-      },
-      {
-        value: "NL",
-        label: "Newfoundland and Labrador",
-      },
-      {
-        value: "NT",
-        label: "Northwest Territories",
-      },
-      {
-        value: "NS",
-        label: "Nova Scotia",
-      },
-      {
-        value: "NU",
-        label: "Nunavut",
-      },
-      {
-        value: "ON",
-        label: "Ontario",
-      },
-      {
-        value: "PE",
-        label: "Prince Edward Island",
-      },
-      {
-        value: "QC",
-        label: "Quebec",
-      },
-      {
-        value: "SK",
-        label: "Saskatchewan",
-      },
-      {
-        value: "YT",
-        label: "Yukon",
-      },
-      {
-        value: "CANADA",
-        label: "Canada",
-      },
-      {
-        value: "ATLANTIC",
-        label: "Atlantic",
-      },
-      {
-        value: "PRAIRIE",
-        label: "Prairie",
-      },
-      {
-        value: "TERRITORIES",
-        label: "Territories",
-      },
-    ],
+    options: [],
     placeholder: "e.g. Canada; Ontario",
   },
   {

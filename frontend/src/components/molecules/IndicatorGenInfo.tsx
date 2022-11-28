@@ -6,9 +6,8 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { categories, sub_categories } from "../../../utils/constants";
-import { useSmallScreen } from "../../../utils/hooks";
-import { SubCategory } from "../../../utils/types";
+import { categories, sub_categories } from "../../utils/constants";
+import { SubCategory } from "../../utils/types";
 
 type Props = {
   indicatorName: string;
@@ -25,8 +24,6 @@ const IndicatorGenInfo = ({
   subCategory,
   setField,
 }: Props) => {
-  const smallScreen = useSmallScreen();
-
   const [filteredSubCategories, setFilteredSubCategories] =
     useState<SubCategory[]>(sub_categories);
 
@@ -37,7 +34,7 @@ const IndicatorGenInfo = ({
   }, [category]);
 
   return (
-    <VStack spacing={5} w={smallScreen ? "90%" : "50%"}>
+    <VStack spacing={5} w={["98%", "75%", "65%", "40%"]}>
       <FormControl isRequired>
         <FormLabel fontSize="2xl" fontWeight="bold">
           Indicator Name

@@ -1,8 +1,13 @@
 # Virtual environment
-venv
+**/venv
 
 # Cache
-__pycache__/
+**/__pycache__/
 
-# Variables
-.env
+# environment variables
+**/*.env
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and PDM
+**/__pypackages__/
+
+**/.pdm.toml

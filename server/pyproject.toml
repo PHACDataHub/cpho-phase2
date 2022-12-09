@@ -5,6 +5,8 @@ description = ""
 authors = [
     {name = "Eduardo Szeckir", email = "eduardo.szeckir@phac-aspc.gc.ca"},
 ]
+requires-python = ">=3.8"
+license = {text = "MIT"}
 dependencies = [
     "aniso8601==9.0.1",
     "asgiref==3.5.2",
@@ -30,8 +32,6 @@ dependencies = [
     "tzdata==2022.5",
     "colorama>=0.4.6",
 ]
-requires-python = ">=3.8"
-license = {text = "MIT"}
 [project.optional-dependencies]
 
 [tool.pdm]
@@ -43,3 +43,13 @@ dev = [
 [build-system]
 requires = ["pdm-pep517>=1.0.0"]
 build-backend = "pdm.pep517.api"
+
+[tool.pdm.scripts]
+start.cmd = "python manage.py runserver localhost:8000"
+start.env_file = "server.env"
+migrate = "python manage.py migrate"
+db = "docker run --name pg -p 5432:5432 -d --env-file postgres.env postgres"
+wait ={shell = "sleep 1"}
+stop = {shell = "docker stop pg && docker rm pg"}
+dev = {composite = ["db", "wait", "migrate", "start"]}
+

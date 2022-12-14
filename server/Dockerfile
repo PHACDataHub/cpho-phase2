@@ -1,52 +1,39 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.11.0-buster
+# build stage
+FROM python:3-alpine AS builder
+# Add build dependencies
+RUN apk add -U --no-cache libpq gcc python3-dev musl-dev postgresql-dev
+# install PDM
+RUN pip install pdm
 
-ENV PORT_NUM=8000
+WORKDIR /cpho
+# copy project files in
+COPY . .
 
+# Install deps in ./__pypackages__ as per PEP 582
+RUN pdm config python.use_venv False && pdm install --prod --no-lock --no-editable
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
+# Build the production image
+FROM python:3-alpine
 
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
+# Make Python play nice with containers.
+ENV PYTHONUNBUFFERED=1, PYTHONDONTWRITEBYTECODE=1
+# Tell the interpreter where to look to resolve import statements.
+ENV PYTHONPATH=/home/nonroot/cpho/__pypackages__/3.11/lib
 
-# Install NC and locales
-RUN \
-  apt-get update && \
-  apt-get install -y netcat locales libpq-dev
+# Add a nonroot user for running our process
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
 
-# Add Canadian locales
-RUN \
-  sed -i -e 's/# en_CA.UTF-8 UTF-8/en_CA.UTF-8 UTF-8/' /etc/locale.gen && \
-  sed -i -e 's/# fr_CA.UTF-8 UTF-8/fr_CA.UTF-8 UTF-8/' /etc/locale.gen && \
-  dpkg-reconfigure --frontend=noninteractive locales
+# Install the runtime dependency of psycopg
+RUN apk add -U --no-cache libpq
 
-WORKDIR /server
+# Retrieve packages from build stage
+COPY --from=builder /cpho/__pypackages__ /home/nonroot/cpho/__pypackages__
+# Copy in the code as well
+COPY --from=builder /cpho /home/nonroot/cpho
+COPY --from=builder /cpho/server.py /home/nonroot/cpho/server.py
 
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN \
-  adduser -u 5678 --disabled-password --gecos "" appuser && \
-  mkdir /env && \
-  chown appuser /env
-
-USER 5678
-
-# Install pip requirements
-COPY requirements.txt ./
-RUN \
-  python -mvenv /env && \
-  /env/bin/python -m pip install -r requirements.txt
-
-
-# Make our virtual env the default python
-ENV PATH="/env/bin:$PATH"
-
-# Set the TMP variable to move pytest_cache outside of our working directory
-ENV TMP=/tmp
-
-# run entrypoint.sh
-ENTRYPOINT ["/server/entrypoint.sh"]
-
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+WORKDIR /home/nonroot/
+# Run the process with a nonroot user
+USER nonroot
+# Run the app with Waitress:
+CMD ["python", "cpho/server.py"]

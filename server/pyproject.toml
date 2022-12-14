@@ -22,7 +22,6 @@ dependencies = [
     "pathspec==0.10.1",
     "platformdirs==2.5.2",
     "promise==2.3",
-    "psycopg2-binary==2.9.5",
     "python-decouple==3.6",
     "pytz==2022.6",
     "six==1.16.0",
@@ -31,6 +30,8 @@ dependencies = [
     "tomli==2.0.1",
     "tzdata==2022.5",
     "colorama>=0.4.6",
+    "waitress>=2.1.2",
+    "psycopg2>=2.9.5",
 ]
 [project.optional-dependencies]
 

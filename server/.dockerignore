@@ -1,4 +1,7 @@
 __pypackages__
 README.md
-pyproject.toml
-pdm.lock
+.pdm.toml
+.pytest_cache
+.dockerignore
+.python-version
+*.env

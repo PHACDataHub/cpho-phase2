@@ -3,7 +3,8 @@ services:
   postgres:
     image: postgres:alpine
     env_file: ./server/postgres.env
-    network_mode: host
+    ports:
+      - 5432:5432
   migrations:
     build: ./server
     working_dir: /server
@@ -14,7 +15,6 @@ services:
       source: ./server
       target: /server
     command: python manage.py migrate
-    network_mode: host
     depends_on:
       - postgres
   server:
@@ -29,7 +29,6 @@ services:
       source: ./server
       target: /server
     command: python manage.py runserver 0.0.0.0:8000
-    network_mode: host
     depends_on:
       - migrations
   frontend:
@@ -43,4 +42,3 @@ services:
         target: /frontend
     depends_on:
       - server
-    network_mode: host

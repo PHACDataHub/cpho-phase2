@@ -2,6 +2,7 @@ import { VStack, Text, Spinner } from "@chakra-ui/react";
 import { Page } from "../template/Page";
 import { useQuery } from "@apollo/client";
 import { GET_INDICATORS_AND_IDS } from "../../utils/graphql/queries";
+import PastIndicatorBox from "../molecules/PastIndicatorBox";
 
 export function PastSubmissions() {
   const { loading, error, data } = useQuery<{
@@ -23,12 +24,10 @@ export function PastSubmissions() {
       <VStack>
         {loading && <Spinner />}
         {error && <Text>Error loading indicators</Text>}
-        {indicators ? (
-          indicators.map(({ id, indicator }) => (
-            <Text key={id}>{indicator}</Text>
-          ))
+        {indicators && indicators?.length > 0 ? (
+          indicators?.map(({ id, indicator }) => <PastIndicatorBox id={id} />)
         ) : (
-          <Spinner />
+          <Text>No indicators found</Text>
         )}
       </VStack>
     </Page>

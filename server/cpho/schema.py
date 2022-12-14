@@ -36,6 +36,7 @@ class DataPointArgsInput(convert_serializer_to_input_type(DataPointSerializer)):
 
 class Query(graphene.ObjectType):
     indicators = graphene.List(IndicatorType)
+    indicator = graphene.Field(IndicatorType, id=graphene.Int())
     indicator_data = graphene.List(IndicatorDataType)
     possible_indicators = graphene.List(PossibleIndicatorResponseType)
 
@@ -62,6 +63,13 @@ class Query(graphene.ObjectType):
                 )
             )
         return response
+
+    def resolve_indicator(root, info, **kwargs):
+        # Querying a single object
+        id = kwargs.get('id')
+        if id is not None:
+            return Indicator.objects.get(pk=id)
+        return None
 
 # Mutations
 

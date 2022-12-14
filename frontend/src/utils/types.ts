@@ -73,3 +73,12 @@ export type PossibleIndicatorType = {
   dataPointCount: number;
   category: string;
 };
+
+export type Indicator = {
+  category: string;
+  topic: string;
+  indicator: string;
+  detailedIndicator: string;
+  subIndicatorMeasurement: string;
+  indicatordataSet: DataPoint[];
+};

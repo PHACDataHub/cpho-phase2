@@ -27,3 +27,36 @@ export const CREATE_INDICATOR = gql`
     }
   }
 `;
+
+export const MODIFY_INDICATOR = gql`
+  mutation ModifyIndicator(
+    $category: String!
+    $dataPoints: [DataPointArgsInput]!
+    $detailedIndicator: String!
+    $id: Int!
+    $indicator: String!
+    $subIndicatorMeasurement: String
+    $topic: String!
+  ) {
+    modifyIndicator(
+      category: $category
+      dataPoints: $dataPoints
+      detailedIndicator: $detailedIndicator
+      id: $id
+      indicator: $indicator
+      subIndicatorMeasurement: $subIndicatorMeasurement
+      topic: $topic
+    ) {
+      success
+      indicator {
+        indicator
+        topic
+        category
+      }
+      dataPoints {
+        country
+        geography
+      }
+    }
+  }
+`;

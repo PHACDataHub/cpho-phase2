@@ -23,6 +23,7 @@ export const GET_INDICATORS_AND_IDS = gql`
 export const GET_INDICATOR_DATA = gql`
   query ($id: Int!) {
     indicator(id: $id) {
+      id
       category
       topic
       indicator

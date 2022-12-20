@@ -35,12 +35,12 @@ export function DataPointTable({
         <Tbody>
           {dataPoints.map((dataPoint) => (
             <DataPointRow
-              key={dataPoint.uuid}
+              key={dataPoint.id}
               dataPoint={dataPoint}
               dataPoints={dataPoints}
               editDataPoint={editDataPoint}
-              onDelete={() => deleteDataPoint(dataPoint.uuid)}
-              onDuplicate={() => duplicateDataPoint(dataPoint.uuid)}
+              onDelete={() => deleteDataPoint(dataPoint.id)}
+              onDuplicate={() => duplicateDataPoint(dataPoint.id)}
               replaceDataPoint={replaceDataPoint}
               addDataPoint={addDataPoint}
             />

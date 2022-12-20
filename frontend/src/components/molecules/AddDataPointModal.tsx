@@ -52,7 +52,7 @@ export function AddDataPointModal({
 }): JSX.Element {
   const [dp, setDp] = useState<DataPoint>(
     dataPoint ?? {
-      uuid: uuidv4(),
+      id: uuidv4(),
       country: "CANADA",
       geography: "COUNTRY",
       sex: "",
@@ -71,7 +71,7 @@ export function AddDataPointModal({
   const [valueUnitOther, setValueUnitOther] = useState<string>("");
 
   const {
-    uuid,
+    id,
     geography,
     country,
     value,
@@ -115,7 +115,7 @@ export function AddDataPointModal({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const point: DataPoint = {
-      uuid,
+      id,
       country,
       geography,
       sex: "",
@@ -132,7 +132,7 @@ export function AddDataPointModal({
     };
 
     if (dataPoint) {
-      replaceDataPoint(uuid, point);
+      replaceDataPoint(id, point);
     } else {
       addDataPoint(point);
     }

@@ -102,9 +102,65 @@ class CreateIndicator(graphene.Mutation):
 
         return CreateIndicator(indicator=indicator, dataPoints=dataPoints)
 
+class ModifyIndicator(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+        category = graphene.String(required=True)
+        topic = graphene.String(required=True)
+        indicator = graphene.String(required=True)
+        detailedIndicator = graphene.String(required=True)
+        subIndicatorMeasurement = graphene.String()
+        dataPoints = graphene.List(DataPointArgsInput, required=True)
+        
+        
+    success = graphene.Boolean()
+    indicator = graphene.Field(IndicatorType)
+    dataPoints = graphene.List(IndicatorDataType)
+    
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        points = kwargs.pop('dataPoints')
+        id = kwargs.pop('id')
+        category = kwargs.pop('category')
+        topic = kwargs.pop('topic')
+        indicatorName = kwargs.pop('indicator')
+        detailedIndicator = kwargs.pop('detailedIndicator')
+        subIndicatorMeasurement = kwargs.pop('subIndicatorMeasurement')
+
+        try:
+            indicatorObj = Indicator.objects.get(id=id)
+            indicatorObj.category = category
+            indicatorObj.topic = topic
+            indicatorObj.indicator = indicatorName
+            indicatorObj.detailed_indicator = detailedIndicator
+            indicatorObj.sub_indicator_measurement = subIndicatorMeasurement    
+            indicatorObj.save()
+
+            dataPoints = []
+            pastPoints = IndicatorData.objects.filter(indicator_id=id)
+            pastPoints.delete()
+            for point in points:
+                p = IndicatorData.objects.create(
+                    indicator=indicatorObj,
+                    **point
+                )
+                p.save()
+                dataPoints.append(p)
+
+            return ModifyIndicator(indicator=indicatorObj, dataPoints=dataPoints, success=True)
+
+        except Indicator.DoesNotExist:
+
+            print("Could not find")
+            return ModifyIndicator(indicator=None, dataPoints=None, success=False)
+
+        except Exception as e:
+            print(e)
+            return ModifyIndicator(indicator=None, dataPoints=None, success=False)
 
 class Mutation(graphene.ObjectType):
     create_indicator = CreateIndicator.Field()
+    modify_indicator = ModifyIndicator.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

@@ -35,7 +35,7 @@ export type GeographyType = "COUNTRY" | "PROVINCE_TERRITORY" | "REGION";
 export type DataQualityType = "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
 
 export type DataPoint = {
-  uuid: string;
+  id: string;
   indicatorId?: number;
   country: LocationType;
   geography: GeographyType;
@@ -72,4 +72,14 @@ export type PossibleIndicatorType = {
   name: string;
   dataPointCount: number;
   category: string;
+};
+
+export type IndicatorType = {
+  id: number;
+  category: string;
+  topic: string;
+  indicator: string;
+  detailedIndicator: string;
+  subIndicatorMeasurement: string;
+  indicatordataSet: DataPoint[];
 };

@@ -13,6 +13,7 @@ import { IconType } from "react-icons";
 import { AiOutlineWarning } from "react-icons/ai";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { FaRegThumbsUp } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
 import { DataQualityType } from "../../../utils/types";
 
 const DataQualityTag = ({
@@ -47,11 +48,13 @@ const DataQualityTag = ({
     },
   };
 
+  const quality = possible[dataQuality];
+
   return (
     <Popover placement="right" trigger="hover">
       <PopoverTrigger>
         <Box
-          bgColor={possible[dataQuality].color}
+          bgColor={quality ? quality.color : "gray.100"}
           p={2}
           borderRadius="md"
           display="inline-block"
@@ -60,8 +63,8 @@ const DataQualityTag = ({
           _hover={{ transform: "scale(1.075)" }}
         >
           <Heading size="xs">
-            <Icon as={possible[dataQuality].icon} mr={1} />
-            {possible[dataQuality].label}
+            <Icon as={quality ? quality.icon : MdCancel} mr={1} />
+            {quality ? quality.label : "Not selected"}
           </Heading>
         </Box>
       </PopoverTrigger>

@@ -1,81 +1,44 @@
-# docker compose docs: https://docs.docker.com/compose/compose-file/compose-file-v3/
-# docker and Django: https://docs.docker.com/samples/django/
-name: "cpho"
 version: "3.8"
 services:
-  pg:
-    container_name: pg_container
-    image: postgres:14.1-alpine
-    stop_signal: SIGTERM
-    stop_grace_period: 20s # https://docs.docker.com/compose/compose-file/compose-file-v2/#stop_grace_period
-    environment:
-      POSTGRES_USER: ${DB_USER:-cpho_user}
-      POSTGRES_DB: ${DB_NAME:-cpho_dev}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-123}
-      POSTGRES_HOST_AUTH_METHOD: trust
-      PGUSER: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-  pgadmin:
-    container_name: pgadmin_container
-    build:
-      context: ./pgadmin
-      args:
-        DB_NAME: ${DB_NAME}
-        DB_USER: ${DB_USER}
-        DB_PASSWORD: ${DB_PASSWORD}
-        DB_HOST: ${DB_HOST}
-        DB_PORT: ${DB_PORT}
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_LISTEN_PORT: ${PGADMIN_LISTEN_PORT}
-      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: ${PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED}
-      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: ${PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED}
+  postgres:
+    image: postgres:alpine
+    env_file: ./server/postgres.env
     ports:
-      - "5433:5433"
-    depends_on:
-      - pg
-  server:
-    container_name: cpho_server_container
+      - 5432:5432
+  migrations:
     build: ./server
+    working_dir: /server
+    env_file: ./server/server.env
+    # restart: on-failure
+    volumes:
+    - type: bind
+      source: ./server
+      target: /server
+    command: python manage.py migrate
+    depends_on:
+      - postgres
+  server:
+    build: ./server
+    working_dir: /server
+    env_file: ./server/server.env
+    # restart: on-failure
     ports:
       - 8000:8000
     volumes:
-      - ./server:/server
+    - type: bind
+      source: ./server
+      target: /server
     command: python manage.py runserver 0.0.0.0:8000
-    environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=pg
-      - DB_PORT=${DB_PORT}
-      - DATABASE=postgres
-      - SECRET_KEY=${SECRET_KEY}
-      - DEBUG=${DEBUG}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - SUPERUSER_USERNAME=${SUPERUSER_USERNAME:-admin}
-      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD:-admin}
     depends_on:
-      - pg
+      - migrations
   frontend:
-    container_name: cpho_frontend_container
     build: ./frontend
     ports:
       - 3000:3000
     command: npm start
     volumes:
-      - ./frontend:/frontend
+      - type: bind
+        source: ./frontend
+        target: /frontend
     depends_on:
       - server
-
-networks:
-  default:
-    name: nunet
-
-volumes:
-  # these are named volumes without a specific binding reference, which allows the services above to provide the binding reference
-  postgres_data:
-  static_volume:
-  media_volume:

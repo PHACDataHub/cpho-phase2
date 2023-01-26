@@ -46,11 +46,13 @@ requires = ["pdm-pep517>=1.0.0"]
 build-backend = "pdm.pep517.api"
 
 [tool.pdm.scripts]
+# Load server.env before all scripts
+_.env_file = "server.env"
 start.cmd = "python manage.py runserver localhost:8000"
-start.env_file = "server.env"
 migrate = "python manage.py migrate"
 db = "docker run --name pg -p 5432:5432 -d --env-file postgres.env postgres"
 wait ={shell = "sleep 1"}
 stop = {shell = "docker stop pg && docker rm pg"}
-dev = {composite = ["db", "wait", "migrate", "start"]}
+# Outside docker-compose override DB_HOST to connect directly to localhost.
+dev = {composite = ["db", "wait", "migrate", "start"], env = {DB_HOST = "localhost"}}
 

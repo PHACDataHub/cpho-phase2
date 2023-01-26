@@ -4,11 +4,12 @@ import { AddIndicator } from "./components/pages/AddIndicator";
 import { ExportPage } from "./components/pages/ExportPage";
 import { HomePage } from "./components/pages/HomePage";
 import { ImportPage } from "./components/pages/ImportPage";
-import { PastSubmissions } from "./components/pages/PastSubmission";
+import { ModifyPastSubmissions } from "./components/pages/PastSubmission";
 import "@fontsource/noto-sans/400.css";
 import "@fontsource/noto-sans/700.css";
 import "@fontsource/noto-sans/600.css";
 import "@fontsource/noto-sans/500.css";
+import ModifyIndicator from "./components/pages/ModifyIndicator";
 
 const theme = extendTheme({
   fonts: {
@@ -36,8 +37,9 @@ export const App = () => (
         <Route path="/" element={<HomePage />} />
         <Route path="/import" element={<ImportPage />} />
         <Route path="/add-indicator" element={<AddIndicator />} />
-        <Route path="/past-submissions" element={<PastSubmissions />} />
+        <Route path="/past-submissions" element={<ModifyPastSubmissions />} />
         <Route path="/export" element={<ExportPage />} />
+        <Route path="/modify-indicator/:id" element={<ModifyIndicator />} />
       </Routes>
     </ChakraProvider>
   </BrowserRouter>

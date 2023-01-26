@@ -1,21 +1,25 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { VStack, Button, Box, HStack, Heading } from "@chakra-ui/react";
 import { useState } from "react";
-import { DataPoint, LocationType } from "../../utils/types";
+import { DataPoint, IndicatorType, LocationType } from "../../utils/types";
 import { AddDataPointButton } from "../molecules/AddDataPointButton";
 import { DataPointTable } from "./DataPointTable";
 import IndicatorGenInfo from "../molecules/IndicatorGenInfo";
 import ReviewSubmit from "../molecules/ReviewSubmit";
 import { v4 as uuidv4 } from "uuid";
 import StepController from "../molecules/StepController";
+import { categories, sub_categories } from "../../utils/constants";
+import UpdateSubmit from "../molecules/UpdateSubmit";
 
-const IndicatorForm = () => {
+const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
   const [values, setValues] = useState({
-    indicatorName: "",
-    detailedIndicator: "",
-    category: 1,
-    subCategory: 1,
-    dataPoints: [] as DataPoint[],
+    id: indicator?.id ?? 0,
+    indicatorName: indicator?.indicator ?? "",
+    detailedIndicator: indicator?.detailedIndicator ?? "",
+    category: categories.find((c) => c.label === indicator?.category)?.id ?? 1,
+    subCategory:
+      sub_categories.find((c) => c.label === indicator?.topic)?.id ?? 1,
+    dataPoints: (indicator?.indicatordataSet ?? []) as DataPoint[],
   });
 
   const {
@@ -37,7 +41,7 @@ const IndicatorForm = () => {
 
   const addBlankDataPoint = () => {
     const dataPoint: DataPoint = {
-      uuid: uuidv4(),
+      id: uuidv4(),
       country: "CANADA",
       geography: "COUNTRY",
       sex: "",
@@ -56,7 +60,7 @@ const IndicatorForm = () => {
 
   const editDataPoint = (uuid: string, field: string, value: any) => {
     const newDataPoints = dataPoints.map((dataPoint) => {
-      if (dataPoint.uuid === uuid) {
+      if (dataPoint.id === uuid) {
         if (field === "geography") {
           const country: LocationType =
             value === "COUNTRY"
@@ -96,7 +100,7 @@ const IndicatorForm = () => {
 
   const replaceDataPoint = (uuid: string, newDataPoint: DataPoint) => {
     const newDataPoints = dataPoints.map((dataPoint) => {
-      if (dataPoint.uuid === uuid) {
+      if (dataPoint.id === uuid) {
         return newDataPoint;
       }
       return dataPoint;
@@ -110,20 +114,20 @@ const IndicatorForm = () => {
 
   const deleteDataPoint = (uuid: string) => {
     const newDataPoints = dataPoints.filter(
-      (dataPoint) => dataPoint.uuid !== uuid
+      (dataPoint) => dataPoint.id !== uuid
     );
     setField("dataPoints", newDataPoints);
   };
 
   const duplicateDataPoint = (uuid: string) => {
-    const idx = dataPoints.findIndex((dataPoint) => dataPoint.uuid === uuid);
+    const idx = dataPoints.findIndex((dataPoint) => dataPoint.id === uuid);
     const dataPoint = dataPoints[idx];
     if (dataPoint) {
       setField(
         "dataPoints",
         dataPoints
           .slice(0, idx + 1)
-          .concat({ ...dataPoint, uuid: uuidv4() }, dataPoints.slice(idx + 1))
+          .concat({ ...dataPoint, id: uuidv4() }, dataPoints.slice(idx + 1))
       );
     }
   };
@@ -179,7 +183,8 @@ const IndicatorForm = () => {
           />
         </VStack>
       )}
-      {step === 3 && <ReviewSubmit values={values} />}
+      {step === 3 && !indicator && <ReviewSubmit values={values} />}
+      {step === 3 && indicator && <UpdateSubmit values={values} />}
     </VStack>
   );
 };

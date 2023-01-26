@@ -8,18 +8,15 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { categories, sub_categories } from "../../utils/constants";
-import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
-import {
-  GET_INDICATOR_OVERVIEW,
-  GET_INDICATORS_AND_IDS,
-} from "../../utils/graphql/queries";
+import { MODIFY_INDICATOR } from "../../utils/graphql/mutations";
 import { DataPoint } from "../../utils/types";
 import DataPointDisplay from "../organisms/DataPointDisplay";
 
-const ReviewSubmit = ({
+const UpdateSubmit = ({
   values,
 }: {
   values: {
+    id: number;
     indicatorName: string;
     detailedIndicator: string;
     category: number;
@@ -28,6 +25,7 @@ const ReviewSubmit = ({
   };
 }) => {
   const {
+    id,
     indicatorName,
     detailedIndicator,
     category,
@@ -35,19 +33,8 @@ const ReviewSubmit = ({
     dataPoints,
   } = values;
 
-  const [createIndicator, { loading, error, data }] = useMutation(
-    CREATE_INDICATOR,
-    {
-      refetchQueries: [
-        {
-          query: GET_INDICATOR_OVERVIEW,
-        },
-        {
-          query: GET_INDICATORS_AND_IDS,
-        },
-      ],
-    }
-  );
+  const [modifyIndicator, { loading, error, data }] =
+    useMutation(MODIFY_INDICATOR);
 
   const [openTable, setOpenTable] = useState(false);
 
@@ -57,16 +44,17 @@ const ReviewSubmit = ({
 
       <HStack spacing={6}>
         <Heading size="lg">
-          You are adding{" "}
-          <Heading as="span" color="blue.500" size="lg">
-            {dataPoints.length}
-          </Heading>{" "}
-          data point{dataPoints.length === 1 ? "" : "s"} to
+          You are updating{" "}
           <Heading as="span" size="lg" color="blue.500">
             {indicatorName
               ? ` ${indicatorName}`
               : " NULL - INDICATOR NOT SELECTED"}
-          </Heading>
+          </Heading>{" "}
+          with{" "}
+          <Heading as="span" color="blue.500" size="lg">
+            {dataPoints.length}
+          </Heading>{" "}
+          data point{dataPoints.length === 1 ? "" : "s"}
         </Heading>
         <Button
           leftIcon={
@@ -96,6 +84,12 @@ const ReviewSubmit = ({
             {sub_categories.filter((c) => c.id === subCategory)[0].label}
           </Heading>
         </Heading>
+        <Heading fontSize="x-large">
+          Detailed Indicator:{" "}
+          <Heading fontSize="x-large" as="span" color="blue.500">
+            {detailedIndicator}
+          </Heading>
+        </Heading>
       </VStack>
 
       {loading && <Heading size="md">Loading...</Heading>}
@@ -108,8 +102,9 @@ const ReviewSubmit = ({
           colorScheme="green"
           isDisabled={loading}
           onClick={() => {
-            createIndicator({
+            modifyIndicator({
               variables: {
+                id: Number(id),
                 category:
                   categories.find((c) => c.id === category)?.label ?? "",
                 detailedIndicator,
@@ -131,11 +126,11 @@ const ReviewSubmit = ({
             });
           }}
         >
-          Submit
+          Update Indicator
         </Button>
       )}
     </VStack>
   );
 };
 
-export default ReviewSubmit;
+export default UpdateSubmit;

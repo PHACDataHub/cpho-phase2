@@ -28,11 +28,11 @@ const DataPointRow = ({
 }: {
   dataPoint: DataPoint;
   dataPoints: DataPoint[];
-  editDataPoint: (uuid: string, field: string, value: any) => void;
-  replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
+  editDataPoint: (id: string, field: string, value: any) => void;
+  replaceDataPoint: (id: string, dataPoint: DataPoint) => void;
   addDataPoint: (dataPoint: DataPoint) => void;
-  onDelete: (uuid: string) => void;
-  onDuplicate: (uuid: string) => void;
+  onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const idx = dataPoints.indexOf(dataPoint);
@@ -58,14 +58,14 @@ const DataPointRow = ({
               aria-label="Delete Data Point"
               colorScheme="red"
               icon={<DeleteIcon />}
-              onClick={() => onDelete(dataPoint.uuid)}
+              onClick={() => onDelete(dataPoint.id)}
             />
             <IconButton
               size="sm"
               aria-label="Duplicate Data Point"
               colorScheme="blue"
               icon={<CopyIcon />}
-              onClick={() => onDuplicate(dataPoint.uuid)}
+              onClick={() => onDuplicate(dataPoint.id)}
             />
             <IconButton
               size="sm"
@@ -90,7 +90,7 @@ const DataPointRow = ({
         <GeographyTag
           type={dataPoint.geography}
           setGeography={(geography: string) => {
-            editDataPoint(dataPoint.uuid, "geography", geography);
+            editDataPoint(dataPoint.id, "geography", geography);
           }}
         />
       </Td>
@@ -98,7 +98,7 @@ const DataPointRow = ({
         <LocationTag
           location={dataPoint.country}
           setLocation={(location: LocationType) => {
-            editDataPoint(dataPoint.uuid, "country", location);
+            editDataPoint(dataPoint.id, "country", location);
           }}
           geographyType={dataPoint.geography}
         />
@@ -107,7 +107,7 @@ const DataPointRow = ({
         <ValueTag
           value={dataPoint.value}
           setValue={(value: number) => {
-            editDataPoint(dataPoint.uuid, "value", value);
+            editDataPoint(dataPoint.id, "value", value);
           }}
         />
       </Td>
@@ -115,7 +115,7 @@ const DataPointRow = ({
         <UnitTag
           unit={dataPoint.valueUnit}
           setUnit={(unit: string) => {
-            editDataPoint(dataPoint.uuid, "valueUnit", unit);
+            editDataPoint(dataPoint.id, "valueUnit", unit);
           }}
         />
       </Td>
@@ -123,7 +123,7 @@ const DataPointRow = ({
         <DataQualityTag
           dataQuality={dataPoint.dataQuality}
           setDataQuality={(dataQuality: string) => {
-            editDataPoint(dataPoint.uuid, "dataQuality", dataQuality);
+            editDataPoint(dataPoint.id, "dataQuality", dataQuality);
           }}
         />
       </Td>
@@ -132,10 +132,10 @@ const DataPointRow = ({
           singleYear={dataPoint.singleYearTimeframe}
           multiYear={dataPoint.multiYearTimeframe}
           setSingleYear={(singleYear?: number) => {
-            editDataPoint(dataPoint.uuid, "singleYearTimeframe", singleYear);
+            editDataPoint(dataPoint.id, "singleYearTimeframe", singleYear);
           }}
           setMultiYear={(multiYear?: number[]) => {
-            editDataPoint(dataPoint.uuid, "multiYearTimeframe", multiYear);
+            editDataPoint(dataPoint.id, "multiYearTimeframe", multiYear);
           }}
           yearType={yearType}
           setYearType={setYearType}

@@ -35,7 +35,7 @@ export function ImportPage() {
       formData.append("file", fileToUpload);
       if (fileToUpload) {
         fetch(
-          (process.env.REACT_APP_SERVER_URL || "http://localhost:8000/") +
+          (process.env.REACT_APP_SERVER_URL || "http://localhost:3000/") +
             "api/import",
           {
             method: "POST",

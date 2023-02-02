@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'graphene_django',
 ]
+STATIC_URL = '/static/'
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

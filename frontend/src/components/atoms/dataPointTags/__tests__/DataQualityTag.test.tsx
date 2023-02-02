@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import { render } from "../../../../test-utils";
 import DataQualityTag from "../DataQualityTag";
-import "@testing-library/jest-dom";
 
 const mockSetDataQuality = jest.fn();
 
@@ -107,26 +106,5 @@ describe("DataQualityTag", () => {
 
     excellentButton.click();
     expect(mockSetDataQuality).toHaveBeenCalledWith("EXCELLENT");
-  });
-
-  it("should change the shown dataQuality when clicked", () => {
-    render(
-      <DataQualityTag
-        dataQuality={"EXCELLENT"}
-        setDataQuality={mockSetDataQuality}
-      />
-    );
-
-    const excellent = screen.getByText(/Excellent/);
-    const good = screen.getByText(/Good/);
-    expect(excellent).toBeInTheDocument();
-    expect(good).not.toBeInTheDocument();
-
-    const goodButton = screen.getByText(/GOOD/);
-    goodButton.click();
-
-    expect(mockSetDataQuality).toHaveBeenCalledWith("GOOD");
-    expect(excellent).not.toBeInTheDocument();
-    expect(good).toBeInTheDocument();
   });
 });

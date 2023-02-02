@@ -52,14 +52,15 @@ EOF
 Run `docker compose up -d` in the root directory of the project.
 
 Docker should have created 4 containers:
-- `pg_container`: PostgreSQL database
-- `cpho_server_container`: Django Server
-- `cpho_frontend_container`: React Frontend
+- `cpho-envoy`: the lightweight reverse proxy
+- `cpho-postgres`: PostgreSQL database
+- `cpho-server`: Django Server
+- `cpho-frontend`: React Frontend
 
 Now, you can do the following:
 
 - Navigate to `localhost:3000` to view the frontend
-- Navigate to `localhost:8000/graphql` to view the GraphQL interface
+- Navigate to `localhost:3000/graphql` to view the GraphQL interface
 
 When you're done working, you can run `docker compose down` to stop the containers
 

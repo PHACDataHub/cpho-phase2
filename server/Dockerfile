@@ -15,7 +15,7 @@ COPY . .
 RUN pdm config python.use_venv False && pdm install --prod --no-lock --no-editable
 
 # Build the production image
-FROM python:3-alpine
+FROM python:3.11-alpine
 
 # Make Python play nice with containers.
 ENV PYTHONUNBUFFERED=1, PYTHONDONTWRITEBYTECODE=1

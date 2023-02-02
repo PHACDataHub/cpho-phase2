@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
+ALLOWED_HOSTS = ['*'] # config("ALLOWED_HOSTS", cast=Csv())
 
 CORS_ALLOWED_ORIGINS = ['*']
 
@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'graphene_django',
 ]
+STATIC_URL = '/static/'
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

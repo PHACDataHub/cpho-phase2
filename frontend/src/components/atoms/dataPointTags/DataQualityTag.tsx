@@ -54,6 +54,7 @@ const DataQualityTag = ({
     <Popover placement="right" trigger="hover">
       <PopoverTrigger>
         <Box
+          data-testid={`${dataQuality.toLowerCase()}-container`}
           bgColor={quality ? quality.color : "gray.100"}
           p={2}
           borderRadius="md"

@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/cpho-phase2/static/css/main.a07bd5ed.css",
-    "main.js": "/cpho-phase2/static/js/main.3ee190e3.js",
+    "main.js": "/cpho-phase2/static/js/main.058c7a9d.js",
     "static/js/377.167fc23c.chunk.js": "/cpho-phase2/static/js/377.167fc23c.chunk.js",
     "static/media/noto-sans-all-500-normal.woff": "/cpho-phase2/static/media/noto-sans-all-500-normal.72acc07464a0cdb23a21.woff",
     "static/media/noto-sans-all-600-normal.woff": "/cpho-phase2/static/media/noto-sans-all-600-normal.1fe485dfbf314ce31461.woff",
@@ -41,11 +41,11 @@
     "static/media/noto-sans-vietnamese-700-normal.woff2": "/cpho-phase2/static/media/noto-sans-vietnamese-700-normal.0d08f35ddb53338da80d.woff2",
     "index.html": "/cpho-phase2/index.html",
     "main.a07bd5ed.css.map": "/cpho-phase2/static/css/main.a07bd5ed.css.map",
-    "main.3ee190e3.js.map": "/cpho-phase2/static/js/main.3ee190e3.js.map",
+    "main.058c7a9d.js.map": "/cpho-phase2/static/js/main.058c7a9d.js.map",
     "377.167fc23c.chunk.js.map": "/cpho-phase2/static/js/377.167fc23c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a07bd5ed.css",
-    "static/js/main.3ee190e3.js"
+    "static/js/main.058c7a9d.js"
   ]
 }

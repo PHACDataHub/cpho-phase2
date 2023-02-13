@@ -8,4 +8,6 @@ RUN npm ci
 
 COPY . .
 
+RUN npm run test
+
 CMD [ "npm", "start" ]

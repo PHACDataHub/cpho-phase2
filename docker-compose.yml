@@ -5,7 +5,8 @@ services:
   envoy:
     image: envoyproxy/envoy-distroless-dev
     entrypoint: envoy
-    command: [ "-l", "warn", "-c", "/etc/envoy.yaml", "--service-cluster", "envoy"]
+    command:
+      ["-l", "warn", "-c", "/etc/envoy.yaml", "--service-cluster", "envoy"]
     volumes:
       - ./envoy.yaml:/etc/envoy.yaml # Envoy configuration
     expose:
@@ -27,9 +28,9 @@ services:
     env_file: ./server/server.env
     # restart: on-failure
     volumes:
-    - type: bind
-      source: ./server
-      target: /server
+      - type: bind
+        source: ./server
+        target: /server
     command: python manage.py migrate
     depends_on:
       - postgres
@@ -43,9 +44,9 @@ services:
     expose:
       - 8000
     volumes:
-    - type: bind
-      source: ./server
-      target: /server
+      - type: bind
+        source: ./server
+        target: /server
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - migrations
@@ -60,6 +61,7 @@ services:
       - type: bind
         source: ./frontend
         target: /frontend
+      - /frontend/node_modules
     depends_on:
       - server
 volumes:

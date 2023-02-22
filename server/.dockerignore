@@ -4,4 +4,5 @@ README.md
 .pytest_cache
 .dockerignore
 .python-version
+.coverage
 *.env

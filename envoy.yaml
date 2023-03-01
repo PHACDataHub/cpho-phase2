@@ -27,6 +27,8 @@ static_resources:
                 route: { cluster: server }
               - match: { prefix: "/graphql" }
                 route: { cluster: server }
+              - match: { prefix: "/api" }
+                route: { cluster: server }
               - match: { prefix: "/" }
                 route: { cluster: frontend }
   clusters:

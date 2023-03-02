@@ -1,6 +1,6 @@
 import json
 
-from graphene_django.utils.testing import GraphQLTestCase
+from graphene_django.utils.testing import GraphQLTestCase, TestCase
 
 
 class HelloWorldTestCase(GraphQLTestCase):

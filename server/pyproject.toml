@@ -50,6 +50,7 @@ build-backend = "pdm.pep517.api"
 # Load server.env before all scripts
 _.env_file = "server.env"
 start.cmd = "python manage.py runserver localhost:8000"
+wsgi.cmd = "python server.py"
 migrate = "python manage.py migrate"
 db = "docker run --name pg -p 5432:5432 -d --env-file postgres.env postgres"
 wait ={shell = "sleep 1"}

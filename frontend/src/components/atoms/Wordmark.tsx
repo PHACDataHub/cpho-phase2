@@ -3,11 +3,11 @@ import React from 'react'
 
 type WordmarkConfig = {
   textColor?: 'black' | 'white'
-  variant?: 'color' | 'monochrome'
-  flagColor?: 'black' | 'white' | 'red' // Note if select black text, should not have white flag and vise versa TODO add logic
+  variant?: 'color' | 'monochrome' // monochrome make the flag color the same as the textCOlor
   width?: string,
   // maxWidth?: string,
 }
+
 
 export const Wordmark = ({
   // Note: rbg values come from: canada.ca/en/treasury-board-secretariat/services/government-communications/design-standard/colour-design-standard-fip.html#toc1
@@ -16,7 +16,8 @@ export const Wordmark = ({
   width = '20%',
   // maxWidth = '200px'
 }: WordmarkConfig) => {
-  const flagColor = (variant === 'color') ? '#EA2D37' : textColor;
+  const canadaRed = '#EA2D37';
+  const flagColor = (variant === 'color') ? canadaRed : textColor;
   return (
     <svg
       version="1.1"

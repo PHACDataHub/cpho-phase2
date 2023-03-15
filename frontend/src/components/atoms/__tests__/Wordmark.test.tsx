@@ -67,6 +67,8 @@ describe('<Wordmark />', () => {
         }
     })
 
+    // End of color section
+
     // TODO add in maxwidth
     // TODO add tests to make sure "blue does not work and only accept 3 values "
     // TODO make sure black text and white flag can't be combined and 

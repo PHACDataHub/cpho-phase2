@@ -87,7 +87,7 @@ const DataQualityTag = ({
                 setDataQuality(option.toUpperCase() as DataQualityType)
               }
             >
-              {option}
+              {possible[option].label}
             </Button>
           ))}
         </VStack>

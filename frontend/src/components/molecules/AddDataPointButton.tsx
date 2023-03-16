@@ -1,19 +1,15 @@
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Button, useDisclosure } from "@chakra-ui/react";
-import { useState } from "react";
-import { DataPoint } from "../../utils/types";
+import { useContext, useState } from "react";
+import IndicatorFormContext from "../../utils/context/IndicatorFormContext";
 import { AddDataPointModal } from "./AddDataPointModal";
 
-export function AddDataPointButton({
-  replaceDataPoint,
-  addDataPoint,
-}: {
-  replaceDataPoint: (uuid: string, dataPoint: DataPoint) => void;
-  addDataPoint: (dataPoint: DataPoint) => void;
-}) {
+export function AddDataPointButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [yearType, setYearType] = useState<"SINGLE" | "RANGE">("SINGLE");
+
+  const { replaceDataPoint, addDataPoint } = useContext(IndicatorFormContext);
 
   return (
     <>

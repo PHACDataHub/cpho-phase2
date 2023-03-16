@@ -83,3 +83,9 @@ export type IndicatorType = {
   subIndicatorMeasurement: string;
   indicatordataSet: DataPoint[];
 };
+
+export type ErrorType = {
+  dataPointId: string;
+  field: string;
+  message: string;
+};

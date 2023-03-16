@@ -54,7 +54,7 @@ describe('<Wordmark />', () => {
     })
 
     it.each<TextColor>(["black", "white"])('color variant always renders flag as red: %n', async (desiredTextColor) => {
-        render(<Wordmark textColor={desiredTextColor} variant="monochrome" />)
+        render(<Wordmark textColor={desiredTextColor} variant="color" />)
 
         const image = await screen.findByRole('img')
 

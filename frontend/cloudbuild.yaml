@@ -1,20 +1,20 @@
 steps:
   - name: node:19-alpine
     id: install
-    dir: ui
+    dir: frontend
     entrypoint: npm
     args: ['ci', '--no-optional']
 
   - name: node:19-alpine
     id: test
-    dir: ui
+    dir: frontend
     entrypoint: npm
     args: ['test']
 
   - name: 'gcr.io/cloud-builders/docker'
     id: generate-image-name
     entrypoint: 'bash'
-    dir: ui
+    dir: frontend
     args:
       - '-c'
       - |
@@ -23,7 +23,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: build-if-main
     entrypoint: 'bash'
-    dir: ui
+    dir: frontend
     args:
       - '-c'
       - |

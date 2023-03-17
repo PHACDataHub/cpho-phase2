@@ -3,7 +3,7 @@ steps:
     id: install
     dir: frontend
     entrypoint: npm
-    args: ['ci', '--no-optional']
+    args: ['ci', '--omit=optional']
 
   - name: node:19-alpine
     id: test

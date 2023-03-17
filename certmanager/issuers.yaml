@@ -1,0 +1,48 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt
+  namespace: istio-ingress
+spec:
+  acme:
+    email: michael.williamson@phac-aspc.gc.ca
+    preferredChain: ""
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudDNS:
+          # The ID of the GCP project
+          project: pdcp-cloud-006-cpho
+      selector: {}
+status: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: istio-ingress
+spec:
+  acme:
+    email: michael.williamson@phac-aspc.gc.ca
+    preferredChain: ""
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudDNS:
+          # The ID of the GCP project
+          project: pdcp-cloud-006-cpho
+      selector: {}
+status: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned
+  namespace: istio-ingress
+spec:
+  selfSigned: {}
+status: {}

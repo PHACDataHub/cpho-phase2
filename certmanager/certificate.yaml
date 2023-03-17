@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ingress-cert
+  namespace: istio-ingress
+spec:
+  commonName: cpho.alpha.canada.ca
+  dnsNames:
+  - cpho.alpha.canada.ca
+  - acsp.alpha.canada.ca
+  issuerRef:
+    kind: Issuer
+    # name: selfsigned
+    # name: letsencrypt-staging
+    name: letsencrypt
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+  secretName: tlskeys
+status: {}

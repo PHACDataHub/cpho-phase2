@@ -1,0 +1,15 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: github-repo
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    # branch: main
+    branch: initial-deployment
+  secretRef:
+    name: flux-system
+  url: ssh://github.com/PHACDataHub/cpho-phase2.git
+

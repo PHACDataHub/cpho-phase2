@@ -7,7 +7,10 @@ import * as serviceWorker from "./serviceWorker";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  uri:
+    process.env.REACT_APP_METHOD === "local"
+      ? "http://localhost:8000/graphql"
+      : "/graphql",
   cache: new InMemoryCache({
     addTypename: false,
   }),

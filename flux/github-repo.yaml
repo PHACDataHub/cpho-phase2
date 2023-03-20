@@ -7,8 +7,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    # branch: main
-    branch: initial-deployment
+    branch: main
   secretRef:
     name: flux-system
   url: ssh://github.com/PHACDataHub/cpho-phase2.git

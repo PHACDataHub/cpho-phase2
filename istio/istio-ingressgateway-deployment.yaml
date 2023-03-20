@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  template:
+    metadata:
+      annotations:
+        # Select the gateway injection template (rather than the default sidecar template)
+        inject.istio.io/templates: gateway
+      labels:
+        # Set a unique label for the gateway. This is required to ensure Gateways can select this workload
+        istio: ingressgateway
+        # Enable gateway injection. If connecting to a revisioned control plane, replace with "istio.io/rev: revision-name"
+        istio.io/rev: asm-managed-rapid
+    spec:
+      containers:
+      - name: istio-proxy
+        image: auto # The image will automatically update each time the pod starts.
+        env:
+        - name: ISTIO_META_UNPRIVILEGED_POD
+          value: "true"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          privileged: false
+          readOnlyRootFilesystem: true
+      securityContext:
+        fsGroup: 1337
+        runAsGroup: 1337
+        runAsNonRoot: true
+        runAsUser: 1337

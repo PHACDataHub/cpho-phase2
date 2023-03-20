@@ -1,0 +1,10 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    # mTLS in STRICT mode block additional init containers
+    # https://github.com/istio/istio/issues/32039
+    mode: PERMISSIVE

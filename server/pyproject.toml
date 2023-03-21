@@ -58,6 +58,7 @@ stop = {shell = "docker stop pg && docker rm pg"}
 # Outside docker-compose override DB_HOST to connect directly to localhost.
 dev = {composite = ["db", "wait", "migrate", "start"], env = {DB_HOST = "localhost"}}
 test = {cmd = "coverage run manage.py test -v 2", env = {DB_HOST = "localhost"}}
+citest = {cmd = "python manage.py test -v 2 --keepdb"}
 post_test = {cmd = "coverage report --skip-empty --omit=tests/*,*tests*"} #choose additional files to skip here with "," and no spaces)
 
 

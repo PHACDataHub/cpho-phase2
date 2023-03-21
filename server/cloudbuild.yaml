@@ -1,0 +1,88 @@
+steps:
+  # Passing POSTGRES_USER here creates a database of the same name
+  - name: 'gcr.io/cloud-builders/docker'
+    id: start_postgres
+    entrypoint: /bin/sh
+    args:
+      [
+        "-c",
+        "docker run -d --network=cloudbuild -p=5432:5432 -e POSTGRES_DB=test_$_DB_NAME -e POSTGRES_USER=$_DB_USER -e POSTGRES_PASSWORD=$_DB_PASSWORD --name=postgres postgres:alpine",
+      ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: wait
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        timeout 15 bash -c 'until echo > /dev/tcp/postgres/5432; do sleep 0.5; done'
+
+  - name: 'northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/pdm:latest'
+    id: install
+    dir: server
+    entrypoint: pdm
+    args: ['install']
+
+# - name: 'northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/pdm:latest'
+#   id: dbInit
+#   dir: server
+#   entrypoint: pdm
+#   args: ['run', 'migrate']
+#   env:
+#     - DB_HOST=postgres
+#     - DB_PORT=5432
+#     - DB_USER=$_DB_USER
+#     - DB_NAME=$_DB_USER
+#     - DB_PASSWORD=$_DB_PASSWORD
+#     - SECRET_KEY=$_SECRET_KEY
+
+  - name: 'northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/pdm:latest'
+    id: test
+    dir: server
+    entrypoint: pdm
+    args: ['run', 'citest']
+    env:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=$_DB_USER
+      - DB_NAME=$_DB_NAME
+      - DB_PASSWORD=$_DB_PASSWORD
+      - SECRET_KEY=$_SECRET_KEY
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: generate-image-name
+    entrypoint: 'bash'
+    dir: server
+    args:
+      - '-c'
+      - |
+        echo "northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:$BRANCH_NAME-$SHORT_SHA-$(date +%s)" > /workspace/imagename
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build-if-main
+    entrypoint: 'bash'
+    dir: server
+    args:
+      - '-c'
+      - |
+        if [[ "$BRANCH_NAME" == "main" ]]
+        then
+          image=$(cat /workspace/imagename)
+          docker build -t $image .
+        else
+          exit 0
+        fi
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: push-if-main
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [[ "$BRANCH_NAME" == "main" ]]
+        then
+          image=$(cat /workspace/imagename)
+          docker push $image
+        else
+          exit 0
+        fi

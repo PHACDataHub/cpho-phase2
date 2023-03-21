@@ -90,6 +90,9 @@ DATABASES = {
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT'),
         #   'OPTIONS': {'sslmode': 'require'},
+        'TEST': {
+            'ENGINE': 'django.db.backends.postgresql',
+         },
     }
 }
 

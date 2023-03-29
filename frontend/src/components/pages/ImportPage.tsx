@@ -1,3 +1,4 @@
+import { useMutation } from "@apollo/client";
 import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   VStack,
@@ -8,54 +9,37 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { IMPORT_DATA } from "../../utils/graphql/mutations";
 import { FileFormat } from "../../utils/types";
 import { FileTypeChoice } from "../organisms/FileTypeChoice";
 import { Page } from "../template/Page";
 
 export function ImportPage() {
   const [fileToUpload, setFileToUpload] = useState();
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "failure" | "success"
-  >("idle");
 
   const [activeType, setActiveType] = useState<FileFormat>("indicator");
+  const [importData, { loading, error, data }] = useMutation(IMPORT_DATA);
 
   const handleFile = (event: any) => {
     event.preventDefault();
     const file = event.target.files[0];
     setFileToUpload(file);
-    setStatus("idle");
   };
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    let formData = new FormData();
     if (fileToUpload) {
-      setStatus("loading");
-      formData.append("file", fileToUpload);
-      if (fileToUpload) {
-        fetch(
-          (process.env.REACT_APP_SERVER_URL || "http://localhost:3000/") +
-            "api/import",
-          {
-            method: "POST",
-            body: formData,
-          }
-        )
-          .then((res) => {
-            if (res.status === 200) {
-              setStatus("success");
-            } else {
-              setStatus("failure");
-            }
-          })
-          .catch((err) => {
-            setStatus("failure");
-            console.log(err);
-          });
+      try {
+        await importData({
+          variables: { file: fileToUpload },
+        });
+      } catch (error) {
+        console.log(error);
       }
     }
   };
+
+  console.log(data);
 
   return (
     <Page title="Import File" backButton={{ show: true, redirectUrl: "/" }}>
@@ -67,7 +51,7 @@ export function ImportPage() {
         <FileTypeChoice activeType={activeType} setActiveType={setActiveType} />
         <Center
           cursor={
-            status === "success" || activeType !== "indicator"
+            data?.importData?.success || activeType !== "indicator"
               ? "default"
               : "pointer"
           }
@@ -85,15 +69,15 @@ export function ImportPage() {
             onChange={handleFile}
             disabled={activeType !== "indicator"}
           />
-          {status === "loading" ? (
+          {loading ? (
             <Spinner />
           ) : (
             <VStack color={activeType === "indicator" ? "initial" : "gray.400"}>
-              {status !== "success" && <AttachmentIcon boxSize="8" />}
+              {!data?.importData?.success && <AttachmentIcon boxSize="8" />}
               <Heading size="lg" fontWeight={600}>
-                {status === "success"
+                {data?.importData?.success
                   ? `Successfully uploaded ${(fileToUpload as any).name}`
-                  : status === "failure"
+                  : error
                   ? `Could not upload ${(fileToUpload as any).name}`
                   : fileToUpload
                   ? (fileToUpload as any).name

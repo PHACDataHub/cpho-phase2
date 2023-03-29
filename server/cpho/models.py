@@ -61,3 +61,10 @@ class TrendAnalysis(models.Model):
 
     def __str__(self):
         return self.detailed_indicator
+
+class ExportedFile(models.Model):
+    file = models.FileField(upload_to='exports/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file.name

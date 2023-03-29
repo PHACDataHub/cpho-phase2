@@ -10,7 +10,7 @@ requires_python = ">=3.7"
 summary = "ASGI specs, helper code, and adapters"
 
 [[package]]
-name = "backports-zoneinfo"
+name = "backports.zoneinfo"
 version = "0.2.1"
 requires_python = ">=3.6"
 summary = "Backport of the standard library zoneinfo module"
@@ -43,7 +43,7 @@ requires_python = ">=3.8"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 dependencies = [
     "asgiref<4,>=3.4.1",
-    "backports-zoneinfo; python_version < \"3.9\"",
+    "backports.zoneinfo; python_version < \"3.9\"",
     "sqlparse>=0.2.2",
     "tzdata; sys_platform == \"win32\"",
 ]
@@ -88,6 +88,14 @@ dependencies = [
     "graphql-relay<4,>=3.1.1",
     "promise>=2.1",
     "text-unidecode",
+]
+
+[[package]]
+name = "graphene-file-upload"
+version = "1.3.0"
+summary = "Lib for adding file upload functionality to GraphQL mutations in Graphene Django and Flask-Graphql"
+dependencies = [
+    "six>=1.11.0",
 ]
 
 [[package]]
@@ -189,7 +197,7 @@ summary = "Waitress WSGI server"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:b95dbd1bdb6486e095d05ad953146077c0f3de894760245a20389ca3c79f276a"
+content_hash = "sha256:b3fd4aa32c90aa365f0dcb390212fdf3c80516072c5167ca6e62103ded2b6af8"
 
 [metadata.files]
 "aniso8601 9.0.1" = [
@@ -200,7 +208,7 @@ content_hash = "sha256:b95dbd1bdb6486e095d05ad953146077c0f3de894760245a20389ca3c
     {url = "https://files.pythonhosted.org/packages/1f/35/e7d59b92ceffb1dc62c65156278de378670b46ab2364a3ea7216fe194ba3/asgiref-3.5.2.tar.gz", hash = "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"},
     {url = "https://files.pythonhosted.org/packages/af/6d/ea3a5c3027c3f14b0321cd4f7e594c776ebe64e4b927432ca6917512a4f7/asgiref-3.5.2-py3-none-any.whl", hash = "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4"},
 ]
-"backports-zoneinfo 0.2.1" = [
+"backports.zoneinfo 0.2.1" = [
     {url = "https://files.pythonhosted.org/packages/1a/ab/3e941e3fcf1b7d3ab3d0233194d99d6a0ed6b24f8f956fc81e47edc8c079/backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:7b0a64cda4145548fed9efc10322770f929b944ce5cee6c0dfe0c87bf4c0c8c9"},
     {url = "https://files.pythonhosted.org/packages/1c/96/baaca3ad1b06d97138d42a225e4d4d27cd1586b646740f771706cd2d812c/backports.zoneinfo-0.2.1-cp37-cp37m-win32.whl", hash = "sha256:e55b384612d93be96506932a786bbcde5a2db7a9e6a4bb4bffe8b733f5b9036b"},
     {url = "https://files.pythonhosted.org/packages/28/d5/e2f3d6a52870045afd8c37b2681c47fd0b98679cd4851e349bfd7e19cfd7/backports.zoneinfo-0.2.1-cp36-cp36m-win_amd64.whl", hash = "sha256:8439c030a11780786a2002261569bdf362264f605dfa4d65090b64b05c9f79a7"},
@@ -298,6 +306,10 @@ content_hash = "sha256:b95dbd1bdb6486e095d05ad953146077c0f3de894760245a20389ca3c
 "graphene-django 3.0.0" = [
     {url = "https://files.pythonhosted.org/packages/5f/e8/10837a3f971c96b331368c89356c7f8b87d206f520403750f2409542a690/graphene_django-3.0.0-py2.py3-none-any.whl", hash = "sha256:9fa531d319d5c8f9e08274628f547574ee684e74dddd1c969abf38142bc32df2"},
     {url = "https://files.pythonhosted.org/packages/61/05/f737bee1cda957601a6a5bc9c9068dcc32b7ca3f004c77801210b8c3d87a/graphene-django-3.0.0.tar.gz", hash = "sha256:018a8dc4736d99b5bb4a15d7fd0b46c98010e9201cb52a290f6d1f16ae6fefda"},
+]
+"graphene-file-upload 1.3.0" = [
+    {url = "https://files.pythonhosted.org/packages/25/9a/d06f6e3fa33a53c8ba2cbe1a5ad509b7dc7124e85f221b8e13cee6c7d0c2/graphene_file_upload-1.3.0.tar.gz", hash = "sha256:6898480b0556826472c80971032917c01968ade5800d84054008fe598795b063"},
+    {url = "https://files.pythonhosted.org/packages/9a/b2/2961fd74e960729a667137435dc3229fb38d73f447c9a6da58372344ab32/graphene_file_upload-1.3.0-py3-none-any.whl", hash = "sha256:5afe50f409f50e3d198fd92c883d98d868e6c6aaadf5df3a3f4d88ecad90ed97"},
 ]
 "graphql-core 3.2.3" = [
     {url = "https://files.pythonhosted.org/packages/ee/a6/94df9045ca1bac404c7b394094cd06713f63f49c7a4d54d99b773ae81737/graphql-core-3.2.3.tar.gz", hash = "sha256:06d2aad0ac723e35b1cb47885d3e5c45e956a53bc1b209a9fc5369007fe46676"},

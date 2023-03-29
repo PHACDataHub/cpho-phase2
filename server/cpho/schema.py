@@ -1,8 +1,12 @@
+import csv
+from io import TextIOWrapper
+from django.core.files.temp import NamedTemporaryFile
 import graphene
 from graphene_django import DjangoObjectType
-from .models import Indicator, Benchmarking, IndicatorData, TrendAnalysis
+from .models import ExportedFile, Indicator, Benchmarking, IndicatorData, TrendAnalysis
 from graphene_django.rest_framework.serializer_converter import convert_serializer_to_input_type
 from rest_framework import serializers
+from graphene_file_upload.scalars import Upload
 
 # DjangoObjectTypes
 
@@ -13,6 +17,10 @@ class IndicatorType(DjangoObjectType):
 class IndicatorDataType(DjangoObjectType):
     class Meta:
         model = IndicatorData
+
+class ExportedFileType(DjangoObjectType):
+    class Meta:
+        model = ExportedFile
 
 # Custom Responses
 
@@ -72,6 +80,109 @@ class Query(graphene.ObjectType):
         return None
 
 # Mutations
+
+class ImportDataMutation(graphene.Mutation):
+    class Arguments:
+        file = Upload(required=True)
+
+    success = graphene.Boolean()
+
+    @classmethod
+    def mutate(cls, root, info, file):
+        reader = csv.reader(TextIOWrapper(file, encoding="utf8"), delimiter=',')
+        print(reader)
+        rowCount = 0
+        for row in reader:
+            if rowCount != 0 and row != []:
+                print("ROW")
+                print(row)
+                ind = Indicator.objects.update_or_create(
+                    category = row[0],
+                    topic = row[1],
+                    indicator = row[2],
+                    detailed_indicator = row[3],
+                    sub_indicator_measurement = row[4],
+                )
+                IndicatorData.objects.update_or_create(
+                    indicator = ind[0],
+                    country = row[5],
+                    geography = row[6],
+                    sex = row[7],
+                    gender = row[8],
+                    age_group = row[9],
+                    age_group_type = row[10],
+                    data_quality = row[11],
+                    value = row[12].replace('<', ''),
+                    value_lower_bound = row[13] if row[13] != '' else None,
+                    value_upper_bound = row[14] if row[14] != '' else None,
+                    value_unit = row[15],
+                    single_year_timeframe = row[16],
+                    multi_year_timeframe = row[17],
+                )
+            rowCount += 1
+        print("DONE!!")
+
+        return ImportDataMutation(success=True)
+
+class ExportDataMutation(graphene.Mutation):
+    class Arguments:
+        selected_indicators = graphene.List(graphene.Int, required=True)
+
+    csv_file = graphene.Field(lambda: ExportedFileType)
+
+    @classmethod
+    def mutate(cls, root, info, selected_indicators):
+        temp_file = NamedTemporaryFile(delete=False)
+
+        with open(temp_file.name, 'w') as f:
+            fieldnames = ['category',
+                  'topic',
+                  'indicator',
+                  'detailed_indicator',
+                  'sub_indicator_measurement',
+                  'country',
+                  'geography',
+                  'sex',
+                  'gender',
+                  'age_group',
+                  'age_group_type',
+                  'data_quality',
+                  'value',
+                  'value_lower_bound',
+                  'value_upper_bound',
+                  'value_unit',
+                  'single_year_timeframe',
+                  'multi_year_timeframe',
+                  ]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for id in selected_indicators:
+                indicator = Indicator.objects.get(pk=id)
+                points = IndicatorData.objects.filter(indicator=indicator)
+                for point in points:
+                    writer.writerow({
+                    'category': indicator.category,
+                    'topic': indicator.topic,
+                    'indicator': indicator.indicator,
+                    'detailed_indicator': indicator.detailed_indicator,
+                    'sub_indicator_measurement': indicator.sub_indicator_measurement,
+                    'country': point.country,
+                    'geography': point.geography,
+                    'sex': point.sex,
+                    'gender': point.gender,
+                    'age_group': point.age_group,
+                    'age_group_type': point.age_group_type,
+                    'data_quality': point.data_quality,
+                    'value': point.value,
+                    'value_lower_bound': point.value_lower_bound,
+                    'value_upper_bound': point.value_upper_bound,
+                    'value_unit': point.value_unit,
+                    'single_year_timeframe': point.single_year_timeframe,
+                    'multi_year_timeframe': point.multi_year_timeframe
+                    })
+
+        return ExportDataMutation(csv_file=temp_file.name)
 
 class CreateIndicator(graphene.Mutation):
     class Arguments:
@@ -161,6 +272,9 @@ class ModifyIndicator(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_indicator = CreateIndicator.Field()
     modify_indicator = ModifyIndicator.Field()
+    import_data = ImportDataMutation.Field()
+    export_data = ExportDataMutation.Field()
+
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

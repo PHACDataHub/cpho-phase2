@@ -11,3 +11,6 @@
 **/__pypackages__/
 
 **/.pdm.toml
+
+# Server files
+server/exports/

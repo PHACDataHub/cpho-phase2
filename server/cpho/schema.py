@@ -1,6 +1,8 @@
 import csv
 from io import TextIOWrapper
-from django.core.files.temp import NamedTemporaryFile
+from tempfile import NamedTemporaryFile
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 import graphene
 from graphene_django import DjangoObjectType
 from .models import ExportedFile, Indicator, Benchmarking, IndicatorData, TrendAnalysis
@@ -19,8 +21,13 @@ class IndicatorDataType(DjangoObjectType):
         model = IndicatorData
 
 class ExportedFileType(DjangoObjectType):
+    file_url = graphene.String()
+
     class Meta:
         model = ExportedFile
+    
+    def resolve_file_url(self, info):
+        return default_storage.url(self.file.name)
 
 # Custom Responses
 
@@ -182,7 +189,26 @@ class ExportDataMutation(graphene.Mutation):
                     'multi_year_timeframe': point.multi_year_timeframe
                     })
 
-        return ExportDataMutation(csv_file=temp_file.name)
+        print("Created file: " + temp_file.name)
+
+        with open(temp_file.name, 'rb') as f:
+            content = f.read()
+            content_file = ContentFile(content, name='export.csv')
+        
+        storage_path = default_storage.save('exports/' + content_file.name, content_file)
+        print("Saved file: " + storage_path)
+        print("Output file: " + content_file.name)
+
+        try:
+            print("About to create file instance")
+            file_instance = ExportedFile(file=storage_path)
+            file_instance.save()
+            print("Created empty file instance")
+        except Exception as e:
+            print("Error creating file instance: " + e)
+            raise e
+
+        return ExportDataMutation(csv_file=file_instance)
 
 class CreateIndicator(graphene.Mutation):
     class Arguments:

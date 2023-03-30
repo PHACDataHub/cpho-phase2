@@ -10,11 +10,12 @@ import { useCallback, useState } from "react";
 import { Page } from "../template/Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_INDICATOR_OVERVIEW } from "../../utils/graphql/queries";
 import { PossibleIndicatorType } from "../../utils/types";
 import PossibleIndicatorBox from "../molecules/PossibleIndicatorBox";
 import ExportIndicatorList from "../organisms/ExportIndicatorList";
+import { EXPORT_DATA } from "../../utils/graphql/mutations";
 
 export function ExportPage() {
   const toast = useToast();
@@ -59,46 +60,48 @@ export function ExportPage() {
     [selectedIndicators, addSelected, removeSelected]
   );
 
-  const handleExport = () => {
+  const [exportData, { loading: exportLoading, error: exportError }] =
+    useMutation(EXPORT_DATA);
+
+  const handleExport = async () => {
     setFileLoad(true);
-    const formData = new FormData();
-    formData.append(
-      "selectedIndicators",
-      JSON.stringify(selectedIndicators.map((ind) => ind.id))
-    );
-    fetch(
-      (process.env.REACT_APP_SERVER_URL || "http://localhost:3000/") +
-        "api/export",
-      {
-        method: "POST",
-        body: formData,
-      }
-    )
-      .then(async (res) => {
-        const obj = await res.text();
-        if (obj) {
-          const blob = new Blob([obj], { type: "text/csv;charset=utf-8" });
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.setAttribute("href", url);
-          link.setAttribute("download", "data.csv");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          toast({
-            title: "Data Downloaded",
-            description:
-              "The data you requested has been downloaded to your computer",
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-          });
-        }
-      })
-      .finally(() => setFileLoad(false))
-      .catch((err) => {
-        console.log("ERROR", err);
+    try {
+      const response = await exportData({
+        variables: {
+          selectedIndicators: selectedIndicators.map((ind) => ind.id),
+        },
       });
+      const fileUrl = response.data?.exportData?.csvFile?.fileUrl;
+      if (!fileUrl) {
+        throw new Error("No file url");
+      }
+      console.log(fileUrl);
+      const link = document.createElement("a");
+      link.setAttribute("href", fileUrl);
+      link.setAttribute("download", "export.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({
+        title: "Data exported",
+        description:
+          "The data you requested has been downloaded to your computer",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error exporting data",
+        description: "An error occured while exporting the data",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    } finally {
+      setFileLoad(false);
+    }
   };
 
   const { loading, error, data } = useQuery<{

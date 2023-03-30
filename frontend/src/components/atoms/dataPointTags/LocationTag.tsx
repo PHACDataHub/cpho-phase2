@@ -77,7 +77,8 @@ const LocationTag = ({
         </Box>
       </PopoverTrigger>
       <PopoverContent w="100%">
-        <PopoverArrow bgColor="gray.100" />
+        {(geographyType === "PROVINCE_TERRITORY" ||
+          geographyType === "REGION") && <PopoverArrow />}
         <VStack align="stretch" spacing={0} shadow="lg">
           {geographyType === "PROVINCE_TERRITORY" &&
             ProvincesTerritories.map((option, idx) => (
@@ -91,6 +92,16 @@ const LocationTag = ({
                 size="sm"
                 isActive={location === option.value}
                 onClick={() => setLocation(option.value as LocationType)}
+                _dark={{
+                  color: "white",
+                  bgColor: "gray.800",
+                  _hover: {
+                    bgColor: "gray.700",
+                  },
+                  _active: {
+                    bgColor: "gray.600",
+                  },
+                }}
               >
                 {option.label}
               </Button>
@@ -105,6 +116,16 @@ const LocationTag = ({
                 size="sm"
                 isActive={location === option.value}
                 onClick={() => setLocation(option.value as LocationType)}
+                _dark={{
+                  color: "white",
+                  bgColor: "gray.800",
+                  _hover: {
+                    bgColor: "gray.700",
+                  },
+                  _active: {
+                    bgColor: "gray.600",
+                  },
+                }}
               >
                 {option.label}
               </Button>

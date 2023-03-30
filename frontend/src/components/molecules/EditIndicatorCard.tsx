@@ -23,6 +23,9 @@ const EditIndicatorCard = ({ id }: { id: number }) => {
   return (
     <Box
       bgColor="gray.200"
+      _dark={{
+        bgColor: "gray.600",
+      }}
       py={2}
       px={4}
       borderRadius="lg"

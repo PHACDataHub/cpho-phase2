@@ -32,7 +32,7 @@ export function DataPointTable({
             <Th>Year</Th>
           </Tr>
         </Thead>
-        <Tbody>
+        <Tbody color="black">
           {dataPoints.map((dataPoint) => (
             <DataPointRow
               key={dataPoint.id}

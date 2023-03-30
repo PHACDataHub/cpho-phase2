@@ -64,7 +64,7 @@ const UnitTag = ({
         </Box>
       </PopoverTrigger>
       <PopoverContent w="100%">
-        <PopoverArrow bgColor="gray.100" />
+        <PopoverArrow />
         <VStack spacing={0} align="stretch">
           <Button
             borderRadius={0}
@@ -72,6 +72,16 @@ const UnitTag = ({
             isActive={unit === "PERCENT"}
             size="sm"
             onClick={() => setUnit("PERCENT")}
+            _dark={{
+              color: "white",
+              bgColor: "gray.800",
+              _hover: {
+                bgColor: "gray.700",
+              },
+              _active: {
+                bgColor: "gray.600",
+              },
+            }}
           >
             %
           </Button>
@@ -80,6 +90,16 @@ const UnitTag = ({
             isActive={unit === "RATE"}
             size="sm"
             onClick={() => setUnit("RATE")}
+            _dark={{
+              color: "white",
+              bgColor: "gray.800",
+              _hover: {
+                bgColor: "gray.700",
+              },
+              _active: {
+                bgColor: "gray.600",
+              },
+            }}
           >
             Per 100k
           </Button>
@@ -89,6 +109,16 @@ const UnitTag = ({
             isActive={unit === "OTHER"}
             size="sm"
             onClick={() => setUnit("OTHER")}
+            _dark={{
+              color: "white",
+              bgColor: "gray.800",
+              _hover: {
+                bgColor: "gray.700",
+              },
+              _active: {
+                bgColor: "gray.600",
+              },
+            }}
           >
             Other
           </Button>

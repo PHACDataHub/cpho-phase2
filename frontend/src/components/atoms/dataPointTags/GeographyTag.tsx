@@ -58,34 +58,33 @@ const GeographyTag = ({
         </Box>
       </PopoverTrigger>
       <PopoverContent w="100%">
-        <PopoverArrow bgColor="gray.100" />
+        <PopoverArrow />
         <VStack spacing={0} align="stretch">
-          <Button
-            borderRadius={0}
-            borderTopRadius="md"
-            isActive={type === "COUNTRY"}
-            size="sm"
-            onClick={() => setGeography("COUNTRY")}
-          >
-            Country
-          </Button>
-          <Button
-            borderRadius={0}
-            isActive={type === "REGION"}
-            size="sm"
-            onClick={() => setGeography("REGION")}
-          >
-            Region
-          </Button>
-          <Button
-            borderRadius={0}
-            borderBottomRadius="md"
-            isActive={type === "PROVINCE_TERRITORY"}
-            size="sm"
-            onClick={() => setGeography("PROVINCE_TERRITORY")}
-          >
-            Province/Territory
-          </Button>
+          {["Country", "Region", "Province/Territory"].map((option, idx) => (
+            <Button
+              borderRadius={0}
+              borderTopRadius={idx === 0 ? "md" : 0}
+              borderBottomRadius={idx === 2 ? "md" : 0}
+              key={option}
+              size="sm"
+              isActive={type === option.replace("/", "_").toUpperCase()}
+              onClick={() =>
+                setGeography(option.replace("/", "_").toUpperCase())
+              }
+              _dark={{
+                color: "white",
+                bgColor: "gray.800",
+                _hover: {
+                  bgColor: "gray.700",
+                },
+                _active: {
+                  bgColor: "gray.600",
+                },
+              }}
+            >
+              {option}
+            </Button>
+          ))}
         </VStack>
       </PopoverContent>
     </Popover>

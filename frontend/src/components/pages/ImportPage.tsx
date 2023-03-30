@@ -56,6 +56,7 @@ export function ImportPage() {
               : "pointer"
           }
           backgroundColor="gray.100"
+          _dark={{ backgroundColor: "gray.600" }}
           w="100%"
           py={8}
           onClick={() => document.getElementById("file_input")?.click()}
@@ -72,7 +73,14 @@ export function ImportPage() {
           {loading ? (
             <Spinner />
           ) : (
-            <VStack color={activeType === "indicator" ? "initial" : "gray.400"}>
+            <VStack
+              color={activeType === "indicator" ? "initial" : "gray.400"}
+              _dark={
+                activeType === "indicator"
+                  ? { color: "white" }
+                  : { color: "gray.500" }
+              }
+            >
               {!data?.importData?.success && <AttachmentIcon boxSize="8" />}
               <Heading size="lg" fontWeight={600}>
                 {data?.importData?.success

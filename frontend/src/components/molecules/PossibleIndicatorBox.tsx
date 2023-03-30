@@ -1,6 +1,5 @@
 import { MinusIcon, AddIcon } from "@chakra-ui/icons";
 import { HStack, Heading, Icon, Spacer } from "@chakra-ui/react";
-import { useEffect } from "react";
 import { PossibleIndicatorType } from "../../utils/types";
 
 const PossibleIndicatorBox = ({
@@ -18,20 +17,16 @@ const PossibleIndicatorBox = ({
 }) => {
   const { name, dataPointCount } = indicator;
 
-  useEffect(() => {
-    if (selected) {
-      addSelected(indicator);
-    } else {
-      removeSelected(indicator);
-    }
-  }, [selected, indicator, addSelected, removeSelected]);
-
   return (
     <HStack
       p={4}
       borderRadius="md"
       bgColor={selected ? "gray.400" : "gray.200"}
       _hover={{ bgColor: selected ? "gray.400" : "gray.300" }}
+      _dark={{
+        bgColor: selected ? "gray.500" : "gray.700",
+        _hover: { bgColor: selected ? "gray.500" : "gray.600" },
+      }}
       transition="all 0.2s ease-in-out"
       cursor="pointer"
       onClick={() => toggleSelect()}

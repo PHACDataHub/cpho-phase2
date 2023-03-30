@@ -46,10 +46,14 @@ const DataPointRow = ({
       key={idx}
       _hover={{
         bgColor: "gray.50",
+        _dark: {
+          bgColor: "blackAlpha.300",
+        },
       }}
-      bgColor="white"
     >
-      <Td isNumeric>{idx + 1}</Td>
+      <Td isNumeric _dark={{ color: "white" }}>
+        {idx + 1}
+      </Td>
       <Td>
         <HStack spacing={2}>
           <ButtonGroup isAttached>

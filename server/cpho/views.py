@@ -57,7 +57,25 @@ def exportPage(request):
         headers={'Content-Disposition': 'attachment; filename="results.csv"'},
     )
 
-    fieldnames = ['category', 'topic', 'indicator', 'detailed_indicator', 'sub_indicator_measurement', 'country', 'geography', 'sex', 'gender', 'age_group', 'age_group_type', 'data_quality', 'value', 'value_lower_bound', 'value_upper_bound', 'value_unit', 'single_year_timeframe', 'multi_year_timeframe']
+    fieldnames = ['category',
+                  'topic',
+                  'indicator',
+                  'detailed_indicator',
+                  'sub_indicator_measurement',
+                  'country',
+                  'geography',
+                  'sex',
+                  'gender',
+                  'age_group',
+                  'age_group_type',
+                  'data_quality',
+                  'value',
+                  'value_lower_bound',
+                  'value_upper_bound',
+                  'value_unit',
+                  'single_year_timeframe',
+                  'multi_year_timeframe',
+                  ]
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
 

@@ -51,7 +51,8 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware', // DELETED BECAUSE OF CSRF PROBLEMS, BUT SHOULD BE ADDED FOR SECURITY LATER
+    # 'django.middleware.csrf.CsrfViewMiddleware', // DELETED BECAUSE OF CSRF PROBLEMS,
+    #                                                 BUT SHOULD BE ADDED FOR SECURITY LATER
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -90,6 +91,9 @@ DATABASES = {
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT'),
         #   'OPTIONS': {'sslmode': 'require'},
+        'TEST': {
+            'ENGINE': 'django.db.backends.postgresql',
+         },
     }
 }
 

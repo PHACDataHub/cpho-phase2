@@ -17,7 +17,7 @@ spec:
         app: server
     spec:
 #     initContainers:
-#       - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-cfd98e9-1679424034
+#       - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-cfd98e9-1679424034 # {"$imagepolicy": "flux-system:server"}
 #         name: migration
 #         command: ['sh', '-c', 'python cpho/manage.py migrate']
 #         env:
@@ -89,7 +89,7 @@ spec:
 #                 name: server
 #                 key: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
       containers:
-        - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-cfd98e9-1679424034
+        - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-cfd98e9-1679424034 # {"$imagepolicy": "flux-system:server"}
           name: server
           env:
             - name: DEBUG

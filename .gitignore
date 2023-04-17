@@ -14,3 +14,6 @@
 
 # Server files
 server/exports/
+
+# Frontend build
+frontend/build/

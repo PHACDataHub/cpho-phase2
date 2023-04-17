@@ -51,6 +51,7 @@ class DataPointArgsInput(convert_serializer_to_input_type(DataPointSerializer)):
 
 class Query(graphene.ObjectType):
     indicators = graphene.List(IndicatorType)
+    indicators_by_id = graphene.List(IndicatorType, ids=graphene.List(graphene.Int))
     indicator = graphene.Field(IndicatorType, id=graphene.Int())
     indicator_data = graphene.List(IndicatorDataType)
     possible_indicators = graphene.List(PossibleIndicatorResponseType)
@@ -58,6 +59,10 @@ class Query(graphene.ObjectType):
     def resolve_indicators(root, info, **kwargs):
         # Querying a list
         return Indicator.objects.all()
+    
+    def resolve_indicators_by_id(root, info, ids, **kwargs):
+        # Querying a list
+        return Indicator.objects.filter(id__in=ids)
 
     def resolve_indicator_data(root, info, **kwargs):
         # Querying a list
@@ -131,85 +136,6 @@ class ImportDataMutation(graphene.Mutation):
 
         return ImportDataMutation(success=True)
 
-class ExportDataMutation(graphene.Mutation):
-    class Arguments:
-        selected_indicators = graphene.List(graphene.Int, required=True)
-
-    csv_file = graphene.Field(lambda: ExportedFileType)
-
-    @classmethod
-    def mutate(cls, root, info, selected_indicators):
-        temp_file = NamedTemporaryFile(delete=False)
-
-        with open(temp_file.name, 'w') as f:
-            fieldnames = ['category',
-                  'topic',
-                  'indicator',
-                  'detailed_indicator',
-                  'sub_indicator_measurement',
-                  'country',
-                  'geography',
-                  'sex',
-                  'gender',
-                  'age_group',
-                  'age_group_type',
-                  'data_quality',
-                  'value',
-                  'value_lower_bound',
-                  'value_upper_bound',
-                  'value_unit',
-                  'single_year_timeframe',
-                  'multi_year_timeframe',
-                  ]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-
-            for id in selected_indicators:
-                indicator = Indicator.objects.get(pk=id)
-                points = IndicatorData.objects.filter(indicator=indicator)
-                for point in points:
-                    writer.writerow({
-                    'category': indicator.category,
-                    'topic': indicator.topic,
-                    'indicator': indicator.indicator,
-                    'detailed_indicator': indicator.detailed_indicator,
-                    'sub_indicator_measurement': indicator.sub_indicator_measurement,
-                    'country': point.country,
-                    'geography': point.geography,
-                    'sex': point.sex,
-                    'gender': point.gender,
-                    'age_group': point.age_group,
-                    'age_group_type': point.age_group_type,
-                    'data_quality': point.data_quality,
-                    'value': point.value,
-                    'value_lower_bound': point.value_lower_bound,
-                    'value_upper_bound': point.value_upper_bound,
-                    'value_unit': point.value_unit,
-                    'single_year_timeframe': point.single_year_timeframe,
-                    'multi_year_timeframe': point.multi_year_timeframe
-                    })
-
-        print("Created file: " + temp_file.name)
-
-        with open(temp_file.name, 'rb') as f:
-            content = f.read()
-            content_file = ContentFile(content, name='export.csv')
-        
-        storage_path = default_storage.save('exports/' + content_file.name, content_file)
-        print("Saved file: " + storage_path)
-        print("Output file: " + content_file.name)
-
-        try:
-            print("About to create file instance")
-            file_instance = ExportedFile(file=storage_path)
-            file_instance.save()
-            print("Created empty file instance")
-        except Exception as e:
-            print("Error creating file instance: " + e)
-            raise e
-
-        return ExportDataMutation(csv_file=file_instance)
-
 class CreateIndicator(graphene.Mutation):
     class Arguments:
         category = graphene.String(required=True)
@@ -247,8 +173,7 @@ class ModifyIndicator(graphene.Mutation):
         indicator = graphene.String(required=True)
         detailedIndicator = graphene.String(required=True)
         subIndicatorMeasurement = graphene.String()
-        dataPoints = graphene.List(DataPointArgsInput, required=True)
-        
+        dataPoints = graphene.List(DataPointArgsInput, required=True)  
         
     success = graphene.Boolean()
     indicator = graphene.Field(IndicatorType)
@@ -299,8 +224,5 @@ class Mutation(graphene.ObjectType):
     create_indicator = CreateIndicator.Field()
     modify_indicator = ModifyIndicator.Field()
     import_data = ImportDataMutation.Field()
-    export_data = ExportDataMutation.Field()
-
-
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

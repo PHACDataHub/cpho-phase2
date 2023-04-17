@@ -6,16 +6,19 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Page } from "../template/Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_INDICATOR_OVERVIEW } from "../../utils/graphql/queries";
+import {
+  GET_INDICATOR_DATA_BY_IDS,
+  GET_INDICATOR_OVERVIEW,
+} from "../../utils/graphql/queries";
 import { PossibleIndicatorType } from "../../utils/types";
 import PossibleIndicatorBox from "../molecules/PossibleIndicatorBox";
 import ExportIndicatorList from "../organisms/ExportIndicatorList";
-import { EXPORT_DATA } from "../../utils/graphql/mutations";
+import { IndicatorType } from "../../utils/types";
 
 export function ExportPage() {
   const toast = useToast();
@@ -25,6 +28,8 @@ export function ExportPage() {
   const [selectedIndicators, setSelectedIndicators] = useState<
     PossibleIndicatorType[]
   >([]);
+
+  const [finalSelectedIds, setFinalSelectedIds] = useState<number[]>([]);
 
   const addSelected = useCallback(
     (ind: PossibleIndicatorType) => {
@@ -60,24 +65,63 @@ export function ExportPage() {
     [selectedIndicators, addSelected, removeSelected]
   );
 
-  const [exportData, { loading: exportLoading, error: exportError }] =
-    useMutation(EXPORT_DATA);
+  const {
+    loading: exportLoading,
+    data: exportData,
+    error: exportError,
+  } = useQuery(GET_INDICATOR_DATA_BY_IDS, {
+    variables: {
+      ids: finalSelectedIds,
+    },
+  });
 
-  const handleExport = async () => {
-    setFileLoad(true);
-    try {
-      const response = await exportData({
-        variables: {
-          selectedIndicators: selectedIndicators.map((ind) => ind.id),
-        },
-      });
-      const fileUrl = response.data?.exportData?.csvFile?.fileUrl;
-      if (!fileUrl) {
-        throw new Error("No file url");
-      }
-      console.log(fileUrl);
+  useEffect(() => {
+    if (
+      fileLoad &&
+      exportData &&
+      exportData.indicatorsById &&
+      exportData.indicatorsById.length > 0
+    ) {
+      const indicatorsData = exportData.indicatorsById
+        .map((ind: IndicatorType) => {
+          return ind.indicatordataSet
+            .map((dp) => {
+              return [
+                ind.category ? `"${ind.category}"` : null,
+                ind.topic ? `"${ind.topic}"` : null,
+                ind.indicator ? `"${ind.indicator}"` : null,
+                ind.detailedIndicator ? `"${ind.detailedIndicator}"` : null,
+                ind.subIndicatorMeasurement
+                  ? `"${ind.subIndicatorMeasurement}"`
+                  : null,
+                dp.country ? `"${dp.country}"` : null,
+                dp.geography ? `"${dp.geography}"` : null,
+                dp.sex ? `"${dp.sex}"` : null,
+                dp.gender ? `"${dp.gender}"` : null,
+                dp.ageGroup ? `"${dp.ageGroup}"` : null,
+                dp.ageGroupType ? `"${dp.ageGroupType}"` : null,
+                dp.dataQuality ? `"${dp.dataQuality}"` : null,
+                dp.value ? `"${dp.value}"` : null,
+                dp.valueLowerBound ? `"${dp.valueLowerBound}"` : null,
+                dp.valueUpperBound ? `"${dp.valueUpperBound}"` : null,
+                dp.valueUnit ? `"${dp.valueUnit}"` : null,
+                dp.singleYearTimeframe ? `"${dp.singleYearTimeframe}"` : null,
+                dp.multiYearTimeframe ? `"${dp.multiYearTimeframe}"` : null,
+              ].join(",");
+            })
+            .join("\n");
+        })
+        .join("\n");
+
+      const csvData =
+        "category,topic,indicator,detailed_indicator,sub_indicator_measurement,country,geography,sex,gender,age_group,age_group_type,data_quality,value,value_lower_bound,value_upper_bound,value_unit,single_year_timeframe,multi_year_timeframe\n" +
+        indicatorsData;
+
+      console.log(csvData);
+
+      const blob = new Blob([csvData], { type: "text/csv" });
       const link = document.createElement("a");
-      link.setAttribute("href", fileUrl);
+      link.setAttribute("href", URL.createObjectURL(blob));
       link.setAttribute("download", "export.csv");
       document.body.appendChild(link);
       link.click();
@@ -90,18 +134,13 @@ export function ExportPage() {
         duration: 4000,
         isClosable: true,
       });
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Error exporting data",
-        description: "An error occured while exporting the data",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
-    } finally {
       setFileLoad(false);
     }
+  }, [exportData, toast]);
+
+  const handleExport = async () => {
+    setFileLoad(true);
+    setFinalSelectedIds(selectedIndicators.map((ind) => ind.id));
   };
 
   const { loading, error, data } = useQuery<{
@@ -175,7 +214,6 @@ export function ExportPage() {
             )}
           </Stack>
         )}
-
         <ButtonGroup size="lg" isAttached>
           <Button
             leftIcon={<FaFileCsv />}

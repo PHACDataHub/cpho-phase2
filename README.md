@@ -36,6 +36,9 @@ DB_USER=cpho_user-admin
 DB_PASSWORD=123
 DB_HOST=postgres
 DB_PORT=5432
+DJANGO_SUPERUSER_PASSWORD=admin
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
 SECRET_KEY= # ADD GENERATED KEY HERE #
 # PGADMIN CONTAINER
 PGADMIN_DEFAULT_EMAIL=admin@example.com
@@ -52,6 +55,7 @@ EOF
 Run `docker compose up -d` in the root directory of the project.
 
 Docker should have created 4 containers:
+
 - `cpho-envoy`: the lightweight reverse proxy
 - `cpho-postgres`: PostgreSQL database
 - `cpho-server`: Django Server
@@ -63,4 +67,3 @@ Now, you can do the following:
 - Navigate to `localhost:3000/graphql` to view the GraphQL interface
 
 When you're done working, you can run `docker compose down` to stop the containers
-

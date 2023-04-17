@@ -68,14 +68,3 @@ export const IMPORT_DATA = gql`
     }
   }
 `;
-
-export const EXPORT_DATA = gql`
-  mutation ExportData($selectedIndicators: [Int]!) {
-    exportData(selectedIndicators: $selectedIndicators) {
-      csvFile {
-        id
-        fileUrl
-      }
-    }
-  }
-`;

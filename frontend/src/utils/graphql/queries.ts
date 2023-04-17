@@ -48,3 +48,31 @@ export const GET_INDICATOR_DATA = gql`
     }
   }
 `;
+
+export const GET_INDICATOR_DATA_BY_IDS = gql`
+  query ($ids: [Int]) {
+    indicatorsById(ids: $ids) {
+      id
+      category
+      topic
+      indicator
+      detailedIndicator
+      subIndicatorMeasurement
+      indicatordataSet {
+        country
+        geography
+        sex
+        gender
+        ageGroup
+        ageGroupType
+        dataQuality
+        value
+        valueLowerBound
+        valueUpperBound
+        valueUnit
+        singleYearTimeframe
+        multiYearTimeframe
+      }
+    }
+  }
+`;

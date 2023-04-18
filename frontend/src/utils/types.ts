@@ -37,8 +37,8 @@ export type DataQualityType = "CAUTION" | "ACCEPTABLE" | "GOOD" | "EXCELLENT";
 export type DataPoint = {
   id: string;
   indicatorId?: number;
-  country: LocationType;
-  geography: GeographyType;
+  locationType: GeographyType;
+  location: LocationType;
   sex: string;
   gender: string;
   ageGroup: string;
@@ -77,8 +77,8 @@ export type PossibleIndicatorType = {
 export type IndicatorType = {
   id: number;
   category: string;
-  topic: string;
-  indicator: string;
+  subCategory: string;
+  name: string;
   detailedIndicator: string;
   subIndicatorMeasurement: string;
   indicatordataSet: DataPoint[];

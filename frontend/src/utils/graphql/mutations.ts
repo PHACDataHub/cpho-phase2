@@ -4,21 +4,21 @@ export const CREATE_INDICATOR = gql`
   mutation CreateIndicator(
     $category: String!
     $detailedIndicator: String!
-    $indicator: String!
+    $name: String!
     $subIndicatorMeasurement: String
-    $topic: String!
+    $subCategory: String!
     $dataPoints: [DataPointArgsInput]!
   ) {
     createIndicator(
       category: $category
       detailedIndicator: $detailedIndicator
-      indicator: $indicator
+      name: $name
       subIndicatorMeasurement: $subIndicatorMeasurement
-      topic: $topic
+      subCategory: $subCategory
       dataPoints: $dataPoints
     ) {
       indicator {
-        indicator
+        name
         category
       }
       dataPoints {
@@ -34,28 +34,28 @@ export const MODIFY_INDICATOR = gql`
     $dataPoints: [DataPointArgsInput]!
     $detailedIndicator: String!
     $id: Int!
-    $indicator: String!
+    $name: String!
     $subIndicatorMeasurement: String
-    $topic: String!
+    $subCategory: String!
   ) {
     modifyIndicator(
       category: $category
       dataPoints: $dataPoints
       detailedIndicator: $detailedIndicator
       id: $id
-      indicator: $indicator
+      name: $name
       subIndicatorMeasurement: $subIndicatorMeasurement
-      topic: $topic
+      subCategory: $subCategory
     ) {
       success
       indicator {
-        indicator
-        topic
+        name
         category
+        subCategory
       }
       dataPoints {
-        country
-        geography
+        locationType
+        location
       }
     }
   }

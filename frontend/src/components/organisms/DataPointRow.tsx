@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { DataPoint, LocationType } from "../../utils/types";
 import { AddDataPointModal } from "../molecules/AddDataPointModal";
-import GeographyTag from "../atoms/dataPointTags/GeographyTag";
+import LocationTypeTag from "../atoms/dataPointTags/LocationTypeTag";
 import LocationTag from "../atoms/dataPointTags/LocationTag";
 import DataQualityTag from "../atoms/dataPointTags/DataQualityTag";
 import YearTag from "../atoms/dataPointTags/YearTag";
@@ -91,20 +91,20 @@ const DataPointRow = ({
         />
       </Td>
       <Td>
-        <GeographyTag
-          type={dataPoint.geography}
+        <LocationTypeTag
+          type={dataPoint.locationType}
           setGeography={(geography: string) => {
-            editDataPoint(dataPoint.id, "geography", geography);
+            editDataPoint(dataPoint.id, "locationType", geography);
           }}
         />
       </Td>
       <Td>
         <LocationTag
-          location={dataPoint.country}
+          location={dataPoint.location}
           setLocation={(location: LocationType) => {
             editDataPoint(dataPoint.id, "country", location);
           }}
-          geographyType={dataPoint.geography}
+          geographyType={dataPoint.locationType}
         />
       </Td>
       <Td isNumeric>

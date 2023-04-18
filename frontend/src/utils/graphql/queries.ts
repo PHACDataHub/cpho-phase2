@@ -15,7 +15,7 @@ export const GET_INDICATORS_AND_IDS = gql`
   query {
     indicators {
       id
-      indicator
+      name
     }
   }
 `;
@@ -25,14 +25,14 @@ export const GET_INDICATOR_DATA = gql`
     indicator(id: $id) {
       id
       category
-      topic
-      indicator
+      subCategory
+      name
       detailedIndicator
       subIndicatorMeasurement
       indicatordataSet {
         id
-        country
-        geography
+        locationType
+        location
         sex
         gender
         ageGroup
@@ -54,13 +54,13 @@ export const GET_INDICATOR_DATA_BY_IDS = gql`
     indicatorsById(ids: $ids) {
       id
       category
-      topic
-      indicator
+      subCategory
+      name
       detailedIndicator
       subIndicatorMeasurement
       indicatordataSet {
-        country
-        geography
+        locationType
+        location
         sex
         gender
         ageGroup

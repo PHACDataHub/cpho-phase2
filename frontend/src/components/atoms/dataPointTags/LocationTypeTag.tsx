@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-const GeographyTag = ({
+const LocationTypeTag = ({
   type,
   setGeography,
 }: {
@@ -91,4 +91,4 @@ const GeographyTag = ({
   );
 };
 
-export default GeographyTag;
+export default LocationTypeTag;

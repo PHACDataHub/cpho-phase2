@@ -1,21 +1,19 @@
 from django.db import models
 
-
 class Indicator(models.Model):
+    name = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
-    topic = models.CharField(max_length=50)
-    indicator = models.CharField(max_length=50)
+    sub_category = models.CharField(max_length=50)
     detailed_indicator = models.CharField(max_length=300)
     sub_indicator_measurement = models.CharField(max_length=150)
 
     def __str__(self):
         return self.detailed_indicator
 
-
 class IndicatorData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
-    country = models.CharField(max_length=50)
-    geography = models.CharField(max_length=50)
+    location_type = models.CharField(max_length=50)
+    location = models.CharField(max_length=50)
     sex = models.CharField(max_length=50, null=True)
     gender = models.CharField(max_length=50, null=True)
     age_group = models.CharField(max_length=50, null=True)
@@ -61,10 +59,3 @@ class TrendAnalysis(models.Model):
 
     def __str__(self):
         return self.detailed_indicator
-
-class ExportedFile(models.Model):
-    file = models.FileField(upload_to='exports/')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.file.name

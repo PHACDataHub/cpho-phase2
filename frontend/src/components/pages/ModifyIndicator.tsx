@@ -17,7 +17,7 @@ const ModifyIndicator = () => {
     },
   });
 
-  const name = data?.indicator.indicator.toLocaleLowerCase() ?? id;
+  const name = data?.indicator.name.toLocaleLowerCase() ?? id;
 
   return (
     <Page

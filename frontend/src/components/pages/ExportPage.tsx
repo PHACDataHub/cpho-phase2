@@ -88,14 +88,14 @@ export function ExportPage() {
             .map((dp) => {
               return [
                 ind.category ? `"${ind.category}"` : null,
-                ind.topic ? `"${ind.topic}"` : null,
-                ind.indicator ? `"${ind.indicator}"` : null,
+                ind.subCategory ? `"${ind.subCategory}"` : null,
+                ind.name ? `"${ind.name}"` : null,
                 ind.detailedIndicator ? `"${ind.detailedIndicator}"` : null,
                 ind.subIndicatorMeasurement
                   ? `"${ind.subIndicatorMeasurement}"`
                   : null,
-                dp.country ? `"${dp.country}"` : null,
-                dp.geography ? `"${dp.geography}"` : null,
+                dp.locationType ? `"${dp.locationType}"` : null,
+                dp.location ? `"${dp.location}"` : null,
                 dp.sex ? `"${dp.sex}"` : null,
                 dp.gender ? `"${dp.gender}"` : null,
                 dp.ageGroup ? `"${dp.ageGroup}"` : null,

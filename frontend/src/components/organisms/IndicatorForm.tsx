@@ -14,11 +14,11 @@ import UpdateSubmit from "../molecules/UpdateSubmit";
 const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
   const [values, setValues] = useState({
     id: indicator?.id ?? 0,
-    indicatorName: indicator?.indicator ?? "",
+    indicatorName: indicator?.name ?? "",
     detailedIndicator: indicator?.detailedIndicator ?? "",
     category: categories.find((c) => c.label === indicator?.category)?.id ?? 1,
     subCategory:
-      sub_categories.find((c) => c.label === indicator?.topic)?.id ?? 1,
+      sub_categories.find((c) => c.label === indicator?.subCategory)?.id ?? 1,
     dataPoints: (indicator?.indicatordataSet ?? []) as DataPoint[],
   });
 
@@ -42,8 +42,8 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
   const addBlankDataPoint = () => {
     const dataPoint: DataPoint = {
       id: uuidv4(),
-      country: "CANADA",
-      geography: "COUNTRY",
+      location: "CANADA",
+      locationType: "COUNTRY",
       sex: "",
       gender: "",
       ageGroup: "",
@@ -61,7 +61,7 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
   const editDataPoint = (uuid: string, field: string, value: any) => {
     const newDataPoints = dataPoints.map((dataPoint) => {
       if (dataPoint.id === uuid) {
-        if (field === "geography") {
+        if (field === "locationType") {
           const country: LocationType =
             value === "COUNTRY"
               ? "CANADA"
@@ -71,8 +71,8 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
 
           return {
             ...dataPoint,
-            geography: value,
-            country,
+            locationType: value,
+            location: country,
           };
         } else if (field === "singleYearTimeframe") {
           return {

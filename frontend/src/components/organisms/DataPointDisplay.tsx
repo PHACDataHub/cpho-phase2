@@ -30,8 +30,8 @@ const DataPointDisplay = ({ dataPoints }: { dataPoints: DataPoint[] }) => {
           {dataPoints.map((dataPoint, idx) => (
             <Tr key={dataPoint.id}>
               <Td isNumeric>{idx + 1}</Td>
-              <Td>{dataPoint.geography}</Td>
-              <Td>{dataPoint.country}</Td>
+              <Td>{dataPoint.location}</Td>
+              <Td>{dataPoint.locationType}</Td>
               <Td isNumeric>{dataPoint.value}</Td>
               <Td>{dataPoint.valueUnit}</Td>
               <Td>{dataPoint.dataQuality}</Td>

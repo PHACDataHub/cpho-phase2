@@ -123,7 +123,7 @@ export const IndicatorDataFields: DataPointField[] = [
     name: "Geography",
     id: "dp_geography",
     type: "select",
-    dpField: "geography",
+    dpField: "location",
     required: true,
     options: [
       {
@@ -145,7 +145,7 @@ export const IndicatorDataFields: DataPointField[] = [
     name: "Location",
     id: "dp_location",
     type: "select",
-    dpField: "country",
+    dpField: "locationType",
     required: true,
     options: [],
     placeholder: "e.g. Canada; Ontario",

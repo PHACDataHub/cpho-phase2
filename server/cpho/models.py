@@ -27,11 +27,8 @@ class IndicatorData(models.Model):
     multi_year_timeframe = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return " ".join([self.country,
-                         self.sex,
-                         self.age_group,
-                         self.single_year_timeframe,
-                         self.multi_year_timeframe,
+        return " ".join([self.location_type,
+                         self.location,
                          str(self.value),
                          ])
 

@@ -108,9 +108,9 @@ const UpdateSubmit = ({
                 category:
                   categories.find((c) => c.id === category)?.label ?? "",
                 detailedIndicator,
-                indicator: indicatorName,
+                name: indicatorName,
                 subIndicatorMeasurement: "",
-                topic:
+                subCategory:
                   sub_categories.find((c) => c.id === subCategory)?.label ?? "",
                 dataPoints: dataPoints.map(({ id, ...d }) => ({
                   ...d,

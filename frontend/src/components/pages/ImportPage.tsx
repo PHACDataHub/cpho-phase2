@@ -8,17 +8,24 @@ import {
   Center,
   Spinner,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMPORT_DATA } from "../../utils/graphql/mutations";
-import { FileFormat } from "../../utils/types";
+import { FileFormat, IndicatorType } from "../../utils/types";
 import { FileTypeChoice } from "../organisms/FileTypeChoice";
 import { Page } from "../template/Page";
+import { v4 as uuidv4 } from "uuid";
 
 export function ImportPage() {
   const [fileToUpload, setFileToUpload] = useState();
 
   const [activeType, setActiveType] = useState<FileFormat>("indicator");
   const [importData, { loading, error, data }] = useMutation(IMPORT_DATA);
+
+  const [stage, setStage] = useState<"upload"|"review_schema"|"review_data">("upload");
+
+  const [fileIndicators, setFileIndicators] = useState<IndicatorType[]>([]);
+
+  const [customFieldMapping, setCustomFieldMapping] = useState<{[key: string]: string}>({});
 
   const handleFile = (event: any) => {
     event.preventDefault();
@@ -39,15 +46,118 @@ export function ImportPage() {
     }
   };
 
-  console.log(data);
+  const tryGetLocation = (cur: any) => {
+    const loc = cur.location;
+    if (loc) return loc;
+  
+    const field = prompt("Please enter the location field name", "location");
+    if (field) {
+      setCustomFieldMapping({ ...customFieldMapping, "location": field });
+      return cur[field];
+    }
+  }
+
+  /**
+ * Takes a raw CSV string and converts it to a JavaScript object.
+ * @param {string} text The raw CSV string.
+ * @param {string[]} headers An optional array of headers to use. If none are
+ * given, they are pulled from the first line of `text`.
+ * @param {string} quoteChar A character to use as the encapsulating character.
+ * @param {string} delimiter A character to use between columns.
+ * @returns {object[]} An array of JavaScript objects containing headers as keys
+ * and row entries as values.
+ */
+function csvToJson(text: string, headers?: string[], quoteChar = '"', delimiter = ',') {
+  const regex = new RegExp(`(?<=,|\n|^)(?:"([^${quoteChar}]*)"|([^${delimiter}${quoteChar}\n]*))(?=${delimiter}|\n|$)`, 'gs');
+
+  const match = (line: string | undefined) => line ? [...line.matchAll(regex)] : []
+    .map(m => m[2])  // we only want the second capture group
+    .slice(0, -1);   // cut off blank match at the end
+
+  const lines = text.split('\n');
+  const heads = headers ?? match(lines.shift());
+
+  console.log(heads);
+
+    return lines.map(line => {
+      console.log(line);
+      return match(line)?.reduce((acc, cur, i) => {
+        const key = heads[i][0] ?? `extra_${i}`;
+        return { ...acc, [key]: cur[0] };
+      }, {});
+    });
+  }
+
+
+
+  // useEffect(() => {
+  //   if(stage==='review_schema'){
+  //     (fileToUpload as any).text().then((text:string) => {
+  //       const csvData = csvToJson(text);
+        
+  //       const indType = csvData.reduce((acc: IndicatorType[], cur: any) => {
+  //         const ind = acc.find((ind) => ind.name === cur.indicator);
+  //         if (ind) {
+  //           ind.indicatordataSet.push({
+  //             id: uuidv4(),
+  //             indicatorId: ind.id,
+  //             locationType: cur.locationType,
+  //             location: customFieldMapping["location"] ? cur[customFieldMapping["location"]] : tryGetLocation(cur),
+  //             sex: cur.sex,
+  //             gender: cur.gender,
+  //             ageGroup: cur.ageGroup,
+  //             ageGroupType: cur.ageGroupType,
+  //             dataQuality: cur.dataQuality,
+  //             value: cur.value,
+  //             valueLowerBound: cur.valueLowerBound,
+  //             valueUpperBound: cur.valueUpperBound,
+  //             valueUnit: cur.valueUnit,
+  //             singleYearTimeframe: cur.singleYearTimeframe,
+  //             multiYearTimeframe: cur.multiYearTimeframe,
+  //           })
+  //         } else if (cur.indicator) {
+  //           const newInd: IndicatorType = {
+  //             id: 0,
+  //             name: cur.indicator,
+  //             category: cur.category,
+  //             subCategory: cur.subCategory,
+  //             subIndicatorMeasurement: cur.subIndicatorMeasurement,
+  //             detailedIndicator: cur.detailedIndicator,
+  //             indicatordataSet: [{
+  //               id: uuidv4(),
+  //               locationType: cur.locationType,
+  //               location: cur.location,
+  //               sex: cur.sex,
+  //               gender: cur.gender,
+  //               ageGroup: cur.ageGroup,
+  //               ageGroupType: cur.ageGroupType,
+  //               dataQuality: cur.dataQuality,
+  //               value: cur.value,
+  //               valueLowerBound: cur.valueLowerBound,
+  //               valueUpperBound: cur.valueUpperBound,
+  //               valueUnit: cur.valueUnit,
+  //               singleYearTimeframe: cur.singleYearTimeframe,
+  //               multiYearTimeframe: cur.multiYearTimeframe,
+  //             }]
+  //           }
+
+  //           acc.push(newInd);
+  //         }
+
+  //         return acc;
+  //       }, [])
+  //       setFileIndicators(indType);
+  //     });
+  //   }
+  // }, [stage]);
+
+  useEffect(() => {
+    console.log(fileIndicators);
+  }, [fileIndicators]);
 
   return (
     <Page title="Import File" backButton={{ show: true, redirectUrl: "/" }}>
-      <Heading size="md" fontWeight={500} mb={4}>
-        The format of the file must align with the order and presence of the
-        expected columns
-      </Heading>
-      <VStack align="flex-start" spacing={4}>
+      {stage==="upload" && <VStack align="flex-start" spacing={4}>
         <FileTypeChoice activeType={activeType} setActiveType={setActiveType} />
         <Center
           cursor={
@@ -105,13 +215,23 @@ export function ImportPage() {
           <Button
             size="lg"
             fontSize={20}
-            colorScheme="red"
-            onClick={handleSubmit}
+            colorScheme="blue"
+            onClick={() => setStage('review_schema')}
+            isDisabled={!fileToUpload}
           >
-            Import
+            Review
           </Button>
         </VStack>
+      </VStack>}
+
+      {stage === 'review_schema' && <VStack align="flex-start" spacing={4}>
+        <Heading size="lg" fontWeight={600}>
+          Review Schema
+        </Heading>
+          
       </VStack>
+      
+      }
     </Page>
   );
 }

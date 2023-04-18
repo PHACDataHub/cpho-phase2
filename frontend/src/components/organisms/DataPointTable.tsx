@@ -35,6 +35,7 @@ export function DataPointTable({
         <Tbody color="black">
           {dataPoints.map((dataPoint) => (
             <DataPointRow
+
               key={dataPoint.id}
               dataPoint={dataPoint}
               dataPoints={dataPoints}

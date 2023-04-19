@@ -1,4 +1,3 @@
-import { useMutation } from "@apollo/client";
 import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -9,7 +8,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { IMPORT_DATA } from "../../utils/graphql/mutations";
 import { FileFormat } from "../../utils/types";
 import { FileTypeChoice } from "./FileTypeChoice";
 
@@ -17,31 +15,23 @@ const FileUpload = ({
   fileToUpload,
   setFileToUpload,
   setStage,
+  data,
+  loading,
+  error,
 }: {
   fileToUpload: File | undefined;
   setFileToUpload: (file: File | undefined) => void;
   setStage: (stage: "upload" | "review_schema" | "review_data") => void;
+  data: any;
+  loading: boolean;
+  error: any;
 }) => {
   const [activeType, setActiveType] = useState<FileFormat>("indicator");
-  const [importData, { loading, error, data }] = useMutation(IMPORT_DATA);
 
   const handleFile = (event: any) => {
     event.preventDefault();
     const file = event.target.files[0];
     setFileToUpload(file);
-  };
-
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    if (fileToUpload) {
-      try {
-        await importData({
-          variables: { file: fileToUpload },
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
   };
 
   return (

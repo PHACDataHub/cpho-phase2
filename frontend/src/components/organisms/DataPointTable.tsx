@@ -13,7 +13,7 @@ export function DataPointTable() {
           <Tr>
             <Th isNumeric>#</Th>
             <Th>Actions</Th>
-            <Th>Geography</Th>
+            <Th>Location Type</Th>
             <Th>Location</Th>
             <Th isNumeric>Value</Th>
             <Th>Unit</Th>

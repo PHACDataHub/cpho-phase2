@@ -4,7 +4,7 @@ import { Page } from "../template/Page";
 export function AddIndicator() {
   return (
     <Page backButton={{ show: true, redirectUrl: "/" }} title="Add Data">
-      <IndicatorForm />
+      <IndicatorForm mode="create" />
     </Page>
   );
 }

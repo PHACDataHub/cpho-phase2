@@ -60,11 +60,3 @@ export const MODIFY_INDICATOR = gql`
     }
   }
 `;
-
-export const IMPORT_DATA = gql`
-  mutation ImportData($file: Upload!) {
-    importData(file: $file) {
-      success
-    }
-  }
-`;

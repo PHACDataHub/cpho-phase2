@@ -34,8 +34,8 @@ const IndicatorGenInfo = ({ categoryId, subCategoryId }: Props) => {
           Indicator Name
         </FormLabel>
         <Input
-          value={indicator?.indicator}
-          onChange={(e) => setField("indicator", e.target.value)}
+          value={indicator?.name}
+          onChange={(e) => setField("name", e.target.value)}
           required
           variant="filled"
           placeholder="Enter indicator name"
@@ -72,7 +72,7 @@ const IndicatorGenInfo = ({ categoryId, subCategoryId }: Props) => {
           value={subCategoryId}
           onChange={(e) => {
             setField(
-              "topic",
+              "subCategory",
               sub_categories.find((c) => c.id === parseInt(e.target.value))
                 ?.label
             );

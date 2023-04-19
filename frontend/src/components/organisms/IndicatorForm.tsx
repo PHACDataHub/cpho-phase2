@@ -13,7 +13,13 @@ import UpdateSubmit from "../molecules/UpdateSubmit";
 import { ErrorType } from "../../utils/types";
 import { IndicatorFormProvider } from "../../utils/context/IndicatorFormContext";
 
-const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
+const IndicatorForm = ({
+  indicator,
+  mode,
+}: {
+  indicator?: IndicatorType;
+  mode: "create" | "modify";
+}) => {
   const [values, setValues] = useState({
     id: indicator?.id ?? 0,
     name: indicator?.name ?? "",
@@ -115,12 +121,11 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
             [field]: value,
           };
         }
-        return dataPoint;
-      };
-      setField("indicatordataSet", newDataPoints);
-    },
-    [dataPoints, setField]
-  );
+      }
+      return dataPoint;
+    });
+    setField("indicatordataSet", newDataPoints);
+  };
 
   const replaceDataPoint = useCallback(
     (uuid: string, newDataPoint: DataPoint) => {
@@ -277,8 +282,12 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
             <DataPointTable />
           </VStack>
         )}
-        {step === 3 && !indicator && <ReviewSubmit values={values} />}
-        {step === 3 && indicator && <UpdateSubmit values={values} />}
+        {step === 3 && (!indicator || mode === "create") && (
+          <ReviewSubmit values={values} />
+        )}
+        {step === 3 && indicator && mode === "modify" && (
+          <UpdateSubmit values={values} />
+        )}
       </VStack>
     </IndicatorFormProvider>
   );

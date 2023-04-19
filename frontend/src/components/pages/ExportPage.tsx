@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Page } from "../template/Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   GET_INDICATOR_DATA_BY_IDS,
   GET_INDICATOR_OVERVIEW,
@@ -136,7 +136,7 @@ export function ExportPage() {
       });
       setFileLoad(false);
     }
-  }, [exportData, toast]);
+  }, [exportData, fileLoad, toast]);
 
   const handleExport = async () => {
     setFileLoad(true);
@@ -242,7 +242,16 @@ export function ExportPage() {
           isDisabled={selectedIndicators.length < 1}
           onClick={handleExport}
           loadingText="Exporting..."
-          isLoading={fileLoad}
+          isLoading={fileLoad || exportLoading}
+          onError={() => {
+            toast({
+              title: "Error exporting data",
+              description: exportError?.message,
+              status: "error",
+              duration: 4000,
+              isClosable: true,
+            });
+          }}
         >
           Download data
         </Button>

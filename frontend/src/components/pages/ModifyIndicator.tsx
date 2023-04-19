@@ -26,7 +26,7 @@ const ModifyIndicator = () => {
     >
       {loading && <Spinner />}
       {error && <Text>Could not load indicator</Text>}
-      {data && <IndicatorForm indicator={data?.indicator} />}
+      {data && <IndicatorForm indicator={data?.indicator} mode="modify" />}
     </Page>
   );
 };

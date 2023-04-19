@@ -1,21 +1,14 @@
-import {
-  VStack,
-  Button,
-  Heading,
-  Text,
-  HStack,
-  Select,
-  FormControl,
-  FormLabel,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Button, Heading, ButtonGroup } from "@chakra-ui/react";
+import { useCallback, useEffect, useState } from "react";
 import { IndicatorType } from "../../utils/types";
 import { Page } from "../template/Page";
 import { FileColumnData } from "../../utils/constants";
 import FileUpload from "../organisms/FileUpload";
 import FileReviewSchema from "../organisms/FileReviewSchema";
 import { v4 as uuidv4 } from "uuid";
-import { DataPointTable } from "../organisms/DataPointTable";
+import IndicatorForm from "../organisms/IndicatorForm";
+import { useMutation } from "@apollo/client";
+import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
 
 export function ImportPage() {
   const [fileToUpload, setFileToUpload] = useState<File>();
@@ -51,37 +44,35 @@ export function ImportPage() {
     multiYearTimeFrame: "",
   });
 
-  const csvToJson = (
-    text: string,
-    headers?: string[],
-    quoteChar = '"',
-    delimiter = ","
-  ) => {
-    const regex = new RegExp(
-      `(?<=,|\n|^)(?:"([^${quoteChar}]*)"|([^${delimiter}${quoteChar}\n]*))(?=${delimiter}|\n|$)`,
-      "gs"
-    );
+  const csvToJson = useCallback(
+    (text: string, headers?: string[], quoteChar = '"', delimiter = ",") => {
+      const regex = new RegExp(
+        `(?<=,|\n|^)(?:"([^${quoteChar}]*)"|([^${delimiter}${quoteChar}\n]*))(?=${delimiter}|\n|$)`,
+        "gs"
+      );
 
-    const match = (line: string | undefined) =>
-      line
-        ? [...line.matchAll(regex)]
-        : []
-            .map((m) => m[2]) // we only want the second capture group
-            .slice(0, -1); // cut off blank match at the end
+      const match = (line: string | undefined) =>
+        line
+          ? [...line.matchAll(regex)]
+          : []
+              .map((m) => m[2]) // we only want the second capture group
+              .slice(0, -1); // cut off blank match at the end
 
-    const lines = text.split("\n");
-    const heads = headers ?? match(lines.shift());
+      const lines = text.split("\n");
+      const heads = headers ?? match(lines.shift());
 
-    return lines.map((line) => {
-      return match(line)?.reduce((acc, cur, i) => {
-        const key =
-          Object.entries(fieldMapping).find(([key, value]) => {
-            return value === heads[i][0];
-          })?.[0] || `custom_${i}`;
-        return { ...acc, [key]: cur[1] };
-      }, {});
-    });
-  };
+      return lines.map((line) => {
+        return match(line)?.reduce((acc, cur, i) => {
+          const key =
+            Object.entries(fieldMapping).find(([key, value]) => {
+              return value === heads[i][0];
+            })?.[0] || `custom_${i}`;
+          return { ...acc, [key]: cur[1] ?? cur[0] };
+        }, {});
+      });
+    },
+    [fieldMapping]
+  );
 
   const csvHeaders = (text: string, quoteChar = '"', delimiter = ",") => {
     const regex = new RegExp(
@@ -174,7 +165,7 @@ export function ImportPage() {
       }, []);
       setFileIndicators(indType);
     }
-  }, [stage, fileToUpload, fieldMapping, fileHeaders, fileText]);
+  }, [stage, fileToUpload, fieldMapping, fileHeaders, fileText, csvToJson]);
 
   useEffect(() => {
     if (fileHeaders) {
@@ -198,6 +189,14 @@ export function ImportPage() {
     console.log(fileIndicators);
   }, [fileIndicators]);
 
+  const [indicatorStep, setIndicatorStep] = useState(0);
+  const [submittedIndicatorIndexes, setSubmittedIndicatorIndexes] = useState<
+    number[]
+  >([]);
+
+  const [createIndicator, { loading, error, data }] =
+    useMutation(CREATE_INDICATOR);
+
   return (
     <Page title="Import File" backButton={{ show: true, redirectUrl: "/" }}>
       {stage === "upload" && (
@@ -205,6 +204,9 @@ export function ImportPage() {
           fileToUpload={fileToUpload}
           setFileToUpload={setFileToUpload}
           setStage={setStage}
+          data={data}
+          loading={loading}
+          error={error}
         />
       )}
 
@@ -219,7 +221,27 @@ export function ImportPage() {
 
       {stage === "review_data" && (
         <>
-          <Heading>Review Data</Heading>
+          <Heading>Review Data for {fileIndicators.length} indicators</Heading>
+          <ButtonGroup>
+            {fileIndicators.map((indicator, idx) => (
+              <Button
+                key={idx}
+                onClick={() => setIndicatorStep(idx)}
+                isActive={indicatorStep === idx}
+                isDisabled={submittedIndicatorIndexes.includes(idx)}
+              >
+                {indicator.name}
+              </Button>
+            ))}
+          </ButtonGroup>
+          {fileIndicators.map(
+            (indicator, idx) =>
+              idx === indicatorStep && (
+                <>
+                  <IndicatorForm indicator={indicator} mode="create" />
+                </>
+              )
+          )}
         </>
       )}
     </Page>

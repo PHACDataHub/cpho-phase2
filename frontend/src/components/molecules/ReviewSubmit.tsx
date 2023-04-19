@@ -7,7 +7,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { sub_categories } from "../../utils/constants";
 import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
 import {
   GET_INDICATOR_OVERVIEW,
@@ -18,10 +17,10 @@ import DataPointDisplay from "../organisms/DataPointDisplay";
 
 const ReviewSubmit = ({ values }: { values: IndicatorType }) => {
   const {
-    indicator: indicatorName,
+    name: indicatorName,
     detailedIndicator,
     category,
-    topic: subCategory,
+    subCategory,
     indicatordataSet: dataPoints,
   } = values;
 
@@ -104,9 +103,8 @@ const ReviewSubmit = ({ values }: { values: IndicatorType }) => {
                 detailedIndicator,
                 name: indicatorName,
                 subIndicatorMeasurement: "",
-                subCategory:
-                  sub_categories.find((c) => c.id === subCategory)?.label ?? "",
-                dataPoints: dataPoints.map(({ id, ...d }) => ({
+                subCategory,
+                dataPoints: dataPoints.map(({ id, indicatorId, ...d }) => ({
                   ...d,
                   singleYearTimeframe: `${d.singleYearTimeframe}`,
                   multiYearTimeframe: d.multiYearTimeframe

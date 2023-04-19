@@ -5,7 +5,6 @@ from graphene_django import DjangoObjectType
 from .models import Indicator, IndicatorData
 from graphene_django.rest_framework.serializer_converter import convert_serializer_to_input_type
 from rest_framework import serializers
-from graphene_file_upload.scalars import Upload
 
 # DjangoObjectTypes
 
@@ -80,50 +79,6 @@ class Query(graphene.ObjectType):
         return None
 
 # Mutations
-
-class ImportDataMutation(graphene.Mutation):
-    class Arguments:
-        file = Upload(required=True)
-
-    success = graphene.Boolean()
-
-    @classmethod
-    def mutate(cls, root, info, file):
-        reader = csv.reader(TextIOWrapper(file, encoding="utf8"), delimiter=',')
-        print(reader)
-        rowCount = 0
-        for row in reader:
-            if rowCount != 0 and row != []:
-                print("ROW")
-                print(row)
-                ind = Indicator.objects.update_or_create(
-                    category = row[0],
-                    sub_category = row[1],
-                    name = row[2],
-                    detailed_indicator = row[3],
-                    sub_indicator_measurement = row[4],
-                )
-                IndicatorData.objects.update_or_create(
-                    indicator = ind[0],
-                    location_type = row[5],
-                    location = row[6],
-                    sex = row[7],
-                    gender = row[8],
-                    age_group = row[9],
-                    age_group_type = row[10],
-                    data_quality = row[11],
-                    value = row[12].replace('<', ''),
-                    value_lower_bound = row[13] if row[13] != '' else None,
-                    value_upper_bound = row[14] if row[14] != '' else None,
-                    value_unit = row[15],
-                    single_year_timeframe = row[16],
-                    multi_year_timeframe = row[17],
-                )
-            rowCount += 1
-        print("DONE!!")
-
-        return ImportDataMutation(success=True)
-
 class CreateIndicator(graphene.Mutation):
     class Arguments:
         category = graphene.String(required=True)
@@ -211,6 +166,5 @@ class ModifyIndicator(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_indicator = CreateIndicator.Field()
     modify_indicator = ModifyIndicator.Field()
-    import_data = ImportDataMutation.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

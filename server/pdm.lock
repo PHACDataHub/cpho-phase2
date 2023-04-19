@@ -91,14 +91,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "graphene-file-upload"
-version = "1.3.0"
-summary = "Lib for adding file upload functionality to GraphQL mutations in Graphene Django and Flask-Graphql"
-dependencies = [
-    "six>=1.11.0",
-]
-
-[[package]]
 name = "graphql-core"
 version = "3.2.3"
 requires_python = ">=3.6,<4"
@@ -197,7 +189,7 @@ summary = "Waitress WSGI server"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:b3fd4aa32c90aa365f0dcb390212fdf3c80516072c5167ca6e62103ded2b6af8"
+content_hash = "sha256:b95dbd1bdb6486e095d05ad953146077c0f3de894760245a20389ca3c79f276a"
 
 [metadata.files]
 "aniso8601 9.0.1" = [
@@ -306,10 +298,6 @@ content_hash = "sha256:b3fd4aa32c90aa365f0dcb390212fdf3c80516072c5167ca6e62103de
 "graphene-django 3.0.0" = [
     {url = "https://files.pythonhosted.org/packages/5f/e8/10837a3f971c96b331368c89356c7f8b87d206f520403750f2409542a690/graphene_django-3.0.0-py2.py3-none-any.whl", hash = "sha256:9fa531d319d5c8f9e08274628f547574ee684e74dddd1c969abf38142bc32df2"},
     {url = "https://files.pythonhosted.org/packages/61/05/f737bee1cda957601a6a5bc9c9068dcc32b7ca3f004c77801210b8c3d87a/graphene-django-3.0.0.tar.gz", hash = "sha256:018a8dc4736d99b5bb4a15d7fd0b46c98010e9201cb52a290f6d1f16ae6fefda"},
-]
-"graphene-file-upload 1.3.0" = [
-    {url = "https://files.pythonhosted.org/packages/25/9a/d06f6e3fa33a53c8ba2cbe1a5ad509b7dc7124e85f221b8e13cee6c7d0c2/graphene_file_upload-1.3.0.tar.gz", hash = "sha256:6898480b0556826472c80971032917c01968ade5800d84054008fe598795b063"},
-    {url = "https://files.pythonhosted.org/packages/9a/b2/2961fd74e960729a667137435dc3229fb38d73f447c9a6da58372344ab32/graphene_file_upload-1.3.0-py3-none-any.whl", hash = "sha256:5afe50f409f50e3d198fd92c883d98d868e6c6aaadf5df3a3f4d88ecad90ed97"},
 ]
 "graphql-core 3.2.3" = [
     {url = "https://files.pythonhosted.org/packages/ee/a6/94df9045ca1bac404c7b394094cd06713f63f49c7a4d54d99b773ae81737/graphql-core-3.2.3.tar.gz", hash = "sha256:06d2aad0ac723e35b1cb47885d3e5c45e956a53bc1b209a9fc5369007fe46676"},

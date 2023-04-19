@@ -5,33 +5,27 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { categories, sub_categories } from "../../utils/constants";
+import IndicatorFormContext from "../../utils/context/IndicatorFormContext";
 import { SubCategory } from "../../utils/types";
 
 type Props = {
-  indicatorName: string;
-  detailedIndicator: string;
-  category: number;
-  subCategory: number;
-  setField: (field: string, value: any) => void;
+  categoryId: number;
+  subCategoryId: number;
 };
 
-const IndicatorGenInfo = ({
-  indicatorName,
-  detailedIndicator,
-  category,
-  subCategory,
-  setField,
-}: Props) => {
+const IndicatorGenInfo = ({ categoryId, subCategoryId }: Props) => {
   const [filteredSubCategories, setFilteredSubCategories] =
     useState<SubCategory[]>(sub_categories);
 
   useEffect(() => {
     setFilteredSubCategories(
-      sub_categories.filter((c) => c.category === category)
+      sub_categories.filter((c) => c.category === categoryId)
     );
-  }, [category]);
+  }, [categoryId]);
+
+  const { indicator, setField } = useContext(IndicatorFormContext);
 
   return (
     <VStack spacing={5} w={["98%", "75%", "65%", "40%"]}>
@@ -40,8 +34,8 @@ const IndicatorGenInfo = ({
           Indicator Name
         </FormLabel>
         <Input
-          value={indicatorName}
-          onChange={(e) => setField("indicatorName", e.target.value)}
+          value={indicator?.indicator}
+          onChange={(e) => setField("indicator", e.target.value)}
           required
           variant="filled"
           placeholder="Enter indicator name"
@@ -54,8 +48,13 @@ const IndicatorGenInfo = ({
         <Select
           required
           variant="filled"
-          value={category}
-          onChange={(e) => setField("category", parseInt(e.target.value))}
+          value={categoryId}
+          onChange={(e) => {
+            setField(
+              "category",
+              categories.find((c) => c.id === parseInt(e.target.value))?.label
+            );
+          }}
         >
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
@@ -70,8 +69,14 @@ const IndicatorGenInfo = ({
         </FormLabel>
         <Select
           variant="filled"
-          value={subCategory}
-          onChange={(e) => setField("subCategory", parseInt(e.target.value))}
+          value={subCategoryId}
+          onChange={(e) => {
+            setField(
+              "topic",
+              sub_categories.find((c) => c.id === parseInt(e.target.value))
+                ?.label
+            );
+          }}
         >
           {filteredSubCategories.map((s) => (
             <option key={s.id} value={s.id}>
@@ -85,7 +90,7 @@ const IndicatorGenInfo = ({
           Detailed Indicator
         </FormLabel>
         <Input
-          value={detailedIndicator}
+          value={indicator?.detailedIndicator}
           onChange={(e) => setField("detailedIndicator", e.target.value)}
           variant="filled"
           placeholder="Enter detailed indicator"

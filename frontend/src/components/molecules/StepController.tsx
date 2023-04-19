@@ -1,16 +1,16 @@
 import { Button, ButtonGroup } from "@chakra-ui/react";
+import { useContext } from "react";
+import IndicatorFormContext from "../../utils/context/IndicatorFormContext";
 
 const StepController = ({
-  step,
-  setStep,
   isPrevDisabled,
   isNextDisabled,
 }: {
-  step: number;
-  setStep: (step: number) => void;
   isPrevDisabled?: boolean;
   isNextDisabled?: boolean;
 }) => {
+  const { step, setStep } = useContext(IndicatorFormContext);
+
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 

@@ -1,6 +1,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { VStack, Button, Box, HStack, Heading } from "@chakra-ui/react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DataPoint, IndicatorType, LocationType } from "../../utils/types";
 import { AddDataPointButton } from "../molecules/AddDataPointButton";
 import { DataPointTable } from "./DataPointTable";
@@ -10,36 +10,59 @@ import { v4 as uuidv4 } from "uuid";
 import StepController from "../molecules/StepController";
 import { categories, sub_categories } from "../../utils/constants";
 import UpdateSubmit from "../molecules/UpdateSubmit";
+import { ErrorType } from "../../utils/types";
+import { IndicatorFormProvider } from "../../utils/context/IndicatorFormContext";
 
 const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
   const [values, setValues] = useState({
     id: indicator?.id ?? 0,
-    indicatorName: indicator?.name ?? "",
+    name: indicator?.name ?? "",
     detailedIndicator: indicator?.detailedIndicator ?? "",
-    category: categories.find((c) => c.label === indicator?.category)?.id ?? 1,
-    subCategory:
-      sub_categories.find((c) => c.label === indicator?.subCategory)?.id ?? 1,
-    dataPoints: (indicator?.indicatordataSet ?? []) as DataPoint[],
-  });
+    category: indicator?.category ?? "",
+    subCategory: indicator?.subCategory ?? "",
+    indicatordataSet: (indicator?.indicatordataSet ?? []) as DataPoint[],
+    subIndicatorMeasurement: indicator?.subIndicatorMeasurement ?? "",
+  } as IndicatorType);
+
+  const [categoryId, setCategoryId] = useState(
+    categories.find((c) => c.label === indicator?.category)?.id ?? 1
+  );
+  const [subCategoryId, setSubCategoryId] = useState(
+    sub_categories.find((c) => c.label === indicator?.subCategory)?.id ?? 1
+  );
+
+  const [errors, setErrors] = useState<ErrorType[]>([]);
 
   const {
-    indicatorName,
-    detailedIndicator,
+    name: indicatorName,
     category,
     subCategory,
-    dataPoints,
+    indicatordataSet: dataPoints,
   } = values;
 
-  const setField = (field: string, value: any) => {
-    setValues({
-      ...values,
-      [field]: value,
-    });
-  };
+  useEffect(() => {
+    setCategoryId(categories.find((c) => c.label === category)?.id ?? 1);
+  }, [category]);
+
+  useEffect(() => {
+    setSubCategoryId(
+      sub_categories.find((c) => c.label === subCategory)?.id ?? 1
+    );
+  }, [subCategory]);
+
+  const setField = useCallback(
+    (field: string, value: any) => {
+      setValues({
+        ...values,
+        [field]: value,
+      } as IndicatorType);
+    },
+    [values]
+  );
 
   const [step, setStep] = useState(1);
 
-  const addBlankDataPoint = () => {
+  const addBlankDataPoint = useCallback(() => {
     const dataPoint: DataPoint = {
       id: uuidv4(),
       location: "CANADA",
@@ -55,8 +78,8 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
       valueUnit: "PERCENT",
       singleYearTimeframe: 2022,
     };
-    setField("dataPoints", [dataPoint, ...dataPoints]);
-  };
+    setField("indicatordataSet", [dataPoint, ...dataPoints]);
+  }, [dataPoints, setField]);
 
   const editDataPoint = (uuid: string, field: string, value: any) => {
     const newDataPoints = dataPoints.map((dataPoint) => {
@@ -92,100 +115,172 @@ const IndicatorForm = ({ indicator }: { indicator?: IndicatorType }) => {
             [field]: value,
           };
         }
-      }
-      return dataPoint;
-    });
-    setField("dataPoints", newDataPoints);
-  };
+        return dataPoint;
+      };
+      setField("indicatordataSet", newDataPoints);
+    },
+    [dataPoints, setField]
+  );
 
-  const replaceDataPoint = (uuid: string, newDataPoint: DataPoint) => {
-    const newDataPoints = dataPoints.map((dataPoint) => {
-      if (dataPoint.id === uuid) {
-        return newDataPoint;
-      }
-      return dataPoint;
-    });
-    setField("dataPoints", newDataPoints);
-  };
+  const replaceDataPoint = useCallback(
+    (uuid: string, newDataPoint: DataPoint) => {
+      const newDataPoints = dataPoints.map((dataPoint) => {
+        if (dataPoint.id === uuid) {
+          return newDataPoint;
+        }
+        return dataPoint;
+      });
+      setField("indicatordataSet", newDataPoints);
+    },
+    [dataPoints, setField]
+  );
 
-  const addDataPoint = (newDataPoint: DataPoint) => {
-    setField("dataPoints", [newDataPoint, ...dataPoints]);
-  };
+  const addDataPoint = useCallback(
+    (newDataPoint: DataPoint) => {
+      setField("indicatordataSet", [newDataPoint, ...dataPoints]);
+    },
+    [dataPoints, setField]
+  );
 
-  const deleteDataPoint = (uuid: string) => {
-    const newDataPoints = dataPoints.filter(
-      (dataPoint) => dataPoint.id !== uuid
-    );
-    setField("dataPoints", newDataPoints);
-  };
-
-  const duplicateDataPoint = (uuid: string) => {
-    const idx = dataPoints.findIndex((dataPoint) => dataPoint.id === uuid);
-    const dataPoint = dataPoints[idx];
-    if (dataPoint) {
-      setField(
-        "dataPoints",
-        dataPoints
-          .slice(0, idx + 1)
-          .concat({ ...dataPoint, id: uuidv4() }, dataPoints.slice(idx + 1))
+  const deleteDataPoint = useCallback(
+    (uuid: string) => {
+      const newDataPoints = dataPoints.filter(
+        (dataPoint) => dataPoint.id !== uuid
       );
-    }
-  };
+      setField("indicatordataSet", newDataPoints);
+    },
+    [dataPoints, setField]
+  );
+
+  const duplicateDataPoint = useCallback(
+    (uuid: string) => {
+      const idx = dataPoints.findIndex((dataPoint) => dataPoint.id === uuid);
+
+      const dataPoint = dataPoints[idx];
+
+      if (dataPoint) {
+        setField(
+          "indicatordataSet",
+          dataPoints
+            .slice(0, idx + 1)
+            .concat({ ...dataPoint, id: uuidv4() }, dataPoints.slice(idx + 1))
+        );
+      }
+    },
+    [dataPoints, setField]
+  );
+
+  const addError = useCallback(
+    (error: ErrorType) => {
+      const temp = errors.find(
+        (e) => e.field === error.field && e.dataPointId === error.dataPointId
+      );
+      if (temp) {
+        if (temp.message === error.message) return;
+        setErrors((errors) =>
+          errors.map((e) => {
+            if (
+              e.field === error.field &&
+              e.dataPointId === error.dataPointId
+            ) {
+              return {
+                ...e,
+                message: error.message,
+              };
+            }
+            return e;
+          })
+        );
+      } else {
+        setErrors((errors) => [...errors, error]);
+      }
+    },
+    [errors]
+  );
+
+  const removeError = useCallback(
+    (field: string, dataPointId: string) => {
+      if (
+        !errors.find((e) => e.field === field && e.dataPointId === dataPointId)
+      )
+        return;
+      setErrors((errors) =>
+        errors.filter(
+          (error) => error.field !== field || error.dataPointId !== dataPointId
+        )
+      );
+    },
+    [errors]
+  );
+
+  const clearRowErrors = useCallback(
+    (dataPointId: string) => {
+      if (!errors.find((e) => e.dataPointId === dataPointId)) return;
+      setErrors((errors) =>
+        errors.filter((error) => error.dataPointId !== dataPointId)
+      );
+    },
+    [setErrors, errors]
+  );
 
   return (
-    <VStack w="100%">
-      <StepController
-        step={step}
-        setStep={setStep}
-        isPrevDisabled={step === 1}
-        isNextDisabled={step === 3 || indicatorName === ""}
-      />
-      {step === 1 && (
-        <IndicatorGenInfo
-          indicatorName={indicatorName}
-          detailedIndicator={detailedIndicator}
-          category={category}
-          subCategory={subCategory}
-          setField={setField}
+    <IndicatorFormProvider
+      value={{
+        indicator: values,
+        setField,
+        addBlankDataPoint,
+        editDataPoint,
+        replaceDataPoint,
+        addDataPoint,
+        deleteDataPoint,
+        duplicateDataPoint,
+        errors,
+        addError,
+        removeError,
+        clearRowErrors,
+        step,
+        setStep,
+      }}
+    >
+      <VStack w="100%">
+        <StepController
+          isPrevDisabled={step === 1}
+          isNextDisabled={step === 3 || indicatorName === ""}
         />
-      )}
-      {step === 2 && (
-        <VStack w="100%">
-          <Heading size="lg" mb={4}>
-            <Box display="inline" color="red.500">
-              {dataPoints.length}
-            </Box>{" "}
-            data points for{" "}
-            <Box display="inline" color="red.500">
-              {indicatorName}
-            </Box>
-          </Heading>
-          <HStack>
-            <AddDataPointButton
-              addDataPoint={addDataPoint}
-              replaceDataPoint={replaceDataPoint}
-            />
-            <Button
-              colorScheme="green"
-              leftIcon={<AddIcon />}
-              onClick={addBlankDataPoint}
-            >
-              New blank data point
-            </Button>
-          </HStack>
-          <DataPointTable
-            editDataPoint={editDataPoint}
-            deleteDataPoint={deleteDataPoint}
-            duplicateDataPoint={duplicateDataPoint}
-            dataPoints={dataPoints}
-            addDataPoint={addDataPoint}
-            replaceDataPoint={replaceDataPoint}
+        {step === 1 && (
+          <IndicatorGenInfo
+            categoryId={categoryId}
+            subCategoryId={subCategoryId}
           />
-        </VStack>
-      )}
-      {step === 3 && !indicator && <ReviewSubmit values={values} />}
-      {step === 3 && indicator && <UpdateSubmit values={values} />}
-    </VStack>
+        )}
+        {step === 2 && (
+          <VStack w="100%">
+            <Heading size="lg" mb={4}>
+              <Box display="inline" color="red.500">
+                {dataPoints.length}
+              </Box>{" "}
+              data points for{" "}
+              <Box display="inline" color="red.500">
+                {indicatorName}
+              </Box>
+            </Heading>
+            <HStack>
+              <AddDataPointButton />
+              <Button
+                colorScheme="green"
+                leftIcon={<AddIcon />}
+                onClick={addBlankDataPoint}
+              >
+                New blank data point
+              </Button>
+            </HStack>
+            <DataPointTable />
+          </VStack>
+        )}
+        {step === 3 && !indicator && <ReviewSubmit values={values} />}
+        {step === 3 && indicator && <UpdateSubmit values={values} />}
+      </VStack>
+    </IndicatorFormProvider>
   );
 };
 

@@ -7,32 +7,22 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { categories, sub_categories } from "../../utils/constants";
+import { sub_categories } from "../../utils/constants";
 import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
 import {
   GET_INDICATOR_OVERVIEW,
   GET_INDICATORS_AND_IDS,
 } from "../../utils/graphql/queries";
-import { DataPoint } from "../../utils/types";
+import { IndicatorType } from "../../utils/types";
 import DataPointDisplay from "../organisms/DataPointDisplay";
 
-const ReviewSubmit = ({
-  values,
-}: {
-  values: {
-    indicatorName: string;
-    detailedIndicator: string;
-    category: number;
-    subCategory: number;
-    dataPoints: DataPoint[];
-  };
-}) => {
+const ReviewSubmit = ({ values }: { values: IndicatorType }) => {
   const {
-    indicatorName,
+    indicator: indicatorName,
     detailedIndicator,
     category,
-    subCategory,
-    dataPoints,
+    topic: subCategory,
+    indicatordataSet: dataPoints,
   } = values;
 
   const [createIndicator, { loading, error, data }] = useMutation(
@@ -87,13 +77,13 @@ const ReviewSubmit = ({
         <Heading fontSize="x-large">
           Category:{" "}
           <Heading fontSize="x-large" as="span" color="blue.500">
-            {categories.filter((c) => c.id === category)[0].label}
+            {category}
           </Heading>
         </Heading>
         <Heading fontSize="x-large">
           Subcategory:{" "}
           <Heading fontSize="x-large" as="span" color="blue.500">
-            {sub_categories.filter((c) => c.id === subCategory)[0].label}
+            {subCategory}
           </Heading>
         </Heading>
       </VStack>
@@ -110,8 +100,7 @@ const ReviewSubmit = ({
           onClick={() => {
             createIndicator({
               variables: {
-                category:
-                  categories.find((c) => c.id === category)?.label ?? "",
+                category: category,
                 detailedIndicator,
                 name: indicatorName,
                 subIndicatorMeasurement: "",

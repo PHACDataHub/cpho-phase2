@@ -97,7 +97,7 @@ const DataQualityTag = ({
                 },
               }}
             >
-              {option}
+              {possible[option].label}
             </Button>
           ))}
         </VStack>

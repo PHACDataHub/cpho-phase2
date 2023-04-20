@@ -1,5 +1,5 @@
-import { Button, Heading, ButtonGroup } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { Button, Heading, ButtonGroup, VStack } from "@chakra-ui/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IndicatorType } from "../../utils/types";
 import { Page } from "../template/Page";
 import { FileColumnData } from "../../utils/constants";
@@ -7,8 +7,6 @@ import FileUpload from "../organisms/FileUpload";
 import FileReviewSchema from "../organisms/FileReviewSchema";
 import { v4 as uuidv4 } from "uuid";
 import IndicatorForm from "../organisms/IndicatorForm";
-import { useMutation } from "@apollo/client";
-import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
 
 export function ImportPage() {
   const [fileToUpload, setFileToUpload] = useState<File>();
@@ -63,9 +61,11 @@ export function ImportPage() {
 
       return lines.map((line) => {
         return match(line)?.reduce((acc, cur, i) => {
+          // console.log(cur);
+          // console.log(heads[i]);
           const key =
             Object.entries(fieldMapping).find(([key, value]) => {
-              return value === heads[i][0];
+              return heads[i] && value === heads[i][0];
             })?.[0] || `custom_${i}`;
           return { ...acc, [key]: cur[1] ?? cur[0] };
         }, {});
@@ -132,7 +132,7 @@ export function ImportPage() {
           });
         } else if (cur.indicatorName) {
           const newInd: IndicatorType = {
-            id: 0,
+            id: 0, // this id doesn't matter, it will not be sent to the server (just here for typescript)
             name: cur.indicatorName,
             category: cur.category,
             subCategory: cur.subCategory,
@@ -163,21 +163,23 @@ export function ImportPage() {
 
         return acc;
       }, []);
+      console.log(indType);
       setFileIndicators(indType);
     }
   }, [stage, fileToUpload, fieldMapping, fileHeaders, fileText, csvToJson]);
 
+  // Every time file headers are updated, check if they match
+  // any of the column names in the expected file schema
   useEffect(() => {
     if (fileHeaders) {
-      console.log("file headers");
-      fileHeaders.forEach((header) => {
-        console.log("looking for", header);
-        FileColumnData.indicator.forEach((column) => {
-          if (column.matches?.includes(header.toLowerCase())) {
-            console.log("found", header, "for", column.value);
+      fileHeaders.forEach((fileHeader) => {
+        console.log(fileHeader);
+        FileColumnData.indicator.forEach((field) => {
+          if (field.matches?.includes(fileHeader.toLowerCase())) {
+            console.log(field.value);
             setFieldMapping((fieldMapping) => ({
               ...fieldMapping,
-              [column.value]: header,
+              [field.value]: fileHeader,
             }));
           }
         });
@@ -194,24 +196,32 @@ export function ImportPage() {
     number[]
   >([]);
 
-  const [createIndicator, { loading, error, data }] =
-    useMutation(CREATE_INDICATOR);
+  const validMapping = useMemo(() => {
+    if (!fieldMapping) return false;
+    return Object.entries(fieldMapping).every(([key, value]) => {
+      const field = FileColumnData.indicator.find(
+        (field) => field.value === key
+      );
+      return field?.required ? value !== "" : true;
+    });
+  }, [fieldMapping]);
 
   return (
-    <Page title="Import File" backButton={{ show: true, redirectUrl: "/" }}>
+    <Page
+      title="Import File"
+      backButton={{ show: stage === "upload", redirectUrl: "/" }}
+    >
       {stage === "upload" && (
         <FileUpload
           fileToUpload={fileToUpload}
           setFileToUpload={setFileToUpload}
           setStage={setStage}
-          data={data}
-          loading={loading}
-          error={error}
         />
       )}
 
       {stage === "review_schema" && (
         <FileReviewSchema
+          validMapping={validMapping}
           fieldMapping={fieldMapping}
           setFieldMapping={setFieldMapping}
           fileHeaders={fileHeaders}
@@ -221,6 +231,14 @@ export function ImportPage() {
 
       {stage === "review_data" && (
         <>
+          <Button
+            mb={4}
+            onClick={() => setStage("review_schema")}
+            fontSize={20}
+            colorScheme="blue"
+          >
+            Back to Schema
+          </Button>
           <Heading>Review Data for {fileIndicators.length} indicators</Heading>
           <ButtonGroup>
             {fileIndicators.map((indicator, idx) => (
@@ -229,6 +247,17 @@ export function ImportPage() {
                 onClick={() => setIndicatorStep(idx)}
                 isActive={indicatorStep === idx}
                 isDisabled={submittedIndicatorIndexes.includes(idx)}
+                _disabled={{
+                  cursor: "not-allowed",
+                  opacity: 0.4,
+                  bgColor: "green.500",
+                }}
+                _hover={{
+                  _disabled: {
+                    bgColor: "green.500",
+                  },
+                  bgColor: "gray.200",
+                }}
               >
                 {indicator.name}
               </Button>
@@ -237,10 +266,66 @@ export function ImportPage() {
           {fileIndicators.map(
             (indicator, idx) =>
               idx === indicatorStep && (
-                <>
-                  <IndicatorForm indicator={indicator} mode="create" />
-                </>
+                <IndicatorForm
+                  key={idx}
+                  indicator={indicator}
+                  mode="create"
+                  onConfirmUpload={() => {
+                    setSubmittedIndicatorIndexes(
+                      (submittedIndicatorIndexes) => [
+                        ...submittedIndicatorIndexes,
+                        idx,
+                      ]
+                    );
+                    setIndicatorStep((indicatorStep) => indicatorStep + 1);
+                  }}
+                />
               )
+          )}
+
+          {submittedIndicatorIndexes.length === fileIndicators.length && (
+            <VStack>
+              <Heading>Success!</Heading>
+              <Heading size="md">
+                {submittedIndicatorIndexes.length} indicators were uploaded. If
+                edits are needed, you can edit them through the 'Modify Past
+                Data' function.
+              </Heading>
+              <Button
+                onClick={() => {
+                  setStage("upload");
+                  setFieldMapping({
+                    indicatorName: "",
+                    category: "",
+                    subCategory: "",
+                    detailedIndicator: "",
+                    subIndicatorMeasurement: "",
+                    locationType: "",
+                    location: "",
+                    sex: "",
+                    gender: "",
+                    ageGroup: "",
+                    ageGroupType: "",
+                    dataQuality: "",
+                    value: "",
+                    valueLowerBound: "",
+                    valueUpperBound: "",
+                    valueUnit: "",
+                    singleYearTimeFrame: "",
+                    multiYearTimeFrame: "",
+                  });
+                  setSubmittedIndicatorIndexes([]);
+                  setIndicatorStep(0);
+                  setFileToUpload(undefined);
+                  setFileText("");
+                  setFileHeaders([]);
+                  setFileIndicators([]);
+                }}
+                colorScheme="blue"
+              >
+                Upload another file
+              </Button>
+            </VStack>
           )}
         </>
       )}

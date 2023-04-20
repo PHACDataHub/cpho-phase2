@@ -16,9 +16,11 @@ import { IndicatorFormProvider } from "../../utils/context/IndicatorFormContext"
 const IndicatorForm = ({
   indicator,
   mode,
+  onConfirmUpload,
 }: {
   indicator?: IndicatorType;
   mode: "create" | "modify";
+  onConfirmUpload?: () => void;
 }) => {
   const [values, setValues] = useState({
     id: indicator?.id ?? 0,
@@ -283,7 +285,7 @@ const IndicatorForm = ({
           </VStack>
         )}
         {step === 3 && (!indicator || mode === "create") && (
-          <ReviewSubmit values={values} />
+          <ReviewSubmit values={values} onSubmit={onConfirmUpload} />
         )}
         {step === 3 && indicator && mode === "modify" && (
           <UpdateSubmit values={values} />

@@ -15,7 +15,13 @@ import {
 import { IndicatorType } from "../../utils/types";
 import DataPointDisplay from "../organisms/DataPointDisplay";
 
-const ReviewSubmit = ({ values }: { values: IndicatorType }) => {
+const ReviewSubmit = ({
+  values,
+  onSubmit,
+}: {
+  values: IndicatorType;
+  onSubmit?: () => void;
+}) => {
   const {
     name: indicatorName,
     detailedIndicator,
@@ -116,6 +122,7 @@ const ReviewSubmit = ({ values }: { values: IndicatorType }) => {
                 })),
               },
             });
+            onSubmit?.();
           }}
         >
           Submit

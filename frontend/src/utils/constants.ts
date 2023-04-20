@@ -125,6 +125,7 @@ export const FileColumnData = {
       value: "category",
       required: true,
       matches: ["category", "categories", "Category", "Categories"],
+      example: "General Health Status",
     },
     {
       label: "Sub Category",
@@ -138,12 +139,14 @@ export const FileColumnData = {
         "sub_category",
         "topic",
       ],
+      example: "Childhood and Family Factors",
     },
     {
       label: "Indicator Name",
       value: "indicatorName",
       required: true,
       matches: ["indicatorname", "indicator", "indicator name"],
+      example: "Lung Cancer",
     },
     {
       label: "Detailed Indicator",
@@ -155,6 +158,8 @@ export const FileColumnData = {
         "detailed indicators",
         "detailed_indicator",
       ],
+      example:
+        "Rate of newly diagnoses cases of lung cancer per 100,000 people",
     },
     {
       label: "Sub Indicator Measurement",
@@ -169,13 +174,15 @@ export const FileColumnData = {
       label: "Location",
       value: "location",
       required: true,
-      matches: ["location", "country"],
+      matches: ["location"],
+      example: "Canada, Ontario, etc.",
     },
     {
       label: "Location Type",
       value: "locationType",
       required: true,
-      matches: ["locationtype", "location type", "geography"],
+      matches: ["locationtype", "location type"],
+      example: "Country, Province/Territory, Region",
     },
     { label: "Sex", value: "sex", matches: ["sex"] },
     { label: "Gender", value: "gender", matches: ["gender"] },

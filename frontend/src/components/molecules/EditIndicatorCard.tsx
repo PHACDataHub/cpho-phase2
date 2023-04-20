@@ -9,6 +9,7 @@ const EditIndicatorCard = ({ id }: { id: number }) => {
     GET_INDICATOR_DATA,
     {
       variables: { id: Number(id) },
+      fetchPolicy: "network-only",
     }
   );
 

@@ -72,6 +72,7 @@ export function ExportPage() {
   } = useQuery(GET_INDICATOR_DATA_BY_IDS, {
     variables: {
       ids: finalSelectedIds,
+      fetchPolicy: "network-only",
     },
   });
 
@@ -114,7 +115,7 @@ export function ExportPage() {
         .join("\n");
 
       const csvData =
-        "category,topic,indicator,detailed_indicator,sub_indicator_measurement,country,geography,sex,gender,age_group,age_group_type,data_quality,value,value_lower_bound,value_upper_bound,value_unit,single_year_timeframe,multi_year_timeframe\n" +
+        "category,topic,indicator,detailed_indicator,sub_indicator_measurement,location_type,location,sex,gender,age_group,age_group_type,data_quality,value,value_lower_bound,value_upper_bound,value_unit,single_year_timeframe,multi_year_timeframe\n" +
         indicatorsData;
 
       console.log(csvData);

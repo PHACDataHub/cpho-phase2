@@ -55,7 +55,7 @@ const ValueTag = ({
   const [tempValue, setTempValue] = useState(String(dataPoint?.value));
 
   useEffect(() => {
-    setTempValue(String(dataPoint?.value));
+    setTempValue(dataPoint?.value ? String(dataPoint?.value) : "0");
   }, [dataPoint]);
 
   return (

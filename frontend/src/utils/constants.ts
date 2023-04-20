@@ -181,7 +181,7 @@ export const FileColumnData = {
       label: "Location Type",
       value: "locationType",
       required: true,
-      matches: ["locationtype", "location type"],
+      matches: ["locationtype", "location type", "location_type"],
       example: "Country, Province/Territory, Region",
     },
     { label: "Sex", value: "sex", matches: ["sex"] },

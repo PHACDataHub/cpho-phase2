@@ -54,31 +54,29 @@ const DataPointRow = ({ dataPoint }: { dataPoint: DataPoint }) => {
       >
         <Td isNumeric>{(idx ?? -1) + 1}</Td>
         <Td>
-          <HStack spacing={2}>
-            <ButtonGroup isAttached>
-              <IconButton
-                size="sm"
-                aria-label="Delete Data Point"
-                colorScheme="red"
-                icon={<DeleteIcon />}
-                onClick={onDelete}
-              />
-              <IconButton
-                size="sm"
-                aria-label="Duplicate Data Point"
-                colorScheme="blue"
-                icon={<CopyIcon />}
-                onClick={onDuplicate}
-              />
-              <IconButton
-                size="sm"
-                aria-label="Edit Data Point"
-                colorScheme="green"
-                icon={<EditIcon />}
-                onClick={onOpen}
-              />
-            </ButtonGroup>
-          </HStack>
+          <ButtonGroup isAttached>
+            <IconButton
+              size="sm"
+              aria-label="Delete Data Point"
+              colorScheme="red"
+              icon={<DeleteIcon />}
+              onClick={onDelete}
+            />
+            <IconButton
+              size="sm"
+              aria-label="Duplicate Data Point"
+              colorScheme="blue"
+              icon={<CopyIcon />}
+              onClick={onDuplicate}
+            />
+            <IconButton
+              size="sm"
+              aria-label="Edit Data Point"
+              colorScheme="green"
+              icon={<EditIcon />}
+              onClick={onOpen}
+            />
+          </ButtonGroup>
           <AddDataPointModal
             dataPoint={dataPoint}
             isOpen={isOpen}
@@ -142,7 +140,7 @@ const DataPointRow = ({ dataPoint }: { dataPoint: DataPoint }) => {
       </Tr>
       {rowErrors && rowErrors.length > 0 && (
         <Tr>
-          <Td colSpan={7}>
+          <Td colSpan={8}>
             <HStack spacing={2}>
               {rowErrors.map((error, idx) => (
                 <HStack key={idx} bgColor="gray.100" p={2} borderRadius="md">

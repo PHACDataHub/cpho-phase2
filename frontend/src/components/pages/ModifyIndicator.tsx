@@ -15,6 +15,7 @@ const ModifyIndicator = () => {
     variables: {
       id: Number(id),
     },
+    fetchPolicy: "network-only",
   });
 
   const name = data?.indicator.name.toLocaleLowerCase() ?? id;

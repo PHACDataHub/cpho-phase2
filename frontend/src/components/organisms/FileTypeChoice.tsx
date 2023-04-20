@@ -75,13 +75,6 @@ export function FileTypeChoice({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text as="div">
-              The CSV file format must have the following fields{" "}
-              <Box display="inline" fontWeight="bold">
-                in this exact order
-              </Box>
-              :
-            </Text>
             <List my={3}>
               {FileColumnData[activeType].map((field, idx) => (
                 <ListItem key={idx}>

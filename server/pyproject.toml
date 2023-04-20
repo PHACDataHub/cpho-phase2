@@ -53,8 +53,8 @@ start.cmd = "python manage.py runserver localhost:8000"
 wsgi.cmd = "python server.py"
 makemigrations = "python manage.py makemigrations"
 migrate = "python manage.py migrate"
-superUser = "python manage.py createsuperuser --noinput" 
-db = "docker run --name pg -p 5432:5432 -d --env-file postgres.env postgres"
+superUser = {shell = "python manage.py createsuperuser --noinput || true"}
+db = {shell = "docker ps -a | grep pg || docker run -d -p 5432:5432 --name pg --env-file postgres.env postgres"}
 wait ={shell = "sleep 1"}
 stop = {shell = "docker stop pg && docker rm pg"}
 # Outside docker-compose override DB_HOST to connect directly to localhost.

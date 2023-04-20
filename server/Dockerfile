@@ -12,7 +12,10 @@ WORKDIR /cpho
 COPY . .
 
 # Install deps in ./__pypackages__ as per PEP 582
-RUN pdm config python.use_venv False && pdm install --prod --no-lock --no-editable
+RUN pdm config python.use_venv False
+
+# Install dependencies
+RUN pdm install
 
 # Build the production image
 FROM python:3.11-alpine

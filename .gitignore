@@ -11,3 +11,4 @@
 **/__pypackages__/
 
 **/.pdm.toml
+server/static

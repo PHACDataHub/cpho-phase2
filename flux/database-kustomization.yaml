@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: frontend
+  name: database
   namespace: flux-system
 spec:
   healthChecks:
@@ -10,10 +10,11 @@ spec:
     name: istio-ingressgateway
     namespace: istio-ingress
   interval: 1m0s
-  path: ./frontend
+  path: ./database
   prune: false
   sourceRef:
     kind: GitRepository
     name: github-repo
   timeout: 2m0s
+
 

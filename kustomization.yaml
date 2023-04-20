@@ -4,3 +4,5 @@ resources:
 - certmanager
 - istio
 - frontend
+- server
+- database

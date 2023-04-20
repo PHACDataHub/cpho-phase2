@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: server
+  name: server
+  namespace: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+#     initContainers:
+#       - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-cfd98e9-1679424034 # {"$imagepolicy": "flux-system:server"}
+#         name: migration
+#         command: ['sh', '-c', 'python cpho/manage.py migrate']
+#         env:
+#           - name: DEBUG
+#             value: "False"
+#           - name: ALLOWED_HOSTS
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: ALLOWED_HOSTS
+#           - name: DB_NAME
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: DB_NAME
+#           - name: DB_USER
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: DB_USER
+#           - name: DB_PASSWORD
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: DB_PASSWORD
+#           - name: DB_HOST
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: DB_HOST
+#           - name: DB_PORT
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: DB_PORT
+#           - name: SECRET_KEY
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: SECRET_KEY
+#           - name: PGADMIN_DEFAULT_EMAIL
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: PGADMIN_DEFAULT_EMAIL
+#           - name: PGADMIN_DEFAULT_PASSWORD
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: PGADMIN_DEFAULT_PASSWORD
+#           - name: PGADMIN_LISTEN_PORT
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: PGADMIN_LISTEN_PORT
+#           - name: PGADMIN_CONFIG_SERVER_MODE
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: PGADMIN_CONFIG_SERVER_MODE
+#           - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+#           - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
+#             valueFrom:
+#               secretKeyRef:
+#                 name: server
+#                 key: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
+      containers:
+        - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-cfd98e9-1679424034 # {"$imagepolicy": "flux-system:server"}
+          name: server
+          env:
+            - name: DEBUG
+              value: "False"
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: ALLOWED_HOSTS
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: DB_PORT
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: SECRET_KEY
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: PGADMIN_DEFAULT_EMAIL
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: PGADMIN_DEFAULT_PASSWORD
+            - name: PGADMIN_LISTEN_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: PGADMIN_LISTEN_PORT
+            - name: PGADMIN_CONFIG_SERVER_MODE
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: PGADMIN_CONFIG_SERVER_MODE
+            - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+            - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
+              valueFrom:
+                secretKeyRef:
+                  name: server
+                  key: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
+          resources: {}
+status: {}

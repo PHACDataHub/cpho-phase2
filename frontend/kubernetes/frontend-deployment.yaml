@@ -17,7 +17,7 @@ spec:
         app: frontend
     spec:
       containers:
-      - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/frontend:test-0000 # {"$imagepolicy": "flux-system:frontend"}
+      - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/frontend:main-df56615-1679355902 # {"$imagepolicy": "flux-system:frontend"}
         name: frontend
         resources: {}
 status: {}

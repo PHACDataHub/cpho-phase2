@@ -12,8 +12,5 @@
 
 **/.pdm.toml
 
-# Server files
-server/exports/
-
 # Frontend build
 frontend/build/

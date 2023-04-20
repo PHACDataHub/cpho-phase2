@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - image: postgres
+        name: postgres
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: POSTGRES_USER
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: POSTGRES_DB
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: POSTGRES_PASSWORD
+        resources: {}
+status: {}

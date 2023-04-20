@@ -5,3 +5,10 @@ resources:
 - github-repo.yaml
 - istio-kustomization.yaml
 - frontend-kustomization.yaml
+- image-update-automation.yaml
+- frontend-image-policy.yaml
+- frontend-image-repository.yaml
+- server-image-policy.yaml
+- server-image-repository.yaml
+- database-kustomization.yaml
+- server-kustomization.yaml

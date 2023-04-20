@@ -5,7 +5,7 @@ The config here was generated with the following commands:
 
 ```bash
 # generate flux crds with only the features we use
-flux install --export --components=source-controller,kustomize-controller,notification-controller > flux/crds.yaml
+flux install --export --components=source-controller,kustomize-controller,notification-controller --components-extra 'image-reflector-controller,image-automation-controller' > crds.yaml
 # Tell flux what repo and branch to watch
 flux create source git github-repo --export --branch main --url "ssh://github.com/PHACDataHub/cpho-phase2.git" > flux/github-repo.yam
 # tell flux to `kustomize build | kubectl apply` the ingress folder for that repo
@@ -13,6 +13,14 @@ flux create kustomization ingress --export --path istio --source github-repo > f
 # tell flux to `kustomize build | kubectl apply` the frontend folder after istio starts
 # Istio needs to be running for it to inject sidecar containers
 flux create kustomization frontend --export --path frontend --source github-repo --health-check=Deployment/istio-ingressgateway.istio-ingress > flux/frontend-kustomization.yaml
+# Automate image updates. Start by creating an updater:
+flux create image update --export --namespace flux-system --git-repo-ref=github-repo --checkout-branch main --author-name fluxbot --author-email fluxcd@users.noreply.github.com --commit-template '[ci skip] {{range .Updated.Images}}{{println .}}{{end}}' cpho-automation > image-update-automation.yaml
+# Then we need to tell flux what images to watch
+flux create --export image repository server --image=northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server > server-image-repository.yaml
+flux create --export image repository frontend --image=northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/frontend > frontend-image-repository.yaml
+# Create image policies for how they are updated
+flux create --export image policy server --image-ref=server --select-alpha=asc --filter-regex='^main-[a-f0-9]+-(?P<ts>[0-9]+)' --filter-extract='$ts' > server-image-policy.yaml
+flux create --export image policy frontend --image-ref=frontend --select-alpha=asc --filter-regex='^main-[a-f0-9]+-(?P<ts>[0-9]+)' --filter-extract='$ts' > frontend-image-policy.yaml
 ```
 
 Generating deploy keys for flux looks like this:

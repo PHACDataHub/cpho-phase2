@@ -1,0 +1,21 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: cpho-automation
+  namespace: flux-system
+spec:
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcd@users.noreply.github.com
+        name: fluxbot
+      messageTemplate: '[ci skip] {{range .Updated.Images}}{{println .}}{{end}}'
+  interval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: github-repo
+

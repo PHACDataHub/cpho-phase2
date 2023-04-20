@@ -89,7 +89,7 @@ spec:
       #                 name: server
       #                 key: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
       containers:
-        - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-a484bba-1682021870 # {"$imagepolicy": "flux-system:server"}
+        - image: northamerica-northeast1-docker.pkg.dev/pdcp-cloud-006-cpho/cpho/server:main-bfa1722-1682023589 # {"$imagepolicy": "flux-system:server"}
           name: server
           env:
             - name: DEBUG

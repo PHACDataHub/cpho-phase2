@@ -15,7 +15,7 @@ export const GET_INDICATORS_AND_IDS = gql`
   query {
     indicators {
       id
-      indicator
+      name
     }
   }
 `;
@@ -25,14 +25,42 @@ export const GET_INDICATOR_DATA = gql`
     indicator(id: $id) {
       id
       category
-      topic
-      indicator
+      subCategory
+      name
       detailedIndicator
       subIndicatorMeasurement
       indicatordataSet {
         id
-        country
-        geography
+        locationType
+        location
+        sex
+        gender
+        ageGroup
+        ageGroupType
+        dataQuality
+        value
+        valueLowerBound
+        valueUpperBound
+        valueUnit
+        singleYearTimeframe
+        multiYearTimeframe
+      }
+    }
+  }
+`;
+
+export const GET_INDICATOR_DATA_BY_IDS = gql`
+  query ($ids: [Int]) {
+    indicatorsById(ids: $ids) {
+      id
+      category
+      subCategory
+      name
+      detailedIndicator
+      subIndicatorMeasurement
+      indicatordataSet {
+        locationType
+        location
         sex
         gender
         ageGroup

@@ -7,30 +7,18 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { categories, sub_categories } from "../../utils/constants";
 import { MODIFY_INDICATOR } from "../../utils/graphql/mutations";
-import { DataPoint } from "../../utils/types";
+import { IndicatorType } from "../../utils/types";
 import DataPointDisplay from "../organisms/DataPointDisplay";
 
-const UpdateSubmit = ({
-  values,
-}: {
-  values: {
-    id: number;
-    indicatorName: string;
-    detailedIndicator: string;
-    category: number;
-    subCategory: number;
-    dataPoints: DataPoint[];
-  };
-}) => {
+const UpdateSubmit = ({ values }: { values: IndicatorType }) => {
   const {
     id,
-    indicatorName,
+    name: indicatorName,
     detailedIndicator,
     category,
     subCategory,
-    dataPoints,
+    indicatordataSet: dataPoints,
   } = values;
 
   const [modifyIndicator, { loading, error, data }] =
@@ -75,13 +63,13 @@ const UpdateSubmit = ({
         <Heading fontSize="x-large">
           Category:{" "}
           <Heading fontSize="x-large" as="span" color="blue.500">
-            {categories.filter((c) => c.id === category)[0].label}
+            {category}
           </Heading>
         </Heading>
         <Heading fontSize="x-large">
           Subcategory:{" "}
           <Heading fontSize="x-large" as="span" color="blue.500">
-            {sub_categories.filter((c) => c.id === subCategory)[0].label}
+            {subCategory}
           </Heading>
         </Heading>
         <Heading fontSize="x-large">
@@ -105,14 +93,12 @@ const UpdateSubmit = ({
             modifyIndicator({
               variables: {
                 id: Number(id),
-                category:
-                  categories.find((c) => c.id === category)?.label ?? "",
+                category: category,
                 detailedIndicator,
-                indicator: indicatorName,
+                name: indicatorName,
                 subIndicatorMeasurement: "",
-                topic:
-                  sub_categories.find((c) => c.id === subCategory)?.label ?? "",
-                dataPoints: dataPoints.map(({ id, ...d }) => ({
+                subCategory,
+                dataPoints: dataPoints.map(({ id, indicatorId, ...d }) => ({
                   ...d,
                   singleYearTimeframe: `${d.singleYearTimeframe}`,
                   multiYearTimeframe: d.multiYearTimeframe

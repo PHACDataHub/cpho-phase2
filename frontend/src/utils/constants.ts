@@ -1,4 +1,4 @@
-import { Category, DataPointField, SubCategory } from "./types";
+import { Category, SubCategory } from "./types";
 
 export const categories: Category[] = [
   {
@@ -118,156 +118,149 @@ export const Regions = [
   },
 ];
 
-export const IndicatorDataFields: DataPointField[] = [
-  {
-    name: "Geography",
-    id: "dp_geography",
-    type: "select",
-    dpField: "geography",
-    required: true,
-    options: [
-      {
-        value: "COUNTRY",
-        label: "Country",
-      },
-      {
-        value: "PROVINCE_TERRITORY",
-        label: "Province or Territory",
-      },
-      {
-        value: "REGION",
-        label: "Region",
-      },
-    ],
-    placeholder: "e.g. Country, Province",
-  },
-  {
-    name: "Location",
-    id: "dp_location",
-    type: "select",
-    dpField: "country",
-    required: true,
-    options: [],
-    placeholder: "e.g. Canada; Ontario",
-  },
-  {
-    name: "Sex",
-    id: "dp_sex",
-    dpField: "sex",
-    type: "text",
-    placeholder: "e.g. Males",
-  },
-  {
-    name: "Gender",
-    id: "dp_gender",
-    dpField: "gender",
-    type: "text",
-  },
-  {
-    name: "Age Group",
-    id: "dp_age_group",
-    type: "text",
-    dpField: "ageGroup",
-    placeholder: "e.g. 14-24; 8th grade",
-  },
-  {
-    name: "Age Group Type",
-    id: "dp_age_group_type",
-    dpField: "ageGroupType",
-    type: "text",
-    placeholder: "e.g. decade; grade",
-  },
-  {
-    name: "Data Quality",
-    id: "dp_data_quality",
-    dpField: "dataQuality",
-    type: "select",
-    required: true,
-    options: [
-      {
-        value: "CAUTION",
-        label: "Caution",
-      },
-      {
-        value: "ACCEPTABLE",
-        label: "Acceptable",
-      },
-      {
-        value: "GOOD",
-        label: "Good",
-      },
-      {
-        value: "VERY_GOOD",
-        label: "Very Good",
-      },
-    ],
-  },
-  {
-    name: "Value",
-    id: "dp_value",
-    dpField: "value",
-    type: "number",
-    required: true,
-  },
-  {
-    name: "Value Lower Bound",
-    id: "dp_value_lower_bound",
-    dpField: "valueLowerBound",
-    type: "number",
-  },
-  {
-    name: "Value Upper Bound",
-    id: "dp_value_upper_bound",
-    dpField: "valueUpperBound",
-    type: "number",
-  },
-  {
-    name: "Value Unit",
-    id: "dp_value_unit",
-    dpField: "valueUnit",
-    type: "text",
-    required: true,
-    placeholder: "e.g. percentage; years; rate per 100,000",
-  },
-];
-
 export const FileColumnData = {
   indicator: [
-    "Category",
-    "Topic",
-    "Indicator",
-    "Detailed_Indicator",
-    "Sub_Indicator_Measurement",
-    "Country",
-    "Geography",
-    "Sex",
-    "Gender",
-    "Age_Group",
-    "Age_Group_Type",
-    "Data_Quality",
-    "Value",
-    "Value_LowerCI",
-    "Value_UpperCI",
-    "Value_Units",
-    "SingleYear_TimeFrame",
-    "MultiYear_TimeFrame",
+    {
+      label: "Category",
+      value: "category",
+      required: true,
+      matches: ["category", "categories", "Category", "Categories"],
+      example: "General Health Status",
+    },
+    {
+      label: "Sub Category",
+      value: "subCategory",
+      required: true,
+      matches: [
+        "subcategory",
+        "subcategories",
+        "sub category",
+        "sub categories",
+        "sub_category",
+        "topic",
+      ],
+      example: "Childhood and Family Factors",
+    },
+    {
+      label: "Indicator Name",
+      value: "indicatorName",
+      required: true,
+      matches: ["indicatorname", "indicator", "indicator name"],
+      example: "Lung Cancer",
+    },
+    {
+      label: "Detailed Indicator",
+      value: "detailedIndicator",
+      matches: [
+        "detailedindicator",
+        "detailedindicators",
+        "detailed indicator",
+        "detailed indicators",
+        "detailed_indicator",
+      ],
+      example:
+        "Rate of newly diagnoses cases of lung cancer per 100,000 people",
+    },
+    {
+      label: "Sub Indicator Measurement",
+      value: "subIndicatorMeasurement",
+      matches: [
+        "subindicatormeasurement",
+        "sub_indicator_measurement",
+        "sub indicator measurement",
+      ],
+    },
+    {
+      label: "Location",
+      value: "location",
+      required: true,
+      matches: ["location"],
+      example: "Canada, Ontario, etc.",
+    },
+    {
+      label: "Location Type",
+      value: "locationType",
+      required: true,
+      matches: ["locationtype", "location type", "location_type"],
+      example: "Country, Province/Territory, Region",
+    },
+    { label: "Sex", value: "sex", matches: ["sex"] },
+    { label: "Gender", value: "gender", matches: ["gender"] },
+    {
+      label: "Age Group",
+      value: "ageGroup",
+      matches: ["agegroup", "age group", "age_group"],
+    },
+    {
+      label: "Age Group Type",
+      value: "ageGroupType",
+      matches: ["agegrouptype", "age group type", "age_group_type"],
+    },
+    {
+      label: "Data Quality",
+      value: "dataQuality",
+      required: true,
+      matches: ["dataquality", "data quality", "data_quality"],
+    },
+    {
+      label: "Value",
+      value: "value",
+      required: true,
+      matches: ["value"],
+    },
+    {
+      label: "Value Lower Bound",
+      value: "valueLowerBound",
+      matches: ["valuelowerbound", "value lower bound", "value_lower_bound"],
+    },
+    {
+      label: "Value Upper Bound",
+      value: "valueUpperBound",
+      matches: ["valueupperBound", "value upper bound", "value_upper_bound"],
+    },
+    {
+      label: "Value Unit",
+      value: "valueUnit",
+      required: true,
+      matches: ["valueunit", "value unit", "value_unit"],
+    },
+    {
+      label: "Single Year TimeFrame",
+      value: "singleYearTimeFrame",
+      required: true,
+      matches: [
+        "singleyeartimeframe",
+        "single year timeframe",
+        "year",
+        "single_year_timeframe",
+      ],
+    },
+    {
+      label: "Multi Year TimeFrame",
+      value: "multiYearTimeFrame",
+      matches: [
+        "multiyeartimeframe",
+        "multi year timeframe",
+        "multi_year_timeframe",
+      ],
+    },
   ],
   trendAnalysis: [
-    "Indicator",
-    "Detailed_Indicator",
-    "Year",
-    "DataPoint",
-    "LineOfBestFitPoint",
+    { label: "Indicator", value: "indicator", required: true },
+    { label: "Detailed Indicator", value: "detailedIndicator", required: true },
+    { label: "Year", value: "year", required: true },
+    { label: "Data Point", value: "dataPoint", required: true },
+    { label: "Line of Best Fit Point", value: "lineOfBestFitPoint" },
   ],
   benchmarking: [
-    "Indicator",
-    "Detailed_Indicator",
-    "Unit",
-    "OCED_Country",
-    "Value",
-    "Year",
-    "Standard_Deviation",
-    "Comparison_to_OECD_average",
+    { label: "Indicator", value: "indicator", required: true },
+    { label: "Detailed Indicator", value: "detailedIndicator", required: true },
+    { label: "Unit", value: "unit", required: true },
+    { label: "OCED Country", value: "oecdCountry", required: true },
+    { label: "Value", value: "value", required: true },
+    { label: "Year", value: "year", required: true },
+    { label: "Standard Deviation", value: "standardDeviation" },
+    { label: "Comparison to OECD average", value: "comparisonToOecdAverage" },
   ],
 };
 

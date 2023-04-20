@@ -1,21 +1,19 @@
 from django.db import models
 
-
 class Indicator(models.Model):
+    name = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
-    topic = models.CharField(max_length=50)
-    indicator = models.CharField(max_length=50)
+    sub_category = models.CharField(max_length=50)
     detailed_indicator = models.CharField(max_length=300)
     sub_indicator_measurement = models.CharField(max_length=150)
 
     def __str__(self):
         return self.detailed_indicator
 
-
 class IndicatorData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
-    country = models.CharField(max_length=50)
-    geography = models.CharField(max_length=50)
+    location_type = models.CharField(max_length=50)
+    location = models.CharField(max_length=50)
     sex = models.CharField(max_length=50, null=True)
     gender = models.CharField(max_length=50, null=True)
     age_group = models.CharField(max_length=50, null=True)
@@ -29,11 +27,8 @@ class IndicatorData(models.Model):
     multi_year_timeframe = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return " ".join([self.country,
-                         self.sex,
-                         self.age_group,
-                         self.single_year_timeframe,
-                         self.multi_year_timeframe,
+        return " ".join([self.location_type,
+                         self.location,
                          str(self.value),
                          ])
 

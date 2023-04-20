@@ -11,4 +11,8 @@
 **/__pypackages__/
 
 **/.pdm.toml
+
+# Frontend build
+frontend/build/
+
 server/static

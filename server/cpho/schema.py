@@ -1,6 +1,8 @@
+import csv
+from io import TextIOWrapper
 import graphene
 from graphene_django import DjangoObjectType
-from .models import Indicator, Benchmarking, IndicatorData, TrendAnalysis
+from .models import Indicator, IndicatorData
 from graphene_django.rest_framework.serializer_converter import convert_serializer_to_input_type
 from rest_framework import serializers
 
@@ -36,6 +38,7 @@ class DataPointArgsInput(convert_serializer_to_input_type(DataPointSerializer)):
 
 class Query(graphene.ObjectType):
     indicators = graphene.List(IndicatorType)
+    indicators_by_id = graphene.List(IndicatorType, ids=graphene.List(graphene.Int))
     indicator = graphene.Field(IndicatorType, id=graphene.Int())
     indicator_data = graphene.List(IndicatorDataType)
     possible_indicators = graphene.List(PossibleIndicatorResponseType)
@@ -43,6 +46,10 @@ class Query(graphene.ObjectType):
     def resolve_indicators(root, info, **kwargs):
         # Querying a list
         return Indicator.objects.all()
+    
+    def resolve_indicators_by_id(root, info, ids, **kwargs):
+        # Querying a list
+        return Indicator.objects.filter(id__in=ids)
 
     def resolve_indicator_data(root, info, **kwargs):
         # Querying a list
@@ -55,7 +62,7 @@ class Query(graphene.ObjectType):
             response.append(
                 PossibleIndicatorResponseType(
                     id=ind.id,
-                    name=ind.indicator,
+                    name=ind.name,
                     category=ind.category,
                     data_point_count=IndicatorData.objects.filter(
                         indicator=ind.id
@@ -72,12 +79,11 @@ class Query(graphene.ObjectType):
         return None
 
 # Mutations
-
 class CreateIndicator(graphene.Mutation):
     class Arguments:
         category = graphene.String(required=True)
-        topic = graphene.String(required=True)
-        indicator = graphene.String(required=True)
+        sub_category = graphene.String(required=True)
+        name = graphene.String(required=True)
         detailed_indicator = graphene.String(required=True)
         sub_indicator_measurement = graphene.String()
         data_points = graphene.List(DataPointArgsInput, required=True)
@@ -106,12 +112,11 @@ class ModifyIndicator(graphene.Mutation):
     class Arguments:
         id = graphene.Int(required=True)
         category = graphene.String(required=True)
-        topic = graphene.String(required=True)
-        indicator = graphene.String(required=True)
+        subCategory = graphene.String(required=True)
+        name = graphene.String(required=True)
         detailedIndicator = graphene.String(required=True)
         subIndicatorMeasurement = graphene.String()
-        dataPoints = graphene.List(DataPointArgsInput, required=True)
-        
+        dataPoints = graphene.List(DataPointArgsInput, required=True)  
         
     success = graphene.Boolean()
     indicator = graphene.Field(IndicatorType)
@@ -122,16 +127,16 @@ class ModifyIndicator(graphene.Mutation):
         points = kwargs.pop('dataPoints')
         id = kwargs.pop('id')
         category = kwargs.pop('category')
-        topic = kwargs.pop('topic')
-        indicatorName = kwargs.pop('indicator')
+        subCategory = kwargs.pop('subCategory')
+        indicatorName = kwargs.pop('name')
         detailedIndicator = kwargs.pop('detailedIndicator')
         subIndicatorMeasurement = kwargs.pop('subIndicatorMeasurement')
 
         try:
             indicatorObj = Indicator.objects.get(id=id)
             indicatorObj.category = category
-            indicatorObj.topic = topic
-            indicatorObj.indicator = indicatorName
+            indicatorObj.sub_category = subCategory
+            indicatorObj.name = indicatorName
             indicatorObj.detailed_indicator = detailedIndicator
             indicatorObj.sub_indicator_measurement = subIndicatorMeasurement    
             indicatorObj.save()
@@ -161,6 +166,5 @@ class ModifyIndicator(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_indicator = CreateIndicator.Field()
     modify_indicator = ModifyIndicator.Field()
-
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

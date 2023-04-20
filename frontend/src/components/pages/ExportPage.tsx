@@ -6,15 +6,19 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Page } from "../template/Page";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { FaFileCsv } from "react-icons/fa";
 import { useQuery } from "@apollo/client";
-import { GET_INDICATOR_OVERVIEW } from "../../utils/graphql/queries";
+import {
+  GET_INDICATOR_DATA_BY_IDS,
+  GET_INDICATOR_OVERVIEW,
+} from "../../utils/graphql/queries";
 import { PossibleIndicatorType } from "../../utils/types";
 import PossibleIndicatorBox from "../molecules/PossibleIndicatorBox";
 import ExportIndicatorList from "../organisms/ExportIndicatorList";
+import { IndicatorType } from "../../utils/types";
 
 export function ExportPage() {
   const toast = useToast();
@@ -24,6 +28,8 @@ export function ExportPage() {
   const [selectedIndicators, setSelectedIndicators] = useState<
     PossibleIndicatorType[]
   >([]);
+
+  const [finalSelectedIds, setFinalSelectedIds] = useState<number[]>([]);
 
   const addSelected = useCallback(
     (ind: PossibleIndicatorType) => {
@@ -59,46 +65,83 @@ export function ExportPage() {
     [selectedIndicators, addSelected, removeSelected]
   );
 
-  const handleExport = () => {
-    setFileLoad(true);
-    const formData = new FormData();
-    formData.append(
-      "selectedIndicators",
-      JSON.stringify(selectedIndicators.map((ind) => ind.id))
-    );
-    fetch(
-      (process.env.REACT_APP_SERVER_URL || "http://localhost:3000/") +
-        "api/export",
-      {
-        method: "POST",
-        body: formData,
-      }
-    )
-      .then(async (res) => {
-        const obj = await res.text();
-        if (obj) {
-          const blob = new Blob([obj], { type: "text/csv;charset=utf-8" });
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.setAttribute("href", url);
-          link.setAttribute("download", "data.csv");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          toast({
-            title: "Data Downloaded",
-            description:
-              "The data you requested has been downloaded to your computer",
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-          });
-        }
-      })
-      .finally(() => setFileLoad(false))
-      .catch((err) => {
-        console.log("ERROR", err);
+  const {
+    loading: exportLoading,
+    data: exportData,
+    error: exportError,
+  } = useQuery(GET_INDICATOR_DATA_BY_IDS, {
+    variables: {
+      ids: finalSelectedIds,
+      fetchPolicy: "network-only",
+    },
+  });
+
+  useEffect(() => {
+    if (
+      fileLoad &&
+      exportData &&
+      exportData.indicatorsById &&
+      exportData.indicatorsById.length > 0
+    ) {
+      const indicatorsData = exportData.indicatorsById
+        .map((ind: IndicatorType) => {
+          return ind.indicatordataSet
+            .map((dp) => {
+              return [
+                ind.category ? `"${ind.category}"` : null,
+                ind.subCategory ? `"${ind.subCategory}"` : null,
+                ind.name ? `"${ind.name}"` : null,
+                ind.detailedIndicator ? `"${ind.detailedIndicator}"` : null,
+                ind.subIndicatorMeasurement
+                  ? `"${ind.subIndicatorMeasurement}"`
+                  : null,
+                dp.locationType ? `"${dp.locationType}"` : null,
+                dp.location ? `"${dp.location}"` : null,
+                dp.sex ? `"${dp.sex}"` : null,
+                dp.gender ? `"${dp.gender}"` : null,
+                dp.ageGroup ? `"${dp.ageGroup}"` : null,
+                dp.ageGroupType ? `"${dp.ageGroupType}"` : null,
+                dp.dataQuality ? `"${dp.dataQuality}"` : null,
+                dp.value ? `"${dp.value}"` : null,
+                dp.valueLowerBound ? `"${dp.valueLowerBound}"` : null,
+                dp.valueUpperBound ? `"${dp.valueUpperBound}"` : null,
+                dp.valueUnit ? `"${dp.valueUnit}"` : null,
+                dp.singleYearTimeframe ? `"${dp.singleYearTimeframe}"` : null,
+                dp.multiYearTimeframe ? `"${dp.multiYearTimeframe}"` : null,
+              ].join(",");
+            })
+            .join("\n");
+        })
+        .join("\n");
+
+      const csvData =
+        "category,topic,indicator,detailed_indicator,sub_indicator_measurement,location_type,location,sex,gender,age_group,age_group_type,data_quality,value,value_lower_bound,value_upper_bound,value_unit,single_year_timeframe,multi_year_timeframe\n" +
+        indicatorsData;
+
+      console.log(csvData);
+
+      const blob = new Blob([csvData], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "export.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({
+        title: "Data exported",
+        description:
+          "The data you requested has been downloaded to your computer",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
       });
+      setFileLoad(false);
+    }
+  }, [exportData, fileLoad, toast]);
+
+  const handleExport = async () => {
+    setFileLoad(true);
+    setFinalSelectedIds(selectedIndicators.map((ind) => ind.id));
   };
 
   const { loading, error, data } = useQuery<{
@@ -172,7 +215,6 @@ export function ExportPage() {
             )}
           </Stack>
         )}
-
         <ButtonGroup size="lg" isAttached>
           <Button
             leftIcon={<FaFileCsv />}
@@ -201,7 +243,16 @@ export function ExportPage() {
           isDisabled={selectedIndicators.length < 1}
           onClick={handleExport}
           loadingText="Exporting..."
-          isLoading={fileLoad}
+          isLoading={fileLoad || exportLoading}
+          onError={() => {
+            toast({
+              title: "Error exporting data",
+              description: exportError?.message,
+              status: "error",
+              duration: 4000,
+              isClosable: true,
+            });
+          }}
         >
           Download data
         </Button>

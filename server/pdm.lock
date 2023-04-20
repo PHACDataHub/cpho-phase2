@@ -10,7 +10,7 @@ requires_python = ">=3.7"
 summary = "ASGI specs, helper code, and adapters"
 
 [[package]]
-name = "backports-zoneinfo"
+name = "backports.zoneinfo"
 version = "0.2.1"
 requires_python = ">=3.6"
 summary = "Backport of the standard library zoneinfo module"
@@ -43,7 +43,7 @@ requires_python = ">=3.8"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 dependencies = [
     "asgiref<4,>=3.4.1",
-    "backports-zoneinfo; python_version < \"3.9\"",
+    "backports.zoneinfo; python_version < \"3.9\"",
     "sqlparse>=0.2.2",
     "tzdata; sys_platform == \"win32\"",
 ]
@@ -200,7 +200,7 @@ content_hash = "sha256:b95dbd1bdb6486e095d05ad953146077c0f3de894760245a20389ca3c
     {url = "https://files.pythonhosted.org/packages/1f/35/e7d59b92ceffb1dc62c65156278de378670b46ab2364a3ea7216fe194ba3/asgiref-3.5.2.tar.gz", hash = "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"},
     {url = "https://files.pythonhosted.org/packages/af/6d/ea3a5c3027c3f14b0321cd4f7e594c776ebe64e4b927432ca6917512a4f7/asgiref-3.5.2-py3-none-any.whl", hash = "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4"},
 ]
-"backports-zoneinfo 0.2.1" = [
+"backports.zoneinfo 0.2.1" = [
     {url = "https://files.pythonhosted.org/packages/1a/ab/3e941e3fcf1b7d3ab3d0233194d99d6a0ed6b24f8f956fc81e47edc8c079/backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:7b0a64cda4145548fed9efc10322770f929b944ce5cee6c0dfe0c87bf4c0c8c9"},
     {url = "https://files.pythonhosted.org/packages/1c/96/baaca3ad1b06d97138d42a225e4d4d27cd1586b646740f771706cd2d812c/backports.zoneinfo-0.2.1-cp37-cp37m-win32.whl", hash = "sha256:e55b384612d93be96506932a786bbcde5a2db7a9e6a4bb4bffe8b733f5b9036b"},
     {url = "https://files.pythonhosted.org/packages/28/d5/e2f3d6a52870045afd8c37b2681c47fd0b98679cd4851e349bfd7e19cfd7/backports.zoneinfo-0.2.1-cp36-cp36m-win_amd64.whl", hash = "sha256:8439c030a11780786a2002261569bdf362264f605dfa4d65090b64b05c9f79a7"},

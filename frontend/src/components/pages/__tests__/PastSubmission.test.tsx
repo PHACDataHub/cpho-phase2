@@ -6,6 +6,7 @@ import {
 import { ModifyPastSubmissions } from "../PastSubmission";
 import { MockedProvider } from "@apollo/client/testing";
 import { BrowserRouter } from "react-router-dom";
+import { IndicatorType } from "../../../utils/types";
 
 const mocks = [
   {
@@ -17,9 +18,9 @@ const mocks = [
         indicators: [
           {
             id: 1,
-            indicator: "Test Indicator",
+            name: "Test Indicator",
           },
-        ],
+        ] as IndicatorType[],
       },
     },
   },
@@ -32,13 +33,13 @@ const mocks = [
       data: {
         indicator: {
           id: 1,
-          indicator: "Test Indicator",
+          name: "Test Indicator",
           indicatordataSet: [],
           category: "Test Category",
-          topic: "Test Topic",
+          subCategory: "Test Topic",
           detailedIndicator: "Test Detailed Indicator",
           subIndicatorMeasurement: "Test Sub Indicator Measurement",
-        },
+        } as IndicatorType,
       },
     },
   },

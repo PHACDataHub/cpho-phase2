@@ -1,4 +1,4 @@
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme, ThemeConfig } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AddIndicator } from "./components/pages/AddIndicator";
 import { ExportPage } from "./components/pages/ExportPage";
@@ -28,7 +28,21 @@ const theme = extendTheme({
       8: "#ff5722",
     },
   },
-});
+  styles: {
+    global: {
+      body: {
+        bg: "white",
+        color: "black",
+        _dark: {
+          bg: "gray.900",
+          color: "white",
+        },
+      },
+    },
+  },
+  initialColorMode: "system",
+  useSystemColorMode: true,
+} as ThemeConfig);
 
 export const App = () => (
   <BrowserRouter>

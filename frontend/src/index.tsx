@@ -1,13 +1,17 @@
-import { ColorModeScript } from "@chakra-ui/react";
+import { ColorModeScript, theme } from "@chakra-ui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  link: createUploadLink({
+    uri: "/graphql",
+    // uri: "http://localhost:8000/graphql",
+  }),
   cache: new InMemoryCache({
     addTypename: false,
   }),
@@ -19,7 +23,7 @@ const root = ReactDOM.createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ColorModeScript />
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ApolloProvider client={client}>
       <App />
     </ApolloProvider>

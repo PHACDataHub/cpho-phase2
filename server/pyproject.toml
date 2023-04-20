@@ -51,12 +51,14 @@ build-backend = "pdm.pep517.api"
 _.env_file = "server.env"
 start.cmd = "python manage.py runserver localhost:8000"
 wsgi.cmd = "python server.py"
+makemigrations = "python manage.py makemigrations"
 migrate = "python manage.py migrate"
-db = "docker run --name pg -p 5432:5432 -d --env-file postgres.env postgres"
+superUser = {shell = "python manage.py createsuperuser --noinput || true"}
+db = {shell = "docker ps -a | grep pg || docker run -d -p 5432:5432 --name pg --env-file postgres.env postgres"}
 wait ={shell = "sleep 1"}
 stop = {shell = "docker stop pg && docker rm pg"}
 # Outside docker-compose override DB_HOST to connect directly to localhost.
-dev = {composite = ["db", "wait", "migrate", "start"], env = {DB_HOST = "localhost"}}
+dev = {composite = ["db", "wait", "migrate", "superUser" , "start"], env = {DB_HOST = "localhost"}}
 test = {cmd = "coverage run manage.py test -v 2", env = {DB_HOST = "localhost"}}
 citest = {cmd = "python manage.py test -v 2 --keepdb"}
 post_test = {cmd = "coverage report --skip-empty --omit=tests/*,*tests*"} #choose additional files to skip here with "," and no spaces)

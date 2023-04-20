@@ -31,8 +31,8 @@ describe("DataQualityTag", () => {
       />
     );
 
-    const caution = screen.getByText(/Caution/);
-    expect(caution).toBeInTheDocument();
+    const caution = screen.getAllByText(/Caution/);
+    expect(caution).toBeTruthy();
 
     const cautionColor = screen.getByTestId("caution-container");
     expect(cautionColor).toHaveStyle(
@@ -48,8 +48,8 @@ describe("DataQualityTag", () => {
       />
     );
 
-    const acceptable = screen.getByText(/Acceptable/);
-    expect(acceptable).toBeInTheDocument();
+    const acceptable = screen.getAllByText(/Acceptable/);
+    expect(acceptable).toBeTruthy();
 
     const acceptableColor = screen.getByTestId("acceptable-container");
     expect(acceptableColor).toHaveStyle(
@@ -65,8 +65,8 @@ describe("DataQualityTag", () => {
       />
     );
 
-    const good = screen.getByText(/Good/);
-    expect(good).toBeInTheDocument();
+    const good = screen.getAllByText(/Good/);
+    expect(good).toBeTruthy();
 
     const goodColor = screen.getByTestId("good-container");
     expect(goodColor).toHaveStyle(
@@ -82,8 +82,8 @@ describe("DataQualityTag", () => {
       />
     );
 
-    const excellent = screen.getByText(/Excellent/);
-    expect(excellent).toBeInTheDocument();
+    const excellent = screen.getAllByText(/Excellent/);
+    expect(excellent).toBeTruthy();
 
     const excellentColor = screen.getByTestId("excellent-container");
     expect(excellentColor).toHaveStyle(
@@ -94,17 +94,17 @@ describe("DataQualityTag", () => {
   it("should call setDataQuality when clicked", () => {
     render(
       <DataQualityTag
-        dataQuality={"EXCELLENT"}
+        dataQuality={"CAUTION"}
         setDataQuality={mockSetDataQuality}
       />
     );
 
-    const excellent = screen.getByText(/Excellent/);
-    expect(excellent).toBeInTheDocument();
+    const caution = screen.findAllByText(/Caution/);
+    expect(caution).toBeTruthy();
 
-    const excellentButton = screen.getByText(/EXCELLENT/);
+    const excellentButton = screen.getAllByText(/Excellent/)[0];
 
-    excellentButton.click();
+    excellentButton?.click();
     expect(mockSetDataQuality).toHaveBeenCalledWith("EXCELLENT");
   });
 });

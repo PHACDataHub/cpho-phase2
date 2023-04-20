@@ -9,6 +9,7 @@ const EditIndicatorCard = ({ id }: { id: number }) => {
     GET_INDICATOR_DATA,
     {
       variables: { id: Number(id) },
+      fetchPolicy: "network-only",
     }
   );
 
@@ -23,6 +24,9 @@ const EditIndicatorCard = ({ id }: { id: number }) => {
   return (
     <Box
       bgColor="gray.200"
+      _dark={{
+        bgColor: "gray.600",
+      }}
       py={2}
       px={4}
       borderRadius="lg"
@@ -33,7 +37,7 @@ const EditIndicatorCard = ({ id }: { id: number }) => {
       }}
       onClick={() => navigate(`/modify-indicator/${id}`)}
     >
-      <Heading size="md">{data?.indicator.indicator}</Heading>
+      <Heading size="md">{data?.indicator.name}</Heading>
       <Heading size="sm" fontWeight="normal" fontStyle="italic">
         {indicator?.indicatordataSet.length} data point
         {indicator?.indicatordataSet.length === 1 ? "" : "s"}

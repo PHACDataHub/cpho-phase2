@@ -15,9 +15,10 @@ const ModifyIndicator = () => {
     variables: {
       id: Number(id),
     },
+    fetchPolicy: "network-only",
   });
 
-  const name = data?.indicator.indicator.toLocaleLowerCase() ?? id;
+  const name = data?.indicator.name.toLocaleLowerCase() ?? id;
 
   return (
     <Page
@@ -26,7 +27,7 @@ const ModifyIndicator = () => {
     >
       {loading && <Spinner />}
       {error && <Text>Could not load indicator</Text>}
-      {data && <IndicatorForm indicator={data?.indicator} />}
+      {data && <IndicatorForm indicator={data?.indicator} mode="modify" />}
     </Page>
   );
 };

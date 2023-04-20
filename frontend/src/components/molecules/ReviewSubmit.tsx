@@ -7,32 +7,27 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { categories, sub_categories } from "../../utils/constants";
 import { CREATE_INDICATOR } from "../../utils/graphql/mutations";
 import {
   GET_INDICATOR_OVERVIEW,
   GET_INDICATORS_AND_IDS,
 } from "../../utils/graphql/queries";
-import { DataPoint } from "../../utils/types";
+import { IndicatorType } from "../../utils/types";
 import DataPointDisplay from "../organisms/DataPointDisplay";
 
 const ReviewSubmit = ({
   values,
+  onSubmit,
 }: {
-  values: {
-    indicatorName: string;
-    detailedIndicator: string;
-    category: number;
-    subCategory: number;
-    dataPoints: DataPoint[];
-  };
+  values: IndicatorType;
+  onSubmit?: () => void;
 }) => {
   const {
-    indicatorName,
+    name: indicatorName,
     detailedIndicator,
     category,
     subCategory,
-    dataPoints,
+    indicatordataSet: dataPoints,
   } = values;
 
   const [createIndicator, { loading, error, data }] = useMutation(
@@ -87,13 +82,13 @@ const ReviewSubmit = ({
         <Heading fontSize="x-large">
           Category:{" "}
           <Heading fontSize="x-large" as="span" color="blue.500">
-            {categories.filter((c) => c.id === category)[0].label}
+            {category}
           </Heading>
         </Heading>
         <Heading fontSize="x-large">
           Subcategory:{" "}
           <Heading fontSize="x-large" as="span" color="blue.500">
-            {sub_categories.filter((c) => c.id === subCategory)[0].label}
+            {subCategory}
           </Heading>
         </Heading>
       </VStack>
@@ -110,14 +105,12 @@ const ReviewSubmit = ({
           onClick={() => {
             createIndicator({
               variables: {
-                category:
-                  categories.find((c) => c.id === category)?.label ?? "",
+                category: category,
                 detailedIndicator,
-                indicator: indicatorName,
+                name: indicatorName,
                 subIndicatorMeasurement: "",
-                topic:
-                  sub_categories.find((c) => c.id === subCategory)?.label ?? "",
-                dataPoints: dataPoints.map(({ id, ...d }) => ({
+                subCategory,
+                dataPoints: dataPoints.map(({ id, indicatorId, ...d }) => ({
                   ...d,
                   singleYearTimeframe: `${d.singleYearTimeframe}`,
                   multiYearTimeframe: d.multiYearTimeframe
@@ -129,6 +122,7 @@ const ReviewSubmit = ({
                 })),
               },
             });
+            onSubmit?.();
           }}
         >
           Submit

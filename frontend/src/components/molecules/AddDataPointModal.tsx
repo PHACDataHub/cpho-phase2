@@ -53,8 +53,8 @@ export function AddDataPointModal({
   const [dp, setDp] = useState<DataPoint>(
     dataPoint ?? {
       id: uuidv4(),
-      country: "CANADA",
-      geography: "COUNTRY",
+      location: "CANADA",
+      locationType: "COUNTRY",
       sex: "",
       gender: "",
       ageGroup: "",
@@ -72,8 +72,8 @@ export function AddDataPointModal({
 
   const {
     id,
-    geography,
-    country,
+    locationType,
+    location,
     value,
     singleYearTimeframe,
     multiYearTimeframe,
@@ -116,8 +116,8 @@ export function AddDataPointModal({
     e.preventDefault();
     const point: DataPoint = {
       id,
-      country,
-      geography,
+      locationType,
+      location,
       sex: "",
       gender: "",
       ageGroup: "",
@@ -168,12 +168,12 @@ export function AddDataPointModal({
                   <ButtonGroup isAttached>
                     <Button
                       size="sm"
-                      isActive={geography === "COUNTRY"}
+                      isActive={locationType === "COUNTRY"}
                       onClick={() => {
                         setDp({
                           ...dp,
-                          geography: "COUNTRY",
-                          country: "CANADA",
+                          locationType: "COUNTRY",
+                          location: "CANADA",
                         });
                       }}
                     >
@@ -181,12 +181,12 @@ export function AddDataPointModal({
                     </Button>
                     <Button
                       size="sm"
-                      isActive={geography === "PROVINCE_TERRITORY"}
+                      isActive={locationType === "PROVINCE_TERRITORY"}
                       onClick={() =>
                         setDp({
                           ...dp,
-                          geography: "PROVINCE_TERRITORY",
-                          country: "AB",
+                          locationType: "PROVINCE_TERRITORY",
+                          location: "AB",
                         })
                       }
                     >
@@ -194,12 +194,12 @@ export function AddDataPointModal({
                     </Button>
                     <Button
                       size="sm"
-                      isActive={geography === "REGION"}
+                      isActive={locationType === "REGION"}
                       onClick={() =>
                         setDp({
                           ...dp,
-                          geography: "REGION",
-                          country: "ATLANTIC",
+                          locationType: "REGION",
+                          location: "ATLANTIC",
                         })
                       }
                     >
@@ -207,24 +207,24 @@ export function AddDataPointModal({
                     </Button>
                   </ButtonGroup>
                 </FormControl>
-                {geography !== "COUNTRY" && (
+                {locationType !== "COUNTRY" && (
                   <FormControl isRequired>
                     <Select
                       size="sm"
                       placeholder={`Select ${
-                        geography === "PROVINCE_TERRITORY"
+                        locationType === "PROVINCE_TERRITORY"
                           ? "Province/Territory"
                           : "Region"
                       }`}
-                      value={country}
+                      value={locationType}
                       onChange={(event) =>
                         setDp({
                           ...dp,
-                          country: event.target.value as LocationType,
+                          location: event.target.value as LocationType,
                         })
                       }
                     >
-                      {geography === "PROVINCE_TERRITORY" && (
+                      {locationType === "PROVINCE_TERRITORY" && (
                         <>
                           <option value="AB">Alberta</option>
                           <option value="BC">British Columbia</option>
@@ -241,7 +241,7 @@ export function AddDataPointModal({
                           <option value="YT">Yukon</option>
                         </>
                       )}
-                      {geography === "REGION" && (
+                      {locationType === "REGION" && (
                         <>
                           <option value="ATLANTIC">Atlantic</option>
                           <option value="PRAIRIE">Prairie</option>

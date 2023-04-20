@@ -86,8 +86,18 @@ const DataQualityTag = ({
               onClick={() =>
                 setDataQuality(option.toUpperCase() as DataQualityType)
               }
+              _dark={{
+                color: "white",
+                bgColor: "gray.800",
+                _hover: {
+                  bgColor: "gray.700",
+                },
+                _active: {
+                  bgColor: "gray.600",
+                },
+              }}
             >
-              {option}
+              {possible[option].label}
             </Button>
           ))}
         </VStack>

@@ -93,12 +93,22 @@ const YearTag = ({
         )}
       </PopoverTrigger>
       <PopoverContent w="100%">
-        <PopoverArrow bgColor="gray.100" />
+        <PopoverArrow />
         <ButtonGroup isAttached>
           <Button
             onClick={() => setYearType("SINGLE")}
             isActive={yearType === "SINGLE"}
             size="sm"
+            _dark={{
+              color: "white",
+              bgColor: "gray.800",
+              _hover: {
+                bgColor: "gray.700",
+              },
+              _active: {
+                bgColor: "gray.600",
+              },
+            }}
           >
             Single
           </Button>
@@ -106,6 +116,16 @@ const YearTag = ({
             onClick={() => setYearType("RANGE")}
             isActive={yearType === "RANGE"}
             size="sm"
+            _dark={{
+              color: "white",
+              bgColor: "gray.800",
+              _hover: {
+                bgColor: "gray.700",
+              },
+              _active: {
+                bgColor: "gray.600",
+              },
+            }}
           >
             Range
           </Button>

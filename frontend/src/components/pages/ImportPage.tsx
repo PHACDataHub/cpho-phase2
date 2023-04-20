@@ -1,125 +1,334 @@
-import { AttachmentIcon } from "@chakra-ui/icons";
-import {
-  VStack,
-  Input,
-  Button,
-  Heading,
-  Center,
-  Spinner,
-} from "@chakra-ui/react";
-import { useState } from "react";
-import { FileFormat } from "../../utils/types";
-import { FileTypeChoice } from "../organisms/FileTypeChoice";
+import { Button, Heading, ButtonGroup, VStack } from "@chakra-ui/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { IndicatorType } from "../../utils/types";
 import { Page } from "../template/Page";
+import { FileColumnData } from "../../utils/constants";
+import FileUpload from "../organisms/FileUpload";
+import FileReviewSchema from "../organisms/FileReviewSchema";
+import { v4 as uuidv4 } from "uuid";
+import IndicatorForm from "../organisms/IndicatorForm";
 
 export function ImportPage() {
-  const [fileToUpload, setFileToUpload] = useState();
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "failure" | "success"
-  >("idle");
+  const [fileToUpload, setFileToUpload] = useState<File>();
+  const [fileText, setFileText] = useState<string>("");
 
-  const [activeType, setActiveType] = useState<FileFormat>("indicator");
+  const [stage, setStage] = useState<
+    "upload" | "review_schema" | "review_data"
+  >("upload");
 
-  const handleFile = (event: any) => {
-    event.preventDefault();
-    const file = event.target.files[0];
-    setFileToUpload(file);
-    setStatus("idle");
+  const [fileIndicators, setFileIndicators] = useState<IndicatorType[]>([]);
+  const [fileHeaders, setFileHeaders] = useState<string[]>([]);
+
+  const [fieldMapping, setFieldMapping] = useState<{
+    [key: string]: string;
+  }>({
+    indicatorName: "",
+    category: "",
+    subCategory: "",
+    detailedIndicator: "",
+    subIndicatorMeasurement: "",
+    locationType: "",
+    location: "",
+    sex: "",
+    gender: "",
+    ageGroup: "",
+    ageGroupType: "",
+    dataQuality: "",
+    value: "",
+    valueLowerBound: "",
+    valueUpperBound: "",
+    valueUnit: "",
+    singleYearTimeFrame: "",
+    multiYearTimeFrame: "",
+  });
+
+  const csvToJson = useCallback(
+    (text: string, headers?: string[], quoteChar = '"', delimiter = ",") => {
+      const regex = new RegExp(
+        `(?<=,|\n|^)(?:"([^${quoteChar}]*)"|([^${delimiter}${quoteChar}\n]*))(?=${delimiter}|\n|$)`,
+        "gs"
+      );
+
+      const match = (line: string | undefined) =>
+        line
+          ? [...line.matchAll(regex)]
+          : []
+              .map((m) => m[2]) // we only want the second capture group
+              .slice(0, -1); // cut off blank match at the end
+
+      const lines = text.split("\n");
+      const heads = headers ?? match(lines.shift());
+
+      return lines.map((line) => {
+        return match(line)?.reduce((acc, cur, i) => {
+          // console.log(cur);
+          // console.log(heads[i]);
+          const key =
+            Object.entries(fieldMapping).find(([key, value]) => {
+              return heads[i] && value === heads[i][0];
+            })?.[0] || `custom_${i}`;
+          return { ...acc, [key]: cur[1] ?? cur[0] };
+        }, {});
+      });
+    },
+    [fieldMapping]
+  );
+
+  const csvHeaders = (text: string, quoteChar = '"', delimiter = ",") => {
+    const regex = new RegExp(
+      `(?<=,|\n|^)(?:"([^${quoteChar}]*)"|([^${delimiter}${quoteChar}\n]*))(?=${delimiter}|\n|$)`,
+      "gs"
+    );
+
+    const match = (line: string | undefined) =>
+      line
+        ? [...line.matchAll(regex)]
+        : []
+            .map((m) => m[2]) // we only want the second capture group
+            .slice(0, -1); // cut off blank match at the end
+
+    const lines = text.split("\n");
+    const headers = match(lines.shift());
+    return headers.map((header) => header[0]); // we only want the regex match string
   };
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    let formData = new FormData();
+  useEffect(() => {
     if (fileToUpload) {
-      setStatus("loading");
-      formData.append("file", fileToUpload);
-      if (fileToUpload) {
-        fetch(
-          (process.env.REACT_APP_SERVER_URL || "http://localhost:3000/") +
-            "api/import",
-          {
-            method: "POST",
-            body: formData,
-          }
-        )
-          .then((res) => {
-            if (res.status === 200) {
-              setStatus("success");
-            } else {
-              setStatus("failure");
-            }
-          })
-          .catch((err) => {
-            setStatus("failure");
-            console.log(err);
-          });
-      }
+      (fileToUpload as any).text().then((text: string) => {
+        setFileText(text);
+      });
     }
-  };
+  }, [fileToUpload]);
+
+  useEffect(() => {
+    if (stage === "review_schema" && fileText && fileHeaders.length === 0) {
+      const csvFileHeaders = csvHeaders(fileText);
+      console.log(csvFileHeaders);
+      setFileHeaders(csvFileHeaders);
+    } else if (stage === "review_data") {
+      const csvData = csvToJson(fileText);
+
+      console.log(csvData);
+
+      const indType = csvData.reduce((acc: IndicatorType[], cur: any) => {
+        const ind = acc.find((ind) => ind.name === cur.indicatorName);
+        if (ind) {
+          ind.indicatordataSet.push({
+            id: uuidv4(),
+            indicatorId: ind.id,
+            locationType: cur.locationType,
+            location: cur.location,
+            sex: cur.sex,
+            gender: cur.gender,
+            ageGroup: cur.ageGroup,
+            ageGroupType: cur.ageGroupType,
+            dataQuality: cur.dataQuality,
+            value: cur.value,
+            valueLowerBound: cur.valueLowerBound,
+            valueUpperBound: cur.valueUpperBound,
+            valueUnit: cur.valueUnit,
+            singleYearTimeframe: cur.singleYearTimeframe,
+            multiYearTimeframe: cur.multiYearTimeframe,
+          });
+        } else if (cur.indicatorName) {
+          const newInd: IndicatorType = {
+            id: 0, // this id doesn't matter, it will not be sent to the server (just here for typescript)
+            name: cur.indicatorName,
+            category: cur.category,
+            subCategory: cur.subCategory,
+            subIndicatorMeasurement: cur.subIndicatorMeasurement,
+            detailedIndicator: cur.detailedIndicator,
+            indicatordataSet: [
+              {
+                id: uuidv4(),
+                locationType: cur.locationType,
+                location: cur.location,
+                sex: cur.sex,
+                gender: cur.gender,
+                ageGroup: cur.ageGroup,
+                ageGroupType: cur.ageGroupType,
+                dataQuality: cur.dataQuality,
+                value: cur.value,
+                valueLowerBound: cur.valueLowerBound,
+                valueUpperBound: cur.valueUpperBound,
+                valueUnit: cur.valueUnit,
+                singleYearTimeframe: cur.singleYearTimeframe,
+                multiYearTimeframe: cur.multiYearTimeframe,
+              },
+            ],
+          };
+
+          acc.push(newInd);
+        }
+
+        return acc;
+      }, []);
+      console.log(indType);
+      setFileIndicators(indType);
+    }
+  }, [stage, fileToUpload, fieldMapping, fileHeaders, fileText, csvToJson]);
+
+  // Every time file headers are updated, check if they match
+  // any of the column names in the expected file schema
+  useEffect(() => {
+    if (fileHeaders) {
+      fileHeaders.forEach((fileHeader) => {
+        console.log(fileHeader);
+        FileColumnData.indicator.forEach((field) => {
+          if (field.matches?.includes(fileHeader.toLowerCase())) {
+            console.log(field.value);
+            setFieldMapping((fieldMapping) => ({
+              ...fieldMapping,
+              [field.value]: fileHeader,
+            }));
+          }
+        });
+      });
+    }
+  }, [fileHeaders]);
+
+  useEffect(() => {
+    console.log(fileIndicators);
+  }, [fileIndicators]);
+
+  const [indicatorStep, setIndicatorStep] = useState(0);
+  const [submittedIndicatorIndexes, setSubmittedIndicatorIndexes] = useState<
+    number[]
+  >([]);
+
+  const validMapping = useMemo(() => {
+    if (!fieldMapping) return false;
+    return Object.entries(fieldMapping).every(([key, value]) => {
+      const field = FileColumnData.indicator.find(
+        (field) => field.value === key
+      );
+      return field?.required ? value !== "" : true;
+    });
+  }, [fieldMapping]);
 
   return (
-    <Page title="Import File" backButton={{ show: true, redirectUrl: "/" }}>
-      <Heading size="md" fontWeight={500} mb={4}>
-        The format of the file must align with the order and presence of the
-        expected columns
-      </Heading>
-      <VStack align="flex-start" spacing={4}>
-        <FileTypeChoice activeType={activeType} setActiveType={setActiveType} />
-        <Center
-          cursor={
-            status === "success" || activeType !== "indicator"
-              ? "default"
-              : "pointer"
-          }
-          backgroundColor="gray.100"
-          w="100%"
-          py={8}
-          onClick={() => document.getElementById("file_input")?.click()}
-        >
-          <Input
-            id="file_input"
-            display="none"
-            name="uploaded_file"
-            accept="text/csv"
-            type="file"
-            onChange={handleFile}
-            disabled={activeType !== "indicator"}
-          />
-          {status === "loading" ? (
-            <Spinner />
-          ) : (
-            <VStack color={activeType === "indicator" ? "initial" : "gray.400"}>
-              {status !== "success" && <AttachmentIcon boxSize="8" />}
-              <Heading size="lg" fontWeight={600}>
-                {status === "success"
-                  ? `Successfully uploaded ${(fileToUpload as any).name}`
-                  : status === "failure"
-                  ? `Could not upload ${(fileToUpload as any).name}`
-                  : fileToUpload
-                  ? (fileToUpload as any).name
-                  : activeType === "indicator"
-                  ? "Click to select a file"
-                  : `Import not available for ${
-                      activeType === "benchmarking"
-                        ? "Benchmarking"
-                        : "Trend Analysis"
-                    } yet`}
+    <Page
+      title="Import File"
+      backButton={{ show: stage === "upload", redirectUrl: "/" }}
+    >
+      {stage === "upload" && (
+        <FileUpload
+          fileToUpload={fileToUpload}
+          setFileToUpload={setFileToUpload}
+          setStage={setStage}
+        />
+      )}
+
+      {stage === "review_schema" && (
+        <FileReviewSchema
+          validMapping={validMapping}
+          fieldMapping={fieldMapping}
+          setFieldMapping={setFieldMapping}
+          fileHeaders={fileHeaders}
+          setStage={setStage}
+        />
+      )}
+
+      {stage === "review_data" && (
+        <>
+          <Button
+            mb={4}
+            onClick={() => setStage("review_schema")}
+            fontSize={20}
+            colorScheme="blue"
+          >
+            Back to Schema
+          </Button>
+          <Heading>Review Data for {fileIndicators.length} indicators</Heading>
+          <ButtonGroup>
+            {fileIndicators.map((indicator, idx) => (
+              <Button
+                key={idx}
+                onClick={() => setIndicatorStep(idx)}
+                isActive={indicatorStep === idx}
+                isDisabled={submittedIndicatorIndexes.includes(idx)}
+                _disabled={{
+                  cursor: "not-allowed",
+                  opacity: 0.4,
+                  bgColor: "green.500",
+                }}
+                _hover={{
+                  _disabled: {
+                    bgColor: "green.500",
+                  },
+                  bgColor: "gray.200",
+                }}
+              >
+                {indicator.name}
+              </Button>
+            ))}
+          </ButtonGroup>
+          {fileIndicators.map(
+            (indicator, idx) =>
+              idx === indicatorStep && (
+                <IndicatorForm
+                  key={idx}
+                  indicator={indicator}
+                  mode="create"
+                  onConfirmUpload={() => {
+                    setSubmittedIndicatorIndexes(
+                      (submittedIndicatorIndexes) => [
+                        ...submittedIndicatorIndexes,
+                        idx,
+                      ]
+                    );
+                    setIndicatorStep((indicatorStep) => indicatorStep + 1);
+                  }}
+                />
+              )
+          )}
+
+          {submittedIndicatorIndexes.length === fileIndicators.length && (
+            <VStack>
+              <Heading>Success!</Heading>
+              <Heading size="md">
+                {submittedIndicatorIndexes.length} indicators were uploaded. If
+                edits are needed, you can edit them through the 'Modify Past
+                Data' function.
               </Heading>
+              <Button
+                onClick={() => {
+                  setStage("upload");
+                  setFieldMapping({
+                    indicatorName: "",
+                    category: "",
+                    subCategory: "",
+                    detailedIndicator: "",
+                    subIndicatorMeasurement: "",
+                    locationType: "",
+                    location: "",
+                    sex: "",
+                    gender: "",
+                    ageGroup: "",
+                    ageGroupType: "",
+                    dataQuality: "",
+                    value: "",
+                    valueLowerBound: "",
+                    valueUpperBound: "",
+                    valueUnit: "",
+                    singleYearTimeFrame: "",
+                    multiYearTimeFrame: "",
+                  });
+                  setSubmittedIndicatorIndexes([]);
+                  setIndicatorStep(0);
+                  setFileToUpload(undefined);
+                  setFileText("");
+                  setFileHeaders([]);
+                  setFileIndicators([]);
+                }}
+                colorScheme="blue"
+              >
+                Upload another file
+              </Button>
             </VStack>
           )}
-        </Center>
-
-        <VStack w="100%" align="flex-end">
-          <Button
-            size="lg"
-            fontSize={20}
-            colorScheme="red"
-            onClick={handleSubmit}
-          >
-            Import
-          </Button>
-        </VStack>
-      </VStack>
+        </>
+      )}
     </Page>
   );
 }

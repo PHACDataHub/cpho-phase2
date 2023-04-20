@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { IndicatorDataFields } from "./constants";
 
 export const useSmallScreen = () => {
   const [smallScreen, setSmallScreen] = useState(false);
@@ -13,10 +12,4 @@ export const useSmallScreen = () => {
     };
   }, []);
   return smallScreen;
-};
-
-export const getCleanPTName = (name: string) => {
-  return IndicatorDataFields.find(
-    (field) => field.id === "dp_location"
-  )?.options?.find((option) => option.value === name)?.label;
 };

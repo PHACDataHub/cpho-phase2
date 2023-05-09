@@ -216,7 +216,7 @@ const EnglishGovGouv = ({ textColor = 'black', flagColor = '#EA2D37' }: EnglishG
 
 export const Phacsignature = ({
   // Note: rbg values come from: canada.ca/en/treasury-board-secretariat/services/government-communications/design-standard/colour-design-standard-fip.html#toc1
-  lang = 'en',
+  lang = 'fr',
   textColor = 'black',
   variant = 'color',
   width = '20%',

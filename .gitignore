@@ -16,3 +16,8 @@
 frontend/build/
 
 server/static
+package-lock.json
+.gitignore
+.gitignore
+frontend/package.json
+frontend/package-lock.json

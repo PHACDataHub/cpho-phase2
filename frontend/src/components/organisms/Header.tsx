@@ -19,6 +19,7 @@ export function Header(): JSX.Element {
       <Phacsignature
           textColor={colorMode === "dark" ? "white" : "black"}
           variant="color"
+          
         />
       <hr
         style={{

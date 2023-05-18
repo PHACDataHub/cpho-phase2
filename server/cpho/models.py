@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Indicator(models.Model):
     name = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
@@ -9,6 +10,7 @@ class Indicator(models.Model):
 
     def __str__(self):
         return self.detailed_indicator
+
 
 class IndicatorData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.RESTRICT)
@@ -27,10 +29,13 @@ class IndicatorData(models.Model):
     multi_year_timeframe = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return " ".join([self.location_type,
-                         self.location,
-                         str(self.value),
-                         ])
+        return " ".join(
+            [
+                self.location_type,
+                self.location,
+                str(self.value),
+            ]
+        )
 
 
 class Benchmarking(models.Model):

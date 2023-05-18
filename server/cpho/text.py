@@ -2,7 +2,6 @@ from django.utils.functional import lazy
 from django.utils.html import mark_safe
 from django.utils.translation import get_language, get_language_info
 
-
 from cpho.translations import translation_entries
 
 lang_map = {
@@ -31,7 +30,7 @@ def other_lang():
     return "en"
 
 
-def tdt(s:str):
+def tdt(s: str):
     return s
 
 
@@ -54,5 +53,6 @@ def tm(key: str) -> str:
         if locale_string is not None
         else f"Missing **{key}[{lang_map[lang_code]}]**"
     )
+
 
 tm = lazy(tm, str)

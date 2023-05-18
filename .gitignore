@@ -14,5 +14,6 @@
 
 # Frontend build
 frontend/build/
-
-server/static
+ 
+runserver.sh
+/notes.md

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from decouple import Csv, config
@@ -19,6 +20,11 @@ from phac_aspc.django.settings.utils import (
     configure_apps,
     configure_middleware,
 )
+
+# During tests, modify settings or monkeypatch things
+if "test" in sys.argv or any("pytest" in arg for arg in sys.argv):
+    from . import monkey_patch_for_testing
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -130,6 +136,7 @@ DATABASES = {
         #   'OPTIONS': {'sslmode': 'require'},
         "TEST": {
             "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("TEST_DB_NAME", default="cpho_test_db"),
         },
     }
 }
@@ -139,6 +146,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 AUTH_USER_MODEL = "cpho.User"
 
+TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

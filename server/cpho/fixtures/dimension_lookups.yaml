@@ -1,0 +1,276 @@
+- model: cpho.dimensiontype
+  pk: 1
+  fields:
+    name_en: sex
+    name_fr: sexe
+    code: sex
+- model: cpho.dimensiontype
+  pk: 2
+  fields:
+    name_en: Province
+    name_fr: Province
+    code: province
+- model: cpho.dimensiontype
+  pk: 3
+  fields:
+    name_en: region
+    name_fr: région
+    code: region
+- model: cpho.dimensiontype
+  pk: 4
+  fields:
+    name_en: Canada
+    name_fr: Canada
+    code: canada
+- model: cpho.dimensiontype
+  pk: 5
+  fields:
+    name_en: age
+    name_fr: âge
+    code: age
+
+# dimension values
+
+- model: cpho.dimensionvalue
+  pk: 2
+  fields:
+    dimension_type: 1
+    name_en: male
+    name_fr: male
+    value: m
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 3
+  fields:
+    dimension_type: 1
+    name_en: female
+    name_fr: female
+    value: f
+    order: 1.0
+
+- model: cpho.dimensionvalue
+  pk: 4
+  fields:
+    dimension_type: 2
+    name_en: Newfoundland and Labrador
+    name_fr: Terre-Neuve-et-Labrador
+    value: nl
+    order: 0.0
+
+- model: cpho.dimensionvalue
+  pk: 5
+  fields:
+    dimension_type: 2
+    name_en: Prince Edward Island
+    name_fr: Île-du-Prince-Édouard
+    value: pe
+    order: 1.0
+
+- model: cpho.dimensionvalue
+  pk: 6
+  fields:
+    dimension_type: 2
+    name_en: Nova Scotia
+    name_fr: Nouvelle-Écosse
+    value: ns
+    order: 2.0
+
+- model: cpho.dimensionvalue
+  pk: 7
+  fields:
+    dimension_type: 2
+    name_en: New Brunswick
+    name_fr: Nouveau-Brunswick
+    value: nb
+    order: 3.0
+
+- model: cpho.dimensionvalue
+  pk: 8
+  fields:
+    dimension_type: 2
+    name_en: Quebec
+    name_fr: Québec
+    value: qc
+    order: 4.0
+
+- model: cpho.dimensionvalue
+  pk: 9
+  fields:
+    dimension_type: 2
+    name_en: Ontario
+    name_fr: Ontario
+    value: on
+    order: 5.0
+
+- model: cpho.dimensionvalue
+  pk: 10
+  fields:
+    dimension_type: 2
+    name_en: Manitoba
+    name_fr: Manitoba
+    value: mb
+    order: 6.0
+  
+- model: cpho.dimensionvalue
+  pk: 11
+  fields:
+    dimension_type: 2
+    name_en: Saskatchewan
+    name_fr: Saskatchewan
+    value: sk
+    order: 7.0
+
+
+- model: cpho.dimensionvalue
+  pk: 12
+  fields:
+    dimension_type: 2
+    name_en: Alberta
+    name_fr: Alberta
+    value: ab
+    order: 8.0
+
+- model: cpho.dimensionvalue
+  pk: 13
+  fields:
+    dimension_type: 2
+    name_en: British Columbia
+    name_fr: Colombie-Britannique
+    value: bc
+    order: 9.0
+
+- model: cpho.dimensionvalue 
+  pk: 14
+  fields:
+    dimension_type: 2
+    name_en: Yukon
+    name_fr: Yukon
+    value: yt
+    order: 10.0
+
+- model: cpho.dimensionvalue
+  pk: 15
+  fields:
+    dimension_type: 2
+    name_en: Northwest Territories
+    name_fr: Territoires du Nord-Ouest
+    value: nt
+    order: 11.0
+
+- model: cpho.dimensionvalue
+  pk: 16
+  fields:
+    dimension_type: 2
+    name_en: Nunavut
+    name_fr: Nunavut
+    value: nu
+    order: 12.0
+
+- model: cpho.dimensionvalue
+  pk: 17
+  fields:
+    dimension_type: 3
+    name_en: Atlantic
+    name_fr: Atlantique
+    value: atlantic
+    order: 0.0
+
+- model: cpho.dimensionvalue
+  pk: 18
+  fields:
+    dimension_type: 3
+    name_en: Quebec
+    name_fr: Québec
+    value: quebec
+    order: 1.0
+
+- model: cpho.dimensionvalue
+  pk: 19
+  fields:
+    dimension_type: 3
+    name_en: Ontario
+    name_fr: Ontario
+    value: ontario
+    order: 2.0
+
+- model: cpho.dimensionvalue
+  pk: 20
+  fields:
+    dimension_type: 3
+    name_en: Prairies
+    name_fr: Prairies
+    value: prairies
+    order: 3.0
+
+- model: cpho.dimensionvalue
+  pk: 21
+  fields:
+    dimension_type: 3
+    name_en: British Columbia
+    name_fr: Colombie-Britannique
+    value: british_columbia
+    order: 4.0
+
+- model: cpho.dimensionvalue
+  pk: 22
+  fields:
+    dimension_type: 3
+    name_en: Territories
+    name_fr: Territoires
+    value: territories
+    order: 5.0
+
+
+- model: cpho.dimensionvalue
+  pk: 23
+  fields:
+    dimension_type: 4
+    name_en: Canada
+    name_fr: Canada
+    value: canada
+    order: 0.0
+
+- model: cpho.dimensionvalue
+  pk: 24
+  fields:
+    dimension_type: 5
+    name_en: 0-4
+    name_fr: 0-4
+    value: 0-4
+    order: 0.0
+
+- model: cpho.dimensionvalue
+  pk: 25
+  fields:
+    dimension_type: 5
+    name_en: 5-9
+    name_fr: 5-9
+    value: 5-9
+    order: 1.0
+
+- model: cpho.dimensionvalue  
+  pk: 26
+  fields:
+    dimension_type: 5
+    name_en: 10-14
+    name_fr: 10-14
+    value: 10-14
+    order: 2.0
+  
+- model: cpho.dimensionvalue
+  pk: 27
+  fields:
+    dimension_type: 5
+    name_en: 15-19
+    name_fr: 15-19
+    value: 15-19
+    order: 3.0
+
+- model: cpho.dimensionvalue
+  pk: 28
+  fields:
+    dimension_type: 5
+    name_en: 20-24
+    name_fr: 20-24
+    value: 20-24
+    order: 4.0

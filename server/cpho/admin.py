@@ -1,5 +1,9 @@
+from django import apps
 from django.contrib import admin
 
-from .models import Benchmarking, Indicator, IndicatorData, TrendAnalysis
+# Register your models here.
+this_app = apps.registry.apps.all_models["cpho"]
 
-admin.site.register([Indicator, Benchmarking, TrendAnalysis, IndicatorData])
+for model in this_app.values():
+    if hasattr(model, "__add_to_admin"):
+        admin.site.register(model)

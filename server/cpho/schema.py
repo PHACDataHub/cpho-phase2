@@ -8,7 +8,7 @@ from graphene_django.rest_framework.serializer_converter import (
 )
 from rest_framework import serializers
 
-from .models import Indicator, IndicatorData
+from .models import Indicator, IndicatorDatum
 
 # DjangoObjectTypes
 
@@ -20,7 +20,7 @@ class IndicatorType(DjangoObjectType):
 
 class IndicatorDataType(DjangoObjectType):
     class Meta:
-        model = IndicatorData
+        model = IndicatorDatum
 
 
 # Custom Responses
@@ -38,7 +38,7 @@ class PossibleIndicatorResponseType(graphene.ObjectType):
 
 class DataPointSerializer(serializers.ModelSerializer):
     class Meta:
-        model = IndicatorData
+        model = IndicatorDatum
         exclude = ("id", "indicator")
 
 
@@ -70,7 +70,7 @@ class Query(graphene.ObjectType):
 
     def resolve_indicator_data(root, info, **kwargs):
         # Querying a list
-        return IndicatorData.objects.all()
+        return IndicatorDatum.objects.all()
 
     def resolve_possible_indicators(root, info, **kwargs):
         # indicators = Indicator.objects.all().values()
@@ -81,7 +81,7 @@ class Query(graphene.ObjectType):
                     id=ind.id,
                     name=ind.name,
                     category=ind.category,
-                    data_point_count=IndicatorData.objects.filter(
+                    data_point_count=IndicatorDatum.objects.filter(
                         indicator=ind.id
                     ).count(),
                 )
@@ -117,7 +117,7 @@ class CreateIndicator(graphene.Mutation):
 
         dataPoints = []
         for point in points:
-            p = IndicatorData.objects.create(indicator=indicator, **point)
+            p = IndicatorDatum.objects.create(indicator=indicator, **point)
             dataPoints.append(p)
             p.save()
 
@@ -158,10 +158,10 @@ class ModifyIndicator(graphene.Mutation):
             indicatorObj.save()
 
             dataPoints = []
-            pastPoints = IndicatorData.objects.filter(indicator_id=id)
+            pastPoints = IndicatorDatum.objects.filter(indicator_id=id)
             pastPoints.delete()
             for point in points:
-                p = IndicatorData.objects.create(
+                p = IndicatorDatum.objects.create(
                     indicator=indicatorObj, **point
                 )
                 p.save()

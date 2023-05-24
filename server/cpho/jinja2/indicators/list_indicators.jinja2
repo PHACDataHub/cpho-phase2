@@ -1,0 +1,13 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+  <div class="my-4">
+    <a href="{{ url('create_indicator') }}" class="btn btn-primary">{{ tdt('Create new indicator') }}</a>
+  </div>
+  <ul>
+    {% for indicator in object_list %}
+      <li>
+        <a href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ indicator.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

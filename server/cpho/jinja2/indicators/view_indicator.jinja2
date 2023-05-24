@@ -1,0 +1,10 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+  <div>{{ object.name }}</div>
+
+  <div>
+    <a href="{{ url('edit_indicator', args=[object.id]) }}">{{ tdt('Edit') }}</a>
+  </div>
+
+  <div>TODO: show indocator data, link to multi-edit page</div>
+{% endblock %}

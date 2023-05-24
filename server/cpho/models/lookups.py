@@ -1,8 +1,11 @@
 from django.db import models
 
 from server import fields
-from server.model_util import (add_to_admin, track_versions_with_editor,
-                               track_versions_with_editor_and_approval)
+from server.model_util import (
+    add_to_admin,
+    track_versions_with_editor,
+    track_versions_with_editor_and_approval,
+)
 
 
 @add_to_admin
@@ -19,7 +22,7 @@ class DimensionType(models.Model):
 @track_versions_with_editor
 class DimensionValue(models.Model):
     dimension_type = fields.ForeignKey(
-        DimensionType, on_delete=models.RESTRICT
+        DimensionType, on_delete=models.RESTRICT, related_name="values"
     )
 
     name_en = fields.CharField(max_length=50)

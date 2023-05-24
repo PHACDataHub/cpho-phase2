@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 from decouple import Csv, config
+from django.urls import reverse_lazy
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,
@@ -41,9 +42,12 @@ ENABLE_DEBUG_TOOLBAR = DEBUG and config(
     "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
 )
 INTERNAL_IPS = config("INTERNAL_IPS", default="")
+IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
+if IS_LOCAL:
+    SESSION_COOKIE_SECURE = False
 
-ALLOWED_HOSTS = ["*"]  # config("ALLOWED_HOSTS", cast=Csv())
 
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 CORS_ALLOWED_ORIGINS = ["*"]
 
 # Application definition
@@ -58,7 +62,6 @@ INSTALLED_APPS = configure_apps(
         "django.contrib.staticfiles",
         "graphene_django",
         "django_extensions",
-        "django_htmx",
         *(["debug_toolbar"] if ENABLE_DEBUG_TOOLBAR else []),
     ]
 )
@@ -75,17 +78,23 @@ MIDDLEWARE = configure_middleware(
             if ENABLE_DEBUG_TOOLBAR
             else []
         ),
+        "django.middleware.locale.LocaleMiddleware",
         "django.middleware.common.CommonMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
+        # "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
-        "django_htmx.middleware.HtmxMiddleware",
+        "versionator.middleware.WhodidMiddleware",
     ]
 )
+
+
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = reverse_lazy("list_indicators")
 
 
 ROOT_URLCONF = "server.urls"
@@ -98,7 +107,9 @@ TEMPLATES = [
         "OPTIONS": {
             "environment": "cpho.jinja_helpers.environment",
             "context_processors": [
-                "core.utils.add_global_context",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
             "extensions": [],
@@ -106,7 +117,7 @@ TEMPLATES = [
     },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "..")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -170,7 +181,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-ca"
 
 TIME_ZONE = "EST"
 
@@ -180,7 +191,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000"]
+# CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

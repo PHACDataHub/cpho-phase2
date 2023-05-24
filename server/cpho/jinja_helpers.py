@@ -87,6 +87,14 @@ def ipython(context):
     return ""
 
 
+def message_type(message):
+    # remaps the message level tag to the bootstrap alert type
+    if message.level_tag == "error":
+        return "danger"
+    else:
+        return f"{message.level_tag}"
+
+
 def environment(**options):
     env = Environment(**options)
     env.globals.update(
@@ -107,6 +115,8 @@ def environment(**options):
             "ipython": ipython,
             "tm": tm,
             "tdt": tdt,
+            "message_type": message_type,
+            "print": print,
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

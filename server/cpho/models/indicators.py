@@ -1,8 +1,11 @@
 from django.db import models
 
 from server import fields
-from server.model_util import (add_to_admin, track_versions_with_editor,
-                               track_versions_with_editor_and_approval)
+from server.model_util import (
+    add_to_admin,
+    track_versions_with_editor,
+    track_versions_with_editor_and_approval,
+)
 
 
 @add_to_admin
@@ -25,11 +28,24 @@ class Indicator(models.Model):
 @add_to_admin
 @track_versions_with_editor_and_approval
 class IndicatorDatum(models.Model):
-    indicator = fields.ForeignKey(Indicator, null=False, on_delete=models.RESTRICT)
+    indicator = fields.ForeignKey(
+        Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
+    )
 
-    dimension_value = fields.ForeignKey("cpho.DimensionValue", null=False, blank=False, on_delete=models.RESTRICT)
+    dimension_value = fields.ForeignKey(
+        "cpho.DimensionValue",
+        null=False,
+        blank=False,
+        on_delete=models.RESTRICT,
+    )
 
-    period = fields.ForeignKey("cpho.Period", null=True, blank=True, on_delete=models.RESTRICT)
+    period = fields.ForeignKey(
+        # TODO: figure out if this should be null, default to current period or null w/out default
+        "cpho.Period",
+        null=True,
+        blank=True,
+        on_delete=models.RESTRICT,
+    )
 
     data_quality = fields.CharField(max_length=50)
 

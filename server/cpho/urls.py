@@ -5,7 +5,6 @@ from graphene_django.views import GraphQLView
 
 from . import views
 
-app_name = "cpho"
 urlpatterns = [
     path(
         "graphql",
@@ -28,5 +27,10 @@ urlpatterns = [
         "/indicators/create/",
         views.CreateIndicator.as_view(),
         name="create_indicator",
+    ),
+    path(
+        "/indicators/<int:indicator_id>/manage_data/<int:dimension_type_id>/",
+        views.ManageIndicatorData.as_view(),
+        name="manage_indicator_data",
     ),
 ]

@@ -1,3 +1,4 @@
+from cpho.util import get_lang_code
 from django.db import models
 
 from server import fields
@@ -17,12 +18,18 @@ class DimensionType(models.Model):
 
     code = fields.CharField(max_length=50)  # codes are dev-friendly
 
+    @property
+    def name(self):
+        return getattr(self, f"name_{get_lang_code()}")
+
 
 @add_to_admin
 @track_versions_with_editor
 class DimensionValue(models.Model):
     dimension_type = fields.ForeignKey(
-        DimensionType, on_delete=models.RESTRICT, related_name="values"
+        DimensionType,
+        on_delete=models.RESTRICT,
+        related_name="possible_values",
     )
 
     name_en = fields.CharField(max_length=50)
@@ -34,6 +41,10 @@ class DimensionValue(models.Model):
     )  # value is the 'unilingual' version, this can be useful for data-processing
 
     order = fields.FloatField(default=0.0)
+
+    @property
+    def name(self):
+        return getattr(self, f"name_{get_lang_code()}")
 
 
 @add_to_admin
@@ -47,3 +58,7 @@ class Period(models.Model):
 
     class Meta:
         ordering = ["year"]
+
+    @property
+    def name(self):
+        return getattr(self, f"name_{get_lang_code()}")

@@ -1,7 +1,8 @@
-from cpho.models import DimensionType, Indicator
 from django.forms.models import ModelForm
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+
+from cpho.models import DimensionType, Indicator
 
 
 class IndicatorForm(ModelForm):

@@ -1,4 +1,3 @@
-from cpho.util import get_lang_code
 from django.db import models
 
 from server import fields
@@ -7,6 +6,8 @@ from server.model_util import (
     track_versions_with_editor,
     track_versions_with_editor_and_approval,
 )
+
+from cpho.util import get_lang_code
 
 
 @add_to_admin

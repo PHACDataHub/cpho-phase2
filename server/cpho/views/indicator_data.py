@@ -1,5 +1,3 @@
-from cpho.models import DimensionType, Indicator, IndicatorDatum
-from cpho.text import tdt, tm
 from django.contrib import messages
 from django.db import transaction
 from django.forms import BaseFormSet
@@ -8,6 +6,9 @@ from django.forms.models import ModelForm
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
+
+from cpho.models import DimensionType, Indicator, IndicatorDatum
+from cpho.text import tdt, tm
 
 
 class InstanceProvidingFormSet(BaseFormSet):

@@ -7,6 +7,8 @@ from django.utils.translation import activate, get_language
 import phac_aspc.django.helpers.templatetags as phac_aspc
 from jinja2 import Environment, pass_context
 
+from cpho import models
+
 from .text import tdt, tm
 
 
@@ -117,6 +119,7 @@ def environment(**options):
             "tdt": tdt,
             "message_type": message_type,
             "print": print,
+            "cpho_models": models,
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

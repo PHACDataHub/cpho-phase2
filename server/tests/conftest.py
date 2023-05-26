@@ -1,10 +1,12 @@
-import pytest
-from cpho.models import User
 from django.core.management import call_command
 from django.db import transaction
 from django.test.client import Client
+
+import pytest
 from jinja2 import Template as Jinja2Template
 from phac_aspc.django.settings.utils import configure_settings_for_tests
+
+from cpho.models import User
 
 # Modify django settings to skip axes authentication backend
 configure_settings_for_tests()

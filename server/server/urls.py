@@ -1,11 +1,12 @@
-from cpho.urls import (
-    urlpatterns as cpho_urls,
-)  # force an import for runserver's refresh sake
-from cpho.views.auth import LoginView, LogoutView, RootView
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import include, path, re_path
+
+from cpho.urls import (
+    urlpatterns as cpho_urls,  # force an import for runserver's refresh sake
+)
+from cpho.views.auth import LoginView, LogoutView, RootView
 
 dev_routes = []
 if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:

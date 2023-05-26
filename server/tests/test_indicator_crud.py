@@ -1,6 +1,7 @@
+from django.urls import reverse
+
 from cpho.model_factories import IndicatorFactory
 from cpho.models import Indicator
-from django.urls import reverse
 
 
 def test_create_indicator(vanilla_user_client):

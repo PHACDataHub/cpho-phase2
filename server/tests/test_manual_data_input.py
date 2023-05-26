@@ -1,6 +1,7 @@
+from django.urls import reverse
+
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
 from cpho.models import DimensionType, DimensionValue, IndicatorDatum
-from django.urls import reverse
 
 
 def test_create_from_scratch(vanilla_user_client):

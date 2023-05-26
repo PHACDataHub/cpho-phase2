@@ -1,10 +1,11 @@
+from django.db import transaction
+
 from cpho.model_factories import (
     IndicatorDatum,
     IndicatorDatumFactory,
     IndicatorFactory,
 )
 from cpho.models import DimensionType, DimensionValue, Period, User
-from django.db import transaction
 
 
 @transaction.atomic

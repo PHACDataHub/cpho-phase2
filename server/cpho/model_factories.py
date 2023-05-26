@@ -1,4 +1,5 @@
 import factory
+
 from cpho.models import (
     DimensionType,
     DimensionValue,

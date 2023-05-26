@@ -94,7 +94,8 @@ profile = "black"
 line_length = 79
 known_django = "django"
 known_cpho = "cpho"
-sections=[ "FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "CPHO", "FIRSTPARTY", "LOCALFOLDER" ]
+known_server = "server"
+sections=[ "FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "SERVER", "CPHO", "FIRSTPARTY", "LOCALFOLDER" ]
 skip_glob=['*/migrations/*.py']
 
 

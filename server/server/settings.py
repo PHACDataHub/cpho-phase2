@@ -14,8 +14,9 @@ import os
 import sys
 from pathlib import Path
 
-from decouple import Csv, config
 from django.urls import reverse_lazy
+
+from decouple import Csv, config
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,

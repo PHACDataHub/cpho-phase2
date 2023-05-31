@@ -43,8 +43,8 @@ ENABLE_DEBUG_TOOLBAR = DEBUG and config(
     "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
 )
 INTERNAL_IPS = config("INTERNAL_IPS", default="")
-IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
-if IS_LOCAL:
+IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+if IS_LOCAL_DEV:
     SESSION_COOKIE_SECURE = False
 
 
@@ -99,6 +99,8 @@ LOGIN_REDIRECT_URL = reverse_lazy("list_indicators")
 
 
 ROOT_URLCONF = "server.urls"
+APPEND_SLASH = True
+
 
 TEMPLATES = [
     {

@@ -13,25 +13,25 @@ urlpatterns = [
         csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)),
     ),
     path(
-        "/indicators/", views.ListIndicators.as_view(), name="list_indicators"
+        "indicators/", views.ListIndicators.as_view(), name="list_indicators"
     ),
     path(
-        "/indicators/<int:pk>/",
+        "indicators/<int:pk>/",
         views.ViewIndicator.as_view(),
         name="view_indicator",
     ),
     path(
-        "/indicators/<int:pk>/edit",
+        "indicators/<int:pk>/edit",
         views.EditIndicator.as_view(),
         name="edit_indicator",
     ),
     path(
-        "/indicators/create/",
+        "indicators/create/",
         views.CreateIndicator.as_view(),
         name="create_indicator",
     ),
     path(
-        "/indicators/<int:indicator_id>/manage_data/<int:dimension_type_id>/",
+        "indicators/<int:indicator_id>/manage_data/<int:dimension_type_id>/",
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data",
     ),

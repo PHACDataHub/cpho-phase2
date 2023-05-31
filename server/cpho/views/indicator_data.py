@@ -7,7 +7,12 @@ from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
-from cpho.models import DimensionType, Indicator, IndicatorDatum
+from cpho.models import (
+    DimensionType,
+    DimensionValue,
+    Indicator,
+    IndicatorDatum,
+)
 from cpho.text import tdt, tm
 
 
@@ -43,22 +48,34 @@ class ManageIndicatorData(TemplateView):
 
     @cached_property
     def dimension_type(self):
+        if "dimension_type_id" not in self.kwargs:
+            return None
+
         return DimensionType.objects.prefetch_related("possible_values").get(
             id=self.kwargs["dimension_type_id"]
         )
 
     @cached_property
     def formset(self):
+        # TODO: filter by period
         existing_data = IndicatorDatum.objects.filter(
             indicator=self.indicator,
-            dimension_value__dimension_type=self.dimension_type,
         ).order_by("dimension_value__order")
+        if self.dimension_type is not None:
+            existing_data = existing_data.filter(
+                indicator=self.indicator,
+                dimension_value__dimension_type=self.dimension_type,
+            )
 
         existing_data_by_dimension_value = {
             datum.dimension_value: datum for datum in existing_data
         }
 
-        possible_values = self.dimension_type.possible_values.all()
+        possible_values = DimensionValue.objects.all()
+        if self.dimension_type is not None:
+            possible_values = possible_values.filter(
+                dimension_type=self.dimension_type
+            )
 
         instances = []
         for pv in possible_values:
@@ -84,6 +101,21 @@ class ManageIndicatorData(TemplateView):
 
         return formset
 
+    @cached_property
+    def forms_by_dimension_value(self):
+        return {
+            form.instance.dimension_value: form for form in self.formset.forms
+        }
+
+    @cached_property
+    def possible_values_by_dimension_type(self):
+        return {
+            dt: dt.possible_values.all()
+            for dt in DimensionType.objects.all().prefetch_related(
+                "possible_values"
+            )
+        }
+
     def post(self, *args, **kwargs):
         if self.formset.is_valid():
             with transaction.atomic():
@@ -99,9 +131,16 @@ class ManageIndicatorData(TemplateView):
                 )
 
     def get_context_data(self, **kwargs):
+        if self.dimension_type is None:
+            dimension_types = DimensionType.objects.all()
+        else:
+            dimension_types = [self.dimension_type]
+
         return {
             **super().get_context_data(**kwargs),
             "indicator": self.indicator,
-            "dimension_type": self.dimension_type,
+            "dimension_types": dimension_types,
             "formset": self.formset,
+            "forms_by_dimension_value": self.forms_by_dimension_value,
+            "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
         }

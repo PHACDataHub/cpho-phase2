@@ -13,6 +13,9 @@
           <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">{{ tdt('Manage data for ')}} {{ dimension_type.name }}</a>
         </li>
       {% endfor %}
+      <li>
+        <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">{{ tdt('Manage data for ')}} {{ tdt("all") }}</a>
+      </li>
     </ul>
   </div>
 {% endblock %}

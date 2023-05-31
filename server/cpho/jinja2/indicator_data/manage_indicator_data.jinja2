@@ -1,15 +1,18 @@
 {% extends 'base.jinja2' %}
 {% block content %}
   <h1>{{ tdt("indcator data for")}} {{ indicator.name }}</h1>
-  <h2>{{ dimension_type.name }}</h2>
-  <form action="." method="POST">
+  <form action="." method="post">
     {{ formset.management_form }}
     {{ csrf_input }}
-    {% for form in formset %}
-      <div class="my-4">
-        <div>{{ form.instance.dimension_value.name }}</div>
-        {{ form.as_p() }}
-      </div>
+    {% for dimension_type in dimension_types %}
+      <h2>{{ dimension_type.name }}</h2>
+      {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
+        <div class="my-4">
+          {% set form = forms_by_dimension_value[possible_value] %}
+          <div>{{ possible_value.name }}</div>
+          {{ form.as_p() }}
+        </div>
+      {% endfor %}
     {% endfor %}
     <input type="submit" value="{{ tdt('submit') }}">
   </form>

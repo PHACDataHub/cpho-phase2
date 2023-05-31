@@ -84,3 +84,41 @@ For compatibilitiy with the current docker-compose setup, after adding a new dep
 ```sh
 pdm export --production --without-hashes -o requirements.txt
 ```
+
+# Setting up the development environment (new way, w/out docker)
+
+note: recommended to use git bash inside vscode for all of this 
+
+1. install python3.10 (This is not documented yet AFAIK, if you're doing it for the first time please write down your steps)
+2. install postgres [instructions here](https://github.com/PHACDataHub/phac-django-docs/blob/master/local-dev.md#installing-and-using-postgres-wout-sci-ops-on-windows) 
+3. clone repo
+4. create a virtual environment in repo root (python -m venv venv)
+5. activate virtual environment (source venv/Scripts/activate or venv/bin/activate)
+6. install dependencies (`pip install -r requirements.txt -r requirements_dev.txt`)
+7. setting postgres:
+    - ```bash
+        psql -U postgres -c "CREATE ROLE cpho_db_user with login"
+        psql -U postgres -c "ALTER ROLE cpho_db_user createdb"
+        createdb -U cpho_db_user cpho_dev_db
+        ```
+8. seed the DB
+    - ```bash
+        python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
+        python ./manage.py loaddata cpho/fixtures/periods.yaml
+        python ./manage.py runscript cpho.scripts.dev
+        ```
+9. `python manage.py runserver`
+
+## Other useful commands:
+
+resetting dev db: 
+```bash
+dropdb -U cpho_db_user cpho_dev_db;
+createdb -U cpho_db_user cpho_dev_db;
+```
+
+Resetting test db (useful when migrations get in the way of running tests)
+```bash
+dropdb -U cpho_db_user cpho_test_db
+```
+

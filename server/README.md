@@ -103,6 +103,7 @@ note: recommended to use git bash inside vscode for all of this
         ```
 8. seed the DB
     - ```bash
+        python ./manage.py migrate
         python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
         python ./manage.py loaddata cpho/fixtures/periods.yaml
         python ./manage.py runscript cpho.scripts.dev

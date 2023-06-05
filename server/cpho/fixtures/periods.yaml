@@ -1,0 +1,18 @@
+- model: cpho.period
+  pk: 1
+  fields:
+    name_en: "2021"
+    name_fr: "2021"
+    year: 2021
+- model: cpho.period
+  pk: 2
+  fields:
+    name_en: "2022"
+    name_fr: "2022"
+    year: 2022
+- model: cpho.period
+  pk: 3
+  fields:
+    name_en: "2023"
+    name_fr: "2023"
+    year: 2023

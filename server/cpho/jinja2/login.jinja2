@@ -1,0 +1,61 @@
+{% extends "base.jinja2" %}
+{% block title %}{{ tm("log_in") }}{% endblock %}
+{% block content %}
+  <div class="container p-0 d-flex justify-content-center"
+       id="login-container">
+    <div class="col-md-6 col-sm-12">
+      <form method="post"
+            action="{{ request.get_full_path() }}"
+            autocomplete="off">
+        {{ csrf_input }}
+        {% if next %}
+          <div class="alert alert-warning fade show">
+            <span>{{ tm("please_login_to_see_page") }}</span>
+          </div>
+        {% endif %}
+
+        {% if form.errors %}
+          <div class="alert alert-danger alert-dismissible fade show">
+            <span>{{ tm("bad_user_name_and_password") }}</span>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="{{ tm('close') }}"></button>
+          </div>
+        {% endif %}
+
+        <div class="card">
+          <h2 class="card-header">{{ tm('log_in') }}</h2>
+          <div class="card-body">
+            <div class="form-floating mb-3">
+              <input type="text"
+                     name="{{ form.username.name }}"
+                     maxlength="150"
+                     placeholder="{{ tm('username') }}"
+                     required
+                     class="textinput textInput form-control">
+              <label for="{{ form.username.id_for_label }}">{{ form.username.label_tag() }}</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password"
+                     name="{{ form.password.name }}"
+                     maxlength="128"
+                     placeholder="{{ tm('password') }}"
+                     required
+                     class="textinput textInput form-control">
+              <label for="{{ form.password.id_for_label }}">{{ form.password.label_tag() }}</label>
+            </div>
+            <input type="hidden" name="next" value="{{ next }}" />
+            <div class="row">
+              <div class="col-auto">
+                <input class='btn btn-primary white'
+                       type="submit"
+                       value="{{ tm('log_in') }}"/>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

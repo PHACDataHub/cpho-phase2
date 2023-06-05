@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+      {% block title %}{{ tm("site_title") }}{% endblock %}
+    </title>
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <link rel="apple-touch-icon"
+          sizes="57x57 72x72 114x114 144x144 150x150"
+          class="wb-favicon"
+          href="https://www.canada.ca/etc/designs/canada/wet-boew/assets/favicon-mobile.png">
+    <link href="https://www.canada.ca/etc/designs/canada/wet-boew/assets/favicon.ico"
+          rel="icon"
+          type="image/x-icon"
+          class="wb-init wb-favicon-inited">
+    <link rel="stylesheet"
+          href="{{ static('third_party/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ static('site.css') }}"/>
+    <script src="{{ static('third_party/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ static('third_party/js/htmx.min.js') }}"></script>
+    <script src="{{ static('third_party/js/idiomorph.min.js') }}"></script>
+    <script src="{{ static('third_party/js/idiomorph-ext.min.js') }}"></script>
+    {% if debug %}<script src="{{ static('third_party/js/htmx-debug.js') }}"></script>{% endif %}
+    {% block medias %}{% endblock %}
+    {% block extra_scripts_css %}{% endblock %}
+  </head>
+  <body hx-ext="morph">
+    <div id="modal-moint-point"></div>
+    <script>
+      let modalInstance = null;
+      let lastFocusedElement = null;
+      document.addEventListener('hidden.bs.modal', function (event) {
+        if(lastFocusedElement){
+          lastFocusedElement.focus();
+        }
+      });
+      function openModal(){
+        lastFocusedElement = document.activeElement;
+        modalInstance = new bootstrap.Modal(document.getElementById('modal'))
+        modalInstance.show()
+      }
+      //htmx.on("htmx:afterOnLoad",openModal)
+      document.addEventListener('activate-modal', function (event) {
+        openModal();
+      });
+    </script>
+    <script>
+      {# 
+        include csrf tokens in htmx request, see https://www.mattlayman.com/blog/2021/how-to-htmx-django/
+        included below because body needs to exist 
+      #}
+      document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+      })
+    </script>
+    {% block nav_container %}
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+          {% block available_apps %}{% endblock %}
+          <button class="navbar-toggler"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#navbarSupportedContent"
+                  aria-controls="navbarSupportedContent"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {% block header_menu %}<!-- This block will be replaced by per-page overrides -->{% endblock %}
+            <ul class="navbar-nav flex-fill justify-content-end">
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
+              </li>
+              {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle text-white"
+                     href="#"
+                     id="navbarDropdown"
+                     role="button"
+                     data-bs-toggle="dropdown"
+                     aria-haspopup="true"
+                     aria-expanded="false">
+                    {{ request.user }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url('logout')}}">
+                      <i class="fa fa-power-off"></i>
+                      {{ tm("logout") }}
+                    </a>
+                  </div>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    {% endblock %}
+    <main class="pt-3 pb-5">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+      <div>
+        <div id="content" class='container'>
+          {% block content %}{% endblock %}
+        </div>
+        <div id="content-fluid" class='container-fluid p-0'>
+          <div class='ms-5 me-5'>
+            {% block content_fluid %}{% endblock %}
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="modal" class="modal fade" tabindex="-1">
+      <div id="dialog" class="modal-dialog" hx-target="this"></div>
+    </div>
+    <footer class="d-print-none goc-footer bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col-auto">
+            <object type="image/svg+xml"
+                    tabindex="-1"
+                    role="img"
+                    data="{{ static('third_party/img/wmms-blk.svg') }}"
+                    aria-label="Symbol of the Government of Canada"
+                    style="height: 2rem;"></object>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="{{ static('third_party/js/bootstrap.bundle.min.js') }}"></script>
+  </body>
+</html>

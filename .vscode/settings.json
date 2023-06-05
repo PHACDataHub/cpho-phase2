@@ -1,3 +1,38 @@
 {
-  "typescript.tsdk": "frontend/node_modules/typescript/lib"
-}
+    "editor.rulers": [
+      79
+    ],
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "python.formatting.provider": "none",
+    "python.linting.enabled": true,
+    "[html][django-html][jinja][jinja-html]": {
+      "editor.defaultFormatter": "monosans.djlint",
+      "editor.tabSize": 2,
+    },
+    "[css]": {
+      "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "files.associations": {
+      "*.html": "django-html",
+    },
+    "[yaml][markdown]": {
+      // Windows won't run python if we specify it within [python] 
+      // so we must enable formatOnSave globally and turn it off for other languages here
+      "editor.formatOnSave": false,
+    },
+    "files.insertFinalNewline": true,
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+  }
+  

@@ -1,0 +1,5 @@
+<form method="post" action=".">
+  {{ csrf_input }}
+  {{ form.as_table() }}
+  <input type="submit" value="{{ tdt('submit') }}" />
+</form>

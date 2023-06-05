@@ -1,0 +1,21 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+  <div>{{ object.name }}</div>
+
+  <div>
+    <a href="{{ url('edit_indicator', args=[object.id]) }}">{{ tdt('Edit indicator') }}</a>
+  </div>
+
+  <div>
+    <ul>
+      {% for dimension_type in dimension_types %}
+        <li>
+          <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">{{ tdt('Manage data for ')}} {{ dimension_type.name }}</a>
+        </li>
+      {% endfor %}
+      <li>
+        <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">{{ tdt('Manage data for ')}} {{ tdt("all") }}</a>
+      </li>
+    </ul>
+  </div>
+{% endblock %}

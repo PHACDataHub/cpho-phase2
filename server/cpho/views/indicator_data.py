@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import messages
 from django.db import transaction
 from django.forms import BaseFormSet
@@ -36,7 +37,73 @@ class InstanceProvidingFormSet(BaseFormSet):
 class IndicatorDatumForm(ModelForm):
     class Meta:
         model = IndicatorDatum
-        fields = ["value"]
+        fields = [
+            "value",
+            "data_quality",
+            "value_lower_bound",
+            "value_upper_bound",
+            "value_unit",
+            "single_year_timeframe",
+            "multi_year_timeframe",
+        ]
+
+    value = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "Value"}
+        ),
+    )
+    value_lower_bound = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "Lower Bound"}
+        ),
+    )
+    value_upper_bound = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "Upper Bound"}
+        ),
+    )
+    data_quality = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", "--"),
+            ("caution", "Caution"),
+            ("acceptable", "Acceptable"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        # label="Data Quality",
+        # initial="caution",
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+    )
+    value_unit = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", "--"),
+            ("%", "%"),
+            ("per_100k", "Per 100K"),
+            ("other", "Other"),
+        ],
+        # label="Data Quality",
+        # initial="caution",
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+    )
+    single_year_timeframe = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    multi_year_timeframe = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
 
 
 class ManageIndicatorData(TemplateView):
@@ -117,7 +184,9 @@ class ManageIndicatorData(TemplateView):
         }
 
     def post(self, *args, **kwargs):
+        print("entered post")
         if self.formset.is_valid():
+            print("formset is valid")
             with transaction.atomic():
                 for form in self.formset:
                     form.save()
@@ -129,6 +198,12 @@ class ManageIndicatorData(TemplateView):
                     "view_indicator",
                     pk=self.indicator.pk,
                 )
+        else:
+            print("formset is not valid")
+            # for form in self.formset:
+            #     print(form.errors)
+            print(self.formset.errors)
+            messages.error(self.request, tdt("Please correct the errors."))
 
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:

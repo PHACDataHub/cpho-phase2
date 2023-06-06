@@ -1,19 +1,51 @@
 {% extends 'base.jinja2' %}
 {% block content %}
-  <h1>{{ tdt("indcator data for")}} {{ indicator.name }}</h1>
+  <h1>{{ tdt("Indcator data for: ")}} {{ indicator.name }}</h1>
   <form action="." method="post">
     {{ formset.management_form }}
     {{ csrf_input }}
     {% for dimension_type in dimension_types %}
-      <h2>{{ dimension_type.name }}</h2>
-      {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
-        <div class="my-4">
-          {% set form = forms_by_dimension_value[possible_value] %}
-          <div>{{ possible_value.name }}</div>
-          {{ form.as_p() }}
+      <div class="card mt-5 mb-2">
+        <div class="card-header">
+          <h3>{{ tdt("Managing data for stratifier: ")}} {{ dimension_type.name }}</h3>
         </div>
-      {% endfor %}
+ 
+        <table class="table mb-0">
+          <thead class="table-light text-center">
+            <tr>
+              <th width="10%">{{ dimension_type.name }}</th>
+              <th width="9%">{{ tdt("Value")}}</th>
+              <th width="10%">{{ tdt("Value Unit")}}</th>
+              <th width="9%">{{ tdt("Value Lower Bound")}}</th>
+              <th width="9%">{{ tdt("Value Upper Bound")}}</th>
+              <th width="10%">{{ tdt("Data Quality")}}</th>
+              <th width="12%">{{ tdt("Single Year Timeframe")}}</th>
+              <th width="12%">{{ tdt("Multi Year Timeframe")}}</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
+              <tr>
+                {% set form = forms_by_dimension_value[possible_value] %}
+ 
+                <td class="fw-bold">{{ possible_value.name }}</td>
+                <td>{{ form.value }}</td>
+                <td>{{ form.value_unit }}</td>
+                <td>{{ form.value_lower_bound }}</td>
+                <td>{{ form.value_upper_bound }}</td>
+                <td>{{ form.data_quality }}</td>
+                <td>{{ form.single_year_timeframe }}</td>
+                <td>{{ form.multi_year_timeframe }}</td>
+ 
+ 
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     {% endfor %}
-    <input type="submit" value="{{ tdt('submit') }}">
+    <input type="submit"
+           class="btn btn-primary float-end my-3"
+           value="{{ tdt('Submit') }}">
   </form>
 {% endblock %}

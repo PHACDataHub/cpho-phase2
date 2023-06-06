@@ -17,3 +17,5 @@ frontend/build/
  
 runserver.sh
 /notes.md
+
+/logfile

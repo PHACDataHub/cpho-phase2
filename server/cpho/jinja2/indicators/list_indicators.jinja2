@@ -19,8 +19,8 @@
         {% for indicator in object_list %}
           <tr>
             <td>{{ indicator.name }}</td>
-            <td>{{ dropdown_mapper["indicator_category"][indicator.category] }}</td>
-            <td>{{ dropdown_mapper["indicator_sub_category"][indicator.sub_category] }}</td>
+            <td>{{ indicator.get_category_display() }}</td>
+            <td>{{ indicator.get_sub_category_display() }}</td>
             {# <td>{{ indicator.detailed_indicator }}</td> #}
             {# <td>{{ indicator.sub_indicator_measurement }}</td> #}
             <td>

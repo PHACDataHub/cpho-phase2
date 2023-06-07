@@ -1,11 +1,6 @@
 
 <form method="POST" action=".">
   {{ csrf_input }}
-
-  <div>
-    <h2 class="mb-3">{{ title_text }}</h2>
-  </div>
- 
   <div class="row g-3 form-group mb-3 mt-3">
     <div class="col-lg-2">
       <div class="row">{{ form.name.label_tag(attrs={'class': 'col col-form-label'}) }}</div>

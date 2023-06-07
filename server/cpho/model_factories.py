@@ -9,7 +9,6 @@ from cpho.models import (
     IndicatorDatum,
     Period,
 )
-from cpho.util import dropdown_mapper
 
 
 class DimensionTypeFactory(factory.django.DjangoModelFactory):
@@ -46,14 +45,10 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
 
     name = factory.Faker("bs")
     category = factory.LazyFunction(
-        lambda: random.choice(
-            [p for p in dropdown_mapper()["indicator_category"]]
-        )
+        lambda: random.choice([p[0] for p in Indicator.CATEGORY_CHOICES])
     )
     sub_category = factory.LazyFunction(
-        lambda: random.choice(
-            [p for p in dropdown_mapper()["indicator_sub_category"]]
-        )
+        lambda: random.choice([p[0] for p in Indicator.SUB_CATEGORY_CHOICES])
     )
     detailed_indicator = factory.Faker("bs")
     sub_indicator_measurement = factory.Faker("bs")
@@ -69,12 +64,12 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
     value = factory.Faker("pyfloat")
     data_quality = factory.LazyFunction(
         lambda: random.choice(
-            [p for p in dropdown_mapper()["indicator_data_data_quality"]]
+            [p[0] for p in IndicatorDatum.DATA_QUALITY_CHOICES]
         )
     )
     value_unit = factory.LazyFunction(
         lambda: random.choice(
-            [p for p in dropdown_mapper()["indicator_data_value_unit"]]
+            [p[0] for p in IndicatorDatum.VALUE_UNIT_CHOICES]
         )
     )
     value_lower_bound = factory.Faker("pyfloat")

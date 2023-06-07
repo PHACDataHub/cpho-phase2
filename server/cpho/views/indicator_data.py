@@ -67,13 +67,7 @@ class IndicatorDatumForm(ModelForm):
     )
     data_quality = forms.ChoiceField(
         required=False,
-        choices=[
-            ("", "--"),
-            ("caution", "Caution"),
-            ("acceptable", "Acceptable"),
-            ("good", "Good"),
-            ("excellent", "Excellent"),
-        ],
+        choices=IndicatorDatum.DATA_QUALITY_CHOICES,
         # label="Data Quality",
         # initial="caution",
         widget=forms.Select(
@@ -84,12 +78,7 @@ class IndicatorDatumForm(ModelForm):
     )
     value_unit = forms.ChoiceField(
         required=False,
-        choices=[
-            ("", "--"),
-            ("%", "%"),
-            ("per_100k", "Per 100K"),
-            ("other", "Other"),
-        ],
+        choices=IndicatorDatum.VALUE_UNIT_CHOICES,
         # label="Data Quality",
         # initial="caution",
         widget=forms.Select(
@@ -200,8 +189,8 @@ class ManageIndicatorData(TemplateView):
                 )
         else:
             print("formset is not valid")
-            # for form in self.formset:
-            #     print(form.errors)
+            for form in self.formset:
+                print(form.errors)
             print(self.formset.errors)
             messages.error(self.request, tdt("Please correct the errors."))
 

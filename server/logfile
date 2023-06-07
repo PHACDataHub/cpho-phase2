@@ -46,3 +46,55 @@
 2023-06-07 15:10:26.082 EDT [30696] LOG:  checkpoint starting: shutdown immediate
 2023-06-07 15:10:26.103 EDT [30696] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.026 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=1677 kB
 2023-06-07 15:10:26.114 EDT [34364] LOG:  database system is shut down
+2023-06-07 15:18:09.366 EDT [15784] LOG:  starting PostgreSQL 15.3, compiled by Visual C++ build 1914, 64-bit
+2023-06-07 15:18:09.373 EDT [15784] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-06-07 15:18:09.373 EDT [15784] LOG:  listening on IPv6 address "::1", port 5432
+2023-06-07 15:18:09.551 EDT [35208] LOG:  database system was shut down at 2023-06-07 15:10:26 EDT
+2023-06-07 15:18:09.591 EDT [15784] LOG:  database system is ready to accept connections
+2023-06-07 15:23:09.505 EDT [41540] LOG:  checkpoint starting: time
+2023-06-07 15:23:10.999 EDT [41540] LOG:  checkpoint complete: wrote 16 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.461 s, sync=0.011 s, total=1.498 s; sync files=15, longest=0.003 s, average=0.001 s; distance=9 kB, estimate=9 kB
+2023-06-07 15:28:09.013 EDT [41540] LOG:  checkpoint starting: time
+2023-06-07 15:28:09.466 EDT [41540] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.429 s, sync=0.013 s, total=0.454 s; sync files=5, longest=0.009 s, average=0.003 s; distance=7 kB, estimate=8 kB
+2023-06-07 15:43:09.488 EDT [41540] LOG:  checkpoint starting: time
+2023-06-07 15:43:09.965 EDT [41540] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.445 s, sync=0.013 s, total=0.478 s; sync files=5, longest=0.010 s, average=0.003 s; distance=7 kB, estimate=8 kB
+2023-06-07 15:44:14.804 EDT [37012] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:44:41.483 EDT [19664] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:46:17.296 EDT [27736] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:47:34.138 EDT [29128] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:48:09.973 EDT [41540] LOG:  checkpoint starting: time
+2023-06-07 15:48:10.456 EDT [41540] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.443 s, sync=0.006 s, total=0.483 s; sync files=5, longest=0.003 s, average=0.002 s; distance=8 kB, estimate=8 kB
+2023-06-07 15:48:33.461 EDT [36388] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:48:54.285 EDT [41512] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:49:11.353 EDT [39412] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:51:43.078 EDT [36780] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:52:25.310 EDT [36276] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:53:00.633 EDT [38100] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:53:09.462 EDT [41540] LOG:  checkpoint starting: time
+2023-06-07 15:53:09.939 EDT [41540] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.434 s, sync=0.014 s, total=0.478 s; sync files=5, longest=0.010 s, average=0.003 s; distance=8 kB, estimate=8 kB
+2023-06-07 15:53:14.522 EDT [39376] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2023-06-07 15:57:50.500 EDT [15784] LOG:  received fast shutdown request
+2023-06-07 15:57:50.504 EDT [15784] LOG:  aborting any active transactions
+2023-06-07 15:57:50.508 EDT [40220] ERROR:  canceling statement due to user request
+2023-06-07 15:57:50.517 EDT [15784] LOG:  background worker "logical replication launcher" (PID 40220) exited with exit code 1
+2023-06-07 15:57:50.533 EDT [41540] LOG:  shutting down
+2023-06-07 15:57:50.535 EDT [41540] LOG:  checkpoint starting: shutdown immediate
+2023-06-07 15:57:50.577 EDT [41540] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.045 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=7 kB
+2023-06-07 15:57:50.588 EDT [15784] LOG:  database system is shut down
+2023-06-07 15:58:21.511 EDT [31968] LOG:  starting PostgreSQL 15.3, compiled by Visual C++ build 1914, 64-bit
+2023-06-07 15:58:21.516 EDT [31968] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-06-07 15:58:21.517 EDT [31968] LOG:  listening on IPv6 address "::1", port 5432
+2023-06-07 15:58:21.676 EDT [10424] LOG:  database system was shut down at 2023-06-07 15:57:50 EDT
+2023-06-07 15:58:21.746 EDT [31968] LOG:  database system is ready to accept connections
+2023-06-07 16:01:09.173 EDT [27644] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	

@@ -21,7 +21,7 @@ urlpatterns = [
         name="view_indicator",
     ),
     path(
-        "indicators/<int:pk>/edit",
+        "indicators/<int:pk>/edit/",
         views.EditIndicator.as_view(),
         name="edit_indicator",
     ),

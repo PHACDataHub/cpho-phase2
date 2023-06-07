@@ -1,5 +1,42 @@
-<form method="post" action=".">
+
+<form method="POST" action=".">
   {{ csrf_input }}
-  {{ form.as_table() }}
-  <input type="submit" value="{{ tdt('submit') }}" />
+
+  <div>
+    <h2 class="mb-3">{{ title_text }}</h2>
+  </div>
+ 
+  <div class="row g-3 form-group mb-3 mt-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.name.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    <div class="col-lg-10">{{ form.name }}</div>
+  </div>
+  <div class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.category.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    <div class="col-lg-10">{{ form.category }}</div>
+  </div>
+  <div class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.sub_category.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    <div class="col-lg-10">{{ form.sub_category }}</div>
+  </div>
+  <div class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.detailed_indicator.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    <div class="col-lg-10">{{ form.detailed_indicator }}</div>
+  </div>
+  <div class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.sub_indicator_measurement.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    <div class="col-lg-10">{{ form.sub_indicator_measurement }}</div>
+  </div>
+  <input type="submit"
+         class="btn btn-primary mt-4 float-end"
+         value="{{ tdt('Submit') }}"/>
 </form>

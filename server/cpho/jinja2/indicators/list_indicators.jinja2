@@ -3,11 +3,35 @@
   <div class="my-4">
     <a href="{{ url('create_indicator') }}" class="btn btn-primary">{{ tdt('Create new indicator') }}</a>
   </div>
-  <ul>
-    {% for indicator in object_list %}
-      <li>
-        <a href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ indicator.name }}</a>
-      </li>
-    {% endfor %}
-  </ul>
+  <div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>{{ tdt('Indicator Name') }}</th>
+          <th>{{ tdt('Category') }}</th>
+          <th>{{ tdt('Subcategory') }}</th>
+          {# <th>{{ tdt('Detailed indicator') }}</th> #}
+          {# <th>{{ tdt('Sub Indicator Mesaurement') }}</th> #}
+          <th>{{ tdt('Actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for indicator in object_list %}
+          <tr>
+            <td>{{ indicator.name }}</td>
+            <td>{{ dropdown_mapper["indicator_category"][indicator.category] }}</td>
+            <td>{{ dropdown_mapper["indicator_sub_category"][indicator.sub_category] }}</td>
+            {# <td>{{ indicator.detailed_indicator }}</td> #}
+            {# <td>{{ indicator.sub_indicator_measurement }}</td> #}
+            <td>
+
+              {% with loop_index=loop.index %}
+                {% include "indicators/components/indicator_actions.jinja2" %}
+              {% endwith %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

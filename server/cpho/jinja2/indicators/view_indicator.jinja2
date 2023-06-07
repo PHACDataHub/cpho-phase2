@@ -1,21 +1,32 @@
 {% extends 'base.jinja2' %}
 {% block content %}
-  <div>{{ object.name }}</div>
+  <h2>{{ tdt('Indicator Selected: ')}} {{ object.name }}</h2>
 
-  <div>
-    <a href="{{ url('edit_indicator', args=[object.id]) }}">{{ tdt('Edit indicator') }}</a>
+  <div class="mt-4">
+    <a href="{{ url('edit_indicator', args=[object.id]) }}"
+       class="btn btn-primary">{{ tdt('Edit indicator') }}</a>
   </div>
-
-  <div>
-    <ul>
-      {% for dimension_type in dimension_types %}
-        <li>
-          <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">{{ tdt('Manage data for ')}} {{ dimension_type.name }}</a>
-        </li>
-      {% endfor %}
-      <li>
-        <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">{{ tdt('Manage data for ')}} {{ tdt("all") }}</a>
-      </li>
-    </ul>
+  <div class="mt-5">
+ 
+    {% for dimension_type in dimension_types %}
+      <h5>
+        <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">
+          <div class="row">
+            <div class="card col-6 mt-2">
+              <div class="card-body">{{ tdt('Manage data for ')}} {{ dimension_type.name }}</div>
+            </div>
+          </div>
+        </a>
+      </h5>
+    {% endfor %}
+    <h5>
+      <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">
+        <div class="row">
+          <div class="card col-6 mt-2">
+            <div class="card-body">{{ tdt('Manage data for ')}} {{ tdt("all") }}</div>
+          </div>
+        </div>
+      </a>
+    </h5>
   </div>
 {% endblock %}

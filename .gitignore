@@ -18,4 +18,6 @@ frontend/build/
 runserver.sh
 /notes.md
 
-/logfile
+**/logfile
+
+server/logfile

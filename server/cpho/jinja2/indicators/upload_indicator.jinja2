@@ -1,0 +1,24 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+  <form action="{{ url('upload_indicator') }}"
+        method="post"
+        enctype="multipart/form-data"
+        class="form-horizontal">
+ 
+    {{ csrf_input }}
+    <div>
+      <div class="h2">{{ tdt("Indicator file upload")}}</div>
+      {{ form.csv_file }}
+ 
+      <div class="form-group">
+        <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-3">
+          <button class="btn btn-primary">{{ tdt("Upload")}}</button>
+        </div>
+      </div>
+ 
+    </div>
+  </form>
+
+  {# {% if data %}{{ data }}{% endif %} #}
+
+{% endblock %}

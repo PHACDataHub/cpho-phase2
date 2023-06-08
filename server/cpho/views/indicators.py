@@ -18,9 +18,6 @@ class IndicatorForm(ModelForm):
             "sub_indicator_measurement",
         ]
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-
     name = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )

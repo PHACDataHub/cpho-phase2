@@ -1,6 +1,6 @@
 {% extends 'base.jinja2' %}
 {% block content %}
-  <h2>{{ tdt('Indicator Selected: ')}} {{ object.name }}</h2>
+  <div class="h2">{{ tdt('Indicator Selected: ')}} {{ object.name }}</div>
 
   <div class="mt-4">
     <a href="{{ url('edit_indicator', args=[object.id]) }}"
@@ -9,7 +9,7 @@
   <div class="mt-5">
  
     {% for dimension_type in dimension_types %}
-      <h5>
+      <div class="h5">
         <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">
           <div class="row">
             <div class="card col-6 mt-2">
@@ -17,9 +17,9 @@
             </div>
           </div>
         </a>
-      </h5>
+      </div>
     {% endfor %}
-    <h5>
+    <div class="h5">
       <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">
         <div class="row">
           <div class="card col-6 mt-2">
@@ -27,6 +27,6 @@
           </div>
         </div>
       </a>
-    </h5>
+    </div>
   </div>
 {% endblock %}

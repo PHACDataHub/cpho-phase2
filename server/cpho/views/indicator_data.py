@@ -50,19 +50,19 @@ class IndicatorDatumForm(ModelForm):
     value = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Value"}
+            attrs={"class": "form-control", "placeholder": tdt("Value")}
         ),
     )
     value_lower_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Lower Bound"}
+            attrs={"class": "form-control", "placeholder": tdt("Lower Bound")}
         ),
     )
     value_upper_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Upper Bound"}
+            attrs={"class": "form-control", "placeholder": tdt("Upper Bound")}
         ),
     )
     data_quality = forms.ChoiceField(

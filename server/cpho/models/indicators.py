@@ -19,6 +19,7 @@ class Indicator(models.Model):
         ("general_health_status", tdt("General Health Status")),
         ("health_outcomes", tdt("Health Outcomes")),
     ]
+
     SUB_CATEGORY_CHOICES = [
         ("", "--"),
         (
@@ -37,19 +38,17 @@ class Indicator(models.Model):
 
     name = fields.CharField(max_length=50)
 
-    # category = fields.CharField(max_length=50)
     category = fields.CharField(
         max_length=50,
         choices=CATEGORY_CHOICES,
         verbose_name=tdt("Category"),
     )
+
     sub_category = fields.CharField(
         max_length=50,
         choices=SUB_CATEGORY_CHOICES,
         verbose_name=tdt("Sub Category"),
     )
-
-    # sub_category = fields.CharField(max_length=50)
 
     detailed_indicator = fields.CharField(max_length=300)
 
@@ -100,7 +99,7 @@ class IndicatorDatum(models.Model):
         verbose_name=tdt("Data Quality"),
     )
 
-    value = fields.FloatField()
+    value = fields.FloatField(null=True)
 
     value_lower_bound = fields.FloatField(null=True)
 

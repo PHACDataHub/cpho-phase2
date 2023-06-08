@@ -1,3 +1,5 @@
+import random
+
 import factory
 
 from cpho.models import (
@@ -42,8 +44,12 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
         model = Indicator
 
     name = factory.Faker("bs")
-    category = factory.Faker("bs")
-    sub_category = factory.Faker("bs")
+    category = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Indicator.CATEGORY_CHOICES])
+    )
+    sub_category = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Indicator.SUB_CATEGORY_CHOICES])
+    )
     detailed_indicator = factory.Faker("bs")
     sub_indicator_measurement = factory.Faker("bs")
 
@@ -56,3 +62,15 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
     period = factory.SubFactory(PeriodFactory)
     dimension_value = factory.SubFactory(DimensionValueFactory)
     value = factory.Faker("pyfloat")
+    data_quality = factory.LazyFunction(
+        lambda: random.choice(
+            [p[0] for p in IndicatorDatum.DATA_QUALITY_CHOICES]
+        )
+    )
+    value_unit = factory.LazyFunction(
+        lambda: random.choice(
+            [p[0] for p in IndicatorDatum.VALUE_UNIT_CHOICES]
+        )
+    )
+    value_lower_bound = factory.Faker("pyfloat")
+    value_upper_bound = factory.Faker("pyfloat")

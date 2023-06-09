@@ -1,3 +1,5 @@
+import csv
+import unicodedata
 from typing import Any
 
 from django import forms
@@ -251,27 +253,44 @@ class UploadIndicator(FormView):
                 )
                 return HttpResponseRedirect(reverse("upload_indicator"))
 
-            ### Dont remove this code; might need for custom parsing
-            file_data = csv_file.read().decode("utf-8-sig")
-            lines = file_data.split("\n")
+            # ### Please dont remove this code; might need for custom parsing later
+
+            # file_data = csv_file.read().decode("utf-8-sig")
+            # lines = file_data.split("\n")
+            # data_dict = []
+            # for idx, line in enumerate(lines):
+            #     # print(line)
+            #     fields = line.split(",")
+            #     if idx == 0:
+            #         headers = [s.strip() for s in fields]
+            #         # TODO: check if headers are as expected
+            #     else:
+            #         if len(fields) != len(headers):
+            #             continue
+            #         data_row = {}
+            #         for i, field in enumerate(fields):
+            #             data_row[headers[i]] = field.strip()
+            #         data_dimension = self.deduce_dimension_type(data_row, idx)
+            #         print(data_dimension)
+            #         data_dict.append(data_row)
+            #         # print("SUCCESSFULLY ADDED ROW: ", idx)
+            # # print(data_dict)
+
+            file_data = csv_file.read().decode("utf-8-sig").splitlines()
+            # Not sure if this is needed in the future
+            # file_data = [
+            #     unicodedata.normalize("NFKD", line) for line in file_data
+            # ]
+            reader = csv.DictReader(file_data)
             data_dict = []
-            for idx, line in enumerate(lines):
-                # print(line)
-                fields = line.split(",")
-                if idx == 0:
-                    headers = [s.strip() for s in fields]
-                    # TODO: check if headers are as expected
-                else:
-                    if len(fields) != len(headers):
-                        continue
-                    data_row = {}
-                    for i, field in enumerate(fields):
-                        data_row[headers[i]] = field.strip()
-                    data_dimension = self.deduce_dimension_type(data_row, idx)
-                    print(data_dimension)
-                    data_dict.append(data_row)
-                    # print("SUCCESSFULLY ADDED ROW: ", idx)
-            # print(data_dict)
+            for idx, data_row in enumerate(reader):
+                # Very annoying that i have to do this; but gives me errors otherwise
+                for key, value in data_row.items():
+                    data_row[key] = value.strip()
+                data_dimension = self.deduce_dimension_type(data_row, idx)
+                # print(data_dimension)
+                data_dict.append(data_row)
+
             messages.success(self.request, tdt("Data Uploaded Successfully"))
 
         except Exception as err:

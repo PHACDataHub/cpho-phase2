@@ -60,6 +60,15 @@
       <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container">
           {% block available_apps %}{% endblock %}
+          {# <a class="nav-link text-white h1" href="{{ url('list_indicators') }}">{{ tdt("HoPiC")}}</a> #}
+          <h1 class="nav-header">
+            <a href="{{ url('list_indicators') }}"
+               class="text-reset text-decoration-none">
+              {% block nav_header_text %}
+                <abbr title="{{ tdt('Health of People In Canada') }}">{{ tdt("HoPiC") }}</abbr>
+              {% endblock %}
+            </a>
+          </h1>
           <button class="navbar-toggler"
                   type="button"
                   data-bs-toggle="collapse"

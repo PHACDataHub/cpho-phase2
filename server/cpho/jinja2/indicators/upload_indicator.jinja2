@@ -1,24 +1,84 @@
 {% extends 'base.jinja2' %}
 {% block content %}
+
+  <div class="h2 mb-3">{{ tdt("Indicator file upload")}}</div>
+
+  <button type="button mt-5"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#expectedColumnModal">
+    {{ tdt("View expected column names")}}
+  </button>
+ 
   <form action="{{ url('upload_indicator') }}"
         method="post"
         enctype="multipart/form-data"
-        class="form-horizontal">
+        class="form-horizontal mt-3">
  
     {{ csrf_input }}
     <div>
-      <div class="h2">{{ tdt("Indicator file upload")}}</div>
       {{ form.csv_file }}
  
       <div class="form-group">
-        <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-3">
-          <button class="btn btn-primary">{{ tdt("Upload")}}</button>
-        </div>
+        <button class="btn btn-primary mt-3 float-end">{{ tdt("Upload")}}</button>
       </div>
  
     </div>
   </form>
 
-  {# {% if data %}{{ data }}{% endif %} #}
 
+  <div class="modal fade"
+       id="expectedColumnModal"
+       tabindex="-1"
+       aria-labelledby="expectedColumnModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="expectedColumnModalLabel">{{ tdt("Expected column names")}}</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{ tdt("Please upload a .csv file containing the following column names. Note that the column names are case sensitive")}}
+          </p>
+          <ul>
+            <li>Category</li>
+            <li>Topic</li>
+            <li>Indicator</li>
+            <li>Detailed Indicator</li>
+            <li>Sub_Indicator_Measurement</li>
+            <li>COUNTRY</li>
+            <li>Geography</li>
+            <li>Sex</li>
+            <li>Gender</li>
+            <li>Age_Group</li>
+            <li>Age_Group_Type</li>
+            <li>Living_Arrangement</li>
+            <li>Data_Quality</li>
+            <li>PT_Data_Availability</li>
+            <li>Value</li>
+            <li>Value_LowerCI</li>
+            <li>Value_UpperCI</li>
+            <li>Value_Units</li>
+            <li>Value_Displayed</li>
+            <li>SingleYear_TimeFrame</li>
+            <li>
+              MultiYear_TimeFrame
+            </li>
+ 
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
 {% endblock %}

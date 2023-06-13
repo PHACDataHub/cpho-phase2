@@ -10,7 +10,8 @@
  
     {% for dimension_type in dimension_types %}
       <div class="h5">
-        <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">
+        <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}"
+           class="text-decoration-none">
           <div class="row">
             <div class="card col-6 mt-2">
               <div class="card-body">{{ tdt('Manage data for ')}} {{ dimension_type.name }}</div>
@@ -20,7 +21,8 @@
       </div>
     {% endfor %}
     <div class="h5">
-      <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">
+      <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}"
+         class="text-decoration-none">
         <div class="row">
           <div class="card col-6 mt-2">
             <div class="card-body">{{ tdt('Manage data for ')}} {{ tdt("all") }}</div>

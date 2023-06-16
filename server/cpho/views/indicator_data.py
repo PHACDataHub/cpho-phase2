@@ -45,6 +45,7 @@ class IndicatorDatumForm(ModelForm):
             "value_unit",
             "single_year_timeframe",
             "multi_year_timeframe",
+            "literal_dimension_val",
         ]
 
     value = forms.FloatField(
@@ -68,8 +69,6 @@ class IndicatorDatumForm(ModelForm):
     data_quality = forms.ChoiceField(
         required=False,
         choices=IndicatorDatum.DATA_QUALITY_CHOICES,
-        # label="Data Quality",
-        # initial="caution",
         widget=forms.Select(
             attrs={
                 "class": "form-select",
@@ -79,8 +78,6 @@ class IndicatorDatumForm(ModelForm):
     value_unit = forms.ChoiceField(
         required=False,
         choices=IndicatorDatum.VALUE_UNIT_CHOICES,
-        # label="Data Quality",
-        # initial="caution",
         widget=forms.Select(
             attrs={
                 "class": "form-select",
@@ -91,6 +88,9 @@ class IndicatorDatumForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     multi_year_timeframe = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    literal_dimension_val = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
@@ -114,22 +114,42 @@ class ManageIndicatorData(TemplateView):
     @cached_property
     def formset(self):
         # TODO: filter by period
+
+        # getting all indicator data for this indicator
         existing_data = IndicatorDatum.objects.filter(
             indicator=self.indicator,
         ).order_by("dimension_value__order")
+
+        # value for all not selected only get data for stratifier selected
         if self.dimension_type is not None:
             existing_data = existing_data.filter(
-                indicator=self.indicator,
-                dimension_value__dimension_type=self.dimension_type,
+                dimension_type=self.dimension_type.id,
             )
 
         existing_data_by_dimension_value = {
-            datum.dimension_value: datum for datum in existing_data
+            datum.dimension_value: datum
+            for datum in existing_data.filter(
+                literal_dimension_val__isnull=True
+            )
+        }
+        existing_data_by_literal_value = {
+            datum.literal_dimension_val: datum
+            for datum in existing_data.filter(
+                literal_dimension_val__isnull=False
+            )
         }
 
         possible_values = DimensionValue.objects.all()
         if self.dimension_type is not None:
             possible_values = possible_values.filter(
+                dimension_type=self.dimension_type
+            )
+
+        literal_possible_values = existing_data.filter(
+            literal_dimension_val__isnull=False
+        )
+        if self.dimension_type is not None:
+            literal_possible_values = literal_possible_values.filter(
                 dimension_type=self.dimension_type
             )
 
@@ -139,15 +159,38 @@ class ManageIndicatorData(TemplateView):
                 record = existing_data_by_dimension_value[pv]
             else:
                 record = IndicatorDatum(
-                    indicator=self.indicator, dimension_value=pv
+                    indicator=self.indicator,
+                    dimension_value=pv,
+                    dimension_type=self.dimension_type,
+                )
+            instances.append(record)
+
+        for nlpv in literal_possible_values:
+            if existing_data_by_literal_value.get(
+                nlpv.literal_dimension_val, None
+            ):
+                print("found")
+                record = existing_data_by_literal_value[
+                    str(nlpv.literal_dimension_val)
+                ]
+            else:
+                print("not found")
+                record = IndicatorDatum(
+                    indicator=self.indicator,
+                    dimension_value=None,
+                    dimension_type=self.dimension_type,
+                    literal_dimension_val=nlpv.literal_dimension_val,
                 )
             instances.append(record)
 
         factory = formset_factory(
             form=IndicatorDatumForm, formset=InstanceProvidingFormSet, extra=0
         )
+        all_possible_values = list(possible_values) + list(
+            literal_possible_values
+        )
         formset_kwargs = {
-            "initial": [{} for x in possible_values],
+            "initial": [{} for x in all_possible_values],
             "instances": instances,
         }
         if self.request.POST:
@@ -160,20 +203,54 @@ class ManageIndicatorData(TemplateView):
     @cached_property
     def forms_by_dimension_value(self):
         return {
-            form.instance.dimension_value: form for form in self.formset.forms
+            form.instance.dimension_value: form
+            for form in self.formset.forms
+            if form.instance.literal_dimension_val is None
+        }
+
+    @cached_property
+    def forms_by_indicator_data_id(self):
+        return {
+            form.instance.id: form
+            for form in self.formset.forms
+            if form.instance.literal_dimension_val is not None
         }
 
     @cached_property
     def possible_values_by_dimension_type(self):
-        return {
+        dimension_pv_dict = {
             dt: dt.possible_values.all()
-            for dt in DimensionType.objects.all().prefetch_related(
-                "possible_values"
-            )
+            for dt in DimensionType.objects.all()
+            .prefetch_related("possible_values")
+            .filter(is_literal=False)
         }
+        literal_possible_values = (
+            IndicatorDatum.objects.filter(
+                indicator=self.indicator,
+            )
+            .filter(literal_dimension_val__isnull=False)
+            .order_by("dimension_value__order")
+        )
+        literal_pv_dict = {}
+        for x in literal_possible_values:
+            if x.dimension_type not in literal_pv_dict:
+                literal_pv_dict[
+                    x.dimension_type
+                ] = literal_possible_values.filter(
+                    dimension_type=x.dimension_type
+                )
+        return {
+            "literal_dimensions": literal_pv_dict,
+            "predefined_dimensions": dimension_pv_dict,
+        }
+        # return {
+        #     dt: dt.possible_values.all()
+        #     for dt in DimensionType.objects.all().prefetch_related(
+        #         "possible_values"
+        #     )
+        # }
 
     def post(self, *args, **kwargs):
-        print("entered post")
         if self.formset.is_valid():
             print("formset is valid")
             with transaction.atomic():
@@ -207,4 +284,5 @@ class ManageIndicatorData(TemplateView):
             "formset": self.formset,
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
+            "forms_by_indicator_data_id": self.forms_by_indicator_data_id,
         }

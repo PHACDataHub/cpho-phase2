@@ -1,6 +1,20 @@
 {% extends 'base.jinja2' %}
 {% block content %}
   <h1>{{ tdt("Indcator data for: ")}} {{ indicator.name }}</h1>
+  {# forms_by_dimension_value:  {{ forms_by_dimension_value }}
+  <br/>
+  <br/>
+  forms_by_literal_value: {{ forms_by_literal_value }}
+  <br/>
+  <br/>
+  forms_by_indicator_data_id: {{ forms_by_indicator_data_id }}
+  <br/>
+  <br/>
+  dimension_types" {{ dimension_types }}
+  <br/>
+  <br/>
+  possible_values_by_dimension_type" {{ possible_values_by_dimension_type }} #}
+
   <form action="." method="post">
     {{ formset.management_form }}
     {{ csrf_input }}
@@ -24,7 +38,21 @@
             </tr>
           </thead>
           <tbody class="text-center">
-            {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
+            {% for possible_value in possible_values_by_dimension_type["literal_dimensions"][dimension_type] %}
+              <tr>
+                {% set form = forms_by_indicator_data_id[possible_value["id"]] %}
+ 
+                <td class="fw-bold">{{ form.literal_dimension_val }}</td>
+                <td>{{ form.value }}</td>
+                <td>{{ form.value_unit }}</td>
+                <td>{{ form.value_lower_bound }}</td>
+                <td>{{ form.value_upper_bound }}</td>
+                <td>{{ form.data_quality }}</td>
+                <td>{{ form.single_year_timeframe }}</td>
+                <td>{{ form.multi_year_timeframe }}</td>
+              </tr>
+            {% endfor %}
+            {% for possible_value in possible_values_by_dimension_type["predefined_dimensions"][dimension_type] %}
               <tr>
                 {% set form = forms_by_dimension_value[possible_value] %}
  
@@ -36,10 +64,9 @@
                 <td>{{ form.data_quality }}</td>
                 <td>{{ form.single_year_timeframe }}</td>
                 <td>{{ form.multi_year_timeframe }}</td>
+              </tr>
+            {% endfor %}
  
- 
-              {% endfor %}
-            </tr>
           </tbody>
         </table>
       </div>

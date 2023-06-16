@@ -173,14 +173,14 @@ class ManageIndicatorData(TemplateView):
                 record = existing_data_by_literal_value[
                     str(nlpv.literal_dimension_val)
                 ]
-            else:
-                print("not found")
-                record = IndicatorDatum(
-                    indicator=self.indicator,
-                    dimension_value=None,
-                    dimension_type=self.dimension_type,
-                    literal_dimension_val=nlpv.literal_dimension_val,
-                )
+            # else:
+            #     print("not found")
+            #     record = IndicatorDatum(
+            #         indicator=self.indicator,
+            #         dimension_value=None,
+            #         dimension_type=self.dimension_type,
+            #         literal_dimension_val=nlpv.literal_dimension_val,
+            #     )
             instances.append(record)
 
         factory = formset_factory(
@@ -255,6 +255,7 @@ class ManageIndicatorData(TemplateView):
             print("formset is valid")
             with transaction.atomic():
                 for form in self.formset:
+                    print(form)
                     form.save()
 
                 messages.success(
@@ -285,4 +286,56 @@ class ManageIndicatorData(TemplateView):
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
             "forms_by_indicator_data_id": self.forms_by_indicator_data_id,
+        }
+
+
+class AddIndicatorData(ManageIndicatorData):
+    template_name = "indicator_data/_indicator_data_row.jinja2"
+
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    @cached_property
+    def dimension_type(self):
+        return DimensionType.objects.get(pk=self.kwargs["dimesnion_type"])
+
+    @cached_property
+    def form(self):
+        record = IndicatorDatum(
+            indicator=self.indicator,
+            dimension_type=self.dimension_type,
+            dimension_value=None,
+        )
+        new_form = IndicatorDatumForm(instance=record)
+
+        ### tried this; didnt work
+        # super().formset.forms.append(new_form)
+        # super().formset.management_form["TOTAL_FORMS"].value = (
+        #     super().formset.management_form["TOTAL_FORMS"].value() + 1
+        # )
+        # print("---->", super().formset.management_form["TOTAL_FORMS"].value())
+        # print("---->", super().formset.forms)
+        return new_form
+
+    # def management_form(self):
+    #     return super().formset.management_form
+
+    def get_context_data(self, **kwargs):
+        # if self.dimension_type is None:
+        #     dimension_types = DimensionType.objects.all()
+        # else:
+        #     dimension_types = [self.dimension_type]
+
+        return {
+            **super().get_context_data(**kwargs),
+            "indicator": self.indicator,
+            "dimension_type": self.dimension_type,
+            "form": self.form,
+            # "indicator": self.indicator,
+            # "dimension_types": dimension_types,
+            "formset": self.formset,
+            # "forms_by_dimension_value": self.forms_by_dimension_value,
+            # "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
+            # "forms_by_indicator_data_id": self.forms_by_indicator_data_id,
         }

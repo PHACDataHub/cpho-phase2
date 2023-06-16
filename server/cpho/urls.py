@@ -40,4 +40,9 @@ urlpatterns = [
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data_all",
     ),
+    path(
+        "add_indicator_data_row/<str:dimesnion_type>/<int:indicator_id>/",
+        views.AddIndicatorData.as_view(),
+        name="add_indicator_data_row",
+    ),
 ]

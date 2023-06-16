@@ -24,7 +24,7 @@
           <div class="h3">{{ tdt("Managing data for stratifier: ")}} {{ dimension_type.name }}</div>
         </div>
  
-        <table class="table mb-0">
+        <table class="table mb-0" id="{{ dimension_type }}-table">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
@@ -37,7 +37,7 @@
               <th width="12%">{{ tdt("Multi Year Timeframe")}}</th>
             </tr>
           </thead>
-          <tbody class="text-center">
+          <tbody id="{{ dimension_type }}-table-body" class="text-center">
             {% for possible_value in possible_values_by_dimension_type["literal_dimensions"][dimension_type] %}
               <tr>
                 {% set form = forms_by_indicator_data_id[possible_value["id"]] %}
@@ -69,7 +69,18 @@
  
           </tbody>
         </table>
+        {% if dimension_type.is_literal %}
+          <button hx-get="{{ url('add_indicator_data_row', kwargs={'dimesnion_type':dimension_type.id, 'indicator_id':indicator.id}) }}"
+            hx-target="#{{ dimension_type }}-table-body"
+            hx-swap="beforeend"
+            {# onclick="document.getElementById('id_form-TOTAL_FORMS').value++;" #}
+            type="button">
+            {{ tdt("Add row")}}
+          </button>
+        {% endif %}
       </div>
+ 
+ 
     {% endfor %}
     <input type="submit"
            class="btn btn-primary float-end my-3"

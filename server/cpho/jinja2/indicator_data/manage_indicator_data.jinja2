@@ -11,7 +11,10 @@
     <td>{{ form.data_quality }}</td>
     <td>{{ form.single_year_timeframe }}</td>
     <td>{{ form.multi_year_timeframe }}</td>
-    <td>{{ form.DELETE }}</td>
+    <td>
+      {{ form.DELETE }}
+      {{ form.id }} {# this is hidden #}
+    </td>
   </tr>
 {% endmacro %}
 
@@ -29,7 +32,7 @@
     {{ predefined_values_formset.management_form }}
     {{ age_group_formset.management_form }}
     {{ csrf_input }}
-    {% for dimension_type in dimension_types %}
+    {% for dimension_type in predefined_dimension_types %}
       <div class="card mt-5 mb-2">
         <div class="card-header">
           <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ dimension_type.name }}</div>
@@ -49,7 +52,7 @@
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
-            {% for possible_value in possible_values_by_dimension_type["predefined_dimensions"][dimension_type] %}
+            {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
               <tr>
                 {% set form = forms_by_dimension_value[possible_value] %}
  

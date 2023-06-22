@@ -208,43 +208,15 @@ class ManageIndicatorData(TemplateView):
         return {
             form.instance.dimension_value: form
             for form in self.predefined_values_formset.forms
-            if form.instance.literal_dimension_val is None
-        }
-
-    @cached_property
-    def forms_by_indicator_data_id(self):
-        return {
-            form.instance.id: form
-            for form in self.predefined_values_formset.forms
-            if form.instance.literal_dimension_val is not None
         }
 
     @cached_property
     def possible_values_by_dimension_type(self):
-        dimension_pv_dict = {
+        return {
             dt: dt.possible_values.all()
             for dt in DimensionType.objects.all()
             .prefetch_related("possible_values")
             .filter(is_literal=False)
-        }
-        literal_possible_values = (
-            IndicatorDatum.objects.filter(
-                indicator=self.indicator,
-            )
-            .filter(literal_dimension_val__isnull=False)
-            .order_by("dimension_value__order")
-        )
-        literal_pv_dict = {}
-        for x in literal_possible_values:
-            if x.dimension_type not in literal_pv_dict:
-                literal_pv_dict[
-                    x.dimension_type
-                ] = literal_possible_values.filter(
-                    dimension_type=x.dimension_type
-                )
-        return {
-            "literal_dimensions": literal_pv_dict,
-            "predefined_dimensions": dimension_pv_dict,
         }
 
     def post(self, *args, **kwargs):
@@ -266,6 +238,9 @@ class ManageIndicatorData(TemplateView):
                 )
         else:
             # get will just render the forms and their errors
+            import IPython
+
+            IPython.embed()
             return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -285,7 +260,6 @@ class ManageIndicatorData(TemplateView):
             "predefined_values_formset": self.predefined_values_formset,
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
-            "forms_by_indicator_data_id": self.forms_by_indicator_data_id,
             "age_group_formset": self.age_group_formset,
         }
 

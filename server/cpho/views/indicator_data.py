@@ -246,12 +246,6 @@ class ManageIndicatorData(TemplateView):
             "literal_dimensions": literal_pv_dict,
             "predefined_dimensions": dimension_pv_dict,
         }
-        # return {
-        #     dt: dt.possible_values.all()
-        #     for dt in DimensionType.objects.all().prefetch_related(
-        #         "possible_values"
-        #     )
-        # }
 
     def post(self, *args, **kwargs):
         predefined_valid = self.predefined_values_formset.is_valid()

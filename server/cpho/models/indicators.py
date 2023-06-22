@@ -55,7 +55,6 @@ class Indicator(models.Model):
     sub_indicator_measurement = fields.CharField(max_length=150)
 
     def __str__(self):
-        # return self.detailed_indicator
         return " ".join(
             [
                 str(self.name),

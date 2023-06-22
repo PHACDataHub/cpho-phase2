@@ -1,57 +1,52 @@
 {% extends 'base.jinja2' %}
+
+
+{% macro age_group_form(form) %}
+  <tr class="age-group-form">
+    <td class="fw-bold">{{ form.literal_dimension_val }}</td>
+    <td>{{ form.value }}</td>
+    <td>{{ form.value_unit }}</td>
+    <td>{{ form.value_lower_bound }}</td>
+    <td>{{ form.value_upper_bound }}</td>
+    <td>{{ form.data_quality }}</td>
+    <td>{{ form.single_year_timeframe }}</td>
+    <td>{{ form.multi_year_timeframe }}</td>
+    <td>{{ form.DELETE }}</td>
+  </tr>
+{% endmacro %}
+
 {% block content %}
-  <h1>{{ tdt("Indcator data for: ")}} {{ indicator.name }}</h1>
-  {# forms_by_dimension_value:  {{ forms_by_dimension_value }}
-  <br/>
-  <br/>
-  forms_by_literal_value: {{ forms_by_literal_value }}
-  <br/>
-  <br/>
-  forms_by_indicator_data_id: {{ forms_by_indicator_data_id }}
-  <br/>
-  <br/>
-  dimension_types" {{ dimension_types }}
-  <br/>
-  <br/>
-  possible_values_by_dimension_type" {{ possible_values_by_dimension_type }} #}
+  <h1>{{ tdt("Indcator data for: ") }} {{ indicator.name }}</h1>
+
+  {# Parent must be a table, otherwise browser will strip the invalid tr/td tags #}
+  <table class="d-none age-group-empty-form-container">
+    {{ age_group_form(age_group_formset.empty_form) }}
+  </table>
 
   <form action="." method="post">
-    {{ formset.management_form }}
+    {{ predefined_values_formset.management_form }}
+    {{ age_group_formset.management_form }}
     {{ csrf_input }}
     {% for dimension_type in dimension_types %}
       <div class="card mt-5 mb-2">
         <div class="card-header">
-          <div class="h3">{{ tdt("Managing data for stratifier: ")}} {{ dimension_type.name }}</div>
+          <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ dimension_type.name }}</div>
         </div>
  
         <table class="table mb-0" id="{{ dimension_type }}-table">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
-              <th width="9%">{{ tdt("Value")}}</th>
-              <th width="10%">{{ tdt("Value Unit")}}</th>
-              <th width="9%">{{ tdt("Value Lower Bound")}}</th>
-              <th width="9%">{{ tdt("Value Upper Bound")}}</th>
-              <th width="10%">{{ tdt("Data Quality")}}</th>
-              <th width="12%">{{ tdt("Single Year Timeframe")}}</th>
-              <th width="12%">{{ tdt("Multi Year Timeframe")}}</th>
+              <th width="9%">{{ tdt("Value") }}</th>
+              <th width="10%">{{ tdt("Value Unit") }}</th>
+              <th width="9%">{{ tdt("Value Lower Bound") }}</th>
+              <th width="9%">{{ tdt("Value Upper Bound") }}</th>
+              <th width="10%">{{ tdt("Data Quality") }}</th>
+              <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
+              <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
-            {% for possible_value in possible_values_by_dimension_type["literal_dimensions"][dimension_type] %}
-              <tr>
-                {% set form = forms_by_indicator_data_id[possible_value["id"]] %}
- 
-                <td class="fw-bold">{{ form.literal_dimension_val }}</td>
-                <td>{{ form.value }}</td>
-                <td>{{ form.value_unit }}</td>
-                <td>{{ form.value_lower_bound }}</td>
-                <td>{{ form.value_upper_bound }}</td>
-                <td>{{ form.data_quality }}</td>
-                <td>{{ form.single_year_timeframe }}</td>
-                <td>{{ form.multi_year_timeframe }}</td>
-              </tr>
-            {% endfor %}
             {% for possible_value in possible_values_by_dimension_type["predefined_dimensions"][dimension_type] %}
               <tr>
                 {% set form = forms_by_dimension_value[possible_value] %}
@@ -66,24 +61,78 @@
                 <td>{{ form.multi_year_timeframe }}</td>
               </tr>
             {% endfor %}
- 
+
           </tbody>
         </table>
-        {% if dimension_type.is_literal %}
-          <button hx-get="{{ url('add_indicator_data_row', kwargs={'dimesnion_type':dimension_type.id, 'indicator_id':indicator.id}) }}"
-            hx-target="#{{ dimension_type }}-table-body"
-            hx-swap="beforeend"
-            {# onclick="document.getElementById('id_form-TOTAL_FORMS').value++;" #}
-            type="button">
-            {{ tdt("Add row")}}
-          </button>
-        {% endif %}
+      </div>
+    {% endfor %}
+    <div class="card mt-5 mb-2">
+      <div class="card-header">
+        <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}</div>
       </div>
  
- 
-    {% endfor %}
+      <table class="table mb-0" id="{{ dimension_type }}-table">
+        <thead class="table-light text-center">
+          <tr>
+            <th width="10%">{{ tdt("Age") }}</th>
+            <th width="9%">{{ tdt("Value") }}</th>
+            <th width="10%">{{ tdt("Value Unit") }}</th>
+            <th width="9%">{{ tdt("Value Lower Bound") }}</th>
+            <th width="9%">{{ tdt("Value Upper Bound") }}</th>
+            <th width="10%">{{ tdt("Data Quality") }}</th>
+            <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
+            <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
+            <th width="5%">{{ tdt("Delete") }}</th>
+          </tr>
+        </thead>
+        <tbody id="{{ dimension_type }}-table-body"
+               class="text-center age-group-form-list">
+          {% for form in age_group_formset %}{{ age_group_form(form) }}{% endfor %}
+        </tbody>
+      </table>
+      <div class="text-center py-1">
+        <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add another age group") }}</button>
+      </div>
+    </div>
+
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tdt('Submit') }}">
+           value="{{ tdt("Submit") }}">
   </form>
+
+  <script>
+  // this approach is documented here https://www.brennantymrak.com/articles/django-dynamic-formsets-javascript
+  // changed a few things, like using an empty-form template
+  let addButton = document.querySelector("#add-form")
+
+  addButton.addEventListener('click', addForm)
+
+  function addForm(e){
+      /*
+        copies innerHTML of empty form template, inserts new prefix
+        appends new form to list, updates management form's input
+
+      */ 
+      let forms = document.querySelectorAll(".age-group-form-list > .age-group-form")
+      let newFormIndex = forms.length; // starts at 0
+      let numForms = forms.length + 1; //total forms after addition
+      let formTemplateNode = document.querySelector(".age-group-empty-form-container")
+      let container = document.querySelector(".age-group-form-list")
+      let totalFormsInput = document.querySelector("#id_agegroup-TOTAL_FORMS") //management form inputs
+
+      e.preventDefault()
+
+      let formRegex = RegExp(`agegroup-__prefix__-`,'g')
+      let newFormHtml = formTemplateNode.innerHTML.replace(formRegex, `agegroup-${newFormIndex}-`)
+
+      let newForm = document.createElement("tr")
+      newForm.classList.add("age-group-form")
+      newForm.innerHTML = newFormHtml;
+      container.appendChild(newForm)
+      //newForm.outerHTML = `<tr class='age-group-form'>${newFormHtml}</tr>`;
+      
+      totalFormsInput.setAttribute('value', `${numForms}`)
+  }
+  </script>
+
 {% endblock %}

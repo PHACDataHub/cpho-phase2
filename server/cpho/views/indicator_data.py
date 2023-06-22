@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
-from django.forms.models import ModelForm
+from django.forms.models import ModelForm, inlineformset_factory
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
@@ -112,12 +112,47 @@ class ManageIndicatorData(TemplateView):
         )
 
     @cached_property
-    def formset(self):
+    def age_group_formset(self):
+        existing_data = IndicatorDatum.objects.filter(
+            indicator=self.indicator,
+            dimension_type__code="age",
+        ).order_by("dimension_value__order")
+
+        InlineFormsetCls = forms.inlineformset_factory(
+            Indicator,
+            IndicatorDatum,
+            fk_name="indicator",
+            form=IndicatorDatumForm,
+            # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
+            extra=1,
+            can_delete=True,
+        )
+
+        kwargs = {
+            "queryset": existing_data,
+            "instance": self.indicator,
+            "prefix": "agegroup",
+        }
+        if self.request.POST:
+            fs = InlineFormsetCls(self.request.POST, **kwargs)
+        else:
+            fs = InlineFormsetCls(**kwargs)
+
+        age_dimension = DimensionType.objects.get(code="age")
+        for form in fs:
+            # new unsaved instances' save() crash when no dimension type is specified
+            form.instance.dimension_type = age_dimension
+
+        return fs
+
+    @cached_property
+    def predefined_values_formset(self):
         # TODO: filter by period
 
         # getting all indicator data for this indicator
         existing_data = IndicatorDatum.objects.filter(
             indicator=self.indicator,
+            dimension_type__is_literal=False,
         ).order_by("dimension_value__order")
 
         # value for all not selected only get data for stratifier selected
@@ -132,24 +167,12 @@ class ManageIndicatorData(TemplateView):
                 literal_dimension_val__isnull=True
             )
         }
-        existing_data_by_literal_value = {
-            datum.literal_dimension_val: datum
-            for datum in existing_data.filter(
-                literal_dimension_val__isnull=False
-            )
-        }
 
-        possible_values = DimensionValue.objects.all()
-        if self.dimension_type is not None:
-            possible_values = possible_values.filter(
-                dimension_type=self.dimension_type
-            )
-
-        literal_possible_values = existing_data.filter(
-            literal_dimension_val__isnull=False
+        possible_values = DimensionValue.objects.filter(
+            dimension_type__is_literal=False
         )
         if self.dimension_type is not None:
-            literal_possible_values = literal_possible_values.filter(
+            possible_values = possible_values.filter(
                 dimension_type=self.dimension_type
             )
 
@@ -161,37 +184,17 @@ class ManageIndicatorData(TemplateView):
                 record = IndicatorDatum(
                     indicator=self.indicator,
                     dimension_value=pv,
-                    dimension_type=self.dimension_type,
+                    dimension_type_id=pv.dimension_type_id,
                 )
-            instances.append(record)
-
-        for nlpv in literal_possible_values:
-            if existing_data_by_literal_value.get(
-                nlpv.literal_dimension_val, None
-            ):
-                print("found")
-                record = existing_data_by_literal_value[
-                    str(nlpv.literal_dimension_val)
-                ]
-            # else:
-            #     print("not found")
-            #     record = IndicatorDatum(
-            #         indicator=self.indicator,
-            #         dimension_value=None,
-            #         dimension_type=self.dimension_type,
-            #         literal_dimension_val=nlpv.literal_dimension_val,
-            #     )
             instances.append(record)
 
         factory = formset_factory(
             form=IndicatorDatumForm, formset=InstanceProvidingFormSet, extra=0
         )
-        all_possible_values = list(possible_values) + list(
-            literal_possible_values
-        )
         formset_kwargs = {
-            "initial": [{} for x in all_possible_values],
+            "initial": [{} for x in possible_values],
             "instances": instances,
+            "prefix": "predefined",
         }
         if self.request.POST:
             formset = factory(self.request.POST, **formset_kwargs)
@@ -204,7 +207,7 @@ class ManageIndicatorData(TemplateView):
     def forms_by_dimension_value(self):
         return {
             form.instance.dimension_value: form
-            for form in self.formset.forms
+            for form in self.predefined_values_formset.forms
             if form.instance.literal_dimension_val is None
         }
 
@@ -212,7 +215,7 @@ class ManageIndicatorData(TemplateView):
     def forms_by_indicator_data_id(self):
         return {
             form.instance.id: form
-            for form in self.formset.forms
+            for form in self.predefined_values_formset.forms
             if form.instance.literal_dimension_val is not None
         }
 
@@ -251,12 +254,14 @@ class ManageIndicatorData(TemplateView):
         # }
 
     def post(self, *args, **kwargs):
-        if self.formset.is_valid():
-            print("formset is valid")
+        predefined_valid = self.predefined_values_formset.is_valid()
+        age_group_valid = self.age_group_formset.is_valid()
+        if predefined_valid and age_group_valid:
             with transaction.atomic():
-                for form in self.formset:
-                    print(form)
+                for form in self.predefined_values_formset:
                     form.save()
+
+                self.age_group_formset.save()
 
                 messages.success(
                     self.request, tdt("Data saved."), messages.SUCCESS
@@ -266,76 +271,28 @@ class ManageIndicatorData(TemplateView):
                     pk=self.indicator.pk,
                 )
         else:
-            print("formset is not valid")
-            for form in self.formset:
-                print(form.errors)
-            print(self.formset.errors)
-            messages.error(self.request, tdt("Please correct the errors."))
+            # get will just render the forms and their errors
+            return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:
-            dimension_types = DimensionType.objects.all()
+            predefined_dimension_types = DimensionType.objects.filter(
+                is_literal=False
+            )
+        elif self.dimension_type.code == "age":
+            predefined_dimension_types = []
         else:
-            dimension_types = [self.dimension_type]
+            predefined_dimension_types = [self.dimension_type]
 
-        return {
+        ctx = {
             **super().get_context_data(**kwargs),
             "indicator": self.indicator,
-            "dimension_types": dimension_types,
-            "formset": self.formset,
+            "predefined_dimension_types": predefined_dimension_types,
+            "predefined_values_formset": self.predefined_values_formset,
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
             "forms_by_indicator_data_id": self.forms_by_indicator_data_id,
+            "age_group_formset": self.age_group_formset,
         }
 
-
-class AddIndicatorData(ManageIndicatorData):
-    template_name = "indicator_data/_indicator_data_row.jinja2"
-
-    @cached_property
-    def indicator(self):
-        return Indicator.objects.get(pk=self.kwargs["indicator_id"])
-
-    @cached_property
-    def dimension_type(self):
-        return DimensionType.objects.get(pk=self.kwargs["dimesnion_type"])
-
-    @cached_property
-    def form(self):
-        record = IndicatorDatum(
-            indicator=self.indicator,
-            dimension_type=self.dimension_type,
-            dimension_value=None,
-        )
-        new_form = IndicatorDatumForm(instance=record)
-
-        ### tried this; didnt work
-        # super().formset.forms.append(new_form)
-        # super().formset.management_form["TOTAL_FORMS"].value = (
-        #     super().formset.management_form["TOTAL_FORMS"].value() + 1
-        # )
-        # print("---->", super().formset.management_form["TOTAL_FORMS"].value())
-        # print("---->", super().formset.forms)
-        return new_form
-
-    # def management_form(self):
-    #     return super().formset.management_form
-
-    def get_context_data(self, **kwargs):
-        # if self.dimension_type is None:
-        #     dimension_types = DimensionType.objects.all()
-        # else:
-        #     dimension_types = [self.dimension_type]
-
-        return {
-            **super().get_context_data(**kwargs),
-            "indicator": self.indicator,
-            "dimension_type": self.dimension_type,
-            "form": self.form,
-            # "indicator": self.indicator,
-            # "dimension_types": dimension_types,
-            "formset": self.formset,
-            # "forms_by_dimension_value": self.forms_by_dimension_value,
-            # "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
-            # "forms_by_indicator_data_id": self.forms_by_indicator_data_id,
-        }
+        return ctx

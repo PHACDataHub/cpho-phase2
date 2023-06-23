@@ -1,69 +1,69 @@
-# CPHO Phase 2
+# CPHO server
 
-[![Docker Image CI](https://github.com/PHACDataHub/cpho-phase2/actions/workflows/docker-image.yml/badge.svg)](https://github.com/PHACDataHub/cpho-phase2/actions/workflows/docker-image.yml)
 
-## Note: This is _very much_ a work in progress. Work needs to be done to transform this prototype into an usable production application.
 
-## How to run locally
+## Example .env file: 
 
-These instructions are aimed at getting the whole system running for development purposes. The [frontend](frontend/README.md) and [server](server/README.md) folders contain details on running those specific services without Docker.
-
-### Docker
-
-You'll need to Install [Docker](https://docs.docker.com/install/) and have it running
-
-### Creating credentials
-
-We need server and database credentials to be created in the server folder:
-
-```sh
-cat <<-'EOF' > server/postgres.env
-POSTGRES_USER=cpho_user-admin
-POSTGRES_PASSWORD=123
-POSTGRES_DB=cpho_dev
-EOF
 ```
-
-We'll need some matching credentials for the server.
-To generate a secret key, you can use tools such as [RandomKeygen](https://randomkeygen.com) to generate a strong key.
-
-```sh
-cat <<-'EOF' > server/server.env
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-DB_NAME=cpho_dev
-DB_USER=cpho_user-admin
-DB_PASSWORD=123
-DB_HOST=postgres
+TEST_DB_NAME=cpho_test_db
+DB_NAME=cpho_dev_db
+DB_USER=cpho_db_user
+DB_PASSWORD=""
+DB_HOST=localhost
 DB_PORT=5432
-DJANGO_SUPERUSER_PASSWORD=admin
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@example.com
-SECRET_KEY= # ADD GENERATED KEY HERE #
-# PGADMIN CONTAINER
-PGADMIN_DEFAULT_EMAIL=admin@example.com
-PGADMIN_DEFAULT_PASSWORD=123
-PGADMIN_LISTEN_PORT=5433
-PGADMIN_CONFIG_SERVER_MODE=False
-PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
-PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED=False
+
+SECRET_KEY=abcdefg
+
+# dev settings
+ALLOWED_HOSTS=*
+DEBUG=True
+IS_LOCAL_DEV=True
+
+# required for debug toolbar
+ENABLE_DEBUG_TOOLBAR=True
+INTERNAL_IPS=127.0.0.1
+
+# this is to disable session timeout
+PHAC_ASPC_SESSION_COOKIE_AGE=99999999 # this doesn't seem to work?
+PHAC_ASPC_SESSION_COOKIE_SECURE=0
 EOF
 ```
 
-### Running it!
+# Setting up the development environment
 
-Run `docker compose up -d` in the root directory of the project.
+Note: run all this in the server/ directory
 
-Docker should have created 4 containers:
+1. install python3.10 
+2. install postgres [instructions here](https://github.com/PHACDataHub/phac-django-docs/blob/master/local-dev.md#installing-and-using-postgres-wout-sci-ops-on-windows) 
+3. clone repo
+4. create a virtual environment in repo root (python -m venv venv)
+5. activate virtual environment (source venv/Scripts/activate on windows, venv/bin/activate on *nix)
+6. install dependencies (`pip install -r requirements.txt -r requirements_dev.txt`)
+7. setting postgres:
+    - ```bash
+        psql -U postgres -c "CREATE ROLE cpho_db_user with login"
+        psql -U postgres -c "ALTER ROLE cpho_db_user createdb"
+        createdb -U cpho_db_user cpho_dev_db
+        ```
+8. seed the DB
+    - ```bash
+        python ./manage.py migrate
+        python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
+        python ./manage.py loaddata cpho/fixtures/periods.yaml
+        python ./manage.py runscript cpho.scripts.dev
+        ```
+9. `python manage.py runserver`
 
-- `cpho-envoy`: the lightweight reverse proxy
-- `cpho-postgres`: PostgreSQL database
-- `cpho-server`: Django Server
-- `cpho-frontend`: React Frontend
+## Other useful commands:
 
-Now, you can do the following:
+resetting dev db: 
+```bash
+dropdb -U cpho_db_user cpho_dev_db;
+createdb -U cpho_db_user cpho_dev_db;
+```
 
-- Navigate to `localhost:3000` to view the frontend
-- Navigate to `localhost:3000/graphql` to view the GraphQL interface
+Resetting test db (useful when migrations get in the way of running tests)
+```bash
+dropdb -U cpho_db_user cpho_test_db
+```
 
-When you're done working, you can run `docker compose down` to stop the containers

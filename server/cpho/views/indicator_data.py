@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
-from django.forms.models import ModelForm
+from django.forms.models import ModelForm, inlineformset_factory
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
@@ -45,6 +45,7 @@ class IndicatorDatumForm(ModelForm):
             "value_unit",
             "single_year_timeframe",
             "multi_year_timeframe",
+            "literal_dimension_val",
         ]
 
     value = forms.FloatField(
@@ -68,8 +69,6 @@ class IndicatorDatumForm(ModelForm):
     data_quality = forms.ChoiceField(
         required=False,
         choices=IndicatorDatum.DATA_QUALITY_CHOICES,
-        # label="Data Quality",
-        # initial="caution",
         widget=forms.Select(
             attrs={
                 "class": "form-select",
@@ -79,8 +78,6 @@ class IndicatorDatumForm(ModelForm):
     value_unit = forms.ChoiceField(
         required=False,
         choices=IndicatorDatum.VALUE_UNIT_CHOICES,
-        # label="Data Quality",
-        # initial="caution",
         widget=forms.Select(
             attrs={
                 "class": "form-select",
@@ -91,6 +88,9 @@ class IndicatorDatumForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     multi_year_timeframe = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    literal_dimension_val = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
@@ -112,22 +112,65 @@ class ManageIndicatorData(TemplateView):
         )
 
     @cached_property
-    def formset(self):
-        # TODO: filter by period
+    def age_group_formset(self):
         existing_data = IndicatorDatum.objects.filter(
             indicator=self.indicator,
+            dimension_type__code="age",
         ).order_by("dimension_value__order")
+
+        InlineFormsetCls = forms.inlineformset_factory(
+            Indicator,
+            IndicatorDatum,
+            fk_name="indicator",
+            form=IndicatorDatumForm,
+            # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
+            extra=1,
+            can_delete=True,
+        )
+
+        kwargs = {
+            "queryset": existing_data,
+            "instance": self.indicator,
+            "prefix": "agegroup",
+        }
+        if self.request.POST:
+            fs = InlineFormsetCls(self.request.POST, **kwargs)
+        else:
+            fs = InlineFormsetCls(**kwargs)
+
+        age_dimension = DimensionType.objects.get(code="age")
+        for form in fs:
+            # new unsaved instances' save() crash when no dimension type is specified
+            form.instance.dimension_type = age_dimension
+
+        return fs
+
+    @cached_property
+    def predefined_values_formset(self):
+        # TODO: filter by period
+
+        # getting all indicator data for this indicator
+        existing_data = IndicatorDatum.objects.filter(
+            indicator=self.indicator,
+            dimension_type__is_literal=False,
+        ).order_by("dimension_value__order")
+
+        # value for all not selected only get data for stratifier selected
         if self.dimension_type is not None:
             existing_data = existing_data.filter(
-                indicator=self.indicator,
-                dimension_value__dimension_type=self.dimension_type,
+                dimension_type=self.dimension_type.id,
             )
 
         existing_data_by_dimension_value = {
-            datum.dimension_value: datum for datum in existing_data
+            datum.dimension_value: datum
+            for datum in existing_data.filter(
+                literal_dimension_val__isnull=True
+            )
         }
 
-        possible_values = DimensionValue.objects.all()
+        possible_values = DimensionValue.objects.filter(
+            dimension_type__is_literal=False
+        )
         if self.dimension_type is not None:
             possible_values = possible_values.filter(
                 dimension_type=self.dimension_type
@@ -139,7 +182,9 @@ class ManageIndicatorData(TemplateView):
                 record = existing_data_by_dimension_value[pv]
             else:
                 record = IndicatorDatum(
-                    indicator=self.indicator, dimension_value=pv
+                    indicator=self.indicator,
+                    dimension_value=pv,
+                    dimension_type_id=pv.dimension_type_id,
                 )
             instances.append(record)
 
@@ -149,6 +194,7 @@ class ManageIndicatorData(TemplateView):
         formset_kwargs = {
             "initial": [{} for x in possible_values],
             "instances": instances,
+            "prefix": "predefined",
         }
         if self.request.POST:
             formset = factory(self.request.POST, **formset_kwargs)
@@ -160,25 +206,28 @@ class ManageIndicatorData(TemplateView):
     @cached_property
     def forms_by_dimension_value(self):
         return {
-            form.instance.dimension_value: form for form in self.formset.forms
+            form.instance.dimension_value: form
+            for form in self.predefined_values_formset.forms
         }
 
     @cached_property
     def possible_values_by_dimension_type(self):
         return {
             dt: dt.possible_values.all()
-            for dt in DimensionType.objects.all().prefetch_related(
-                "possible_values"
-            )
+            for dt in DimensionType.objects.all()
+            .prefetch_related("possible_values")
+            .filter(is_literal=False)
         }
 
     def post(self, *args, **kwargs):
-        print("entered post")
-        if self.formset.is_valid():
-            print("formset is valid")
+        predefined_valid = self.predefined_values_formset.is_valid()
+        age_group_valid = self.age_group_formset.is_valid()
+        if predefined_valid and age_group_valid:
             with transaction.atomic():
-                for form in self.formset:
+                for form in self.predefined_values_formset:
                     form.save()
+
+                self.age_group_formset.save()
 
                 messages.success(
                     self.request, tdt("Data saved."), messages.SUCCESS
@@ -188,23 +237,30 @@ class ManageIndicatorData(TemplateView):
                     pk=self.indicator.pk,
                 )
         else:
-            print("formset is not valid")
-            for form in self.formset:
-                print(form.errors)
-            print(self.formset.errors)
-            messages.error(self.request, tdt("Please correct the errors."))
+            # get will just render the forms and their errors
+            import IPython
+
+            IPython.embed()
+            return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:
-            dimension_types = DimensionType.objects.all()
+            predefined_dimension_types = DimensionType.objects.filter(
+                is_literal=False
+            )
+        elif self.dimension_type.code == "age":
+            predefined_dimension_types = []
         else:
-            dimension_types = [self.dimension_type]
+            predefined_dimension_types = [self.dimension_type]
 
-        return {
+        ctx = {
             **super().get_context_data(**kwargs),
             "indicator": self.indicator,
-            "dimension_types": dimension_types,
-            "formset": self.formset,
+            "predefined_dimension_types": predefined_dimension_types,
+            "predefined_values_formset": self.predefined_values_formset,
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
+            "age_group_formset": self.age_group_formset,
         }
+
+        return ctx

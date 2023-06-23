@@ -2,71 +2,9 @@
 name = ""
 version = ""
 description = ""
-authors = [
-    {name = "Eduardo Szeckir", email = "eduardo.szeckir@phac-aspc.gc.ca"},
-]
-requires-python = ">=3.8"
-license = {text = "MIT"}
-dependencies = [
-    "aniso8601==9.0.1",
-    "asgiref==3.5.2",
-    "click==8.1.3",
-    "Django==4.0.6",
-    "django-cors-headers==3.13.0",
-    "djangorestframework==3.14.0",
-    "graphene==3.1.1",
-    "graphene-django==3.0.0",
-    "graphql-core==3.2.3",
-    "graphql-relay==3.2.0",
-    "mypy-extensions==0.4.3",
-    "pathspec==0.10.1",
-    "platformdirs==2.5.2",
-    "promise==2.3",
-    "python-decouple==3.6",
-    "pytz==2022.6",
-    "six==1.16.0",
-    "sqlparse==0.4.2",
-    "text-unidecode==1.3",
-    "tomli==2.0.1",
-    "tzdata==2022.5",
-    "colorama>=0.4.6",
-    "waitress>=2.1.2",
-    "psycopg2-binary>=2.9.5",
-]
-[project.optional-dependencies]
-
-[tool.pdm]
-[tool.pdm.dev-dependencies]
-dev = [
-    "coverage>=7.1.0",
-    "ruff>=0.0.256",
-]
-
-[build-system]
-requires = ["pdm-pep517>=1.0.0"]
-build-backend = "pdm.pep517.api"
-
-[tool.pdm.scripts]
-# Load server.env before all scripts
-_.env_file = "server.env"
-start.cmd = "python manage.py runserver localhost:8000"
-wsgi.cmd = "python server.py"
-makemigrations = "python manage.py makemigrations"
-migrate = "python manage.py migrate"
-superUser = {shell = "python manage.py createsuperuser --noinput || true"}
-db = {shell = "docker ps -a | grep pg || docker run -d -p 5432:5432 --name pg --env-file postgres.env postgres"}
-wait ={shell = "sleep 1"}
-stop = {shell = "docker stop pg && docker rm pg"}
-# Outside docker-compose override DB_HOST to connect directly to localhost.
-dev = {composite = ["db", "wait", "migrate", "superUser" , "start"], env = {DB_HOST = "localhost"}}
-test = {cmd = "coverage run manage.py test -v 2", env = {DB_HOST = "localhost"}}
-citest = {cmd = "python manage.py test -v 2 --keepdb"}
-post_test = {cmd = "coverage report --skip-empty --omit=tests/*,*tests*"} #choose additional files to skip here with "," and no spaces)
-linter = {cmd = "ruff check ."}
 
 [tool.ruff]
 line-length = 119 # Alternatives PEP-8: 79, Black/Ruff: 88
-
 
 [tool.black]
 line-length = 79

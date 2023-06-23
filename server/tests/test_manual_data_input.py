@@ -116,6 +116,11 @@ def test_agegroups_existing_data(vanilla_user_client):
         literal_dimension_val="25-50",
         value=6,
     )
+    record_51_75 = ind.data.create(
+        dimension_type=age_cat,
+        literal_dimension_val="51-75",
+        value=7,
+    )
 
     url = reverse("manage_indicator_data", args=[ind.id, age_cat.pk])
     response = vanilla_user_client.get(url)
@@ -126,8 +131,8 @@ def test_agegroups_existing_data(vanilla_user_client):
         "predefined-INITIAL_FORMS": 0,
         "predefined-MIN_NUM_FORMS": 0,
         "predefined-MAX_NUM_FORMS": 1000,
-        "agegroup-TOTAL_FORMS": 3,
-        "agegroup-INITIAL_FORMS": 2,
+        "agegroup-TOTAL_FORMS": 5,
+        "agegroup-INITIAL_FORMS": 3,
         "agegroup-MIN_NUM_FORMS": 0,
         "agegroup-MAX_NUM_FORMS": 1000,
         "agegroup-0-id": record0_25.id,
@@ -136,8 +141,15 @@ def test_agegroups_existing_data(vanilla_user_client):
         "agegroup-1-id": record25_50.id,
         "agegroup-1-literal_dimension_val": "25-50",
         "agegroup-1-value": 7.5,
-        "agegroup-2-literal_dimension_val": "50-120",
-        "agegroup-2-value": 10.5,
+        # delete record_51_75
+        "agegroup-2-id": record_51_75.id,
+        "agegroup-2-DELETE": "on",
+        "agegroup-3-literal_dimension_val": "50-120",
+        "agegroup-3-value": 10.5,
+        # also add an extra record that is immediately deleted
+        # just to show nothing happens
+        "agegroup-4-literal_dimension_val": "120-150",
+        "agegroup-4-DELETE": "on",
     }
     response = vanilla_user_client.post(url, data=data)
     assert response.status_code == 302
@@ -150,6 +162,9 @@ def test_agegroups_existing_data(vanilla_user_client):
     assert record0_25.value == 5.5
     assert record25_50.value == 7.5
     assert ind.data.get(literal_dimension_val="50-120").value == 10.5
+
+    # assert deleted
+    assert not IndicatorDatum.objects.filter(id=record_51_75.id).exists()
 
 
 def test_modify_all_dimensions(vanilla_user_client):

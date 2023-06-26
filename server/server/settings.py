@@ -69,6 +69,8 @@ INSTALLED_APPS = configure_apps(
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = (os.path.join("static"),)
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 MIDDLEWARE = configure_middleware(
     [

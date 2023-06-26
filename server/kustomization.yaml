@@ -1,7 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-- kubernetes/deployment.yaml
-- kubernetes/namespace.yaml
-- kubernetes/service.yaml
-- kubernetes/virtual-service.yaml

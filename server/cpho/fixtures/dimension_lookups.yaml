@@ -4,30 +4,35 @@
     name_en: sex
     name_fr: sexe
     code: sex
+    is_literal: false
 - model: cpho.dimensiontype
   pk: 2
   fields:
     name_en: Province
     name_fr: Province
     code: province
+    is_literal: false
 - model: cpho.dimensiontype
   pk: 3
   fields:
     name_en: region
     name_fr: région
     code: region
+    is_literal: false
 - model: cpho.dimensiontype
   pk: 4
   fields:
     name_en: Canada
     name_fr: Canada
     code: canada
+    is_literal: false
 - model: cpho.dimensiontype
   pk: 5
   fields:
     name_en: age
     name_fr: âge
     code: age
+    is_literal: true
 
 # dimension values
 
@@ -99,7 +104,7 @@
     dimension_type: 2
     name_en: Ontario
     name_fr: Ontario
-    value: on
+    value: 'on'
     order: 5.0
 
 - model: cpho.dimensionvalue
@@ -230,47 +235,47 @@
     value: canada
     order: 0.0
 
-- model: cpho.dimensionvalue
-  pk: 24
-  fields:
-    dimension_type: 5
-    name_en: 0-4
-    name_fr: 0-4
-    value: 0-4
-    order: 0.0
+# - model: cpho.dimensionvalue
+#   pk: 24
+#   fields:
+#     dimension_type: 5
+#     name_en: 0-4
+#     name_fr: 0-4
+#     value: 0-4
+#     order: 0.0
 
-- model: cpho.dimensionvalue
-  pk: 25
-  fields:
-    dimension_type: 5
-    name_en: 5-9
-    name_fr: 5-9
-    value: 5-9
-    order: 1.0
+# - model: cpho.dimensionvalue
+#   pk: 25
+#   fields:
+#     dimension_type: 5
+#     name_en: 5-9
+#     name_fr: 5-9
+#     value: 5-9
+#     order: 1.0
 
-- model: cpho.dimensionvalue  
-  pk: 26
-  fields:
-    dimension_type: 5
-    name_en: 10-14
-    name_fr: 10-14
-    value: 10-14
-    order: 2.0
+# - model: cpho.dimensionvalue  
+#   pk: 26
+#   fields:
+#     dimension_type: 5
+#     name_en: 10-14
+#     name_fr: 10-14
+#     value: 10-14
+#     order: 2.0
   
-- model: cpho.dimensionvalue
-  pk: 27
-  fields:
-    dimension_type: 5
-    name_en: 15-19
-    name_fr: 15-19
-    value: 15-19
-    order: 3.0
+# - model: cpho.dimensionvalue
+#   pk: 27
+#   fields:
+#     dimension_type: 5
+#     name_en: 15-19
+#     name_fr: 15-19
+#     value: 15-19
+#     order: 3.0
 
-- model: cpho.dimensionvalue
-  pk: 28
-  fields:
-    dimension_type: 5
-    name_en: 20-24
-    name_fr: 20-24
-    value: 20-24
-    order: 4.0
+# - model: cpho.dimensionvalue
+#   pk: 28
+#   fields:
+#     dimension_type: 5
+#     name_en: 20-24
+#     name_fr: 20-24
+#     value: 20-24
+#     order: 4.0

@@ -55,7 +55,11 @@ class Indicator(models.Model):
     sub_indicator_measurement = fields.CharField(max_length=150)
 
     def __str__(self):
-        return self.detailed_indicator
+        return " ".join(
+            [
+                str(self.name),
+            ]
+        )
 
 
 @add_to_admin
@@ -65,11 +69,22 @@ class IndicatorDatum(models.Model):
         Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
     )
 
-    dimension_value = fields.ForeignKey(
-        "cpho.DimensionValue",
+    dimension_type = fields.ForeignKey(
+        "cpho.DimensionType",
         null=False,
         blank=False,
         on_delete=models.RESTRICT,
+    )
+
+    dimension_value = fields.ForeignKey(
+        "cpho.DimensionValue",
+        null=True,
+        blank=True,
+        on_delete=models.RESTRICT,
+    )
+
+    literal_dimension_val = fields.CharField(
+        max_length=50, null=True, blank=True, default=None
     )
 
     period = fields.ForeignKey(
@@ -118,9 +133,14 @@ class IndicatorDatum(models.Model):
     def __str__(self):
         return " ".join(
             [
-                self.location_type,
-                self.location,
+                "dim_type:",
+                str(self.dimension_type),
+                "; dim_val:",
+                str(self.dimension_value),
+                "; Value:",
                 str(self.value),
+                "; literal_val:",
+                str(self.literal_dimension_val),
             ]
         )
 

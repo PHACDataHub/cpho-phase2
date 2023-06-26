@@ -19,9 +19,18 @@ class DimensionType(models.Model):
 
     code = fields.CharField(max_length=50)  # codes are dev-friendly
 
+    is_literal = models.BooleanField(default=False)
+
     @property
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
+
+    def __str__(self):
+        return " ".join(
+            [
+                str(self.code),
+            ]
+        )
 
 
 @add_to_admin
@@ -46,6 +55,13 @@ class DimensionValue(models.Model):
     @property
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
+
+    def __str__(self):
+        return " ".join(
+            [
+                str(self.value),
+            ]
+        )
 
 
 @add_to_admin

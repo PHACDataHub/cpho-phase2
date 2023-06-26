@@ -1,8 +1,8 @@
 - model: cpho.dimensiontype
   pk: 1
   fields:
-    name_en: sex
-    name_fr: sexe
+    name_en: Sex
+    name_fr: Sexe
     code: sex
     is_literal: false
 - model: cpho.dimensiontype
@@ -15,8 +15,8 @@
 - model: cpho.dimensiontype
   pk: 3
   fields:
-    name_en: region
-    name_fr: région
+    name_en: Region
+    name_fr: Région
     code: region
     is_literal: false
 - model: cpho.dimensiontype
@@ -29,27 +29,67 @@
 - model: cpho.dimensiontype
   pk: 5
   fields:
-    name_en: age
-    name_fr: âge
+    name_en: Age
+    name_fr: Âge
     code: age
     is_literal: true
+- model: cpho.dimensiontype
+  pk: 6
+  fields:
+    name_en: Gender
+    name_fr: Genre
+    code: gender
+    is_literal: false
 
 # dimension values
+
+- model: cpho.dimensionvalue
+  pk: 24
+  fields:
+    dimension_type: 6
+    name_en: Men
+    name_fr: Hommes
+    value: men
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 25
+  fields:
+    dimension_type: 6
+    name_en: Women
+    name_fr: Femmes
+    value: women
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 26
+  fields:
+    dimension_type: 6
+    name_en: Boys
+    name_fr: Garçons
+    value: boys
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 27
+  fields:
+    dimension_type: 6
+    name_en: Girls
+    name_fr: Filles
+    value: girls
+    order: 4.0
 
 - model: cpho.dimensionvalue
   pk: 2
   fields:
     dimension_type: 1
-    name_en: male
-    name_fr: male
+    name_en: Male
+    name_fr: Male
     value: m
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 3
   fields:
     dimension_type: 1
-    name_en: female
-    name_fr: female
+    name_en: Female
+    name_fr: Female
     value: f
     order: 1.0
 

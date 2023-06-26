@@ -99,12 +99,17 @@ class IndicatorDatum(models.Model):
         ("caution", tdt("Caution")),
         ("acceptable", tdt("Acceptable")),
         ("good", tdt("Good")),
+        ("suppressed", tdt("Suppressed")),
         ("excellent", tdt("Excellent")),
     ]
     VALUE_UNIT_CHOICES = [
         ("", tdt("--")),
         ("%", tdt("%")),
         ("per_100k", tdt("Per 100K")),
+        ("years", tdt("Years")),
+        ("per_100k_census", tdt("Per 100K census inhabitants")),
+        ("per_100k_patient_days", tdt("Per 100K patient days")),
+        ("per_100k_live_births", tdt("Per 100K live births")),
         ("other", tdt("Other")),
     ]
 

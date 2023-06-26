@@ -31,14 +31,14 @@ EOF
 
 # Setting up the development environment
 
-Note: run all this in the server/ directory
+Note: run all this in the repo's root directory
 
 1. install python3.10 
 2. install postgres [instructions here](https://github.com/PHACDataHub/phac-django-docs/blob/master/local-dev.md#installing-and-using-postgres-wout-sci-ops-on-windows) 
 3. clone repo
 4. create a virtual environment in repo root (python -m venv venv)
 5. activate virtual environment (source venv/Scripts/activate on windows, venv/bin/activate on *nix)
-6. install dependencies (`pip install -r requirements.txt -r requirements_dev.txt`)
+6. install dependencies (`pip install -r server/requirements.txt -r server/requirements_dev.txt`)
 7. setting postgres:
     - ```bash
         psql -U postgres -c "CREATE ROLE cpho_db_user with login"

@@ -40,8 +40,11 @@ EXPOSE 8000 2222
 RUN apk add --no-cache libpq openssh su-exec
 
 # create the appropriate directories, user and setup the ssh server
-ENV HOME=/cpho
-ENV APP_HOME=$HOME/web
+# ENV HOME=/cpho
+# ENV APP_HOME=$HOME/web
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+
 ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
 RUN \
@@ -74,7 +77,11 @@ COPY --chown=5678:app . $APP_HOME
 
 # make entrypoint.prod.sh executable and create staticfiles dir (and files)
 # RUN chmod +x $APP_HOME/entrypoint.prod.sh && \
-RUN mkdir $APP_HOME/staticfiles 
+RUN mkdir -p $APP_HOME/staticfiles 
+# Create the staticfiles directory
+# RUN mkdir -p /app/staticfiles
+
+COPY ./static /$APP_HOME/gstaticfiles
 # && \
 # ENV SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 
 # python -m manage collectstatic --no-input

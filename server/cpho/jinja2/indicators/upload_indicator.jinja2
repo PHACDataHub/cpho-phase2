@@ -18,14 +18,17 @@
     {{ csrf_input }}
     <div>
       {{ form.csv_file }}
- 
-      <div class="form-group">
-        <button class="btn btn-primary mt-3 float-end">{{ tdt("Upload")}}</button>
+      <div class="row">
+        <div class="form-group">
+          <button class="btn btn-primary mt-3 float-end">{{ tdt("Upload")}}</button>
+        </div>
       </div>
  
     </div>
   </form>
 
+ 
+  {% if form.csv_file.errors %}<div class="my-2 error-div">{{ form.csv_file.errors }}</div>{% endif %}
 
   <div class="modal fade modal-xl"
        id="expectedColumnModal"
@@ -85,7 +88,9 @@
                 <td>{{ tdt("Sub category") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("SOCIAL FACTORS") }}</li>
+                    <li>
+                      {{ tdt("SOCIAL FACTORS") }}
+                    </li>
                     <li>
                       {{ tdt("HEALTH STATUS") }}
                     </li>

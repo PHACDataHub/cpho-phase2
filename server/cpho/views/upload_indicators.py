@@ -4,6 +4,7 @@ from django import forms
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.views.generic import FormView
 
 from cpho.models import (
@@ -188,6 +189,7 @@ class UploadForm(forms.Form):
         "Region": DimensionType.objects.get(code="region"),
         "Gender": DimensionType.objects.get(code="gender"),
     }
+    # using combination of dimension type and value because provinces are regions as well; for now.
     non_literal_dimension_value_mapper = {
         "Province_ON": DimensionValue.objects.get(
             dimension_type__code="province", value="on"
@@ -325,12 +327,12 @@ class UploadForm(forms.Form):
             # "Age_Group",
             # "Age_Group_Type",
             # "Living_Arrangement",
-            "Data_Quality",
             # "PT_Data_Availability",
+            # "Value_Units",
+            "Data_Quality",
             "Value",
             "Value_LowerCI",
             "Value_UpperCI",
-            # "Value_Units",
             "Value_Displayed",
             "SingleYear_TimeFrame",
             "MultiYear_TimeFrame",
@@ -343,7 +345,8 @@ class UploadForm(forms.Form):
                 missing_headers.append(header)
         if missing_headers:
             raise forms.ValidationError(
-                tdt("File is missing required headers")
+                tdt("File is missing the required columns: ")
+                + ", ".join(missing_headers)
             )
 
         errorlist = []
@@ -399,9 +402,8 @@ class UploadForm(forms.Form):
             # print(data_dimension)
             data_dict.append(data_row)
 
-        nl = "\n"
         if errorlist:
-            raise forms.ValidationError("\n".join(errorlist))
+            raise forms.ValidationError(mark_safe(" </br> ".join(errorlist)))
 
         return data_dict
 
@@ -414,7 +416,7 @@ class UploadIndicator(FormView):
         return reverse("list_indicators")
 
     def form_valid(self, form):
-        # form.save()
+        form.save()
         messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 
@@ -423,7 +425,9 @@ class UploadIndicator(FormView):
             messages.error(
                 self.request,
                 # need a smarter implementation for this
-                form.errors.as_data()["csv_file"][0].messages[0],
+                tdt(
+                    "There was an error uploading the file. Please correct the errors below and try again"
+                ),
             )
         except Exception:
             messages.error(

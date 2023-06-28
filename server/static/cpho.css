@@ -28,3 +28,9 @@ h1 abbr {
     text-decoration: none !important;
     border-bottom: none;
 }
+
+.error-div {
+    background: #f8d7da;
+    color: #842029;
+    border-radius: 10px;
+}

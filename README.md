@@ -1,6 +1,6 @@
 # CPHO server
 
-
+Currently running on https://cpho-phase2-qrj6r6scdq-nn.a.run.app (will move to previous url soon).
 
 ## Example .env file: 
 

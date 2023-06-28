@@ -1,18 +1,84 @@
 - model: cpho.period
   pk: 1
   fields:
-    name_en: "2021"
-    name_fr: "2021"
     year: 2021
+    year_type: calendar 
 - model: cpho.period
   pk: 2
   fields:
-    name_en: "2022"
-    name_fr: "2022"
     year: 2022
+    year_type: calendar
 - model: cpho.period
   pk: 3
   fields:
-    name_en: "2023"
-    name_fr: "2023"
     year: 2023
+    year_type: calendar
+- model: cpho.period
+  pk: 4
+  fields:
+    year: 2021
+    year_type: fiscal
+- model: cpho.period
+  pk: 5
+  fields:
+    year: 2022
+    year_type: fiscal
+- model: cpho.period
+  pk: 6
+  fields:
+    year: 2023
+    year_type: fiscal
+- model: cpho.period
+  pk: 7
+  fields:
+    year: 2021
+    quarter: 1
+    year_type: fiscal
+- model: cpho.period
+  pk: 8
+  fields:
+    year: 2021
+    quarter: 2
+    year_type: fiscal
+- model: cpho.period
+  pk: 9
+  fields:
+    year: 2021
+    quarter: 3
+    year_type: fiscal
+- model: cpho.period
+  pk: 10
+  fields:
+    year: 2021
+    quarter: 4
+    year_type: fiscal
+- model: cpho.period
+  pk: 11
+  fields:
+    year: 2022
+    quarter: 1
+    year_type: fiscal
+- model: cpho.period
+  pk: 12
+  fields:
+    year: 2022
+    quarter: 2
+    year_type: fiscal
+- model: cpho.period
+  pk: 13
+  fields:
+    year: 2022
+    quarter: 3
+    year_type: fiscal
+- model: cpho.period
+  pk: 14
+  fields:
+    year: 2022
+    quarter: 4
+    year_type: fiscal
+- model: cpho.period
+  pk: 15
+  fields:
+    year: 2023
+    quarter: 1
+    year_type: fiscal

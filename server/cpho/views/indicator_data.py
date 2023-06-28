@@ -16,6 +16,8 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
+from .view_util import SinglePeriodMixin
+
 
 class InstanceProvidingFormSet(BaseFormSet):
     """
@@ -95,7 +97,7 @@ class IndicatorDatumForm(ModelForm):
     )
 
 
-class ManageIndicatorData(TemplateView):
+class ManageIndicatorData(SinglePeriodMixin, TemplateView):
     template_name = "indicator_data/manage_indicator_data.jinja2"
 
     @cached_property
@@ -116,6 +118,7 @@ class ManageIndicatorData(TemplateView):
         existing_data = IndicatorDatum.objects.filter(
             indicator=self.indicator,
             dimension_type__code="age",
+            period=self.period,
         ).order_by("dimension_value__order")
 
         InlineFormsetCls = forms.inlineformset_factory(
@@ -153,6 +156,7 @@ class ManageIndicatorData(TemplateView):
         existing_data = IndicatorDatum.objects.filter(
             indicator=self.indicator,
             dimension_type__is_literal=False,
+            period=self.period,
         ).order_by("dimension_value__order")
 
         # value for all not selected only get data for stratifier selected
@@ -185,6 +189,7 @@ class ManageIndicatorData(TemplateView):
                     indicator=self.indicator,
                     dimension_value=pv,
                     dimension_type_id=pv.dimension_type_id,
+                    period=self.period,
                 )
             instances.append(record)
 

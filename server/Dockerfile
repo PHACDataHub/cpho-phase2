@@ -81,7 +81,7 @@ RUN mkdir -p $APP_HOME/staticfiles
 # Create the staticfiles directory
 # RUN mkdir -p /app/staticfiles
 
-COPY ./static /$APP_HOME/gstaticfiles
+COPY ./static /$APP_HOME/staticfiles
 # && \
 # ENV SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 
 # python -m manage collectstatic --no-input

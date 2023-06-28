@@ -10,13 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import io
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 from django.urls import reverse_lazy
 
+import environ
+import google.auth
 from decouple import Csv, config
+from google.cloud import secretmanager
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,
@@ -29,13 +34,68 @@ if "test" in sys.argv or any("pytest" in arg for arg in sys.argv):
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+# [START cloudrun_django_secret_config]
+# SECURITY WARNING: don't run with debug turned on in production!
+# Change this to "False" when you are ready for production
+env = environ.Env(DEBUG=(bool, True))
+env_file = os.path.join(BASE_DIR, ".env")
+
+# Attempt to load the Project ID into the environment, safely failing on error.
+try:
+    _, os.environ["GOOGLE_CLOUD_PROJECT"] = google.auth.default()
+except google.auth.exceptions.DefaultCredentialsError:
+    pass
+
+if os.path.isfile(env_file):
+    # Use a local secret file, if provided
+    env.read_env(env_file)
+
+# [START_EXCLUDE]
+elif os.getenv("GITHUB_WORKFLOW'", None):
+    # Create local settings if running with CI, for unit testing
+    DATABASES = {
+        'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'github_actions',
+           'USER': 'postgres',
+           'PASSWORD': 'postgres',
+           'HOST': '127.0.0.1',
+           'PORT': '5432',
+        }
+    }
+
+    placeholder = (
+        f"SECRET_KEY=a\n"
+        # "GS_BUCKET_NAME=None\n" #If being used for static file storage - if the case, will need to store bucket in GCP Secret Manager as well
+        f"DATABASE_URL=sqlite://{os.path.join(BASE_DIR, 'db.sqlite3')}"
+    )
+    env.read_env(io.StringIO(placeholder))
+# [END_EXCLUDE]
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+    # Pull secrets from Secret Manager
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+
+    client = secretmanager.SecretManagerServiceClient()
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+
+    env.read_env(io.StringIO(payload))
+else:
+    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+# [END cpho-phase2_secret_config]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
+# SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
@@ -47,9 +107,14 @@ IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
 if IS_LOCAL_DEV:
     SESSION_COOKIE_SECURE = False
 
-
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
-CORS_ALLOWED_ORIGINS = ["*"]
+CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
+if CLOUDRUN_SERVICE_URL:
+    ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
+    CSRF_TRUSTED_ORIGINS = [CLOUDRUN_SERVICE_URL]
+else:
+    ALLOWED_HOSTS =  ["*"]
+# ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
+    CORS_ALLOWED_ORIGINS = ["*"]
 
 # Application definition
 INSTALLED_APPS = configure_apps(
@@ -67,9 +132,16 @@ INSTALLED_APPS = configure_apps(
     ]
 )
 
-STATIC_URL = "/static/"
-STATICFILES_DIRS = (os.path.join("static"),)
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATIC_URL = "/static/"
+# STATICFILES_DIRS = (os.path.join("static"),)
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 MIDDLEWARE = configure_middleware(
@@ -86,7 +158,7 @@ MIDDLEWARE = configure_middleware(
         "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
-        # "whitenoise.middleware.WhiteNoiseMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
@@ -137,25 +209,47 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "server.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+# Set this value from django-environ
+DATABASES = {"default": env.db()}
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-        #   'OPTIONS': {'sslmode': 'require'},
-        "TEST": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": config("TEST_DB_NAME", default="cpho_test_db"),
-        },
-    }
-}
+# Change database settings if using the Cloud SQL Auth Proxy
+if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
+    DATABASES["default"]["HOST"] = "127.0.0.1"
+    DATABASES["default"]["PORT"] = 5432
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": config("DB_NAME"),
+#         "USER": config("DB_USER"),
+#         "PASSWORD": config("DB_PASSWORD"),
+#         "HOST": config("DB_HOST"),
+#         "PORT": config("DB_PORT"),
+#         #   'OPTIONS': {'sslmode': 'require'},
+#         "TEST": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": config("TEST_DB_NAME", default="cpho_test_db"),
+#         },
+#     }
+# # Database
+# # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": config("DB_NAME"),
+#         "USER": config("DB_USER"),
+#         "PASSWORD": config("DB_PASSWORD"),
+#         "HOST": config("DB_HOST"),
+#         "PORT": config("DB_PORT"),
+#         #   'OPTIONS': {'sslmode': 'require'},
+#         "TEST": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": config("TEST_DB_NAME", default="cpho_test_db"),
+#         },
+#     }
+# }
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

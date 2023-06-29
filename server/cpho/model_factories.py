@@ -61,10 +61,10 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
     indicator = factory.SubFactory(IndicatorFactory)
     period = factory.SubFactory(PeriodFactory)
     dimension_type = factory.SubFactory(DimensionTypeFactory)
-    dimension_value = factory.LazyAttribute(
-        lambda o: factory.SubFactory(DimensionValueFactory)
-        if not o.dimension_type.is_literal
-        else None
+    dimension_value = factory.Maybe(
+        "dimension_type.is_literal",
+        yes_declaration=None,
+        no_declaration=factory.SubFactory(DimensionValueFactory),
     )
     value = factory.Faker("pyfloat")
     data_quality = factory.LazyFunction(

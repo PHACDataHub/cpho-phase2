@@ -72,13 +72,8 @@ RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
 # copy project
 COPY --chown=5678:app . $APP_HOME
 
-# copy sshd_config file
-COPY sshd_config /etc/ssh/
-
 # make entrypoint.prod.sh executable and create staticfiles dir (and files)
 RUN chmod +x $APP_HOME/entrypoint.prod.sh && \
-    rm $APP_HOME/entrypoint.sh && \
-    rm $APP_HOME/sshd_config && \
     mkdir $APP_HOME/staticfiles && \
     SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 python -m manage collectstatic --no-input
 

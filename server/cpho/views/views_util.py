@@ -3,8 +3,14 @@ from cpho.models import DimensionType, DimensionValue
 
 def upload_mapper():
     all_dimensions = DimensionType.objects.all()
+    all_dimension_dict = {
+        dimension.code: dimension for dimension in all_dimensions
+    }
     all_dimension_vals = DimensionValue.objects.all()
-
+    all_dimension_val_dict = {
+        dimension_val.value: dimension_val
+        for dimension_val in all_dimension_vals
+    }
     return {
         "category_mapper": {
             "": "",
@@ -40,83 +46,37 @@ def upload_mapper():
             "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
         },
         "dimension_type_mapper": {
-            "Province": all_dimensions.get(code="province"),
-            "Age Group": all_dimensions.get(code="age"),
-            "Sex": all_dimensions.get(code="sex"),
-            "Canada": all_dimensions.get(code="canada"),
-            "Region": all_dimensions.get(code="region"),
-            "Gender": all_dimensions.get(code="gender"),
+            "Province": all_dimension_dict["province"],
+            "Age Group": all_dimension_dict["age"],
+            "Sex": all_dimension_dict["sex"],
+            "Canada": all_dimension_dict["canada"],
+            "Region": all_dimension_dict["region"],
+            "Gender": all_dimension_dict["gender"],
         },
         "non_literal_dimension_value_mapper": {
-            ("Province", "ON"): all_dimension_vals.get(
-                dimension_type__code="province", value="on"
-            ),
-            ("Province", "AB"): all_dimension_vals.get(
-                dimension_type__code="province", value="ab"
-            ),
-            ("Province", "SK"): all_dimension_vals.get(
-                dimension_type__code="province", value="sk"
-            ),
-            ("Province", "MB"): all_dimension_vals.get(
-                dimension_type__code="province", value="mb"
-            ),
-            ("Province", "BC"): all_dimension_vals.get(
-                dimension_type__code="province", value="bc"
-            ),
-            ("Province", "QC"): all_dimension_vals.get(
-                dimension_type__code="province", value="qc"
-            ),
-            ("Province", "NB"): all_dimension_vals.get(
-                dimension_type__code="province", value="nb"
-            ),
-            ("Province", "NS"): all_dimension_vals.get(
-                dimension_type__code="province", value="ns"
-            ),
-            ("Province", "NL"): all_dimension_vals.get(
-                dimension_type__code="province", value="nl"
-            ),
-            ("Province", "PE"): all_dimension_vals.get(
-                dimension_type__code="province", value="pe"
-            ),
-            ("Province", "NU"): all_dimension_vals.get(
-                dimension_type__code="province", value="nu"
-            ),
-            ("Province", "NT"): all_dimension_vals.get(
-                dimension_type__code="province", value="nt"
-            ),
-            ("Province", "YT"): all_dimension_vals.get(
-                dimension_type__code="province", value="yt"
-            ),
-            ("Region", "ATLANTIC"): all_dimension_vals.get(
-                dimension_type__code="region", value="atlantic"
-            ),
-            ("Region", "PRAIRIE"): all_dimension_vals.get(
-                dimension_type__code="region", value="prairies"
-            ),
-            ("Region", "TERRITORIES"): all_dimension_vals.get(
-                dimension_type__code="region", value="territories"
-            ),
-            ("Gender", "MEN"): all_dimension_vals.get(
-                dimension_type__code="gender", value="men"
-            ),
-            ("Gender", "WOMEN"): all_dimension_vals.get(
-                dimension_type__code="gender", value="women"
-            ),
-            ("Gender", "BOYS"): all_dimension_vals.get(
-                dimension_type__code="gender", value="boys"
-            ),
-            ("Gender", "GIRLS"): all_dimension_vals.get(
-                dimension_type__code="gender", value="girls"
-            ),
-            ("Sex", "MALES"): all_dimension_vals.get(
-                dimension_type__code="sex", value="m"
-            ),
-            ("Sex", "FEMALES"): all_dimension_vals.get(
-                dimension_type__code="sex", value="f"
-            ),
-            ("Canada", "CANADA"): all_dimension_vals.get(
-                dimension_type__code="canada", value="canada"
-            ),
+            ("Province", "ON"): all_dimension_val_dict["on"],
+            ("Province", "AB"): all_dimension_val_dict["ab"],
+            ("Province", "SK"): all_dimension_val_dict["sk"],
+            ("Province", "MB"): all_dimension_val_dict["mb"],
+            ("Province", "BC"): all_dimension_val_dict["bc"],
+            ("Province", "QC"): all_dimension_val_dict["qc"],
+            ("Province", "NB"): all_dimension_val_dict["nb"],
+            ("Province", "NS"): all_dimension_val_dict["ns"],
+            ("Province", "NL"): all_dimension_val_dict["nl"],
+            ("Province", "PE"): all_dimension_val_dict["pe"],
+            ("Province", "NU"): all_dimension_val_dict["nu"],
+            ("Province", "NT"): all_dimension_val_dict["nt"],
+            ("Province", "YT"): all_dimension_val_dict["yt"],
+            ("Region", "ATLANTIC"): all_dimension_val_dict["atlantic"],
+            ("Region", "PRAIRIE"): all_dimension_val_dict["prairies"],
+            ("Region", "TERRITORIES"): all_dimension_val_dict["territories"],
+            ("Gender", "MEN"): all_dimension_val_dict["men"],
+            ("Gender", "WOMEN"): all_dimension_val_dict["women"],
+            ("Gender", "BOYS"): all_dimension_val_dict["boys"],
+            ("Gender", "GIRLS"): all_dimension_val_dict["girls"],
+            ("Sex", "MALES"): all_dimension_val_dict["m"],
+            ("Sex", "FEMALES"): all_dimension_val_dict["f"],
+            ("Canada", "CANADA"): all_dimension_val_dict["canada"],
         },
     }
 

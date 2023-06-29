@@ -36,38 +36,30 @@ class UploadForm(forms.Form):
         preiod_val = Period.objects.get(year="2023")
         mapper = upload_mapper()
         for datum in data:
-            # check if indicator exists
+            # For the future: Indicators should not be created; just queried
+
+            # try to find if indicator with same exact attributes exists first
             indicator_obj = Indicator.objects.filter(
                 name=datum["Indicator"],
                 category=mapper["category_mapper"][datum["Category"]],
                 sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                detailed_indicator=datum["Detailed Indicator"],
+                sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
             )
-            # if not create it
+            # if it exists, use it(saves extra queries to db); otherwise create it
             if len(indicator_obj) == 0:
-                indicator_obj = Indicator.objects.create(
+                indicator_obj, created = Indicator.objects.get_or_create(
                     name=datum["Indicator"],
-                    detailed_indicator=datum["Detailed Indicator"],
-                    sub_indicator_measurement=datum[
-                        "Sub_Indicator_Measurement"
-                    ],
                     category=mapper["category_mapper"][datum["Category"]],
                     sub_category=mapper["subcategory_mapper"][datum["Topic"]],
                 )
-            # if it does exist update it
-            else:
-                indicator_obj = indicator_obj[0]
-                indicator_obj.name = datum["Indicator"]
                 indicator_obj.detailed_indicator = datum["Detailed Indicator"]
                 indicator_obj.sub_indicator_measurement = datum[
                     "Sub_Indicator_Measurement"
                 ]
-                indicator_obj.category = mapper["category_mapper"][
-                    datum["Category"]
-                ]
-                indicator_obj.sub_category = mapper["subcategory_mapper"][
-                    datum["Topic"]
-                ]
                 indicator_obj.save()
+            else:
+                indicator_obj = indicator_obj[0]
 
             dim_val = None
             lit_dim_val = None
@@ -78,7 +70,7 @@ class UploadForm(forms.Form):
             else:
                 lit_dim_val = datum["Dimension_Value"]
 
-            indData_obj = IndicatorDatum.objects.filter(
+            indData_obj, created = IndicatorDatum.objects.get_or_create(
                 indicator=indicator_obj,
                 dimension_type=mapper["dimension_type_mapper"][
                     datum["Dimension_Type"]
@@ -86,67 +78,29 @@ class UploadForm(forms.Form):
                 dimension_value=dim_val,
                 literal_dimension_val=lit_dim_val,
             )
-
-            if len(indData_obj) == 0:
-                indData_obj = IndicatorDatum.objects.create(
-                    indicator=indicator_obj,
-                    dimension_type=mapper["dimension_type_mapper"][
-                        datum["Dimension_Type"]
-                    ],
-                    dimension_value=dim_val,
-                    literal_dimension_val=lit_dim_val,
-                    period=preiod_val,
-                    data_quality=mapper["data_quality_mapper"][
-                        datum["Data_Quality"]
-                    ],
-                    value=float(datum["Value"])
-                    if datum["Value"] != ""
-                    else None,
-                    value_lower_bound=float(datum["Value_LowerCI"])
-                    if datum["Value_LowerCI"] != ""
-                    else None,
-                    value_upper_bound=float(datum["Value_UpperCI"])
-                    if datum["Value_UpperCI"] != ""
-                    else None,
-                    value_unit=mapper["value_unit_mapper"][
-                        datum["Value_Displayed"]
-                    ],
-                    single_year_timeframe=datum["SingleYear_TimeFrame"],
-                    multi_year_timeframe=datum["MultiYear_TimeFrame"],
-                )
-            else:
-                indData_obj = indData_obj[0]
-                indData_obj.indicator = indicator_obj
-                indData_obj.dimension_type = mapper["dimension_type_mapper"][
-                    datum["Dimension_Type"]
-                ]
-                indData_obj.dimension_value = dim_val
-                indData_obj.literal_dimension_val = lit_dim_val
-                indData_obj.period = preiod_val
-                indData_obj.data_quality = mapper["data_quality_mapper"][
-                    datum["Data_Quality"]
-                ]
-                indData_obj.value = (
-                    float(datum["Value"]) if datum["Value"] != "" else None
-                )
-                indData_obj.value_lower_bound = (
-                    float(datum["Value_LowerCI"])
-                    if datum["Value_LowerCI"] != ""
-                    else None
-                )
-                indData_obj.value_upper_bound = (
-                    float(datum["Value_UpperCI"])
-                    if datum["Value_UpperCI"] != ""
-                    else None
-                )
-                indData_obj.value_unit = mapper["value_unit_mapper"][
-                    datum["Value_Displayed"]
-                ]
-                indData_obj.single_year_timeframe = datum[
-                    "SingleYear_TimeFrame"
-                ]
-                indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
-                indData_obj.save()
+            indData_obj.period = preiod_val
+            indData_obj.data_quality = mapper["data_quality_mapper"][
+                datum["Data_Quality"]
+            ]
+            indData_obj.value = (
+                float(datum["Value"]) if datum["Value"] != "" else None
+            )
+            indData_obj.value_lower_bound = (
+                float(datum["Value_LowerCI"])
+                if datum["Value_LowerCI"] != ""
+                else None
+            )
+            indData_obj.value_upper_bound = (
+                float(datum["Value_UpperCI"])
+                if datum["Value_UpperCI"] != ""
+                else None
+            )
+            indData_obj.value_unit = mapper["value_unit_mapper"][
+                datum["Value_Displayed"]
+            ]
+            indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
+            indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
+            indData_obj.save()
 
     def clean_csv_file(self):
         start_time = time.time()

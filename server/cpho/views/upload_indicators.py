@@ -1,4 +1,5 @@
 import csv
+import time
 
 from django import forms
 from django.contrib import messages
@@ -16,6 +17,8 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
+from .views_util import upload_mapper
+
 
 class UploadForm(forms.Form):
     csv_file = forms.FileField(
@@ -27,283 +30,127 @@ class UploadForm(forms.Form):
         ),
     )
 
-    # def deduce_dimension_type(self, record, csv_line_number):
-    #     dimension_deduced_bool = False
-    #     dimension_deduced = None
-    #     dimension_col_name = None
-
-    #     checking_column = "Geography"
-    #     geography = record[checking_column]
-    #     if geography and geography.lower() not in [
-    #         "canada",
-    #         "null",
-    #         "nan",
-    #         "",
-    #     ]:
-    #         # print("DIMESNION: ", geography, " FOR: ", record, "\n")
-    #         dimension_deduced_bool = True
-    #         dimension_deduced = geography
-    #         dimension_col_name = checking_column
-
-    #     checking_column = "Sex"
-    #     sex = record[checking_column]
-    #     if sex and sex.lower() not in ["both sexes", "null", "nan", ""]:
-    #         # print("DIMESNION: ", sex, " FOR: ", record, "\n")
-    #         if dimension_deduced_bool:
-    #             print(
-    #                 "WARNING ON LINE (",
-    #                 csv_line_number,
-    #                 "): DIMENSION ALREADY DEDUCED ",
-    #                 dimension_deduced,
-    #                 "\nNEW DIMENSION FOUND: ",
-    #                 sex,
-    #                 "\nPLEASE CHECK RECORD: ",
-    #                 record,
-    #             )
-    #             return None
-    #         else:
-    #             dimension_deduced_bool = True
-    #             dimension_deduced = sex
-    #             dimension_col_name = checking_column
-
-    #     checking_column = "Gender"
-    #     gender = record[checking_column]
-    #     if gender and gender.lower() not in [
-    #         "both genders",
-    #         "null",
-    #         "nan",
-    #         "",
-    #     ]:
-    #         # print("DIMESNION: ", gender, " FOR: ", record, "\n")
-    #         if dimension_deduced_bool:
-    #             print(
-    #                 "WARNING ON LINE (",
-    #                 csv_line_number,
-    #                 "): DIMENSION ALREADY DEDUCED ",
-    #                 dimension_deduced,
-    #                 "\nNEW DIMENSION FOUND: ",
-    #                 gender,
-    #                 "\nPLEASE CHECK RECORD: ",
-    #                 record,
-    #             )
-    #             return None
-    #         else:
-    #             dimension_deduced_bool = True
-    #             dimension_deduced = gender
-    #             dimension_col_name = checking_column
-
-    #     checking_column = "Age_Group"
-    #     age_group = record[checking_column]
-    #     if age_group and age_group.lower() not in ["null", "nan", ""]:
-    #         # print("DIMESNION: ", age_group, " FOR: ", record, "\n")
-    #         if dimension_deduced_bool:
-    #             print(
-    #                 "WARNING ON LINE (",
-    #                 csv_line_number,
-    #                 "): DIMENSION ALREADY DEDUCED ",
-    #                 dimension_deduced,
-    #                 "\nNEW DIMENSION FOUND: ",
-    #                 age_group,
-    #                 "\nPLEASE CHECK RECORD: ",
-    #                 record,
-    #             )
-    #             return None
-    #         else:
-    #             dimension_deduced_bool = True
-    #             dimension_deduced = age_group
-    #             dimension_col_name = checking_column
-
-    #     checking_column = "Geography"
-    #     if not dimension_deduced_bool and geography.lower() == "canada":
-    #         # print("DIMESNION: ", geography, " FOR: ", record, "\n")
-    #         if dimension_deduced_bool:
-    #             print(
-    #                 "WARNING ON LINE (",
-    #                 csv_line_number,
-    #                 "): DIMENSION ALREADY DEDUCED ",
-    #                 dimension_deduced,
-    #                 "\nNEW DIMENSION FOUND: ",
-    #                 geography,
-    #                 "\nPLEASE CHECK RECORD: ",
-    #                 record,
-    #             )
-    #             return None
-    #         else:
-    #             dimension_deduced_bool = True
-    #             dimension_deduced = geography
-    #             dimension_col_name = checking_column
-
-    #     if not dimension_deduced_bool:
-    #         print(
-    #             "WARNING ON LINE (",
-    #             csv_line_number,
-    #             "): DIMENSION NOT FOUND ",
-    #             "\nPLEASE CHECK RECORD: ",
-    #             record,
-    #         )
-    #         return None
-    #     return {
-    #         "dimension_col_name": dimension_col_name,
-    #         "dimension_value": dimension_deduced,
-    #     }
-    category_mapper = {
-        "": "",
-        "FACTORS INFLUENCING HEALTH": "factors_influencing_health",
-        "GENERAL HEALTH STATUS": "general_health_status",
-        "HEALTH OUTCOMES": "health_outcomes",
-    }
-
-    subcategory_mapper = {
-        "": "",
-        "SOCIAL FACTORS": "social_factors",
-        "HEALTH STATUS": "health_status",
-        "COMMUNICABLE DISEASES": "communicable_diseases",
-        "SUBSTANCE USE": "substance_use",
-        "CHILDHOOD AND FAMILY FACTORS": "childhood_and_family_risk_and_protective_factors",
-        "CHILDHOOD AND FAMILY RISK FACTORS": "childhood_and_family_risk_and_protective_factors",
-        "CHRONIC DISEASES AND MENTAL HEALTH": "chronic_diseases_and_mental_health",
-    }
-
-    data_quality_mapper = {
-        "": "",
-        "CAUTION": "caution",
-        "GOOD": "good",
-        "ACCEPTABLE": "acceptable",
-        "SUPPRESSED": "suppressed",
-        "VERY GOOD": "excellent",
-    }
-    value_unit_mapper = {
-        "": "",
-        "%": "%",
-        "PER 100,000": "per_100k",
-        "YEARS": "years",
-        "PER 1,000 CENSUS INHABITANTS": "per_100k_census",
-        "PER 10,000 PATIENT DAYS": "per_100k_patient_days",
-        "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
-    }
-    dimension_type_mapper = {
-        "Province": DimensionType.objects.get(code="province"),
-        "Age Group": DimensionType.objects.get(code="age"),
-        "Sex": DimensionType.objects.get(code="sex"),
-        "Canada": DimensionType.objects.get(code="canada"),
-        "Region": DimensionType.objects.get(code="region"),
-        "Gender": DimensionType.objects.get(code="gender"),
-    }
-    # using combination of dimension type and value because provinces are regions as well; for now.
-    non_literal_dimension_value_mapper = {
-        "Province_ON": DimensionValue.objects.get(
-            dimension_type__code="province", value="on"
-        ),
-        "Province_AB": DimensionValue.objects.get(
-            dimension_type__code="province", value="ab"
-        ),
-        "Province_SK": DimensionValue.objects.get(
-            dimension_type__code="province", value="sk"
-        ),
-        "Province_MB": DimensionValue.objects.get(
-            dimension_type__code="province", value="mb"
-        ),
-        "Province_BC": DimensionValue.objects.get(
-            dimension_type__code="province", value="bc"
-        ),
-        "Province_QC": DimensionValue.objects.get(
-            dimension_type__code="province", value="qc"
-        ),
-        "Province_NB": DimensionValue.objects.get(
-            dimension_type__code="province", value="nb"
-        ),
-        "Province_NS": DimensionValue.objects.get(
-            dimension_type__code="province", value="ns"
-        ),
-        "Province_NL": DimensionValue.objects.get(
-            dimension_type__code="province", value="nl"
-        ),
-        "Province_PE": DimensionValue.objects.get(
-            dimension_type__code="province", value="pe"
-        ),
-        "Province_NU": DimensionValue.objects.get(
-            dimension_type__code="province", value="nu"
-        ),
-        "Province_NT": DimensionValue.objects.get(
-            dimension_type__code="province", value="nt"
-        ),
-        "Province_YT": DimensionValue.objects.get(
-            dimension_type__code="province", value="yt"
-        ),
-        "Region_ATLANTIC": DimensionValue.objects.get(
-            dimension_type__code="region", value="atlantic"
-        ),
-        "Region_PRAIRIE": DimensionValue.objects.get(
-            dimension_type__code="region", value="prairies"
-        ),
-        "Region_TERRITORIES": DimensionValue.objects.get(
-            dimension_type__code="region", value="territories"
-        ),
-        "Gender_MEN": DimensionValue.objects.get(
-            dimension_type__code="gender", value="men"
-        ),
-        "Gender_WOMEN": DimensionValue.objects.get(
-            dimension_type__code="gender", value="women"
-        ),
-        "Gender_BOYS": DimensionValue.objects.get(
-            dimension_type__code="gender", value="boys"
-        ),
-        "Gender_GIRLS": DimensionValue.objects.get(
-            dimension_type__code="gender", value="girls"
-        ),
-        "Sex_MALES": DimensionValue.objects.get(
-            dimension_type__code="sex", value="m"
-        ),
-        "Sex_FEMALES": DimensionValue.objects.get(
-            dimension_type__code="sex", value="f"
-        ),
-        "Canada_CANADA": DimensionValue.objects.get(
-            dimension_type__code="canada", value="canada"
-        ),
-    }
-
     def save(self):
         data = self.cleaned_data["csv_file"]
         # TODO: Update Periods
         preiod_val = Period.objects.get(year="2023")
+        mapper = upload_mapper()
         for datum in data:
-            indicator_obj, ind_created = Indicator.objects.get_or_create(
+            # check if indicator exists
+            indicator_obj = Indicator.objects.filter(
                 name=datum["Indicator"],
-                detailed_indicator=datum["Detailed Indicator"],
-                sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
-                category=category_mapper[datum["Category"]],
-                sub_category=subcategory_mapper[datum["Topic"]],
+                category=mapper["category_mapper"][datum["Category"]],
+                sub_category=mapper["subcategory_mapper"][datum["Topic"]],
             )
+            # if not create it
+            if len(indicator_obj) == 0:
+                indicator_obj = Indicator.objects.create(
+                    name=datum["Indicator"],
+                    detailed_indicator=datum["Detailed Indicator"],
+                    sub_indicator_measurement=datum[
+                        "Sub_Indicator_Measurement"
+                    ],
+                    category=mapper["category_mapper"][datum["Category"]],
+                    sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                )
+            # if it does exist update it
+            else:
+                indicator_obj = indicator_obj[0]
+                indicator_obj.name = datum["Indicator"]
+                indicator_obj.detailed_indicator = datum["Detailed Indicator"]
+                indicator_obj.sub_indicator_measurement = datum[
+                    "Sub_Indicator_Measurement"
+                ]
+                indicator_obj.category = mapper["category_mapper"][
+                    datum["Category"]
+                ]
+                indicator_obj.sub_category = mapper["subcategory_mapper"][
+                    datum["Topic"]
+                ]
+                indicator_obj.save()
 
             dim_val = None
             lit_dim_val = None
             if datum["Dimension_Type"] != "Age Group":
-                dim_val = non_literal_dimension_value_mapper[
-                    f'{datum["Dimension_Type"]}_{datum["Dimension_Value"]}'
+                dim_val = mapper["non_literal_dimension_value_mapper"][
+                    (datum["Dimension_Type"], datum["Dimension_Value"])
                 ]
             else:
                 lit_dim_val = datum["Dimension_Value"]
 
-            indData_obj, id_created = IndicatorDatum.objects.get_or_create(
+            indData_obj = IndicatorDatum.objects.filter(
                 indicator=indicator_obj,
-                dimension_type=dimension_type_mapper[datum["Dimension_Type"]],
+                dimension_type=mapper["dimension_type_mapper"][
+                    datum["Dimension_Type"]
+                ],
                 dimension_value=dim_val,
                 literal_dimension_val=lit_dim_val,
-                period=preiod_val,
-                data_quality=data_quality_mapper[datum["Data_Quality"]],
-                value=float(datum["Value"]) if datum["Value"] != "" else None,
-                value_lower_bound=float(datum["Value_LowerCI"])
-                if datum["Value_LowerCI"] != ""
-                else None,
-                value_upper_bound=float(datum["Value_UpperCI"])
-                if datum["Value_UpperCI"] != ""
-                else None,
-                value_unit=value_unit_mapper[datum["Value_Displayed"]],
-                single_year_timeframe=datum["SingleYear_TimeFrame"],
-                multi_year_timeframe=datum["MultiYear_TimeFrame"],
             )
 
+            if len(indData_obj) == 0:
+                indData_obj = IndicatorDatum.objects.create(
+                    indicator=indicator_obj,
+                    dimension_type=mapper["dimension_type_mapper"][
+                        datum["Dimension_Type"]
+                    ],
+                    dimension_value=dim_val,
+                    literal_dimension_val=lit_dim_val,
+                    period=preiod_val,
+                    data_quality=mapper["data_quality_mapper"][
+                        datum["Data_Quality"]
+                    ],
+                    value=float(datum["Value"])
+                    if datum["Value"] != ""
+                    else None,
+                    value_lower_bound=float(datum["Value_LowerCI"])
+                    if datum["Value_LowerCI"] != ""
+                    else None,
+                    value_upper_bound=float(datum["Value_UpperCI"])
+                    if datum["Value_UpperCI"] != ""
+                    else None,
+                    value_unit=mapper["value_unit_mapper"][
+                        datum["Value_Displayed"]
+                    ],
+                    single_year_timeframe=datum["SingleYear_TimeFrame"],
+                    multi_year_timeframe=datum["MultiYear_TimeFrame"],
+                )
+            else:
+                indData_obj = indData_obj[0]
+                indData_obj.indicator = indicator_obj
+                indData_obj.dimension_type = mapper["dimension_type_mapper"][
+                    datum["Dimension_Type"]
+                ]
+                indData_obj.dimension_value = dim_val
+                indData_obj.literal_dimension_val = lit_dim_val
+                indData_obj.period = preiod_val
+                indData_obj.data_quality = mapper["data_quality_mapper"][
+                    datum["Data_Quality"]
+                ]
+                indData_obj.value = (
+                    float(datum["Value"]) if datum["Value"] != "" else None
+                )
+                indData_obj.value_lower_bound = (
+                    float(datum["Value_LowerCI"])
+                    if datum["Value_LowerCI"] != ""
+                    else None
+                )
+                indData_obj.value_upper_bound = (
+                    float(datum["Value_UpperCI"])
+                    if datum["Value_UpperCI"] != ""
+                    else None
+                )
+                indData_obj.value_unit = mapper["value_unit_mapper"][
+                    datum["Value_Displayed"]
+                ]
+                indData_obj.single_year_timeframe = datum[
+                    "SingleYear_TimeFrame"
+                ]
+                indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
+                indData_obj.save()
+
     def clean_csv_file(self):
+        start_time = time.time()
+
         csv_file = self.cleaned_data["csv_file"]
         if not csv_file.name.endswith(".csv"):
             raise forms.ValidationError(tdt("File is not CSV type"))
@@ -320,15 +167,6 @@ class UploadForm(forms.Form):
             "Indicator",
             "Detailed Indicator",
             "Sub_Indicator_Measurement",
-            # "COUNTRY",
-            # "Geography",
-            # "Sex",
-            # "Gender",
-            # "Age_Group",
-            # "Age_Group_Type",
-            # "Living_Arrangement",
-            # "PT_Data_Availability",
-            # "Value_Units",
             "Data_Quality",
             "Value",
             "Value_LowerCI",
@@ -338,6 +176,15 @@ class UploadForm(forms.Form):
             "MultiYear_TimeFrame",
             "Dimension_Type",
             "Dimension_Value",
+            # "COUNTRY",
+            # "Geography",
+            # "Sex",
+            # "Gender",
+            # "Age_Group",
+            # "Age_Group_Type",
+            # "Living_Arrangement",
+            # "PT_Data_Availability",
+            # "Value_Units",
         ]
         missing_headers = []
         for header in required_headers:
@@ -350,29 +197,29 @@ class UploadForm(forms.Form):
             )
 
         errorlist = []
-
+        mapper = upload_mapper()
         for idx, data_row in enumerate(reader):
             for key, value in data_row.items():
                 data_row[key] = value.strip()
-            if data_row["Category"] not in self.category_mapper:
+            if data_row["Category"] not in mapper["category_mapper"]:
                 errorlist.append(
                     tdt(
                         f"row: {idx} Category: {data_row['Category']} is not valid"
                     )
                 )
-            if data_row["Topic"] not in self.subcategory_mapper:
+            if data_row["Topic"] not in mapper["subcategory_mapper"]:
                 errorlist.append(
                     tdt(
                         f"row: {idx} Sub category: {data_row['Topic']} is not valid"
                     )
                 )
-            if data_row["Data_Quality"] not in self.data_quality_mapper:
+            if data_row["Data_Quality"] not in mapper["data_quality_mapper"]:
                 errorlist.append(
                     tdt(
                         f"row: {idx} Data quality: {data_row['Data_Quality']} is not valid"
                     )
                 )
-            if data_row["Value_Displayed"] not in self.value_unit_mapper:
+            if data_row["Value_Displayed"] not in mapper["value_unit_mapper"]:
                 errorlist.append(
                     tdt(
                         f"row: {idx} Value displayed: {data_row['Value_Displayed']} is not valid"
@@ -381,7 +228,7 @@ class UploadForm(forms.Form):
             if data_row["Dimension_Type"] != "Age Group":
                 if (
                     data_row["Dimension_Type"]
-                    not in self.dimension_type_mapper
+                    not in mapper["dimension_type_mapper"]
                 ):
                     errorlist.append(
                         tdt(
@@ -389,21 +236,23 @@ class UploadForm(forms.Form):
                         )
                     )
                 if (
-                    f'{data_row["Dimension_Type"]}_{data_row["Dimension_Value"]}'
-                    not in self.non_literal_dimension_value_mapper
-                ):
+                    data_row["Dimension_Type"],
+                    data_row["Dimension_Value"],
+                ) not in mapper["non_literal_dimension_value_mapper"]:
                     errorlist.append(
                         tdt(
                             f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
                         )
                     )
 
-            # data_dimension = self.deduce_dimension_type(data_row, idx)
+            # data_dimension = deduce_dimension_type(data_row, idx)
             # print(data_dimension)
             data_dict.append(data_row)
 
         if errorlist:
             raise forms.ValidationError(mark_safe(" </br> ".join(errorlist)))
+
+        print("--- %s seconds ---" % (time.time() - start_time))
 
         return data_dict
 
@@ -416,7 +265,9 @@ class UploadIndicator(FormView):
         return reverse("list_indicators")
 
     def form_valid(self, form):
+        start_time = time.time()
         form.save()
+        print("--- %s seconds ---" % (time.time() - start_time))
         messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 
@@ -424,7 +275,6 @@ class UploadIndicator(FormView):
         try:
             messages.error(
                 self.request,
-                # need a smarter implementation for this
                 tdt(
                     "There was an error uploading the file. Please correct the errors below and try again"
                 ),

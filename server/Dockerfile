@@ -84,7 +84,7 @@ RUN mkdir -p $APP_HOME/staticfiles
 COPY ./static /$APP_HOME/staticfiles
 # && \
 # ENV SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 
-# python -m manage collectstatic --no-input
+RUN python -m manage collectstatic --no-input
 
 # run entrypoint.prod.sh
 # ENTRYPOINT ["/cpho/web/entrypoint.prod.sh"]

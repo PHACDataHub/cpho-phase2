@@ -1,0 +1,29 @@
+{
+"version": "0.2.0",
+  "configurations": [
+    {
+      "name": "runserver",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/server/manage.py",
+      "cwd": "${workspaceFolder}/server",
+      "args": [
+        "runserver"
+      ],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "test",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/server/manage.py",
+      "cwd": "${workspaceFolder}/server",
+      "args": [
+        "test"
+      ],
+      "django": true,
+      "justMyCode": true
+    }
+  ]
+}

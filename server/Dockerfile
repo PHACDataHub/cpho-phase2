@@ -47,6 +47,7 @@ WORKDIR $APP_HOME
 
 ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
+ENV GOOGLE_CLOUD_PROJECT=pdcp-cloud-006-cpho
 RUN \
     addgroup -S app && adduser --shell /bin/ash -u 5678 -S app -G app --home $HOME && \
     mkdir -p $APP_HOME && \

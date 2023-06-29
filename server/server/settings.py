@@ -1,3 +1,4 @@
+# sourcery skip: raise-specific-error
 """
 Django settings for cphophase2 project.
 
@@ -44,9 +45,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env(DEBUG=(bool, True))
 env_file = os.path.join(BASE_DIR, ".env")
 
-import os
+# import os
 
-from google.cloud import secretmanager
+# from google.cloud import secretmanager
 
 # #------------------------
 # # Create a Secret Manager client
@@ -57,21 +58,24 @@ from google.cloud import secretmanager
 # response = client.access_secret_version(request={"name": name})
 # project_id = response.payload.data.decode("UTF-8")
 
-# # Set the project ID in the environment variable
-# os.environ['GOOGLE_CLOUD_PROJECT'] = project_id
+# # # Set the project ID in the environment variable
+# os.environ['GOOGLE_CLOUD_PROJECT'] = "pdcp-cloud-006-cpho"
 
 # #------------
 # Attempt to load the Project ID into the environment, safely failing on error.
-try:
-    _, os.environ["GOOGLE_CLOUD_PROJECT"] = google.auth.default()
-except google.auth.exceptions.DefaultCredentialsError:
-    pass
+if (os.environ["GOOGLE_CLOUD_PROJECT"] != 'docker'):
+    #TODO change to argv
+    try:
+        _, os.environ["GOOGLE_CLOUD_PROJECT"] = google.auth.default()
+    except google.auth.exceptions.DefaultCredentialsError:
+        pass
+  
 
 if os.path.isfile(env_file):
     # Use a local secret file, if provided
     env.read_env(env_file)
 
-elif os.getenv("GITHUB_WORKFLOW'", None):
+elif os.getenv("GITHUB_WORKFLOW", None):
     # Create local settings if running with CI, for unit testing
     DATABASES = {
         'default': {
@@ -92,17 +96,19 @@ elif os.getenv("GITHUB_WORKFLOW'", None):
     env.read_env(io.StringIO(placeholder))
 
 elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
-    # Pull secrets from Secret Manager
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    if (os.environ["GOOGLE_CLOUD_PROJECT"]!= "docker"):
+        # Pull secrets from Secret Manager
+        project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
 
-    client = secretmanager.SecretManagerServiceClient()
-    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
-    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
-    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+        client = secretmanager.SecretManagerServiceClient()
+        settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+        name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+        payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
 
-    env.read_env(io.StringIO(payload))
+        env.read_env(io.StringIO(payload))
 else:
-    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+    # raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+    pass
 
 
 
@@ -157,7 +163,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_DIR = [str(BASE_DIR.joinpath('static'))]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT =os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # when upgrade django >=4.2
 # STORAGES = {

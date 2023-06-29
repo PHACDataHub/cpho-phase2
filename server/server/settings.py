@@ -44,6 +44,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env(DEBUG=(bool, True))
 env_file = os.path.join(BASE_DIR, ".env")
 
+import os
+
+from google.cloud import secretmanager
+
+# #------------------------
+# # Create a Secret Manager client
+# client = secretmanager.SecretManagerServiceClient()
+
+# # Retrieve the project ID from Secret Manager
+# name = "projects/{}/secrets/{}/versions/latest".format("pdcp-cloud-006-cpho", "django_settings")
+# response = client.access_secret_version(request={"name": name})
+# project_id = response.payload.data.decode("UTF-8")
+
+# # Set the project ID in the environment variable
+# os.environ['GOOGLE_CLOUD_PROJECT'] = project_id
+
+# #------------
 # Attempt to load the Project ID into the environment, safely failing on error.
 try:
     _, os.environ["GOOGLE_CLOUD_PROJECT"] = google.auth.default()
@@ -54,7 +71,6 @@ if os.path.isfile(env_file):
     # Use a local secret file, if provided
     env.read_env(env_file)
 
-# [START_EXCLUDE]
 elif os.getenv("GITHUB_WORKFLOW'", None):
     # Create local settings if running with CI, for unit testing
     DATABASES = {
@@ -74,7 +90,7 @@ elif os.getenv("GITHUB_WORKFLOW'", None):
         f"DATABASE_URL=sqlite://{os.path.join(BASE_DIR, 'db.sqlite3')}"
     )
     env.read_env(io.StringIO(placeholder))
-# [END_EXCLUDE]
+
 elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
@@ -87,15 +103,15 @@ elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     env.read_env(io.StringIO(payload))
 else:
     raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
-# [END cpho-phase2_secret_config]
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
-# SECRET_KEY = env("SECRET_KEY")
+# SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
@@ -126,6 +142,7 @@ INSTALLED_APPS = configure_apps(
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
+        "whitenoise.runserver_nostatic",
         "graphene_django",
         "django_extensions",
         *(["debug_toolbar"] if ENABLE_DEBUG_TOOLBAR else []),
@@ -142,7 +159,12 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+# when upgrade django >=4.2
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 
 MIDDLEWARE = configure_middleware(
     [

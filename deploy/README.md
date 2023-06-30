@@ -1,49 +1,57 @@
 ## Steps for initial deployment:
-Note - this will be an iterative process streamlining this. A portion will likely end up as infrastruture as code.
+Note - there will be an iterative process streamlining this. A portion will likely end up as infrastructure as code, for reuse on generic Django apps. 
 
-1. Modify settings.py  
-2. Authenticate 
+0. TODO: updates to project Dockerfile, settings.py, and .env file pending, before everything deploys and works as expected. We'll work those out as we go
+
+1. Authenticate your PHAC GCP user account (note: we assume you have access to the pdcp-cloud-006-cpho project)
     ```
-    gcloud auth application-default login
+    gcloud auth login
     ```
-2. Set project Variable
+
+2. Set project and region
     ```
     gcloud config set project pdcp-cloud-006-cpho
+    gcloud config set compute/zone northamerica-northeast1
     ```
-3. Enable APIs and set up service accounts and secrets for Artifact Registry, Cloud Build trigger, Cloud Run and Cloud SQL.  Provision database. 
-* Follow instructions in [deployment_gcloud_setup](deployment_gcloud_setup.sh) (run step by step in terminal or command prompt). 
 
-* During first run through, when you're prompted with an error indication Cloud Build needs to be connected to the GitHub Repo:
-    * Log into console to perform manual steps required for deployment set up
-        * Cloud build connect to GitHub Repo
-        * Artifact Registry - select 'Check for vunerabilities
-
-4. Migrations - will be working with you on workflow - here are some possibilities: https://cloud.google.com/blog/topics/developers-practitioners/running-database-migrations-cloud-run-jobs
-
-    Cloud SQL Proxy (Before Cloud Deploy for intial migrations on the first go):
-
-* Download [Cloud SQL Proxy](https://cloud.google.com/sql/docs/postgres/sql-proxy) 
-    This is for connecting to Cloud SQL from your computer for initial set up 
-* [Link to curl command to download & install](https://cloud.google.com/sql/docs/postgres/sql-proxy#install)
-
-    ```
-    chmod +x cloud-sql-proxy 
-    ```
-    * Run app locally with cloud sql proxy (note this is for non-windows machines)(https://cloud.google.com/sql/docs/sqlserver/connect-instance-auth-proxy) for other devices 
-    ```
-    ./cloud-sql-proxy $PROJECT_ID:$REGION:$INSTANCE_NAME
-    ```
-    Note: This seems to timeout - if you get oauth2: "invalid_grant" "reauth related error (invalid_rapt):
-    ```
-    gcloud auth application-default revoke
-    ```
+3. Get Application Default Credentials, these will be used by default in subsequent API calls
     ```
     gcloud auth application-default login
     ```
 
-5. Run migration (as outlined in [README.md](../README.md))
+4. Enable APIs and set up service accounts and secrets for Artifact Registry, Cloud Build trigger, Cloud Run and Cloud SQL.
+    * Follow along with [deployment_gcloud_setup.sh](deployment_gcloud_setup.sh) (run step by step in terminal or command prompt, don't just execture the script). 
 
-6. Deploy to Cloud Run - commit change to repo in triggered branch, or manually - comment out COMMITSHA from cloudbuild.yaml and:
+    * During first run through, when you're prompted with an error indication Cloud Build needs to be connected to the GitHub Repo:
+        * Log into console to perform manual steps required for deployment set up
+            * Cloud build connect to GitHub Repo
+            * Artifact Registry - select 'Check for vulnerabilities'
+
+6. Run initial migrations and DB population (as outlined in the repo root [README.md](../README.md)). Migrations can be run a number of ways, prod-ready approach TBD, but here are some options for now: 
+    * (As a cloud run job)[https://cloud.google.com/blog/topics/developers-practitioners/running-database-migrations-cloud-run-jobs]
+
+    * From your dev machine via Cloud SQL Proxy:
+        * Download [Cloud SQL Proxy](https://cloud.google.com/sql/docs/postgres/sql-proxy) 
+            This is for connecting to Cloud SQL from your computer for initial set up 
+        * [Link to curl command to download & install](https://cloud.google.com/sql/docs/postgres/sql-proxy#install)
+        
+            ```
+            chmod +x cloud-sql-proxy 
+            ```
+            * Run app locally with cloud sql proxy (note this is for non-windows machines)(https://cloud.google.com/sql/docs/sqlserver/connect-instance-auth-proxy) for other devices 
+            ```
+            ./cloud-sql-proxy $PROJECT_ID:$REGION:$INSTANCE_NAME
+            ```
+            Note: This seems to timeout - if you get oauth2: "invalid_grant" "reauth related error (invalid_rapt):
+            ```
+            gcloud auth application-default revoke
+            ```
+            ```
+            gcloud auth application-default login
+
+7. Deploy to Cloud Run. Either:
+    - Cloud Build job triggered by commit, or
+    - manually - comment out COMMITSHA from cloudbuild.yaml and run:
     ```
     gcloud builds submit --config cloudbuild.yaml
     ``` 

@@ -17,7 +17,7 @@ def run():
 
 def create_users():
     User.objects.filter(username="admin").delete()
-    User.objects.create_user(
+    User.objects.create_superuser(
         username="admin",
         password="admin",
     )

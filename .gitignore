@@ -4,6 +4,9 @@
 # Cache
 **/__pycache__/
 
+# Django
+**/staticfiles
+
 # environment variables
 **/*.env
 

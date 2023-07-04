@@ -6,13 +6,14 @@ set -o nounset
 
 
 # ----- Get configuration variables + secrets helpers -----
-source ./deploy/deployment_gcloud_config.sh
+source ./deploy/gcloud_env_vars.sh
 
 
 
 # ----- PROJECT -----
 gcloud config set project ${PROJECT_ID}
 gcloud config set compute/region ${PROJECT_REGION}
+gcloud auth application-default login
 
 
 

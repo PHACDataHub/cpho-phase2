@@ -10,13 +10,6 @@ source ./deploy/gcloud_env_vars.sh
 
 
 
-# ----- PROJECT -----
-gcloud config set project ${PROJECT_ID}
-gcloud config set compute/region ${PROJECT_REGION}
-gcloud auth application-default login
-
-
-
 # ----- SECRET MANAGER -----
 echo ""
 echo "Create and store secrets (and less-secret configuration values for the prod env)"
@@ -25,30 +18,17 @@ echo ""
 if [[ $SECRETS_SKIP != "S" ]]; then
   gcloud services enable secretmanager.googleapis.com
   
-  store_secret () {
-    local KEY=$1
-    local VALUE=$2
+    set_secret ${SKEY_DB_INSTANCE_NAME} ${DB_INSTANCE_NAME}
+    set_secret ${SKEY_DB_NAME} ${DB_NAME}
+    set_secret ${SKEY_DB_USER} ${DB_USER}
+    set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
+    set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
+    set_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
   
-    local KEY_EXISTS=$(gcloud secrets describe ${KEY} || False)
-  
-    if [[ $KEY_EXISTS ]]; then
-      echo $VALUE | gcloud secrets versions add ${KEY} --data-file -
-    else
-      echo $VALUE | gcloud secrets create --locations ${PROJECT_REGION} --replication-policy user-managed ${KEY} --data-file -
-    fi  
-  }
-  
-  store_secret ${SKEY_DB_INSTANCE_NAME} ${DB_INSTANCE_NAME}
-  store_secret ${SKEY_DB_NAME} ${DB_NAME}
-  store_secret ${SKEY_DB_USER} ${DB_USER}
-  store_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
-  store_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
-  store_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
-  
-  store_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
+    set_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
   
   if [ ! ${PROJECT_IS_USING_WHITENOISE} ]; then
-    store_secret ${SKEY_MEDIA_BUCKET_NAME} ${MEDIA_BUCKET_NAME}
+      set_secret ${SKEY_MEDIA_BUCKET_NAME} ${MEDIA_BUCKET_NAME}
   fi
 fi
 

@@ -1,184 +1,196 @@
-
 #!/usr/bin/env bash
 set -o errexit
 set -o pipefail
 set -o nounset
  
-# Mostly steps from google run tutorial from: https://cloud.google.com/sql/docs/postgres/connect-run
-# ** WIP, NOT a runnable shell script - yet -. This will all incorperated into infrasturcture as code in the future. 
-EXIT
 
-# ----- SET UP ENVIRONMENT VARIABLES -----
-export PROJECT_ID=pdcp-cloud-006-cpho
-export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
-export REGION=northamerica-northeast1
-export SERVICE_NAME=cpho-phase2
-export SECRET_SETTINGS_NAME=django_settings
-export ARTIFACT_REGISTRY_REPO=cpho-artifact-registry-for-cloud-run
-export INSTANCE_NAME=cpho-db-instance
-export DB_NAME=cpho_dev_db
-export DB_USER=cpho_db_user
-export CLOUD_BUILD_TRIGGER_NAME=cpho-github-main-branch-trigger
-export GITHUB_REPO_NAME=cpho-phase2
-export CLOUD_BUILD_CONFIG_PATH=cloudbuild.yaml
-export GITHUB_REPO_OWNER=PHACDataHub
 
-export DB_PASSWORD=password123 #OR generate and then save to GCP secrets: $(openssl rand -base64 16 | tr -dc A-Za-z0-9 | head -c16 ; echo '')
+# ----- Get configuration variables + secrets helpers -----
+source ./deploy/deployment_gcloud_config.sh
 
-export DB_ROOT_PASSWORD=password123 #OR generate and then save to GCP secrets: $(openssl rand -base64 16 | tr -dc A-Za-z0-9 | head -c16 ; echo '')
-export DB_ROOT_PASSWORD_KEY=db_root_user_password
+
+
+# ----- PROJECT -----
+gcloud config set project ${PROJECT_ID}
+gcloud config set compute/region ${PROJECT_REGION}
+
 
 
 # ----- SECRET MANAGER -----
-# Enable API
-gcloud services enable secretmanager.googleapis.com
-
-# create prod .env secrets, store by $SECRET_SETTINGS_NAME key
-rm .env.prod
-echo DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@//cloudsql/${PROJECT_ID}:${REGION}:${INSTANCE_NAME}/${DB_NAME} > .env.prod
-echo SECRET_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc '[:alpha:]'| fold -w 50 | head -n1) >> .env.prod
-# echo GS_BUCKET_NAME=${PROJECT_ID}_MEDIA_BUCKET >> .env.prod
-
-# TODO, maybe a MANUAL step, but need other values in the .env.prod file before saving it in secrets
-
-# store django_settings secrets
-gcloud secrets create --locations ${REGION} --replication-policy user-managed ${SECRET_SETTINGS_NAME} --data-file .env.prod
-rm .env.prod
-
-# store DB root user password as separate secret, for later user
-echo $DB_ROOT_PASSWORD | gcloud secrets create --locations ${REGION} --replication-policy user-managed ${DB_ROOT_PASSWORD_KEY} --data-file -
-
-# OR if secret already exists, and just need to UPDATE
-# gcloud secrets versions add ${SECRET_SETTINGS_NAME} \
-#     --data-file=.env \
-#     --project=${PROJECT_ID}
-
-# To verify that this worked
-# gcloud secrets describe ${SECRET_SETTINGS_NAME}
-# (or gcloud secrets list)
-
-# gcloud secrets versions access latest --secret ${SECRET_SETTINGS_NAME}  #django_settings
+echo ""
+echo "Create and store secrets (and less-secret configuration values for the prod env)"
+read -n 1 -p "Type S to skip this step, anything else to continue: " SECRETS_SKIP
+echo ""
+if [[ $SECRETS_SKIP != "S" ]]; then
+  gcloud services enable secretmanager.googleapis.com
+  
+  store_secret () {
+    local KEY=$1
+    local VALUE=$2
+  
+    local KEY_EXISTS=$(gcloud secrets describe ${KEY} || False)
+  
+    if [[ $KEY_EXISTS ]]; then
+      echo $VALUE | gcloud secrets versions add ${KEY} --data-file -
+    else
+      echo $VALUE | gcloud secrets create --locations ${PROJECT_REGION} --replication-policy user-managed ${KEY} --data-file -
+    fi  
+  }
+  
+  store_secret ${SKEY_DB_INSTANCE_NAME} ${DB_INSTANCE_NAME}
+  store_secret ${SKEY_DB_NAME} ${DB_NAME}
+  store_secret ${SKEY_DB_USER} ${DB_USER}
+  store_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
+  store_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
+  store_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
+  
+  store_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
+  
+  if [ ! ${PROJECT_IS_USING_WHITENOISE} ]; then
+    store_secret ${SKEY_MEDIA_BUCKET_NAME} ${MEDIA_BUCKET_NAME}
+  fi
+fi
 
 
 
 # ----- ARTIFACT REGISTRY -----
-# Enable Artifact Registry to store container images for Cloud Run to use 
-gcloud services enable artifactregistry.googleapis.com
-
-# Create Artifact Repo within the Artifact Registry
-gcloud artifacts repositories create $ARTIFACT_REGISTRY_REPO \
-   --location=$REGION \
-   --description=$ARTIFACT_REGISTRY_REPO \
-   --repository-format=docker 
-
-# Authorize docker to push images to artifact registry
-gcloud auth configure-docker ${REGION}-docker.pkg.dev
+echo ""
+echo "Enable Artifact Registry to store container images for Cloud Run to use"
+read -n 1 -p "Type S to skip this step, anything else to continue: " ARTIFACT_SKIP
+echo ""
+if [[ $ARTIFACT_SKIP != "S" ]]; then
+  gcloud services enable artifactregistry.googleapis.com
+  
+  # Create Artifact Repo within the Artifact Registry
+  gcloud artifacts repositories create $ARTIFACT_REGISTRY_REPO \
+     --location ${PROJECT_REGION} \
+     --description ${ARTIFACT_REGISTRY_REPO} \
+     --repository-format docker 
+  
+  # Authorize local docker client to push/pull images to artifact registry
+  gcloud auth configure-docker ${PROJECT_REGION}-docker.pkg.dev
+fi
 
 
 
 # ----- CLOUD BUILD ----
-# Set up Cloud Build  (https://cloud.google.com/sdk/gcloud/reference/beta/builds/triggers/create/github)
-# On push to main branch in specified GitHub repo, Cloud Build is triggered to run the steps outlined in cloudbuild.yaml: 
-# building and pushing Docker image to Artifact Registry, running migration, and populating static files, then deploy to Cloud Run with connection to Cloud SQL
-
-gcloud services enable \
-  cloudbuild.googleapis.com \
-  sourcerepo.googleapis.com
-
-# MANUAL: via the GCP dashboard, navigate to Cloud Build > Repositories and use "CONNECT TO REPOSITORY" to grant access to your GitHub repo
-# _can_ be done more programatically, but it's messy. Just do this manually for now
-
-# MANUAL: write a cloudbuild.yaml, commit it in the repo root
-# To test-run your cloudbuild.yaml, use `gcloud builds submit --config cloudbuild.yaml` 
-
-# Add cloud build trigger (this is set to be triggered on push to main branch)
-gcloud builds triggers create github \
-  --name=${CLOUD_BUILD_TRIGGER_NAME} \
-  --region ${REGION} \
-  --repo-name=${GITHUB_REPO_NAME} \
-  --repo-owner=${GITHUB_REPO_OWNER} \
-  --branch-pattern="^main$" \
-  --build-config=${CLOUD_BUILD_CONFIG_PATH} \
-  --include-logs-with-status \
-  --no-require-approval
-
-# Bind permissions to Cloud Build service account:
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member=serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-    --role=roles/cloudbuild.serviceAgent \
-    --role=roles/run.admin \
-    --role=roles/artifactregistry.writer \
-    --role=roles/secretmanager.secretAccessor \
-    --role=roles/cloudsql.client \
-    --role=roles/iam.serviceAccountUser
-    --condition='' # Okay this didn't work - needs condition manualy set to None with asked in terminal
-
-# Give the Cloud Build service user access to the $SECRET_SETTINGS_NAME secrets
-gcloud secrets add-iam-policy-binding $SECRET_SETTINGS_NAME \
-  --member=serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role=roles/secretmanager.secretAccessor
+echo ""
+echo "Enable Cloud Build, triggered by GitHub pushes"
+read -n 1 -p "Type S to skip this step, anything else to continue: " BUILD_SKIP
+echo ""
+if [[ $BUILD_SKIP != "S" ]]; then
+  gcloud services enable \
+    cloudbuild.googleapis.com \
+    sourcerepo.googleapis.com
+  
+  # _Can_ be done more programatically, but it's messy. Just do this manually for now
+  read -n 1 -p "Manual step: via the GCP dashboard for this project, navigate to Cloud Build > Repositories and use \"CONNECT TO REPOSITORY\" to grant access to your GitHub repo. Press any key to continue: "
+  
+  ## Add cloud build trigger (this is set to be triggered on push to main branch)
+  gcloud builds triggers create github \
+    --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
+    --region ${PROJECT_REGION} \
+    --repo-name ${BUILD_GITHUB_REPO_NAME} \
+    --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
+    --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
+    --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
+    --include-logs-with-status \
+    --no-require-approval
+  
+  # Bind permissions to Cloud Build service account:
+  gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+    --role roles/cloudbuild.serviceAgent \
+    --role roles/run.admin \
+    --role roles/artifactregistry.writer \
+    --role roles/cloudsql.client \
+    --role roles/iam.serviceAccountUser \
+    --condition None
+  
+  # Give the Cloud Build service account access to prod secrets
+  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
+    gcloud secrets add-iam-policy-binding ${SECRET_SETTINGS_NAME} \
+      --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+      --role roles/secretmanager.secretAccessor
+  done
+  
+  
+  # MANUAL: write a cloudbuild.yaml, commit it in the repo root
+  # To test-run your cloudbuild.yaml, use: gcloud builds submit --config cloudbuild.yaml
+fi
 
 
 
 # ----- CLOUD RUN -----
-# Enable Cloud Run API    
-gcloud services enable run.googleapis.com
-    \ compute.googleapis.com
-
-gcloud projects add-iam-policy-binding $PROJECT_ID\
-    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role=roles/run.admin
-
-# Grant the IAM Service Account User role to the Cloud Build service account for the Cloud Run runtime service account
-gcloud iam service-accounts add-iam-policy-binding $PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --member=serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-    --role=roles/iam.serviceAccountUser
-
-# Give the Cloud Run service user access to the $SECRET_SETTINGS_NAME secrets
-gcloud secrets add-iam-policy-binding $SECRET_SETTINGS_NAME \
-    --member=serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role=roles/secretmanager.secretAccessor 
+echo ""
+echo "Enable the Cloud Run API and grant it access to necessary resources"
+read -n 1 -p "Type S to skip this step, anything else to continue: " RUN_SKIP
+echo ""
+if [[ $RUN_SKIP != "S" ]]; then
+  gcloud services enable \
+    run.googleapis.com \
+    compute.googleapis.com
+  
+  gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+    --role roles/run.admin
+  
+  # Grant the IAM Service Account User role to the Cloud Build service account for the Cloud Run runtime service account
+  gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+    --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+    --role roles/iam.serviceAccountUser
+  
+  # Give the Cloud Run service user access to prod secrets
+  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
+    gcloud secrets add-iam-policy-binding ${SKEY} \
+      --member serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+      --role roles/secretmanager.secretAccessor 
+  done
+fi
 
 
 
 # ----- CLOUD STORAGE (optional) -----
-# skipping for now, as we're planning to use whitenoise and serve static files via the app instances
-
-# GS_BUCKET_NAME=${PROJECT_ID}_MEDIA_BUCKET
-# gsutil mb -l ${REGION} gs://${GS_BUCKET_NAME}
+if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
+  echo ""
+  echo "Create a media bucket"
+  read -n 1 -p "Type S to skip this step, anything else to continue: " BUCKET_SKIP
+  echo ""
+  if [[ $BUCKET_SKIP != "S" ]]; then
+    gsutil mb -l ${PROJECT_REGION} gs://${MEDIA_BUCKET_NAME}
+  fi
+fi
 
 
 
 # ----- CLOUD SQL -----
-# 1. Enable Cloud SQL API
-# 2. Bind Service Account to have Secret Acessor role
-# 2. Create the container instance 
-# 2. Create the database
-# 3. Create a user to access database
-# https://cloud.google.com/sql/docs/sqlserver/create-manage-databases#gcloud
-
-# Enable APIs
-gcloud services enable \
-  sql-component.googleapis.com \
-  sqladmin.googleapis.com 
-
-# Create Postgres instance
-gcloud sql instances create ${INSTANCE_NAME} \
+echo ""
+echo "Enable the Cloud SQL API, create a database and user"
+read -n 1 -p "Type S to skip this step, anything else to continue: " SQL_SKIP
+echo ""
+if [[ $SQL_SKIP != "S" ]]; then
+  # Enable APIs
+  gcloud services enable \
+    sql-component.googleapis.com \
+    sqladmin.googleapis.com 
+  
+  # Create Postgres instance
+  gcloud sql instances create ${DB_INSTANCE_NAME} \
     --project ${PROJECT_ID} \
-    --database-version POSTGRES_14 \
-    --tier db-g1-small \
-    --region ${REGION} \
-    --root-password="${DB_ROOT_PASSWORD}"
-
-# Create Database
-gcloud sql databases create ${DB_NAME} \
-    --instance ${INSTANCE_NAME}
-
-#Create User
-gcloud sql users create ${DB_USER} \
-    --instance ${INSTANCE_NAME} \
-    --password ${DB_PASSWORD}
-
+    --database-version ${DB_VERSION} \
+    --tier ${DB_TIER} \
+    --region ${PROJECT_REGION} \
+    --root-password $(get_secret ${SKEY_DB_ROOT_PASSWORD})
+  
+  # Create Database
+  gcloud sql databases create ${DB_NAME} \
+    --instance ${DB_INSTANCE_NAME}
+  
+  #Create User
+  gcloud sql users create ${DB_USER} \
+    --instance ${DB_INSTANCE_NAME} \
+    --password $(get_secret ${SKEY_DB_ROOT_PASSWORD})
+fi
 
 # See step six in deploy/README.md, you'll need to connect to this database via cloud SQL proxy and perform initial migrations and data seeding
 
@@ -202,22 +214,26 @@ gcloud sql users create ${DB_USER} \
 #   --role=roles/secretmanager.secretAccessor
 
 # gcloud builds submit --config cloudbuild.yaml \
-#     --substitutions _INSTANCE_NAME=test-instance, _REGION=northamerica-northeast1
+#   --substitutions _DB_INSTANCE_NAME=test-instance, _REGION=northamerica-northeast1
 
-# SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --platform managed \
-#     --region northamerica-northeast1 --format "value(status.url)")
+# SERVICE_URL=$(gcloud run services describe $PROJECT_SERVICE_NAME --platform managed \
+#   --region northamerica-northeast1 --format "value(status.url)")
 
-# gcloud run services update $SERVICE_NAME \
-#     --platform managed \
-#     --region northamerica-northeast1 \
-#     --set-env-vars CLOUDRUN_SERVICE_URL=$SERVICE_URL
+# gcloud run services update $PROJECT_SERVICE_NAME \
+#   --platform managed \
+#   --region northamerica-northeast1 \
+#   --set-env-vars CLOUDRUN_SERVICE_URL=$SERVICE_URL
 
 
 # # to run - add deploy step to yaml and 
 # gcloud builds submit --config cloudbuild.yaml or add trigger
-# ```
 
 # Remove Cloud Build service ${DB_ROOT_PASSWORD_KEY} secret access
 # gcloud secrets remove-iam-policy-binding ${DB_ROOT_PASSWORD_KEY} \
 #   --member=serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
 #   --role=roles/secretmanager.secretAccessor
+
+
+
+# ----- TODOs -----
+# Borrow the pulumi for Cloud Run networking from https://github.com/PHACDataHub/phac-epi-garden/tree/main/deploy

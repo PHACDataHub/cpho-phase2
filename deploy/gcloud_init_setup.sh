@@ -69,7 +69,7 @@ if [[ $BUILD_SKIP != "S" ]]; then
   # _Can_ be done more programatically, but it's messy. Just do this manually for now
   read -n 1 -p "Manual step: via the GCP dashboard for this project, navigate to Cloud Build > Repositories and use \"CONNECT TO REPOSITORY\" to grant access to your GitHub repo. Press any key to continue: "
   
-  ## Add cloud build trigger (this is set to be triggered on push to main branch)
+  # Add cloud build trigger (this is set to be triggered on push to main branch)
   gcloud builds triggers create github \
     --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
     --region ${PROJECT_REGION} \
@@ -92,7 +92,7 @@ if [[ $BUILD_SKIP != "S" ]]; then
   
   # Give the Cloud Build service account access to prod secrets
   for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
-    gcloud secrets add-iam-policy-binding ${SECRET_SETTINGS_NAME} \
+    gcloud secrets add-iam-policy-binding ${SKEY} \
       --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
       --role roles/secretmanager.secretAccessor
   done
@@ -122,13 +122,6 @@ if [[ $RUN_SKIP != "S" ]]; then
   gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
     --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
     --role roles/iam.serviceAccountUser
-  
-  # Give the Cloud Run service user access to prod secrets
-  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
-    gcloud secrets add-iam-policy-binding ${SKEY} \
-      --member serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-      --role roles/secretmanager.secretAccessor 
-  done
 fi
 
 

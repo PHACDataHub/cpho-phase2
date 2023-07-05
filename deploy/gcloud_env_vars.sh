@@ -51,7 +51,9 @@ export SKEY_DJANGO_SECRET_KEY=django_secret_key
 
 export SKEY_MEDIA_BUCKET_NAME=media_bucket_name
 
-PROD_ENV_SECRET_KEYS=($SKEY_DB_URL $SKEY_DJANGO_SECRET_KEY)
+# Array of secret keys that Cloud Build and Cloud Run need access to (same set as those used in make_prod_env_file.sh, probably)
+# Keep this up to date, the init setup script uses it to know what keys to give the relevant service accounts access to
+PROD_ENV_SECRET_KEYS=($SKEY_DB_NAME $SKEY_DB_USER $SKEY_DB_USER_PASSWORD $SKEY_DB_INSTANCE_NAME $SKEY_DJANGO_SECRET_KEY)
 if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
   PROD_ENV_SECRET_KEYS+=$SKEY_MEDIA_BUCKET_NAME
 fi

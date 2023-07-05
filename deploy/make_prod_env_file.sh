@@ -23,4 +23,6 @@ SECRET_KEY=$(get_secret ${SKEY_DJANGO_SECRET_KEY})
 
 # This won't work on the first Cloud Run deploy, as the service won't have a URL yet
 ALLOWED_HOSTS=[$(gcloud run services describe ${PROJECT_SERVICE_NAME} --platform managed --region REGION --format "value(status.url)")]
+
+$(if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then; echo MEDIA_BUCKET_NAME=$(get_secret ${SKEY_MEDIA_BUCKET_NAME}); fi)
 EOT

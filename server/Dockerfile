@@ -53,18 +53,20 @@ RUN \
 
 WORKDIR $APP_HOME
 
-# change to the app user
-USER $USER
-
 # copy and install dependencies from build stage in virtual environment
 COPY --chown=$USER --from=builder /usr/src/app/wheels $WHEELDIR
+
 RUN python -mvenv $VIRTUALENV
 ENV PATH="${VIRTUALENV}/bin:$PATH"
+
 RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
     python -m pip install --no-cache $WHEELDIR/* && rm -rf $WHEELDIR
 
 # copy project
 COPY --chown=$USER:app . $APP_HOME
+
+# change to the app user
+USER $USER
 
 # Run collect static as container build time step, static files won't be changing post-docker build for a given deployment
 RUN python manage.py collectstatic --no-input

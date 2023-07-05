@@ -6,7 +6,7 @@ set -o nounset
 # ----- Get configuration variables + secrets helpers -----
 source ./deploy/gcloud_env_vars.sh
 
-PROD_ENV_FILE="./server/.env.prod"
+PROD_ENV_FILE=".env.prod"
 
 rm -f ${PROD_ENV_FILE}
 

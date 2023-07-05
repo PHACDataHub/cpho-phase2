@@ -2,11 +2,13 @@
 set -o errexit
 set -o pipefail
 set -o nounset
- 
-
 
 # ----- Get configuration variables + secrets helpers -----
 source ./deploy/gcloud_env_vars.sh
+
+
+
+# TODO replace with Infrastructure as Code/Data, after the options are discussed and we agree on one (with app devs included in discussion)
 
 
 

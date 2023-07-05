@@ -67,6 +67,7 @@ else:
 SECRET_KEY = config("SECRET_KEY")
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
+# CORS will diverge from ALLOWED_HOSTS if/when this app hosts an API for outside consumption
 CORS_ALLOWED_ORIGINS = config("ALLOWED_HOSTS", cast=Csv())
 
 
@@ -192,7 +193,7 @@ DATABASES = {
 if IS_RUNNING_TESTS:
     DATABASES["default"]["TEST"] = {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("TEST_DB_NAME", default="cpho_test_db"),
+        "NAME": config("TEST_DB_NAME"),
     }
 
 

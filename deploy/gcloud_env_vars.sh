@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-set -o errexit
-set -o pipefail
-set -o nounset
 
-# NON-SECRET configuration values only. 
+# This script is meant to be called via `source`, so forgoe the standard `set -o ...` boilerplate 
+
+# NON-SECRET configuration values ONLY! 
 # Secret values live exclusively in GCP secrets, although their keys (might) be stored here. Fetch secrets as needed with the get_secret helper
 
 # ----- PROJECT -----
 export PROJECT_ID=phx-01h3m8rpdeyaf54w9ssf51syd5
 export PROJECT_REGION=northamerica-northeast1
 export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
+export PROJECT_SERVICE_NAME=${PROJECT_ID}-app-service
 
 gcloud config set project ${PROJECT_ID}
 gcloud config set compute/region ${PROJECT_REGION}

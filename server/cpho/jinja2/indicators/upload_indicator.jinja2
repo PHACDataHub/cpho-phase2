@@ -1,0 +1,384 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+
+  <div class="h2 mb-3">{{ tdt("Indicator file upload")}}</div>
+
+  <button type="button mt-5"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#expectedColumnModal">
+    {{ tdt("View expected column names")}}
+  </button>
+ 
+  <form action="{{ url('upload_indicator') }}"
+        method="post"
+        enctype="multipart/form-data"
+        class="form-horizontal mt-3">
+ 
+    {{ csrf_input }}
+    <div>
+      {{ form.csv_file }}
+      <div class="row">
+        <div class="form-group">
+          <button class="btn btn-primary mt-3 float-end">{{ tdt("Upload")}}</button>
+        </div>
+      </div>
+ 
+    </div>
+  </form>
+
+ 
+  {% if form.csv_file.errors %}<div class="my-2 error-div">{{ form.csv_file.errors }}</div>{% endif %}
+
+  <div class="modal fade modal-xl"
+       id="expectedColumnModal"
+       tabindex="-1"
+       aria-labelledby="expectedColumnModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="expectedColumnModalLabel">{{ tdt("Expected column names")}}</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{ tdt("Please upload a .csv file containing the following column names. Note that the column names are case sensitive")}}
+          </p>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>{{ tdt("Expected column names") }}</th>
+                <th>{{ tdt("Descriptions") }}</th>
+                <th>{{ tdt("Possible values") }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ tdt("Indicator") }}</td>
+                <td>{{ tdt("Indicator name") }}</td>
+                <td>{{ tdt("Open text field") }}</td>
+              </tr>
+              <tr>
+                <td>{{ tdt("Detailed Indicator") }}</td>
+                <td>{{ tdt("Detailed indicator name") }}</td>
+                <td>{{ tdt("Open text field") }}</td>
+              </tr>
+              <tr>
+                <td>{{ tdt("Sub_Indicator_Measurement") }}</td>
+                <td>{{ tdt("Sub indicator measurement") }}</td>
+                <td>{{ tdt("Open text field") }}</td>
+              </tr>
+              <tr>
+                <td>{{ tdt("Category") }}</td>
+                <td>{{ tdt("Category") }}</td>
+                <td>
+                  <ul>
+                    <li>{{ tdt("FACTORS INFLUENCING HEALTH") }}</li>
+                    <li>{{ tdt("HEALTH OUTCOMES") }}</li>
+                    <li>{{ tdt("GENERAL HEALTH STATUS") }}</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>{{ tdt("Topic") }}</td>
+                <td>{{ tdt("Sub category") }}</td>
+                <td>
+                  <ul>
+                    <li>
+                      {{ tdt("SOCIAL FACTORS") }}
+                    </li>
+                    <li>
+                      {{ tdt("HEALTH STATUS") }}
+                    </li>
+                    <li>
+                      {{ tdt("COMMUNICABLE DISEASES") }}
+                    </li>
+                    <li>
+                      {{ tdt("SUBSTANCE USE") }}
+                    </li>
+                    <li>
+                      {{ tdt("CHILDHOOD AND FAMILY FACTORS") }}
+                    </li>
+                    <li>
+                      {{ tdt("CHILDHOOD AND FAMILY RISK FACTORS") }}
+                    </li>
+                    <li>
+                      {{ tdt("CHRONIC DISEASES AND MENTAL HEALTH") }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("Data_Quality") }}
+                </td>
+                <td>
+                  {{ tdt("Quality of data") }}
+                </td>
+                <td>
+                  <ul>
+                    <li>
+                      {{ tdt("CAUTION") }}
+                    </li>
+                    <li>
+                      {{ tdt("GOOD") }}
+                    </li>
+                    <li>
+                      {{ tdt("ACCEPTABLE") }}
+                    </li>
+                    <li>
+                      {{ tdt("SUPPRESSED") }}
+                    </li>
+                    <li>
+                      {{ tdt("VERY GOOD") }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("Value") }}
+                </td>
+                <td>
+                  {{ tdt("Vlue Recorded") }}
+                </td>
+                <td>
+                  {{ tdt("Open number field (allows decimals)") }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("Value_LowerCI") }}
+                </td>
+                <td>
+                  {{ tdt("Vlue lower bound") }}
+                </td>
+                <td>
+                  {{ tdt("Open number field (allows decimals)") }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("Value_UpperCI") }}
+                </td>
+                <td>
+                  {{ tdt("Vlue upper bound") }}
+                </td>
+                <td>
+                  {{ tdt("Open number field (allows decimals)") }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("SingleYear_TimeFrame") }}
+                </td>
+                <td>
+                  {{ tdt("Single Year Timeframe") }}
+                </td>
+                <td>
+                  {{ tdt("Open text field YYYY") }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("MultiYear_TimeFrame") }}
+                </td>
+                <td>
+                  {{ tdt("Multi Year TimeFrame") }}
+                </td>
+                <td>
+                  {{ tdt("Open text field YYYY-YYYY") }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("Value_Displayed") }}
+                </td>
+                <td>
+                  {{ tdt("Value unit") }}
+                </td>
+                <td>
+                  <ul>
+                    <li>
+                      {{ tdt("%") }}
+                    </li>
+                    <li>
+                      {{ tdt("PER 100,000") }}
+                    </li>
+                    <li>
+                      {{ tdt("YEARS") }}
+                    </li>
+                    <li>
+                      {{ tdt("PER 1,000 CENSUS INHABITANTS") }}
+                    </li>
+                    <li>
+                      {{ tdt("PER 10,000 PATIENT DAYS") }}
+                    </li>
+                    <li>
+                      {{ tdt("PER 100,000 LIVE BIRTHS") }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {{ tdt("Dimension_Type") }}
+                </td>
+                <td>
+                  {{ tdt("Dimension of data recorded") }}
+                </td>
+                <td>
+                  <ul>
+                    <li>
+                      {{ tdt("Province") }}
+                    </li>
+                    <li>
+                      {{ tdt("Gender") }}
+                    </li>
+                    <li>
+                      {{ tdt("Region") }}
+                    </li>
+                    <li>
+                      {{ tdt("Sex") }}
+                    </li>
+                    <li>
+                      {{ tdt("Canada") }}
+                    </li>
+                    <li>
+                      {{ tdt("Age Group") }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+ 
+              <tr>
+                <td>
+                  {{ tdt("Dimension_Value") }}
+                </td>
+                <td>
+                  {{ tdt("Specification of dimension recorded") }}
+                </td>
+                <td>
+                  <div class="d-flex flex-row bd-highlight mb-3">
+                    <div class="p-2 border">
+                      {{ tdt("Province:") }}
+                      <ul>
+                        <li>
+                          {{ tdt("ON") }}
+                        </li>
+                        <li>
+                          {{ tdt("AB") }}
+                        </li>
+                        <li>
+                          {{ tdt("SK") }}
+                        </li>
+                        <li>
+                          {{ tdt("MB") }}
+                        </li>
+                        <li>
+                          {{ tdt("BC") }}
+                        </li>
+                        <li>
+                          {{ tdt("QC") }}
+                        </li>
+                        <li>
+                          {{ tdt("NB") }}
+                        </li>
+                        <li>
+                          {{ tdt("NS") }}
+                        </li>
+                        <li>
+                          {{ tdt("NL") }}
+                        </li>
+                        <li>
+                          {{ tdt("PE") }}
+                        </li>
+                        <li>
+                          {{ tdt("NU") }}
+                        </li>
+                        <li>
+                          {{ tdt("NT") }}
+                        </li>
+                        <li>
+                          {{ tdt("YT") }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      {{ tdt("Gender:") }}
+                      <ul>
+                        <li>
+                          {{ tdt("MEN") }}
+                        </li>
+                        <li>
+                          {{ tdt("WOMEN") }}
+                        </li>
+                        <li>
+                          {{ tdt("BOYS") }}
+                        </li>
+                        <li>
+                          {{ tdt("GIRLS") }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      {{ tdt("Region:") }}
+                      <ul>
+                        <li>
+                          {{ tdt("ATLANTIC") }}
+                        </li>
+                        <li>
+                          {{ tdt("PRAIRIE") }}
+                        </li>
+                        <li>
+                          {{ tdt("TERRITORIES") }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      {{ tdt("Sex:") }}
+                      <ul>
+                        <li>
+                          {{ tdt("MALES") }}
+                        </li>
+                        <li>
+                          {{ tdt("FEMALES") }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      {{ tdt("Canada:") }}
+                      <ul>
+                        <li>
+                          {{ tdt("CANADA") }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      {{ tdt("Age Group:") }}
+                      <ul>
+                        <li>
+                          {{ tdt("Open Text Field") }}
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </div>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+{% endblock %}

@@ -12,3 +12,25 @@ footer {
 #footer-placeholder {
     height: 3rem;
 }
+
+.navbar h1 {
+    color: white;
+    margin: 0;
+    margin-right: 5px;
+}
+
+.navbar a.dropdown-item,
+.navbar a.dropdown-toggle {
+    text-decoration: none;
+}
+
+h1 abbr {
+    text-decoration: none !important;
+    border-bottom: none;
+}
+
+.error-div {
+    background: #f8d7da;
+    color: #842029;
+    border-radius: 10px;
+}

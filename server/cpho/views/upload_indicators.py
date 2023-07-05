@@ -17,7 +17,7 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
-from .views_util import upload_mapper
+from .view_util import upload_mapper
 
 
 class UploadForm(forms.Form):
@@ -33,7 +33,9 @@ class UploadForm(forms.Form):
     def save(self):
         data = self.cleaned_data["csv_file"]
         # TODO: Update Periods
-        preiod_val = Period.objects.get(year="2023")
+        preiod_val = Period.objects.get(
+            year=2021, quarter=None, year_type="calendar"
+        )
         mapper = upload_mapper()
         for datum in data:
             # For the future: Indicators should not be created; just queried

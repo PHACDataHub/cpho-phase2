@@ -20,6 +20,7 @@ urlpatterns = i18n_patterns(
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("", include(cpho_urls)),
+    prefix_default_language=False,
 ) + [
     re_path("^$", RootView.as_view(), name="root"),
     *dev_routes,

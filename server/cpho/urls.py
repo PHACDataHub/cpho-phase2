@@ -21,6 +21,11 @@ urlpatterns = [
         name="view_indicator",
     ),
     path(
+        "indicators/<int:pk>/<int:period_pk>/",
+        views.ViewIndicatorForYear.as_view(),
+        name="view_indicator_for_year",
+    ),
+    path(
         "indicators/<int:pk>/edit/",
         views.EditIndicator.as_view(),
         name="edit_indicator",
@@ -36,12 +41,12 @@ urlpatterns = [
         name="upload_indicator",
     ),
     path(
-        "indicators/<int:indicator_id>/manage_data/<int:dimension_type_id>/",
+        "indicators/<int:indicator_id>/period/<int:period_pk>/manage_data/<int:dimension_type_id>/",
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data",
     ),
     path(
-        "indicators/<int:indicator_id>/manage_data/all/",
+        "indicators/<int:indicator_id>/period/<int:period_pk>/manage_data/all/",
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data_all",
     ),

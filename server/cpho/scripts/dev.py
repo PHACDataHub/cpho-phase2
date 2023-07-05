@@ -17,7 +17,7 @@ def run():
 
 def create_users():
     User.objects.filter(username="admin").delete()
-    User.objects.create_user(
+    User.objects.create_superuser(
         username="admin",
         password="admin",
     )
@@ -32,7 +32,7 @@ def create_data():
     IndicatorDatum.objects.all().delete()
     Indicator.objects.all().delete()
 
-    p2021 = Period.objects.get(year=2021)
+    p2021 = Period.objects.get(year=2021, quarter=None, year_type="calendar")
     indicators = IndicatorFactory.create_batch(10)
     for dimension in DimensionType.objects.all():
         if not dimension.is_literal:

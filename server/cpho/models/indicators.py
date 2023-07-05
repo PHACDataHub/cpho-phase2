@@ -65,6 +65,12 @@ class Indicator(models.Model):
 @add_to_admin
 @track_versions_with_editor_and_approval
 class IndicatorDatum(models.Model):
+    class Meta:
+        unique_together = [
+            ("indicator", "period", "dimension_type", "dimension_value"),
+            ("indicator", "period", "dimension_type", "literal_dimension_val"),
+        ]
+
     indicator = fields.ForeignKey(
         Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
     )

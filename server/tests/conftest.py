@@ -36,6 +36,7 @@ def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
 
 @pytest.fixture(scope="session", autouse=True)
 def seed_core_data(globally_scoped_fixture_helper):
+    call_command("loaddata", "cpho/fixtures/periods.yaml")
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
 
 

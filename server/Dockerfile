@@ -1,127 +1,91 @@
-# ###########
-# # BUILDER #
-# ###########
-# FROM python:3.10.6-alpine3.16 as builder
+###########
+# BUILDER #
+###########
+FROM python:3.10.6-alpine3.16 as builder
 
-# # set work directory
-# WORKDIR /usr/src/app
+# set work directory
+WORKDIR /usr/src/app
 
-# # set environment variables
-# ENV PYTHONDONTWRITEBYTECODE 1
-# ENV PYTHONUNBUFFERED 1
-
-# # install dependencies
-# RUN apk update \
-#     && apk add  \
-#     gcc \
-#     libffi-dev \
-#     musl-dev \
-#     openssl-dev \
-#     postgresql-dev \
-#     python3-dev
-
-# # Update pip
-# RUN pip install --upgrade pip
-
-# # install dependencies
-# COPY ./requirements.txt .
-# RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
-
-
-# #########
-# # FINAL #
-# #########
-# # pull official base image
-# FROM python:3.10.6-alpine3.16
-
-# EXPOSE 8000 2222
-
-# # install dependencies
-# RUN apk add --no-cache libpq openssh su-exec
-
-# # create the appropriate directories, user and setup the ssh server
-# # ENV HOME=/cpho
-# # ENV APP_HOME=$HOME/web
-# ENV APP_HOME /app
-# WORKDIR $APP_HOME
-
-# ENV VIRTUALENV=$HOME/env
-# ENV WHEELDIR=$HOME/wheels
-
-# # RUN \
-# #     addgroup -S app && adduser --shell /bin/ash -u 5678 -S app -G app --home $HOME && \
-# #     mkdir -p $APP_HOME && \
-# #     mkdir $VIRTUALENV && \
-# #     chown -R 5678 $HOME && \
-# #     echo "root:Docker!" | chpasswd && \
-# #     echo -e "CPHO Container\n\nFor management commands run: \nsu app\npython -m manage\n\n" > /etc/motd && \
-# #     (cd /etc/ssh/ && ssh-keygen -A)
-
-# WORKDIR $APP_HOME
-
-# # change to the app user
-# # -- currently disabled due to needing sshd while in Azure  >:-(
-# # Instead the CMD passed to docker is ran using `su` via the entrypoint.
-# # USER 5678
-
-# # copy and install dependencies from build stage in virtual environment
-# COPY --chown=5678 --from=builder /usr/src/app/wheels $WHEELDIR
-# RUN python -mvenv $VIRTUALENV
-
-# ENV PATH="${VIRTUALENV}/bin:$PATH"
-
-# RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
-# python -m pip install --no-cache $WHEELDIR/* && rm -rf $WHEELDIR
-
-# # copy project
-# COPY --chown=5678:app . $APP_HOME
-# # COPY . .
-
-# # make entrypoint.prod.sh executable and create staticfiles dir (and files)
-# # RUN chmod +x $APP_HOME/entrypoint.prod.sh && \
-# # RUN mkdir -p $APP_HOME/staticfiles 
-# # Create the staticfiles directory
-# # RUN mkdir -p /app/staticfiles
-
-# # COPY ./static /$APP_HOME/staticfiles
-# # && \
-# # ENV SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 
-# # RUN python -m manage collectstatic --no-input
-
-# # run entrypoint.prod.sh
-# # ENTRYPOINT ["/cpho/web/entrypoint.prod.sh"]
-# # CMD ["gunicorn", "--bind", "0.0.0.0:8000", "server.wsgi"]
-# CMD  exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 server.wsgi:application 
-
-
-
-# Use an official lightweight Python image.
-# https://hub.docker.com/_/python
-FROM python:3.11-slim
-# TODO move back to alpine image
-
-WORKDIR /app
-
-# Removes output stream buffering, allowing for more efficient logging
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install dependencies
-# TODO - change back to install not as root
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# install dependencies
+RUN apk update \
+    && apk add  \
+    gcc \
+    libffi-dev \
+    musl-dev \
+    openssl-dev \
+    postgresql-dev \
+    python3-dev \
+    bash
 
-# Copy local code to the container image.
-COPY . .
+# Update pip
+RUN pip install --upgrade pip
 
-# Need environment values for settings.py even though not used for collectstatic process
-ENV SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 DATABASE_URL=postgres:coco GOOGLE_CLOUD_PROJECT=docker
-RUN python -m manage collectstatic --no-input
+# install dependencies
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-# Run the web service on container startup. Here we use the gunicorn
-# webserver, with one worker process and 8 threads.
-# For environments with multiple CPU cores, increase the number of workers
-# to be equal to the cores available.
-# Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
 
-CMD  exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 server.wsgi:application 
-# point to wsgi.py
+#################
+# SECRET READER #
+#################
+FROM google/cloud-sdk:437.0.1 as secret_reader
+
+# set work directory
+WORKDIR /usr/src/app
+
+COPY ./key.json ./key.json
+RUN gcloud auth activate-service-account --key-file ./key.json
+
+COPY ./deploy ./deploy
+RUN ./deploy/make_prod_env_file.sh
+
+
+#########
+# FINAL #
+#########
+# pull official base image
+FROM python:3.10.6-alpine3.16
+
+EXPOSE 8000 2222
+
+ENV USER=5678
+
+ENV HOME=/cpho
+ENV APP_HOME=$HOME/web
+ENV VIRTUALENV=$HOME/env
+ENV WHEELDIR=$HOME/wheels
+
+RUN \
+    addgroup -S app && adduser --shell /bin/bash -u $USER -S app -G app --home $HOME && \
+    mkdir -p $APP_HOME && \
+    mkdir $VIRTUALENV && \
+    chown -R $USER $HOME && \
+    echo "root:Docker!" | chpasswd && \
+    echo -e "CPHO Container\n\nFor management commands run: \nsu app\npython -m manage\n\n" > /etc/motd
+
+WORKDIR $APP_HOME
+
+# change to the app user
+USER $USER
+
+# copy and install dependencies from build stage in virtual environment
+COPY --chown=$USER --from=builder /usr/src/app/wheels $WHEELDIR
+RUN python -mvenv $VIRTUALENV
+ENV PATH="${VIRTUALENV}/bin:$PATH"
+RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
+    python -m pip install --no-cache $WHEELDIR/* && rm -rf $WHEELDIR
+
+# copy project
+COPY --chown=$USER:app . $APP_HOME
+
+# Get prod env var file from secret_reader step and run collect static as container build time steps; both should be immutable to the deployed image
+COPY --chown=$USER --from=secret_reader /usr/src/app/.env.prod $APP_HOME/server
+RUN python manage.py collectstatic --no-input
+
+# entrypoint script to run on-start steps (confirm migrations, etc)
+ENTRYPOINT ["/cpho/web/entrypoint.prod.sh"]
+CMD exec gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 8 --timeout 0 server.wsgi:application

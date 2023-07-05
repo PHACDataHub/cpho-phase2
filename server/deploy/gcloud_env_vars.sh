@@ -14,6 +14,10 @@ export PROJECT_SERVICE_NAME=${PROJECT_ID}-app-service
 gcloud config set project ${PROJECT_ID}
 gcloud config set compute/region ${PROJECT_REGION}
 
+# ----- SECRET READER SERVICE ACCOUNT -----
+SECRET_READER_ACCOUNT_NAME=prod-env-secret-reader
+SECRET_READER_ACCOUNT=${SECRET_READER_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com
+
 # ----- ARTIFACT REGISTRY -----
 export ARTIFACT_REGISTRY_REPO=cpho-artifact-registry-for-cloud-run
 
@@ -40,6 +44,8 @@ export DB_USER=cpho_db_user
 
 # ----- SECRET MANAGER (keys, no values set here) -----
 # Likely no need to edit these for a new project; doing so may break other scripts too, if they hard code against these secret names
+export SKEY_PROD_SECRET_READER_ACCOUNT_KEY=prod_secret_reader_account_key_base_64
+
 export SKEY_DB_INSTANCE_NAME=db_instance_name
 export SKEY_DB_NAME=db_name
 export SKEY_DB_USER=db_user
@@ -68,7 +74,7 @@ set_secret () {
     echo $VALUE | gcloud secrets versions add ${KEY} --data-file -
   else
     echo $VALUE | gcloud secrets create --locations ${PROJECT_REGION} --replication-policy user-managed ${KEY} --data-file -
-  fi  
+  fi
 }
 export -f set_secret
 

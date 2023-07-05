@@ -1,31 +1,19 @@
-# Modified from https://cloud.google.com/python/django/run
-
 # [START cloudrun_django_cloudbuild]
 steps:
+  - id: "get build-time secret reader service key"
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [ '-c', "gcloud secrets versions access latest --secret=prod_secret_reader_account_key_base_64 | base64 --decode > ./server/key.json" ]
+
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}", "server/."]
-
+    #args: ["build", "-t", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}", "server/."]
+    args: ["build", "-t", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}", "server/."] # switch to this line if manually triggering the build
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["push", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}"]
-
-  # - id: "apply migrations"
-  #   name: "gcr.io/google-appengine/exec-wrapper"
-  #   args:
-  #     [
-  #       "-i",
-  #       "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}",
-  #       "-s",
-  #       "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
-  #       "-e",
-  #       "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
-  #       "--",
-  #       "python",
-  #       "manage.py",
-  #       "migrate",
-  #     ]
+    #args: ["push", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}"]
+    args: ["push", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}"] # switch to this line if manually triggering the build
 
   - id: "deploy to cloud run"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
@@ -36,26 +24,25 @@ steps:
         "deploy",
         "${_SERVICE_NAME}",
         "--image",
-        "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}",
+        #"${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}",
+        "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}", # switch to this line if manually triggering the build
         "--region",
         "${_REGION}",
         "--add-cloudsql-instances",
-        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}", 
+        "${PROJECT_ID}:${_REGION}:${_DB_INSTANCE_NAME}", 
         "--platform", 
         "managed",
         "--allow-unauthenticated",   
       ]
 
+# TODO these need to be in sync with deploy/gcloud_env_vars.sh, annoying as-is
 substitutions:
-  _INSTANCE_NAME: cpho-db-instance
+  _DB_INSTANCE_NAME: cpho-db-instance
   _REGION: northamerica-northeast1
   _SERVICE_NAME: "cpho-phase2"
-  _SECRET_SETTINGS_NAME: django_settings
   _ARTIFACT_REGISTRY_REPO: "cpho-artifact-registry-for-cloud-run"
-  
 
 images:
-  - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}"
-  # - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}"
-
+  #- "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}"
+  - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}" # switch to this line if manually triggering the build
 # [END cloudrun_django_cloudbuild]

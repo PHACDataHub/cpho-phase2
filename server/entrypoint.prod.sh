@@ -1,9 +1,4 @@
-#!/bin/sh
-echo "Starting SSH server..."
-/usr/sbin/sshd
-
-echo "Generating static files..."
-python manage.py collectstatic --no-input
+#!/bin/bash
 
 if [[ ! -z "$DB_HOST" && ! -z "$DB_PORT" ]]; then
   echo "Waiting for postgres ($DB_HOST:$DB_PORT)..."

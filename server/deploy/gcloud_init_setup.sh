@@ -36,6 +36,36 @@ fi
 
 
 
+# ----- SECRET READER SERVICE ACCOUNT -----
+echo ""
+echo "Create service account for reading prod env secrets"
+read -n 1 -p "Type S to skip this step, anything else to continue: " SECRET_READER_SKIP
+echo ""
+if [[ $SECRET_READER_SKIP != "S" ]]; then
+  gcloud iam service-accounts create ${SECRET_READER_ACCOUNT_NAME} \
+    --description "Service account with access to secret manager entries needed in the prod environment" \
+    --display-name ${SECRET_READER_ACCOUNT_NAME}
+
+  # Need a temporary file to write a service account key to, that's just how the gcloud API is
+  # Use a temp file with a cleanup function bound to this script exiting
+  TEMP_KEY_FILE=$(mktemp key.XXXXXX.json)
+  function cleanup {
+    rm -f ${TEMP_KEY_FILE}
+  }
+  trap cleanup EXIT
+  gcloud iam service-accounts keys create ${TEMP_KEY_FILE} --iam-account ${SECRET_READER_ACCOUNT}
+  set_secret ${SKEY_PROD_SECRET_READER_ACCOUNT_KEY} $(base64 -w 0 ${TEMP_KEY_FILE})
+  cleanup
+
+  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
+    gcloud secrets add-iam-policy-binding ${SKEY} \
+      --member serviceAccount:${SECRET_READER_ACCOUNT} \
+      --role roles/secretmanager.secretAccessor
+  done
+fi
+
+
+
 # ----- ARTIFACT REGISTRY -----
 echo ""
 echo "Enable Artifact Registry to store container images for Cloud Run to use"
@@ -90,13 +120,10 @@ if [[ $BUILD_SKIP != "S" ]]; then
     --role roles/iam.serviceAccountUser \
     --condition None
   
-  # Give the Cloud Build service account access to prod secrets
-  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
-    gcloud secrets add-iam-policy-binding ${SKEY} \
-      --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-      --role roles/secretmanager.secretAccessor
-  done
-  
+  # Give the Cloud Build service account access to prod secret reader account key
+  gcloud secrets add-iam-policy-binding ${SKEY_PROD_SECRET_READER_ACCOUNT_KEY} \
+    --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+    --role roles/secretmanager.secretAccessor
   
   # MANUAL: write a cloudbuild.yaml, commit it in the repo root
   # To test-run your cloudbuild.yaml, use: gcloud builds submit --config cloudbuild.yaml

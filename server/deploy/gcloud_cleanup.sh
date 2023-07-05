@@ -8,6 +8,9 @@ source ./deploy/gcloud_env_vars.sh
 
 # NOTE: using `|| :`, where : is effectively a bash no-op, to prevent errors in certain lines from exiting the script
 
+# ----- SECRET READER SERVICE ACCOUNT -----
+gcloud iam service-accounts delete ${SECRET_READER_ACCOUNT} || :
+
 # ----- ARTIFACT REGISTRY -----
 # TODO back up first (move X latest images to cold storage?), set some TTL on that?
 # TODO revert permissions to default, disable API?

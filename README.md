@@ -1,6 +1,6 @@
 # CPHO server
 
-Currently running on https://cpho-phase2-qrj6r6scdq-nn.a.run.app (will move to previous url soon).
+See the CPHO slack channel's link bar for the dev app's URL  
 
 ## Setting up the development environment
 

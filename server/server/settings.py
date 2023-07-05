@@ -48,7 +48,9 @@ if IS_LOCAL_DEV:
     ENABLE_DEBUG_TOOLBAR = DEBUG and config(
         "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
     )
-    INTERNAL_IPS = ENABLE_DEBUG_TOOLBAR and config("INTERNAL_IPS", default="")
+    INTERNAL_IPS = (
+        config("INTERNAL_IPS", default="") if ENABLE_DEBUG_TOOLBAR else ""
+    )
 
     # Test settings
     if IS_RUNNING_TESTS:
@@ -80,14 +82,20 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-# always use whitenoise in production. Set FORCE_WHITENOISE=True to test in dev (requires ./manage.py collectstatic)
-use_whitenoise = not IS_LOCAL_DEV or config(
-    "FORCE_WHITENOISE", cast=bool, default=False
-)
-if use_whitenoise:
+# whitenoise configuration
+if config(
+    "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL_DEV)
+):
+    # requires staticfiles dir, run `./manage.py collectstatic --noinput` as needed!
+    WHITENOISE_USE_FINDERS = False
     STATICFILES_STORAGE = (
         "whitenoise.storage.CompressedManifestStaticFilesStorage"
     )
+else:
+    # with this set, you don't need a staticfiles dir. Whitenoise will find and serve static files automatically
+    # BUT this doesn't work with caching/compression! Do NOT use this in prod!
+    WHITENOISE_USE_FINDERS = True
+
 
 # Application definition
 INSTALLED_APPS = configure_apps(
@@ -98,7 +106,7 @@ INSTALLED_APPS = configure_apps(
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.messages",
-        *(["whitenoise.runserver_nostatic"] if use_whitenoise else []),
+        "whitenoise.runserver_nostatic",
         "django.contrib.staticfiles",
         "graphene_django",
         "django_extensions",
@@ -109,13 +117,7 @@ INSTALLED_APPS = configure_apps(
 MIDDLEWARE = configure_middleware(
     [
         "django.middleware.security.SecurityMiddleware",
-        *(
-            [
-                "whitenoise.middleware.WhiteNoiseMiddleware",
-            ]
-            if use_whitenoise
-            else []
-        ),
+        "whitenoise.middleware.WhiteNoiseMiddleware",
         *(
             [
                 "debug_toolbar.middleware.DebugToolbarMiddleware",

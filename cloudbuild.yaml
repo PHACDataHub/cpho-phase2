@@ -1,9 +1,13 @@
+# To manually trigger your cloudbuild.yaml, use: gcloud builds submit --config cloudbuild.yaml
+# NOTE: when manually triggering, the COMMIT_SHA env var will be unset,
+# you'll need to modify the file temporarily to not reference it
+
 # [START cloudrun_django_cloudbuild]
 steps:
-  - id: "get build-time secret reader service key"
+  - id: "Make .env.prod file"
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ '-c', "gcloud secrets versions access latest --secret=prod_secret_reader_account_key_base_64 | base64 --decode > ./server/key.json" ]
+    args: [ '-c', "cd server && deploy/make_prod_env_file.sh" ]
 
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"

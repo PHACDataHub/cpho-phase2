@@ -28,22 +28,6 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-
-#################
-# SECRET READER #
-#################
-FROM google/cloud-sdk:437.0.1 as secret_reader
-
-# set work directory
-WORKDIR /usr/src/app
-
-COPY ./key.json ./key.json
-RUN gcloud auth activate-service-account --key-file ./key.json
-
-COPY ./deploy ./deploy
-RUN ./deploy/make_prod_env_file.sh
-
-
 #########
 # FINAL #
 #########
@@ -82,8 +66,7 @@ RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
 # copy project
 COPY --chown=$USER:app . $APP_HOME
 
-# Get prod env var file from secret_reader step and run collect static as container build time steps; both should be immutable to the deployed image
-COPY --chown=$USER --from=secret_reader /usr/src/app/.env.prod $APP_HOME/server
+# Run collect static as container build time step, static files won't be changing post-docker build for a given deployment
 RUN python manage.py collectstatic --no-input
 
 # entrypoint script to run on-start steps (confirm migrations, etc)

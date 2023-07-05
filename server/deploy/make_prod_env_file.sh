@@ -16,7 +16,7 @@ cat <<EOT >> ${PROD_ENV_FILE}
 DB_NAME=$(get_secret ${SKEY_DB_NAME})
 DB_USER=$(get_secret ${SKEY_DB_USER})
 DB_PASSWORD=$(get_secret ${SKEY_DB_USER_PASSWORD})
-DB_HOST=$(gcloud sql instances describe $(get_secret ${SKEY_DB_INSTANCE_NAME}) --format=json | jq -r '.ipAddresses[] | select(.type=="PRIMARY") | .ipAddress')
+DB_HOST=$(gcloud sql instances list --filter name:$(get_secret ${SKEY_DB_INSTANCE_NAME}) --format "value(PRIMARY_ADDRESS)")
 DB_PORT=5432
 
 SECRET_KEY=$(get_secret ${SKEY_DJANGO_SECRET_KEY})

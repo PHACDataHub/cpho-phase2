@@ -1,0 +1,28 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }} {{ period }}</div>
+
+  <div class="mt-4">
+    <div class="mt-5">
+      {% for dimension_type in dimension_types %}
+        <div class="h5">
+          <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">
+            <div class="row">
+              <div class="card col-6 mt-2">
+                <div class="card-body">{{ tdt("Manage data for ") }} {{ dimension_type.name }}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+      <div class="h5">
+        <a href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">
+          <div class="row">
+            <div class="card col-6 mt-2">
+              <div class="card-body">{{ tdt("Manage data for ") }} {{ tdt("all") }}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  {% endblock %}

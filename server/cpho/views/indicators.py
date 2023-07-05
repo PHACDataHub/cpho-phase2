@@ -1,10 +1,18 @@
 from django import forms
 from django.forms.models import ModelForm
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 
-from cpho.models import DimensionType, Indicator
+from cpho.models import DimensionType, Indicator, Period
 from cpho.text import tdt, tm
+
+from .view_util import SinglePeriodMixin
 
 
 class IndicatorForm(ModelForm):
@@ -58,13 +66,41 @@ class ListIndicators(ListView):
         }
 
 
-class ViewIndicator(DetailView):
+class ViewIndicator(TemplateView):
     model = Indicator
     template_name = "indicators/view_indicator.jinja2"
 
     def get_context_data(self, **kwargs):
+        indicator = Indicator.objects.get(pk=self.kwargs["pk"])
+        relevant_periods = Period.relevant_years()
+
+        data_for_periods = indicator.data.filter(period__in=relevant_periods)
+        data_counts_by_period = {
+            p: len(
+                [
+                    datum
+                    for datum in data_for_periods
+                    if datum.period_id == p.id
+                ]
+            )
+            for p in relevant_periods
+        }
+
         return {
             **super().get_context_data(**kwargs),
+            "object": indicator,
+            "dimension_types": DimensionType.objects.all(),
+            "data_counts_by_period": data_counts_by_period,
+        }
+
+
+class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
+    model = Indicator
+    template_name = "indicators/view_indicator_for_year.jinja2"
+
+    def get_context_data(self, *args, **kwargs):
+        return {
+            **super().get_context_data(*args, **kwargs),
             "dimension_types": DimensionType.objects.all(),
         }
 

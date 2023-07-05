@@ -30,15 +30,6 @@ class DimensionValueFactory(factory.django.DjangoModelFactory):
     value = factory.Faker("bs")
 
 
-class PeriodFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Period
-
-    year = factory.Faker("year")
-    name_en = factory.Faker("bs")
-    name_fr = factory.Faker("bs")
-
-
 class IndicatorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Indicator
@@ -59,7 +50,7 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
         model = IndicatorDatum
 
     indicator = factory.SubFactory(IndicatorFactory)
-    period = factory.SubFactory(PeriodFactory)
+    period = factory.Iterator(Period.objects.all())
     dimension_type = factory.SubFactory(DimensionTypeFactory)
     dimension_value = factory.Maybe(
         "dimension_type.is_literal",

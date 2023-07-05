@@ -1,32 +1,33 @@
 {% extends 'base.jinja2' %}
 {% block content %}
-  <div class="h2">{{ tdt('Indicator Selected: ')}} {{ object.name }}</div>
+  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }}</div>
 
   <div class="mt-4">
     <a href="{{ url('edit_indicator', args=[object.id]) }}"
-       class="btn btn-primary">{{ tdt('Edit indicator') }}</a>
+       class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
   </div>
   <div class="mt-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ tdt("Period") }}</th>
+          <th>{{ tdt("Data Count") }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for period,data_count in data_counts_by_period.items() %}
+          <tr>
+            <th>{{ period }} {{ tdt("records") }}</th>
+            <td>{{ data_count }}</td>
+            <td>
+              <a href="{{ url('view_indicator_for_year', args=[object.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+            </td>
+          </tr>
+        {% endfor %}
  
-    {% for dimension_type in dimension_types %}
-      <div class="h5">
-        <a href="{{ url('manage_indicator_data', args=[object.id, dimension_type.id]) }}">
-          <div class="row">
-            <div class="card col-6 mt-2">
-              <div class="card-body">{{ tdt('Manage data for ')}} {{ dimension_type.name }}</div>
-            </div>
-          </div>
-        </a>
-      </div>
-    {% endfor %}
-    <div class="h5">
-      <a href="{{ url('manage_indicator_data_all', args=[object.id]) }}">
-        <div class="row">
-          <div class="card col-6 mt-2">
-            <div class="card-body">{{ tdt('Manage data for ')}} {{ tdt("all") }}</div>
-          </div>
-        </div>
-      </a>
-    </div>
+      </tbody>
+    </table>
   </div>
+ 
 {% endblock %}

@@ -1,13 +1,16 @@
 from django.urls import reverse
 
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
-from cpho.models import DimensionType, DimensionValue, IndicatorDatum
+from cpho.models import DimensionType, DimensionValue, IndicatorDatum, Period
 
 
 def test_predefined_create_from_scratch(vanilla_user_client):
+    period = Period.objects.first()
     ind = IndicatorFactory()
     sex_cat = DimensionType.objects.get(code="sex")
-    url = reverse("manage_indicator_data", args=[ind.id, sex_cat.pk])
+    url = reverse(
+        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
+    )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 
@@ -30,19 +33,24 @@ def test_predefined_create_from_scratch(vanilla_user_client):
     female_val = sex_cat.possible_values.get(value="f")
     assert ind.data.get(dimension_value=male_val).value == 5.0
     assert ind.data.get(dimension_value=female_val).value == 6.0
+    assert set(ind.data.all()) == set(ind.data.filter(period=period))
 
 
 def test_predefined_existing_data(vanilla_user_client):
+    period = Period.objects.first()
     ind = IndicatorFactory()
     sex_cat = DimensionType.objects.get(code="sex")
 
     male_record = ind.data.create(
+        period=period,
         dimension_type=sex_cat,
         dimension_value=sex_cat.possible_values.get(value="m"),
         value=1.0,
     )
 
-    url = reverse("manage_indicator_data", args=[ind.id, sex_cat.pk])
+    url = reverse(
+        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
+    )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 
@@ -70,9 +78,12 @@ def test_predefined_existing_data(vanilla_user_client):
 
 
 def test_create_agegroups_from_scratch(vanilla_user_client):
+    period = Period.objects.first()
     ind = IndicatorFactory()
     age_cat = DimensionType.objects.get(code="age")
-    url = reverse("manage_indicator_data", args=[ind.id, age_cat.pk])
+    url = reverse(
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
+    )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 
@@ -103,26 +114,33 @@ def test_create_agegroups_from_scratch(vanilla_user_client):
 
 
 def test_agegroups_existing_data(vanilla_user_client):
+    period = Period.objects.first()
+
     ind = IndicatorFactory()
     age_cat = DimensionType.objects.get(code="age")
 
     record0_25 = ind.data.create(
+        period=period,
         dimension_type=age_cat,
         literal_dimension_val="0-25",
         value=5,
     )
     record25_50 = ind.data.create(
+        period=period,
         dimension_type=age_cat,
         literal_dimension_val="25-50",
         value=6,
     )
     record_51_75 = ind.data.create(
+        period=period,
         dimension_type=age_cat,
         literal_dimension_val="51-75",
         value=7,
     )
 
-    url = reverse("manage_indicator_data", args=[ind.id, age_cat.pk])
+    url = reverse(
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
+    )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 
@@ -168,6 +186,7 @@ def test_agegroups_existing_data(vanilla_user_client):
 
 
 def test_modify_all_dimensions(vanilla_user_client):
+    period = Period.objects.first()
     # delete other dimensions to make POST more manageable
     DimensionValue.objects.exclude(
         dimension_type__code__in=["age", "sex"]
@@ -182,15 +201,19 @@ def test_modify_all_dimensions(vanilla_user_client):
 
     # one existing record in both dimensions
     record0_25 = ind.data.create(
+        period=period,
         dimension_type=age_cat,
         literal_dimension_val="0-25",
         value=5,
     )
     male_record = ind.data.create(
-        dimension_type=sex_cat, dimension_value=male_dimension_value, value=6
+        period=period,
+        dimension_type=sex_cat,
+        dimension_value=male_dimension_value,
+        value=6,
     )
 
-    url = reverse("manage_indicator_data_all", args=[ind.id])
+    url = reverse("manage_indicator_data_all", args=[ind.id, period.id])
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 

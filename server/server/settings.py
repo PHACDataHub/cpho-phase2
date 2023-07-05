@@ -78,8 +78,15 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# always use whitenoise in production. Set FORCE_WHITENOISE=True to test in dev (requires ./manage.py collectstatic)
+use_whitenoise = not IS_LOCAL_DEV or config(
+    "FORCE_WHITENOISE", cast=bool, default=False
+)
+if use_whitenoise:
+    STATICFILES_STORAGE = (
+        "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    )
 
 # Application definition
 INSTALLED_APPS = configure_apps(
@@ -90,6 +97,7 @@ INSTALLED_APPS = configure_apps(
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.messages",
+        *(["whitenoise.runserver_nostatic"] if use_whitenoise else []),
         "django.contrib.staticfiles",
         "graphene_django",
         "django_extensions",
@@ -99,6 +107,14 @@ INSTALLED_APPS = configure_apps(
 
 MIDDLEWARE = configure_middleware(
     [
+        "django.middleware.security.SecurityMiddleware",
+        *(
+            [
+                "whitenoise.middleware.WhiteNoiseMiddleware",
+            ]
+            if use_whitenoise
+            else []
+        ),
         *(
             [
                 "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -108,10 +124,8 @@ MIDDLEWARE = configure_middleware(
         ),
         "django.middleware.locale.LocaleMiddleware",
         "django.middleware.common.CommonMiddleware",
-        "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
-        "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",

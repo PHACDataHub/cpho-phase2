@@ -2,34 +2,7 @@
 
 Currently running on https://cpho-phase2-qrj6r6scdq-nn.a.run.app (will move to previous url soon).
 
-## Example .env file: 
-
-```
-TEST_DB_NAME=cpho_test_db
-DB_NAME=cpho_dev_db
-DB_USER=cpho_db_user
-DB_PASSWORD=""
-DB_HOST=localhost
-DB_PORT=5432
-
-SECRET_KEY=abcdefg
-
-# dev settings
-ALLOWED_HOSTS=*
-DEBUG=True
-IS_LOCAL_DEV=True
-
-# required for debug toolbar
-ENABLE_DEBUG_TOOLBAR=True
-INTERNAL_IPS=127.0.0.1
-
-# this is to disable session timeout
-PHAC_ASPC_SESSION_COOKIE_AGE=99999999 # this doesn't seem to work?
-PHAC_ASPC_SESSION_COOKIE_SECURE=0
-EOF
-```
-
-# Setting up the development environment
+## Setting up the development environment
 
 Note: run all this in the repo's root directory
 
@@ -55,7 +28,7 @@ Note: run all this in the repo's root directory
         ```
 10. `python manage.py runserver`
 
-## Other useful commands:
+## #Other useful dev commands:
 
 resetting dev db: 
 ```bash

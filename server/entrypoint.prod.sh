@@ -10,9 +10,9 @@ else
 fi
 
 
-# echo "applying migrations..."
-# python manage.py migrate
-# 
+echo "applying migrations..."
+python manage.py migrate
+
 # echo "temporary dev expedient, seed dev data (comment out after first run):"
 # python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
 # python ./manage.py loaddata cpho/fixtures/periods.yaml

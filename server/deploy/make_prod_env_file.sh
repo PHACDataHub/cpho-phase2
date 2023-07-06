@@ -33,7 +33,7 @@ if [[ ! -z $SERVICE_URL ]]; then
   ALLOWED_HOSTS=$(echo ${SERVICE_URL} | sed 's/^https:\/\///')
 else
   # Fall back to allowing any sub domain of run.app, just for the initial deploy
-  ALLOWED_HOSTS=\*.run.app
+  ALLOWED_HOSTS=.run.app
 fi
 escape ALLOWED_HOSTS=${ALLOWED_HOSTS} >> ${PROD_ENV_FILE}
 

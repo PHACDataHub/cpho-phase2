@@ -64,67 +64,63 @@ echo ""
 if [[ $BUILD_SKIP != "S" ]]; then
   gcloud services enable \
     cloudbuild.googleapis.com \
-    sourcerepo.googleapis.com
-  
-  gcloud services enable cloudresourcemanager.googleapis.com # necessary for Cloud Build's service account to use ./make_prod_env_file.sh
-
-  # _Can_ be done more programatically, but it's messy. Just do this manually for now
-  read -n 1 -p "Manual step: via the GCP dashboard for this project, navigate to Cloud Build > Repositories and use \"CONNECT TO REPOSITORY\" to grant access to your GitHub repo. Press any key to continue: "
-  
-  # Add cloud build trigger (this is set to be triggered on push to main branch)
-  gcloud builds triggers create github \
-    --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
-    --region ${PROJECT_REGION} \
-    --repo-name ${BUILD_GITHUB_REPO_NAME} \
-    --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
-    --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
-    --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
-    --include-logs-with-status \
-    --no-require-approval
+    sourcerepo.googleapis.com \
+    cloudresourcemanager.googleapis.com
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
   gcloud iam roles create sqlInstanceLister --project ${PROJECT_ID} \
     --title "SQL Instance Lister" --description "Able to use sql instances list" \
     --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA
   
-  # Bind permissions to Cloud Build service account:
+  # Set necessary roles for Cloud Build service account
   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
     --role projects/${PROJECT_ID}/roles/sqlInstanceLister \
     --role roles/cloudbuild.serviceAgent \
-    --role roles/run.admin \
     --role roles/artifactregistry.writer \
     --role roles/cloudsql.client \
-    --role roles/iam.serviceAccountUser \
-    --condition None
+    --role roles/run.admin
 
+  # Give Cloud Build access to the Cloud Run service account
+  gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+    --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+    --role "roles/iam.serviceAccountUser"
+
+  # Give the Cloud Build service account access to the full set of prod env var secrets
   for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
     gcloud secrets add-iam-policy-binding ${SKEY} \
       --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
       --role roles/secretmanager.secretAccessor
   done
+
+  # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
+  # Just make the connection manually for now
+  read -n 1 -p "Manual step: via the GCP dashboard for this project, navigate to Cloud Build > Repositories and use \"CONNECT TO REPOSITORY\" to grant access to your GitHub repo. Type S to skip configuring the trigger for now, or any other key to continue (once the connection is made): " SKIP_TRIGGER
+  if [[ $SKIP_TRIGGER != "S" ]]; then
+    # Add cloud build trigger (this is set to be triggered on push to main branch)
+    gcloud builds triggers create github \
+      --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
+      --region ${PROJECT_REGION} \
+      --repo-name ${BUILD_GITHUB_REPO_NAME} \
+      --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
+      --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
+      --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
+      --include-logs-with-status \
+      --no-require-approval
+  fi
 fi
 
 
 
 # ----- CLOUD RUN -----
 echo ""
-echo "Enable the Cloud Run API and grant it access to necessary resources"
+echo "Enable the Cloud Run API"
 read -n 1 -p "Type S to skip this step, anything else to continue: " RUN_SKIP
 echo ""
 if [[ $RUN_SKIP != "S" ]]; then
   gcloud services enable \
     run.googleapis.com \
     compute.googleapis.com
-  
-  gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-    --member serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-    --role roles/run.admin
-  
-  # Grant the IAM Service Account User role to the Cloud Build service account for the Cloud Run runtime service account
-  gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-    --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-    --role roles/iam.serviceAccountUser
 fi
 
 

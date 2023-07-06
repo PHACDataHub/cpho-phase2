@@ -4,7 +4,7 @@
 
 # [START cloudrun_django_cloudbuild]
 steps:
-  - id: "Make .env.prod file"
+  - id: "make .env.prod file"
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: [ '-c', "cd server && deploy/make_prod_env_file.sh" ]
@@ -33,10 +33,10 @@ steps:
         "--region",
         "${_REGION}",
         "--add-cloudsql-instances",
-        "${PROJECT_ID}:${_REGION}:${_DB_INSTANCE_NAME}", 
-        "--platform", 
+        "${PROJECT_ID}:${_REGION}:${_DB_INSTANCE_NAME}",
+        "--platform",
         "managed",
-        "--allow-unauthenticated",   
+        "--allow-unauthenticated",
       ]
 
 # TODO these need to be in sync with deploy/gcloud_env_vars.sh, annoying as-is

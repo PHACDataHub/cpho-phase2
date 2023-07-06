@@ -35,4 +35,3 @@ SKEY_ENV_VAR_NAMES=$(env -0 | cut -z -f1 -d= | tr '\0' '\n' | grep "^SKEY_")
 for ENV_VAR_NAME in ${SKEY_ENV_VAR_NAMES}; do
   delete_secret $(printenv ${ENV_VAR_NAME})
 done
-

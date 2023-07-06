@@ -68,14 +68,15 @@ if [[ $BUILD_SKIP != "S" ]]; then
     cloudresourcemanager.googleapis.com
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
-  gcloud iam roles create sqlInstanceLister --project ${PROJECT_ID} \
+  gcloud iam roles create ${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} --project ${PROJECT_ID} \
     --title "SQL Instance Lister" --description "Able to use sql instances list" \
-    --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA
+    --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
+    || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
   
   # Set necessary roles for Cloud Build service account
   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-    --role projects/${PROJECT_ID}/roles/sqlInstanceLister \
+    --role projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} \
     --role roles/cloudbuild.serviceAgent \
     --role roles/artifactregistry.writer \
     --role roles/cloudsql.client \
@@ -94,6 +95,7 @@ if [[ $BUILD_SKIP != "S" ]]; then
   done
 
   read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection and trigger via the GCP dashboard, under \"Cloud Build > Repositories\". Manual trigger creation isn't working ATM. Press any key to continue: "
+  
   # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
   # Just make the connection manually for now
   #read -n 1 -p "TODO. Type S to skip configuring the trigger for now, or any other key to continue (once the connection is made): " SKIP_TRIGGER

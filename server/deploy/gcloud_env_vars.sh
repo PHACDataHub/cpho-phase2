@@ -32,6 +32,7 @@ export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(p
 export ARTIFACT_REGISTRY_REPO=${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run
 
 # ----- CLOUD BUILD ----
+export BUILD_SQL_INSTANCE_LIST_ROLE_NAME=sqlInstanceLister
 export BUILD_CLOUD_BUILD_TRIGGER_NAME=${PROJECT_SERVICE_NAME}-github-main-branch-trigger
 export BUILD_CLOUD_BUILD_CONFIG_PATH=cloudbuild.yaml
 

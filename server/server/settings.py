@@ -69,8 +69,11 @@ else:
 SECRET_KEY = config("SECRET_KEY")
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
-# CORS will diverge from ALLOWED_HOSTS if/when this app hosts an API for outside consumption
-CORS_ALLOWED_ORIGINS = config("ALLOWED_HOSTS", cast=Csv())
+
+# CORS allowed and CSRF trusted origins should be empty until if/when the app
+# is serving a REST/GraphQL API for external consumption
+CORS_ALLOWED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = []
 
 
 # Static files (CSS, JavaScript, Images)

@@ -9,7 +9,7 @@
 export PROJECT_ID=phx-01h3m8rpdeyaf54w9ssf51syd5
 export PROJECT_REGION=northamerica-northeast1
 export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
-export PROJECT_SERVICE_NAME=${PROJECT_ID}-app-service
+export PROJECT_SERVICE_NAME=cpho-phase2
 
 gcloud config set project ${PROJECT_ID}
 gcloud config set compute/region ${PROJECT_REGION}

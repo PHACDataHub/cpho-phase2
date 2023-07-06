@@ -165,7 +165,7 @@ if [[ $SQL_SKIP != "S" ]]; then
   #Create User
   gcloud sql users create ${DB_USER} \
     --instance ${DB_INSTANCE_NAME} \
-    --password $(get_secret ${SKEY_DB_ROOT_PASSWORD})
+    --password $(get_secret ${SKEY_DB_USER_PASSWORD})
 fi
 
 # See step six in deploy/README.md, you'll need to connect to this database via cloud SQL proxy and perform initial migrations and data seeding

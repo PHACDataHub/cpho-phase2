@@ -93,21 +93,22 @@ if [[ $BUILD_SKIP != "S" ]]; then
       --role roles/secretmanager.secretAccessor
   done
 
+  read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection and trigger via the GCP dashboard, under \"Cloud Build > Repositories\". Manual trigger creation isn't working ATM. Press any key to continue: "
   # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
   # Just make the connection manually for now
-  read -n 1 -p "Manual step: via the GCP dashboard for this project, navigate to Cloud Build > Repositories and use \"CONNECT TO REPOSITORY\" to grant access to your GitHub repo. Type S to skip configuring the trigger for now, or any other key to continue (once the connection is made): " SKIP_TRIGGER
-  if [[ $SKIP_TRIGGER != "S" ]]; then
-    # Add cloud build trigger (this is set to be triggered on push to main branch)
-    gcloud builds triggers create github \
-      --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
-      --region ${PROJECT_REGION} \
-      --repo-name ${BUILD_GITHUB_REPO_NAME} \
-      --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
-      --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
-      --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
-      --include-logs-with-status \
-      --no-require-approval
-  fi
+  #read -n 1 -p "TODO. Type S to skip configuring the trigger for now, or any other key to continue (once the connection is made): " SKIP_TRIGGER
+  #if [[ $SKIP_TRIGGER != "S" ]]; then
+  #  # Add cloud build trigger (this is set to be triggered on push to main branch)
+  #  gcloud builds triggers create github \
+  #    --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
+  #    --region ${PROJECT_REGION} \
+  #    --repo-name ${BUILD_GITHUB_REPO_NAME} \
+  #    --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
+  #    --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
+  #    --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
+  #    --include-logs-with-status \
+  #    --no-require-approval
+  #fi
 fi
 
 

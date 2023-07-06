@@ -5,24 +5,35 @@
 # NON-SECRET configuration values ONLY! 
 # Secret values live exclusively in GCP secrets, although their keys (might) be stored here. Fetch secrets as needed with the get_secret helper
 
-# ----- PROJECT -----
-export PROJECT_ID=phx-01h3m8rpdeyaf54w9ssf51syd5
-export PROJECT_REGION=northamerica-northeast1
-export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
+#####################
+# Project dependent #
+#####################
+
+export PROJECT_ID=pdcp-cloud-006-cpho
 export PROJECT_SERVICE_NAME=cpho-phase2
+export PROJECT_REGION=northamerica-northeast1
 
 gcloud config set project ${PROJECT_ID}
 gcloud config set compute/region ${PROJECT_REGION}
 
+export BUILD_GITHUB_REPO_NAME=cpho-phase2
+export BUILD_GITHUB_REPO_OWNER=PHACDataHub
+export BUILD_TRIGGER_BRANCH_PATTERN=^cloud-run-deployment$ #^main$
+
+#########################################
+# Derived & less likely to need changes #
+#########################################
+
+# ----- PROJECT -----
+
+export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
+
 # ----- ARTIFACT REGISTRY -----
-export ARTIFACT_REGISTRY_REPO=cpho-artifact-registry-for-cloud-run
+export ARTIFACT_REGISTRY_REPO=${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run
 
 # ----- CLOUD BUILD ----
-export BUILD_CLOUD_BUILD_TRIGGER_NAME=cpho-github-main-branch-trigger
-export BUILD_GITHUB_REPO_NAME=cpho-phase2
+export BUILD_CLOUD_BUILD_TRIGGER_NAME=${PROJECT_SERVICE_NAME}-github-main-branch-trigger
 export BUILD_CLOUD_BUILD_CONFIG_PATH=cloudbuild.yaml
-export BUILD_GITHUB_REPO_OWNER=PHACDataHub
-export BUILD_TRIGGER_BRANCH_PATTERN=^main$
 
 # ----- CLOUD STORAGE -----
 # NOTE: if PROJECT_IS_USING_WHITENOISE is False then no media bucket will be created for the project
@@ -32,9 +43,9 @@ export MEDIA_BUCKET_NAME=${PROJECT_ID}_MEDIA_BUCKET
 # ----- CLOUD SQL -----
 export DB_VERSION=POSTGRES_14 # aren't they using 13?
 export DB_TIER=db-g1-small
-export DB_INSTANCE_NAME=cpho-db-instance
-export DB_NAME=cpho_dev_db
-export DB_USER=cpho_db_user
+export DB_INSTANCE_NAME=${PROJECT_SERVICE_NAME}-db-instance
+export DB_NAME=${PROJECT_SERVICE_NAME}_db
+export DB_USER=${PROJECT_SERVICE_NAME}_db_user
 
 
 

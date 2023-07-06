@@ -25,7 +25,6 @@ export BUILD_TRIGGER_BRANCH_PATTERN=^cloud-run-deployment$ #^main$
 #########################################
 
 # ----- PROJECT -----
-
 export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
 
 # ----- ARTIFACT REGISTRY -----
@@ -39,19 +38,21 @@ export BUILD_CLOUD_BUILD_CONFIG_PATH=cloudbuild.yaml
 # ----- CLOUD STORAGE -----
 # NOTE: if PROJECT_IS_USING_WHITENOISE is False then no media bucket will be created for the project
 export PROJECT_IS_USING_WHITENOISE=True
-export MEDIA_BUCKET_NAME=${PROJECT_ID}_MEDIA_BUCKET
+export MEDIA_BUCKET_NAME=${PROJECT_SERVICE_NAME}_MEDIA_BUCKET
 
 # ----- CLOUD SQL -----
-export DB_VERSION=POSTGRES_14 # aren't they using 13?
+export DB_VERSION=POSTGRES_14
 export DB_TIER=db-g1-small
 export DB_INSTANCE_NAME=${PROJECT_SERVICE_NAME}-db-instance
 export DB_NAME=${PROJECT_SERVICE_NAME}_db
 export DB_USER=${PROJECT_SERVICE_NAME}_db_user
 
+# ----- VPC NETWORK -----
+export VPC_NAME=default
+export VPC_CONNECTOR_NAME=${PROJECT_SERVICE_NAME}-sql-to-cloud-run-connector
+export VPC_RANGE=10.8.0.0/28
 
-
-# ----- SECRET MANAGER (keys, no values set here) -----
-# Likely no need to edit these for a new project; doing so may break other scripts too, if they hard code against these secret names
+# ----- SECRET MANAGER (keys only) -----
 export SKEY_DB_INSTANCE_NAME=db_instance_name
 export SKEY_DB_NAME=db_name
 export SKEY_DB_USER=db_user

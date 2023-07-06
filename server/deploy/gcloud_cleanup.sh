@@ -30,6 +30,12 @@ gcloud builds triggers delete github ${BUILD_CLOUD_BUILD_TRIGGER_NAME} || :
 # TODO revert permissions to default, disable API?
 gcloud sql instances delete ${DB_INSTANCE_NAME} || :
 
+# ----- VPC NETWORK -----
+if [[ $VPC_NAME != "default" ]]; then
+  gcloud compute networks delete ${VPC_NAME} || :
+fi
+gcloud compute networks vpc-access connectors delete ${VPC_CONNECTOR_NAME} --region ${PROJECT_REGION} || :
+
 # ----- SECRET MANAGER -----
 SKEY_ENV_VAR_NAMES=$(env -0 | cut -z -f1 -d= | tr '\0' '\n' | grep "^SKEY_")
 for ENV_VAR_NAME in ${SKEY_ENV_VAR_NAMES}; do

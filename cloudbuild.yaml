@@ -37,6 +37,8 @@ steps:
         "--platform",
         "managed",
         "--allow-unauthenticated",
+        "--vpc-connector",
+        "${_SERVICE_NAME}-sql-to-cloud-run-connector"
       ]
 
 # TODO these need to be in sync with deploy/gcloud_env_vars.sh, annoying as-is

@@ -23,8 +23,8 @@ if [[ $SECRETS_SKIP != "S" ]]; then
     set_secret ${SKEY_DB_INSTANCE_NAME} ${DB_INSTANCE_NAME}
     set_secret ${SKEY_DB_NAME} ${DB_NAME}
     set_secret ${SKEY_DB_USER} ${DB_USER}
-    set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
-    set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 100 | tr -dc a-zA-Z0-9)
+    set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 80)
+    set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 80)
     set_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
   
     set_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
@@ -95,7 +95,7 @@ if [[ $BUILD_SKIP != "S" ]]; then
   done
 
   read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection and trigger via the GCP dashboard, under \"Cloud Build > Repositories\". Manual trigger creation isn't working ATM. Press any key to continue: "
-  
+
   # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
   # Just make the connection manually for now
   #read -n 1 -p "TODO. Type S to skip configuring the trigger for now, or any other key to continue (once the connection is made): " SKIP_TRIGGER
@@ -141,6 +141,29 @@ fi
 
 
 
+# ----- VPC NETWORK -----
+echo ""
+echo "Create and configure the project's VPC Network"
+read -n 1 -p "Type S to skip this step, anything else to continue: " VPC_SKIP
+echo ""
+if [[ $VPC_SKIP != "S" ]]; then
+  gcloud services enable \
+    vpcaccess.googleapis.com \
+    servicenetworking.googleapis.com
+
+  if [[ $VPC_NAME != "default" ]]; then
+    gcloud compute networks create ${VPC_NAME} --subnet-mode=auto
+  fi
+
+  gcloud compute networks vpc-access connectors create ${VPC_CONNECTOR_NAME} \
+    --project ${PROJECT_ID} \
+    --region ${PROJECT_REGION} \
+    --network ${VPC_NAME} \
+    --range ${VPC_RANGE}
+fi
+
+
+
 # ----- CLOUD SQL -----
 echo ""
 echo "Enable the Cloud SQL API, create a database and user"
@@ -155,10 +178,13 @@ if [[ $SQL_SKIP != "S" ]]; then
   # Create Postgres instance
   gcloud sql instances create ${DB_INSTANCE_NAME} \
     --project ${PROJECT_ID} \
+    --region ${PROJECT_REGION} \
     --database-version ${DB_VERSION} \
     --tier ${DB_TIER} \
-    --region ${PROJECT_REGION} \
-    --root-password $(get_secret ${SKEY_DB_ROOT_PASSWORD})
+    --root-password $(get_secret ${SKEY_DB_ROOT_PASSWORD}) \
+    --network ${VPC_NAME} \
+    --no-assign-ip \
+    --enable-google-private-path
   
   # Create Database
   gcloud sql databases create ${DB_NAME} \
@@ -170,48 +196,7 @@ if [[ $SQL_SKIP != "S" ]]; then
     --password $(get_secret ${SKEY_DB_USER_PASSWORD})
 fi
 
-# See step six in deploy/README.md, you'll need to connect to this database via cloud SQL proxy and perform initial migrations and data seeding
-
-# OPTION 1: cloud SQL proxy (WIP) 
-# in another terminal set environment variables
-# export GOOGLE_CLOUD_PROJECT=$PROJECT_ID
-# export USE_CLOUD_SQL_AUTH_PROXY=true
-
-# get DB root user password from gcloud secrets
-# gcloud secrets versions access latest --secret ${DB_ROOT_PASSWORD_KEY} && echo ""
-
-# can locally connect python manage.py runserver
-
-
-# OPTION 2: cloud run job (WIP) (fragments below are using cloud build to do this, but it should be a one off cloud run job instead)
-# deploy cloud build, run database migrations and populate static assests
-
-# Give the Cloud Build service user access to the DB ${DB_ROOT_PASSWORD_KEY} secret
-# gcloud secrets add-iam-policy-binding ${DB_ROOT_PASSWORD_KEY} \
-#   --member=serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-#   --role=roles/secretmanager.secretAccessor
-
-# gcloud builds submit --config cloudbuild.yaml \
-#   --substitutions _DB_INSTANCE_NAME=test-instance, _REGION=northamerica-northeast1
-
-# SERVICE_URL=$(gcloud run services describe $PROJECT_SERVICE_NAME --platform managed \
-#   --region northamerica-northeast1 --format "value(status.url)")
-
-# gcloud run services update $PROJECT_SERVICE_NAME \
-#   --platform managed \
-#   --region northamerica-northeast1 \
-#   --set-env-vars CLOUDRUN_SERVICE_URL=$SERVICE_URL
-
-
-# # to run - add deploy step to yaml and 
-# gcloud builds submit --config cloudbuild.yaml or add trigger
-
-# Remove Cloud Build service ${DB_ROOT_PASSWORD_KEY} secret access
-# gcloud secrets remove-iam-policy-binding ${DB_ROOT_PASSWORD_KEY} \
-#   --member=serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-#   --role=roles/secretmanager.secretAccessor
-
 
 
 # ----- TODOs -----
-# Borrow the pulumi for Cloud Run networking from https://github.com/PHACDataHub/phac-epi-garden/tree/main/deploy
+# DNS

@@ -20,7 +20,7 @@ cat <<EOT >> ${PROD_ENV_FILE}
 DB_NAME=$(escape $(get_secret ${SKEY_DB_NAME}))
 DB_USER=$(escape $(get_secret ${SKEY_DB_USER}))
 DB_PASSWORD=$(escape $(get_secret ${SKEY_DB_USER_PASSWORD}))
-DB_HOST=$(escape $(gcloud sql instances list --filter name:$(get_secret ${SKEY_DB_INSTANCE_NAME}) --format "value(PRIMARY_ADDRESS)"))
+DB_HOST=$(escape $(gcloud sql instances list --filter name:$(get_secret ${SKEY_DB_INSTANCE_NAME}) --format "value(PRIVATE_ADDRESS)"))
 DB_PORT=5432
 
 SECRET_KEY=$(escape $(get_secret ${SKEY_DJANGO_SECRET_KEY}))

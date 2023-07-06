@@ -12,14 +12,18 @@ rm -f ${PROD_ENV_FILE}
 
 touch ${PROD_ENV_FILE}
 
+escape (){
+  printf "%q" $1
+}
+
 cat <<EOT >> ${PROD_ENV_FILE}
-DB_NAME=$(get_secret ${SKEY_DB_NAME})
-DB_USER=$(get_secret ${SKEY_DB_USER})
-DB_PASSWORD=$(get_secret ${SKEY_DB_USER_PASSWORD})
-DB_HOST=$(gcloud sql instances list --filter name:$(get_secret ${SKEY_DB_INSTANCE_NAME}) --format "value(PRIMARY_ADDRESS)")
+DB_NAME=$(escape $(get_secret ${SKEY_DB_NAME}))
+DB_USER=$(escape $(get_secret ${SKEY_DB_USER}))
+DB_PASSWORD=$(escape $(get_secret ${SKEY_DB_USER_PASSWORD}))
+DB_HOST=$(escape $(gcloud sql instances list --filter name:$(get_secret ${SKEY_DB_INSTANCE_NAME}) --format "value(PRIMARY_ADDRESS)"))
 DB_PORT=5432
 
-SECRET_KEY=$(get_secret ${SKEY_DJANGO_SECRET_KEY})
+SECRET_KEY=$(escape $(get_secret ${SKEY_DJANGO_SECRET_KEY}))
 EOT
 
 # Prior to the first deploy, the service doesn't exist yet and it's URL is unknown (TODO: well, this will change when the project has a domain name)
@@ -31,8 +35,8 @@ else
   # Fall back to allowing any sub domain of run.app, just for the initial deploy
   ALLOWED_HOSTS=\*.run.app
 fi
-echo ALLOWED_HOSTS=${ALLOWED_HOSTS} >> ${PROD_ENV_FILE}
+escape ALLOWED_HOSTS=${ALLOWED_HOSTS} >> ${PROD_ENV_FILE}
 
 if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
-  echo MEDIA_BUCKET_NAME=$(get_secret ${SKEY_MEDIA_BUCKET_NAME}) >> ${PROD_ENV_FILE}
+  escape MEDIA_BUCKET_NAME=$(get_secret ${SKEY_MEDIA_BUCKET_NAME}) >> ${PROD_ENV_FILE}
 fi

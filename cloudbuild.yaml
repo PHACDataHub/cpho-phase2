@@ -41,10 +41,10 @@ steps:
 
 # TODO these need to be in sync with deploy/gcloud_env_vars.sh, annoying as-is
 substitutions:
-  _DB_INSTANCE_NAME: cpho-db-instance
+  _DB_INSTANCE_NAME: cpho-phase2-db-instance
   _REGION: northamerica-northeast1
   _SERVICE_NAME: "cpho-phase2"
-  _ARTIFACT_REGISTRY_REPO: "cpho-artifact-registry-for-cloud-run"
+  _ARTIFACT_REGISTRY_REPO: "cpho-phase2-artifact-registry-for-cloud-run"
 
 images:
   #- "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}:${COMMIT_SHA}"

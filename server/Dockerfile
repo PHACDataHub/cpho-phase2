@@ -34,8 +34,6 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 # pull official base image
 FROM python:3.10.6-alpine3.16
 
-EXPOSE 8000 2222
-
 ENV USER=5678
 
 ENV HOME=/cpho
@@ -72,5 +70,7 @@ USER $USER
 RUN python manage.py collectstatic --no-input
 
 # entrypoint script to run on-start steps (confirm migrations, etc)
-ENTRYPOINT ["/cpho/web/entrypoint.prod.sh"]
-CMD exec gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 8 --timeout 0 server.wsgi:application
+#ENTRYPOINT ["/cpho/web/server/entrypoint.prod.sh"]
+
+EXPOSE 8080
+CMD exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 server.wsgi:application

@@ -1,20 +1,23 @@
-#!/bin/bash
+# WARNING: this needs to run inside the app docker container, which is alpine linux
+# That means sh instead of bash, different unix utilities, etc
 
-if [[ ! -z "$DB_HOST" && ! -z "$DB_PORT" ]]; then
-  echo "Waiting for postgres ($DB_HOST:$DB_PORT)..."
+#!/bin/sh
 
-  while ! nc -z $DB_HOST $DB_PORT; do
-    sleep 0.1
-  done
-  sleep 1
-
-  echo "PostgreSQL started"
-  echo "applying migrations..."
-  python manage.py migrate
-  echo "migrations applied"
-
+if [[ -f "./.env.prod" ]]; then
+  source "./.env.prod"
+else
+  source "./.env.dev"
 fi
 
-eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/g' | sed '/=/s//="/' | sed 's/$/"/' >> /etc/profile)
 
-exec su-exec app "$@"
+# echo "applying migrations..."
+# python manage.py migrate
+# 
+# echo "temporary dev expedient, seed dev data (comment out after first run):"
+# python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
+# python ./manage.py loaddata cpho/fixtures/periods.yaml
+# python ./manage.py runscript cpho.scripts.dev
+
+# Execute the docker CMD (either the default in the Dockerfile or an over ride from the command line)
+exec "$@"
+ 

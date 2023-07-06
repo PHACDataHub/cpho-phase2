@@ -18,8 +18,7 @@ RUN apk update \
     musl-dev \
     openssl-dev \
     postgresql-dev \
-    python3-dev \
-    bash
+    python3-dev
 
 # Update pip
 RUN pip install --upgrade pip
@@ -42,7 +41,7 @@ ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
 
 RUN \
-    addgroup -S app && adduser --shell /bin/bash -u $USER -S app -G app --home $HOME && \
+    addgroup -S app && adduser --shell /bin/sh -u $USER -S app -G app --home $HOME && \
     mkdir -p $APP_HOME && \
     mkdir $VIRTUALENV && \
     chown -R $USER $HOME && \
@@ -69,8 +68,8 @@ USER $USER
 # Run collect static as container build time step, static files won't be changing post-docker build for a given deployment
 RUN python manage.py collectstatic --no-input
 
-# entrypoint script to run on-start steps (confirm migrations, etc)
-#ENTRYPOINT ["/cpho/web/server/entrypoint.prod.sh"]
-
 EXPOSE 8080
+
+# Entrypoint script to run on-start steps (confirm migrations, etc)
+ENTRYPOINT ["sh", "./entrypoint.prod.sh"]
 CMD exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 server.wsgi:application

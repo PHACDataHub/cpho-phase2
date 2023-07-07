@@ -3,7 +3,8 @@
 # This script is meant to be called via `source`, so forgo the standard `set -o ...` boilerplate 
 
 # NON-SECRET configuration values ONLY! 
-# Secret values live exclusively in GCP secrets, although their keys (might) be stored here. Fetch secrets as needed with the get_secret helper
+# Secret values live exclusively in GCP secrets, although their keys (might) be stored here
+# Fetch secret values as needed with the get_secret helper function exported below
 
 #####################
 # Project dependent #
@@ -12,6 +13,9 @@
 export PROJECT_ID=pdcp-cloud-006-cpho
 export PROJECT_SERVICE_NAME=cpho-phase2
 export PROJECT_REGION=northamerica-northeast1
+
+# NOTE: if PROJECT_IS_USING_WHITENOISE is False then no cloud storage will be created for the project
+export PROJECT_IS_USING_WHITENOISE=True
 
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
@@ -37,8 +41,6 @@ export BUILD_CLOUD_BUILD_CONFIG_PATH=cloudbuild.yaml
 export BUILD_CLOUD_RUN_IMAGE_NAME=${PROJECT_REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPO}/${BUILD_GITHUB_REPO_NAME}
 
 # ----- CLOUD STORAGE -----
-# NOTE: if PROJECT_IS_USING_WHITENOISE is False then no media bucket will be created for the project
-export PROJECT_IS_USING_WHITENOISE=True
 export MEDIA_BUCKET_NAME=${PROJECT_SERVICE_NAME}_MEDIA_BUCKET
 
 # ----- CLOUD SQL -----

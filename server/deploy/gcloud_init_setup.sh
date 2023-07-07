@@ -64,16 +64,16 @@ if [[ $BUILD_SKIP != "S" ]]; then
   gcloud iam roles create ${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} --project ${PROJECT_ID} \
     --title "SQL Instance Lister" --description "Able to use sql instances list" \
     --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
-    || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
+|| : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
   
   # Set necessary roles for Cloud Build service account
   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-    --role projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} \
     --role roles/cloudbuild.serviceAgent \
     --role roles/artifactregistry.writer \
     --role roles/cloudsql.client \
-    --role roles/run.admin
+    --role roles/run.admin \
+    --role projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}
 
   # Give Cloud Build access to the Cloud Run service account
   gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \

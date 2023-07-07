@@ -42,7 +42,7 @@ steps:
 substitutions:
   _SERVICE_NAME: "cpho-phase2"
   _REGION: northamerica-northeast1
-  _IMAGE_NAME: "${REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE_NAME}-artifact-registry-for-cloud-run/${_SERVICE_NAME}" # :${COMMIT_SHA}"
+  _IMAGE_NAME: "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE_NAME}-artifact-registry-for-cloud-run/${_SERVICE_NAME}" # :${COMMIT_SHA}"
   _SQL_INSTANCE: "${PROJECT_ID}:${_REGION}:${_SERVICE_NAME}-db-instance"
   _VPC_CONNECTOR: "${_SERVICE_NAME}-sql-to-run"
 

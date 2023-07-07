@@ -87,7 +87,7 @@ if [[ $BUILD_SKIP != "S" ]]; then
       --role roles/secretmanager.secretAccessor
   done
 
-  read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection and trigger via the GCP dashboard, under \"Cloud Build > Repositories\". Manual trigger creation isn't working ATM. Press any key to continue: "
+  read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection and trigger via the GCP dashboard, under \"Cloud Build > Repositories\". Manual trigger creation isn't working ATM. Press any key to continue: " _
 
   # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
   # Just make the connection manually for now

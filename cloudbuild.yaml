@@ -1,25 +1,27 @@
-# To manually trigger your cloudbuild.yaml, use: gcloud builds submit --config cloudbuild.yaml
-# NOTE: when manually triggering, the COMMIT_SHA env var will be unset,
-# you'll need to modify the file temporarily to not reference it
+# To manually trigger your cloudbuild.yaml, use:
+# ```
+# gcloud builds submit --config cloudbuild.yaml --substitutions COMMIT_SHA="localTrigger"
+# ```
+
 
 # [START cloudrun_django_cloudbuild]
+
 steps:
   - id: "make .env.prod file"
     name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args: [ '-c', "cd server && deploy/make_prod_env_file.sh" ]
+    entrypoint: "bash"
+    args: [ "-c", "cd server && deploy/make_prod_env_file.sh" ]
 
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "${_IMAGE_NAME}", "server/."]
+    args: ["build", "-t", "${_IMAGE_NAME}:${COMMIT_SHA}", "server/."]
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["push", "${_IMAGE_NAME}"]
+    args: ["push", "${_IMAGE_NAME}:${COMMIT_SHA}"]
 
   - id: "deploy to cloud run"
-    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: gcloud
+    name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "run",
@@ -38,14 +40,18 @@ steps:
         "--allow-unauthenticated"
       ]
 
-# TODO these need to be in sync with deploy/gcloud_env_vars.sh, annoying as-is
+# WARNING: substitution values need to be kept in sync with corresponding values/patterns in deploy/gcloud_env_vars.sh
 substitutions:
   _SERVICE_NAME: "cpho-phase2"
-  _REGION: northamerica-northeast1
-  _IMAGE_NAME: "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE_NAME}-artifact-registry-for-cloud-run/${_SERVICE_NAME}" # :${COMMIT_SHA}"
+  _REGION: "northamerica-northeast1"
   _SQL_INSTANCE: "${PROJECT_ID}:${_REGION}:${_SERVICE_NAME}-db-instance"
   _VPC_CONNECTOR: "${_SERVICE_NAME}-sql-to-run"
+  _ARTIFACT_REGISTRY_REPO: "${_SERVICE_NAME}-artifact-registry-for-cloud-run"
+  _IMAGE_NAME: "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}"
+  
+options:
+    dynamic_substitutions: true
 
 images:
-  - "${_IMAGE_NAME}"
+  - "${_IMAGE_NAME}:${COMMIT_SHA}"
 # [END cloudrun_django_cloudbuild]

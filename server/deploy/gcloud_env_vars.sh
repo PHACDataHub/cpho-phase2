@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script is meant to be called via `source`, so forgoe the standard `set -o ...` boilerplate 
+# This script is meant to be called via `source`, so forgo the standard `set -o ...` boilerplate 
 
 # NON-SECRET configuration values ONLY! 
 # Secret values live exclusively in GCP secrets, although their keys (might) be stored here. Fetch secrets as needed with the get_secret helper
@@ -10,11 +10,8 @@
 #####################
 
 export PROJECT_ID=pdcp-cloud-006-cpho
-export PROJECT_SERVICE_NAME=cpho-phase2
-export PROJECT_REGION=northamerica-northeast1
-
-gcloud config set project ${PROJECT_ID}
-gcloud config set compute/region ${PROJECT_REGION}
+export PROJECT_SERVICE_NAME=cpho-phase2 # WARNING: must be kept in sync with corresponding substitution in cloudbuild.yaml
+export PROJECT_REGION=northamerica-northeast1 # WARNING: must be kept in sync with corresponding substitution in cloudbuild.yaml
 
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
@@ -24,11 +21,14 @@ export BUILD_TRIGGER_BRANCH_PATTERN=^cloud-run-deployment$ #^main$
 # Derived & less likely to need changes #
 #########################################
 
+gcloud config set project ${PROJECT_ID}
+gcloud config set compute/region ${PROJECT_REGION}
+
 # ----- PROJECT -----
 export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
 
 # ----- ARTIFACT REGISTRY -----
-export ARTIFACT_REGISTRY_REPO=${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run
+export ARTIFACT_REGISTRY_REPO=${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run # WARNING: must be kept in sync with corresponding substitution in cloudbuild.yaml
 
 # ----- CLOUD BUILD ----
 export BUILD_SQL_INSTANCE_LIST_ROLE_NAME=sqlInstanceLister
@@ -43,13 +43,13 @@ export MEDIA_BUCKET_NAME=${PROJECT_SERVICE_NAME}_MEDIA_BUCKET
 # ----- CLOUD SQL -----
 export DB_VERSION=POSTGRES_14
 export DB_TIER=db-g1-small
-export DB_INSTANCE_NAME=${PROJECT_SERVICE_NAME}-db-instance
+export DB_INSTANCE_NAME=${PROJECT_SERVICE_NAME}-db-instance # WARNING: must be kept in sync with corresponding substitution in cloudbuild.yaml
 export DB_NAME=${PROJECT_SERVICE_NAME}_db
 export DB_USER=${PROJECT_SERVICE_NAME}_db_user
 
 # ----- VPC NETWORK -----
 export VPC_NAME=default
-export VPC_CONNECTOR_NAME=${PROJECT_SERVICE_NAME}-sql-to-run
+export VPC_CONNECTOR_NAME=${PROJECT_SERVICE_NAME}-sql-to-run # WARNING: must be kept in sync with corresponding substitution in cloudbuild.yaml
 export VPC_RANGE=10.8.0.0/28
 
 # ----- SECRET MANAGER (keys only) -----

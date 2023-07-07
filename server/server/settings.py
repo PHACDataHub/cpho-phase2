@@ -59,7 +59,7 @@ if IS_LOCAL_DEV:
         TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
 
 else:
-    DEBUG = False
+    DEBUG = True
     ENABLE_DEBUG_TOOLBAR = False
     INTERNAL_IPS = ""
 
@@ -132,7 +132,7 @@ MIDDLEWARE = configure_middleware(
         "django.middleware.common.CommonMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
-        # "django.middleware.csrf.CsrfViewMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",

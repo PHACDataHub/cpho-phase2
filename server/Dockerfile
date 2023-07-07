@@ -27,10 +27,10 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-# temporary, only installing so that entrypoint.prod.sh can generate and seed init data
-COPY ./requirements_dev.txt .
-COPY ./requirements_formatting.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements_dev.txt
+# need dev requirements installed when using entrypoint.prod.sh to seed data
+# COPY ./requirements_dev.txt .
+# COPY ./requirements_formatting.txt .
+# RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements_dev.txt
 
 #########
 # FINAL #

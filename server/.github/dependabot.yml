@@ -17,7 +17,7 @@ updates:
 
 # requirements*.txt
 - package-ecosystem: pip
-  directory: "/"
+  directory: "/server"
   schedule:
     interval: daily
     time: "11:00"

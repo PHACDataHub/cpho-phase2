@@ -49,7 +49,7 @@ export DB_USER=${PROJECT_SERVICE_NAME}_db_user
 
 # ----- VPC NETWORK -----
 export VPC_NAME=default
-export VPC_CONNECTOR_NAME=${PROJECT_SERVICE_NAME}-sql-to-cloud-run-connector
+export VPC_CONNECTOR_NAME=${PROJECT_SERVICE_NAME}-sql-to-run
 export VPC_RANGE=10.8.0.0/28
 
 # ----- SECRET MANAGER (keys only) -----

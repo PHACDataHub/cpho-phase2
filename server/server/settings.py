@@ -34,7 +34,6 @@ except:
     config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.dev")))
 
 
-# For security, these test/dev settings should _never_ be used in production!
 IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
 IS_RUNNING_TESTS = (
     IS_LOCAL_DEV
@@ -42,8 +41,7 @@ IS_RUNNING_TESTS = (
     or any("pytest" in arg for arg in sys.argv)
 )
 if IS_LOCAL_DEV:
-    # Dev settings
-    SESSION_COOKIE_SECURE = False
+    # For security, these test/dev settings should _never_ be used in production!
     DEBUG = config("DEBUG", default=False, cast=bool)
     ENABLE_DEBUG_TOOLBAR = DEBUG and config(
         "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
@@ -76,6 +74,20 @@ CORS_ALLOWED_ORIGINS = []
 CSRF_TRUSTED_ORIGINS = [  # TODO: if the CSRF middleware and tokens were properly configured, this could be empty, right?
     f"https://{host}" for host in ALLOWED_HOSTS
 ]
+
+# Prod only security settings
+if not IS_LOCAL_DEV:
+    # TODO these might be good to set, may be why an empty CSRF_TRUSTED_ORIGINS doesn't work, assuming
+    # there's a proxy
+    # SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
+
+    SECURE_HSTS_SECONDS = 3600  # TODO this could be set longer, most likely
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # Static files (CSS, JavaScript, Images)

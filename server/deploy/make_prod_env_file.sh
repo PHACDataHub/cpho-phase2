@@ -13,18 +13,17 @@ rm -f ${PROD_ENV_FILE}
 touch ${PROD_ENV_FILE}
 
 escape (){
-  printf "%q" $1
+  printf "%q\n" $1
 }
 
-cat <<EOT >> ${PROD_ENV_FILE}
-DB_NAME=$(escape ${DB_NAME})
-DB_USER=$(escape ${DB_USER})
-DB_PASSWORD=$(escape $(get_secret ${SKEY_DB_USER_PASSWORD}))
-DB_HOST=$(escape $(gcloud sql instances list --filter name:${DB_INSTANCE_NAME} --format "value(PRIVATE_ADDRESS)"))
-DB_PORT=5432
 
-SECRET_KEY=$(escape $(get_secret ${SKEY_DJANGO_SECRET_KEY}))
-EOT
+escape DB_NAME=${DB_NAME} >> ${PROD_ENV_FILE}
+escape DB_USER=${DB_USER} >> ${PROD_ENV_FILE}
+escape DB_PASSWORD=$(get_secret ${SKEY_DB_USER_PASSWORD}) >> ${PROD_ENV_FILE}
+escape DB_HOST=$(gcloud sql instances list --filter name:${DB_INSTANCE_NAME} --format "value(PRIVATE_ADDRESS)") >> ${PROD_ENV_FILE}
+escape DB_PORT=5432 >> ${PROD_ENV_FILE}
+
+escape SECRET_KEY=$(get_secret ${SKEY_DJANGO_SECRET_KEY}) >> ${PROD_ENV_FILE}
 
 # Prior to the first deploy, the service doesn't exist yet and it's URL is unknown (TODO: well, this will change when the project has a domain name)
 SERVICE_URL=$(gcloud run services describe ${PROJECT_SERVICE_NAME} --platform managed --region ${PROJECT_REGION} --format "value(status.url)" || echo "")
@@ -38,5 +37,5 @@ fi
 escape ALLOWED_HOSTS=${ALLOWED_HOSTS} >> ${PROD_ENV_FILE}
 
 if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
-  escape MEDIA_BUCKET_NAME=$(escape ${MEDIA_BUCKET_NAME}) >> ${PROD_ENV_FILE}
+  escape MEDIA_BUCKET_NAME=${MEDIA_BUCKET_NAME} >> ${PROD_ENV_FILE}
 fi

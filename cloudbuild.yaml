@@ -6,7 +6,6 @@
 
 
 # [START cloudrun_django_cloudbuild]
-
 steps:
   - id: "make .env.prod file"
     name: gcr.io/cloud-builders/gcloud

@@ -16,7 +16,6 @@ escape (){
   printf "%q\n" $1
 }
 
-
 escape DB_NAME=${DB_NAME} >> ${PROD_ENV_FILE}
 escape DB_USER=${DB_USER} >> ${PROD_ENV_FILE}
 escape DB_PASSWORD=$(get_secret ${SKEY_DB_USER_PASSWORD}) >> ${PROD_ENV_FILE}

@@ -1,14 +1,7 @@
-# WARNING: this needs to run inside the app docker container, which is alpine linux
-# That means sh instead of bash, different unix utilities, etc
-
 #!/bin/sh
 
-if [[ -f "./.env.prod" ]]; then
-  source "./.env.prod"
-else
-  source "./.env.dev"
-fi
-
+# WARNING: this needs to run inside the app docker container, which is alpine linux
+# That means sh instead of bash, different unix utilities, etc
 
 echo "applying migrations..."
 python manage.py migrate

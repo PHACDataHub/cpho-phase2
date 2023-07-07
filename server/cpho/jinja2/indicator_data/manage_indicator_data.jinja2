@@ -55,9 +55,13 @@
             {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
               <tr>
                 {% set form = forms_by_dimension_value[possible_value] %}
- 
                 <td class="fw-bold">{{ possible_value.name }}</td>
-                <td>{{ form.value }}</td>
+                <td>
+                  {{ form.value }}
+                  {% if form.errors.value %}
+                  {%for error in form.value.errors%}<strong>{{error|escape}}</strong>{% endfor%}
+                  {% endif%}
+                </td>
                 <td>{{ form.value_unit }}</td>
                 <td>{{ form.value_lower_bound }}</td>
                 <td>{{ form.value_upper_bound }}</td>
@@ -102,7 +106,7 @@
 
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tdt("Submit") }}">
+           value="{{ tdt('Submit') }}">
   </form>
 
   <script>

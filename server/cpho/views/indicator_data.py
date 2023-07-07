@@ -7,6 +7,7 @@ from django.forms.models import ModelForm, inlineformset_factory
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
+from django.core.exceptions import ValidationError
 
 from cpho.models import (
     DimensionType,
@@ -96,6 +97,22 @@ class IndicatorDatumForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
+    def clean_value(self):
+        data = self.cleaned_data['value']
+        print(data)
+        if data and data < 0:
+            print("invalid")
+            self.add_error("value", "Value cannot be negative")
+            # raise forms.ValidationError("Value cannot be negative")
+        
+        return data
+
+    # def clean_value_lower_bound(self):
+    #     data = self.cleaned_data['value']
+    #     data2 = self.cleaned_data['value_lower_bound']
+    #     if not data > data2:
+    #         raise forms.ValidationError("...")
+    #     return data2
 
 class ManageIndicatorData(SinglePeriodMixin, TemplateView):
     template_name = "indicator_data/manage_indicator_data.jinja2"
@@ -243,9 +260,9 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
                 )
         else:
             # get will just render the forms and their errors
-            import IPython
+            # import IPython
+            # IPython.embed()
 
-            IPython.embed()
             return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

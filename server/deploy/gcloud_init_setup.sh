@@ -14,24 +14,17 @@ source ./deploy/gcloud_env_vars.sh
 
 # ----- SECRET MANAGER -----
 echo ""
-echo "Create and store secrets (and less-secret configuration values for the prod env)"
+echo "Create and store secrets"
 read -n 1 -p "Type S to skip this step, anything else to continue: " SECRETS_SKIP
 echo ""
 if [[ $SECRETS_SKIP != "S" ]]; then
   gcloud services enable secretmanager.googleapis.com
   
-    set_secret ${SKEY_DB_INSTANCE_NAME} ${DB_INSTANCE_NAME}
-    set_secret ${SKEY_DB_NAME} ${DB_NAME}
-    set_secret ${SKEY_DB_USER} ${DB_USER}
-    set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 80)
-    set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 80)
-    set_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
+  set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 80)
+  set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 80)
+  set_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
   
-    set_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
-  
-  if [ ! ${PROJECT_IS_USING_WHITENOISE} ]; then
-      set_secret ${SKEY_MEDIA_BUCKET_NAME} ${MEDIA_BUCKET_NAME}
-  fi
+  set_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
 fi
 
 

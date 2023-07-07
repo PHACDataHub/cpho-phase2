@@ -17,10 +17,10 @@ escape (){
 }
 
 cat <<EOT >> ${PROD_ENV_FILE}
-DB_NAME=$(escape $(get_secret ${SKEY_DB_NAME}))
-DB_USER=$(escape $(get_secret ${SKEY_DB_USER}))
+DB_NAME=$(escape ${DB_NAME})
+DB_USER=$(escape ${DB_USER})
 DB_PASSWORD=$(escape $(get_secret ${SKEY_DB_USER_PASSWORD}))
-DB_HOST=$(escape $(gcloud sql instances list --filter name:$(get_secret ${SKEY_DB_INSTANCE_NAME}) --format "value(PRIVATE_ADDRESS)"))
+DB_HOST=$(escape $(gcloud sql instances list --filter name:${DB_INSTANCE_NAME} --format "value(PRIVATE_ADDRESS)"))
 DB_PORT=5432
 
 SECRET_KEY=$(escape $(get_secret ${SKEY_DJANGO_SECRET_KEY}))
@@ -38,5 +38,5 @@ fi
 escape ALLOWED_HOSTS=${ALLOWED_HOSTS} >> ${PROD_ENV_FILE}
 
 if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
-  escape MEDIA_BUCKET_NAME=$(get_secret ${SKEY_MEDIA_BUCKET_NAME}) >> ${PROD_ENV_FILE}
+  escape MEDIA_BUCKET_NAME=$(escape ${MEDIA_BUCKET_NAME}) >> ${PROD_ENV_FILE}
 fi

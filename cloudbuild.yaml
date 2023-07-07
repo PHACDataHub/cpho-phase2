@@ -51,7 +51,4 @@ substitutions:
   
 options:
     dynamic_substitutions: true
-
-images:
-  - "${_IMAGE_NAME}:${COMMIT_SHA}"
 # [END cloudrun_django_cloudbuild]

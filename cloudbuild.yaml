@@ -9,46 +9,45 @@
 steps:
   - id: "make .env.prod file"
     name: gcr.io/cloud-builders/gcloud
-    entrypoint: "bash"
-    args: [ "-c", "cd server && deploy/make_prod_env_file.sh" ]
+    script: |
+      #!/usr/bin/env bash
+      echo "Write .env.prod to disk for use in later steps"
+      cd server && deploy/make_prod_env_file.sh
 
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "${_IMAGE_NAME}:${COMMIT_SHA}", "server/."]
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
+    script: |
+      #!/usr/bin/env bash
+      cd server
 
-  - id: "push image"
-    name: "gcr.io/cloud-builders/docker"
-    args: ["push", "${_IMAGE_NAME}:${COMMIT_SHA}"]
+      echo "Get project env vars from deploy/gcloud_env_vars.sh"
+      source deploy/gcloud_env_vars.sh
+
+      echo "Build a new application run time image"
+      docker build -t ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA} .
+
+      echo "Push the new image to the project's artifact registry"
+      docker push ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}
 
   - id: "deploy to cloud run"
     name: "gcr.io/cloud-builders/gcloud"
-    args:
-      [
-        "run",
-        "deploy",
-        "${_SERVICE_NAME}",
-        "--image",
-        "${_IMAGE_NAME}",
-        "--region",
-        "${_REGION}",
-        "--add-cloudsql-instances",
-        "${_SQL_INSTANCE}",
-        "--platform",
-        "managed",
-        "--vpc-connector",
-        "${_VPC_CONNECTOR}",
-        "--allow-unauthenticated"
-      ]
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
+    script: |
+      #!/usr/bin/env bash
+      cd server
 
-# WARNING: substitution values need to be kept in sync with corresponding values/patterns in deploy/gcloud_env_vars.sh
-substitutions:
-  _SERVICE_NAME: "cpho-phase2"
-  _REGION: "northamerica-northeast1"
-  _SQL_INSTANCE: "${PROJECT_ID}:${_REGION}:${_SERVICE_NAME}-db-instance"
-  _VPC_CONNECTOR: "${_SERVICE_NAME}-sql-to-run"
-  _ARTIFACT_REGISTRY_REPO: "${_SERVICE_NAME}-artifact-registry-for-cloud-run"
-  _IMAGE_NAME: "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_SERVICE_NAME}"
-  
-options:
-    dynamic_substitutions: true
+      echo "Get project env vars from deploy/gcloud_env_vars.sh"
+      source deploy/gcloud_env_vars.sh
+
+      echo "Deploy new image to Cloud Run"
+      gcloud run deploy ${PROJECT_SERVICE_NAME} \
+        --image ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA} \
+        --region ${PROJECT_REGION} \
+        --add-cloudsql-instances ${DB_INSTANCE_NAME} \
+        --vpc-connector ${VPC_CONNECTOR_NAME} \
+        --platform managed \
+        --allow-unauthenticated
 # [END cloudrun_django_cloudbuild]

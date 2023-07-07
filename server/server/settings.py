@@ -70,10 +70,14 @@ SECRET_KEY = config("SECRET_KEY")
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
-# CORS allowed and CSRF trusted origins should be empty until if/when the app
+
+# Additional CORS allowed and CSRF trusted origins should be empty until if/when the app
 # is serving a REST/GraphQL API for external consumption
 CORS_ALLOWED_ORIGINS = []
 CSRF_TRUSTED_ORIGINS = []
+
+# TEMPORARY, DEBUGGING IN PROD
+CSRF_TRUSTED_ORIGINS = ["https://*.run.app"]
 
 
 # Static files (CSS, JavaScript, Images)

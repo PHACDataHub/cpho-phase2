@@ -63,34 +63,36 @@ if [[ ${BUILD_SKIP} != "S" ]]; then
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
   # Note: relevant APIs must be enabled before a corresponding IAM role can be created, it seems
-   gcloud services enable \
-     sql-component.googleapis.com \
-     sqladmin.googleapis.com 
-   gcloud iam roles create ${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} --project ${PROJECT_ID} \
-     --title "SQL Instance Lister" --description "Able to use sql instances list" \
-     --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
-     || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
+  gcloud services enable \
+    sql-component.googleapis.com \
+    sqladmin.googleapis.com 
+
+   
    
    # Set necessary roles for Cloud Build service account
-   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-     --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-     --role roles/cloudbuild.serviceAgent \
-     --role roles/artifactregistry.writer \
-     --role roles/cloudsql.client \
-     --role roles/run.admin \
-     --role projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}
+  gcloud iam roles create ${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} --project ${PROJECT_ID} \
+    --title "SQL Instance Lister" --description "Able to use sql instances list" \
+    --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
+    || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
 
-   # Give Cloud Build access to the Cloud Run service account
-   gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-     --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
-     --role "roles/iam.serviceAccountUser"
+  CLOUD_BUILD_ROLES=("roles/cloudbuild.serviceAgent" "roles/run.admin" "projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}")
+  for ROLE in ${CLOUD_BUILD_ROLES[@]}; do
+     gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+       --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+       --role ${ROLE}
+  done
 
-   # Give the Cloud Build service account access to the full set of prod env var secrets
-   for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
+  # Give Cloud Build access to the Cloud Run service account
+  gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+    --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+    --role "roles/iam.serviceAccountUser"
+
+  # Give the Cloud Build service account access to the full set of prod env var secrets
+  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
      gcloud secrets add-iam-policy-binding ${SKEY} \
        --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
        --role roles/secretmanager.secretAccessor
-   done
+  done
 #
    read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection via the GCP dashboard, under \"Cloud Build > Repositories\". Press any key to continue: " _
 

@@ -4,7 +4,7 @@ set -o pipefail
 set -o nounset
  
 # ----- Get configuration variables + secrets helpers -----
-source ./deploy/gcloud_env_vars.sh
+source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
 # NOTE: using `|| :`, where : is effectively a bash no-op, to prevent errors in certain lines from exiting the script
 

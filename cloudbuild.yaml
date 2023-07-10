@@ -15,8 +15,6 @@ steps:
       set -o pipefail
       set -o nounset
 
-      cd server
-
       echo "Write .env.cloud_build to disk, to provide consistent project configuration values in subsequent steps"
       deploy/make_cloud_build_env_file.sh
 

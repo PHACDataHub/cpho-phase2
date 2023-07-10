@@ -4,9 +4,9 @@ set -o pipefail
 set -o nounset
 
 # ----- Get configuration variables + secrets helpers -----
-source ./deploy/gcloud_env_vars.sh
+source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
-ENV_FILE="../.env.cloud_build"
+ENV_FILE=$(dirname "${BASH_SOURCE[0]}")/../.env.cloud_build
 
 rm -f ${ENV_FILE}
 

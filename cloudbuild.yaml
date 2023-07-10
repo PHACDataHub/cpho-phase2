@@ -1,32 +1,46 @@
 # When manually triggering a cloud build from dev, you need to manually provide a COMMIT_SHA 
 # substitution value. I recommend the following pattern:
 # ```
-# gcloud builds submit --config cloudbuild.yaml --substitutions COMMIT_SHA="localTrigger"
+# gcloud builds submit --config cloudbuild.yaml --substitutions COMMIT_SHA="local$(date +%s)"
 # ```
 
 
 # [START cloudrun_django_cloudbuild]
 steps:
-  - id: "make .env.prod file"
+  - id: "get .env.cloud_build and .env.prod files for configuration in subsequent steps"
     name: gcr.io/cloud-builders/gcloud
     script: |
       #!/usr/bin/env bash
-      echo "Write .env.prod to disk for use in later steps"
-      cd server && deploy/make_prod_env_file.sh
+      set -o errexit
+      set -o pipefail
+      set -o nounset
 
-  - id: "build and pushimage"
+      cd server
+
+      echo "Write .env.cloud_build to disk, to provide consistent project configuration values in subsequent steps"
+      deploy/make_cloud_build_env_file.sh
+
+      echo "Write server/.env.prod to disk, to provide configuration and secrets for the app run-time image built in subsequent steps"
+      deploy/make_prod_env_file.sh
+
+  - id: "build and push image"
     name: "gcr.io/cloud-builders/docker"
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
     script: |
       #!/usr/bin/env bash
-      cd server
-
-      echo "Get project env vars from deploy/gcloud_env_vars.sh"
-      source deploy/gcloud_env_vars.sh
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build
 
       echo "Build a new application run time image"
-      docker build -t ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA} .
+      docker build -t ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA} ./server
+
+      echo "Remove .env.prod, no longer needed"
+      rm server/.env.prod
 
       echo "Push the new image to the project's artifact registry"
       docker push ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}
@@ -37,10 +51,12 @@ steps:
       - "COMMIT_SHA=$COMMIT_SHA"
     script: |
       #!/usr/bin/env bash
-      cd server
-
-      echo "Get project env vars from deploy/gcloud_env_vars.sh"
-      source deploy/gcloud_env_vars.sh
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build
 
       echo "Deploy new image to Cloud Run"
       gcloud run deploy ${PROJECT_SERVICE_NAME} \

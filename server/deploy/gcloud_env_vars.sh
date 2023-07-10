@@ -10,7 +10,7 @@
 # Project dependent #
 #####################
 
-export PROJECT_ID=pdcp-cloud-006-cpho
+export PROJECT_ID=phx-01h4rr1468rj3v5k60b1vserd3
 export PROJECT_SERVICE_NAME=cpho-phase2
 export PROJECT_REGION=northamerica-northeast1
 
@@ -86,6 +86,11 @@ get_secret () {
   echo $(gcloud secrets versions access latest --secret ${KEY})
 }
 export -f get_secret
+
+# not a secret helper, but will occasionally be needed alongside get_secret
+bash_escape (){
+  printf "%q\n" $1
+}
 
 delete_secret () {
   local KEY=$1

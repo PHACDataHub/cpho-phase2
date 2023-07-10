@@ -17,13 +17,14 @@ echo ""
 echo "Create and store secrets"
 read -n 1 -p "Type S to skip this step, anything else to continue: " SECRETS_SKIP
 echo ""
-if [[ $SECRETS_SKIP != "S" ]]; then
+if [[ ${SECRETS_SKIP} != "S" ]]; then
   gcloud services enable secretmanager.googleapis.com
   
   set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 80)
   set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 80)
   set_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
   
+
   set_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
 fi
 
@@ -34,7 +35,7 @@ echo ""
 echo "Enable Artifact Registry to store container images for Cloud Run to use"
 read -n 1 -p "Type S to skip this step, anything else to continue: " ARTIFACT_SKIP
 echo ""
-if [[ $ARTIFACT_SKIP != "S" ]]; then
+if [[ ${ARTIFACT_SKIP} != "S" ]]; then
   gcloud services enable artifactregistry.googleapis.com
   
   # Create Artifact Repo within the Artifact Registry
@@ -54,56 +55,61 @@ echo ""
 echo "Enable Cloud Build, triggered by GitHub pushes"
 read -n 1 -p "Type S to skip this step, anything else to continue: " BUILD_SKIP
 echo ""
-if [[ $BUILD_SKIP != "S" ]]; then
+if [[ ${BUILD_SKIP} != "S" ]]; then
   gcloud services enable \
     cloudbuild.googleapis.com \
     sourcerepo.googleapis.com \
     cloudresourcemanager.googleapis.com
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
-  gcloud iam roles create ${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} --project ${PROJECT_ID} \
-    --title "SQL Instance Lister" --description "Able to use sql instances list" \
-    --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
-|| : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
-  
-  # Set necessary roles for Cloud Build service account
-  gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-    --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-    --role roles/cloudbuild.serviceAgent \
-    --role roles/artifactregistry.writer \
-    --role roles/cloudsql.client \
-    --role roles/run.admin \
-    --role projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}
+  # Note: relevant APIs must be enabled before a corresponding IAM role can be created, it seems
+   gcloud services enable \
+     sql-component.googleapis.com \
+     sqladmin.googleapis.com 
+   gcloud iam roles create ${BUILD_SQL_INSTANCE_LIST_ROLE_NAME} --project ${PROJECT_ID} \
+     --title "SQL Instance Lister" --description "Able to use sql instances list" \
+     --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
+     || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
+   
+   # Set necessary roles for Cloud Build service account
+   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+     --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+     --role roles/cloudbuild.serviceAgent \
+     --role roles/artifactregistry.writer \
+     --role roles/cloudsql.client \
+     --role roles/run.admin \
+     --role projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}
 
-  # Give Cloud Build access to the Cloud Run service account
-  gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-    --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
-    --role "roles/iam.serviceAccountUser"
+   # Give Cloud Build access to the Cloud Run service account
+   gcloud iam service-accounts add-iam-policy-binding ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+     --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+     --role "roles/iam.serviceAccountUser"
 
-  # Give the Cloud Build service account access to the full set of prod env var secrets
-  for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
-    gcloud secrets add-iam-policy-binding ${SKEY} \
-      --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-      --role roles/secretmanager.secretAccessor
-  done
-
-  read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection and trigger via the GCP dashboard, under \"Cloud Build > Repositories\". Manual trigger creation isn't working ATM. Press any key to continue: " _
+   # Give the Cloud Build service account access to the full set of prod env var secrets
+   for SKEY in ${PROD_ENV_SECRET_KEYS[@]}; do
+     gcloud secrets add-iam-policy-binding ${SKEY} \
+       --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+       --role roles/secretmanager.secretAccessor
+   done
+#
+   read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection via the GCP dashboard, under \"Cloud Build > Repositories\". Press any key to continue: " _
 
   # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
   # Just make the connection manually for now
-  #read -n 1 -p "TODO. Type S to skip configuring the trigger for now, or any other key to continue (once the connection is made): " SKIP_TRIGGER
-  #if [[ $SKIP_TRIGGER != "S" ]]; then
-  #  # Add cloud build trigger (this is set to be triggered on push to main branch)
-  #  gcloud builds triggers create github \
-  #    --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
-  #    --region ${PROJECT_REGION} \
-  #    --repo-name ${BUILD_GITHUB_REPO_NAME} \
-  #    --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
-  #    --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
-  #    --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
-  #    --include-logs-with-status \
-  #    --no-require-approval
-  #fi
+  read -n 1 -p "If the GitHub connection has been manually created, we can configure the on-push build trigger. If the connection hasn't been made, skip this. Type S to skip, or any other key to continue: " SKIP_TRIGGER
+  
+  if [[ ${SKIP_TRIGGER} != "S" ]]; then
+    # Add cloud build trigger (this is set to be triggered on push to main branch)
+    gcloud builds triggers create github \
+      --name ${BUILD_CLOUD_BUILD_TRIGGER_NAME} \
+      --region ${PROJECT_REGION} \
+      --repo-name ${BUILD_GITHUB_REPO_NAME} \
+      --repo-owner ${BUILD_GITHUB_REPO_OWNER} \
+      --branch-pattern ${BUILD_TRIGGER_BRANCH_PATTERN} \
+      --build-config ${BUILD_CLOUD_BUILD_CONFIG_PATH} \
+      --include-logs-with-status \
+      --no-require-approval
+  fi
 fi
 
 
@@ -113,7 +119,7 @@ echo ""
 echo "Enable the Cloud Run API"
 read -n 1 -p "Type S to skip this step, anything else to continue: " RUN_SKIP
 echo ""
-if [[ $RUN_SKIP != "S" ]]; then
+if [[ ${RUN_SKIP} != "S" ]]; then
   gcloud services enable \
     run.googleapis.com \
     compute.googleapis.com
@@ -127,7 +133,7 @@ if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
   echo "Create a media bucket"
   read -n 1 -p "Type S to skip this step, anything else to continue: " BUCKET_SKIP
   echo ""
-  if [[ $BUCKET_SKIP != "S" ]]; then
+  if [[ ${BUCKET_SKIP} != "S" ]]; then
     gsutil mb -l ${PROJECT_REGION} gs://${MEDIA_BUCKET_NAME}
   fi
 fi
@@ -139,12 +145,12 @@ echo ""
 echo "Create and configure the project's VPC Network"
 read -n 1 -p "Type S to skip this step, anything else to continue: " VPC_SKIP
 echo ""
-if [[ $VPC_SKIP != "S" ]]; then
+if [[ ${VPC_SKIP} != "S" ]]; then
   gcloud services enable \
     vpcaccess.googleapis.com \
     servicenetworking.googleapis.com
 
-  if [[ $VPC_NAME != "default" ]]; then
+  if [[ ${VPC_NAME} != "default" ]]; then
     gcloud compute networks create ${VPC_NAME} --subnet-mode=auto
   fi
 
@@ -162,7 +168,7 @@ echo ""
 echo "Enable the Cloud SQL API, create a database and user"
 read -n 1 -p "Type S to skip this step, anything else to continue: " SQL_SKIP
 echo ""
-if [[ $SQL_SKIP != "S" ]]; then
+if [[ ${SQL_SKIP} != "S" ]]; then
   # Enable APIs
   gcloud services enable \
     sql-component.googleapis.com \

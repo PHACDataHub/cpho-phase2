@@ -16,7 +16,7 @@ gcloud artifacts repositories delete ${ARTIFACT_REGISTRY_REPO} --location ${PROJ
 # ----- CLOUD BUILD ----
 # TODO maybe also find and delete the project's repository connection object?
 # TODO revert permissions to default, disable API?
-gcloud builds triggers delete github ${BUILD_CLOUD_BUILD_TRIGGER_NAME} || :
+gcloud builds triggers delete github ${BUILD_CLOUD_BUILD_TRIGGER_NAME} --region ${PROJECT_REGION} || :
 
 # ----- CLOUD RUN -----
 # TODO revert permissions to default, disable API?

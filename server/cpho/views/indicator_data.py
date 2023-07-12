@@ -103,16 +103,53 @@ class IndicatorDatumForm(ModelForm):
         if data and data < 0:
             print("invalid")
             self.add_error("value", "Value cannot be negative")
-            # raise forms.ValidationError("Value cannot be negative")
-        
         return data
 
-    # def clean_value_lower_bound(self):
-    #     data = self.cleaned_data['value']
-    #     data2 = self.cleaned_data['value_lower_bound']
-    #     if not data > data2:
-    #         raise forms.ValidationError("...")
-    #     return data2
+    def clean_value_lower_bound(self):
+        value = self.cleaned_data['value']
+        value_lower = self.cleaned_data['value_lower_bound']
+        if (value and value_lower) and value < value_lower:
+            self.add_error("value_lower_bound", "Value lower bound must be lower than value")
+        return value_lower
+    
+    def clean_value_upper_bound(self):
+        value = self.cleaned_data['value']
+        value_upper = self.cleaned_data['value_upper_bound']
+        if (value and value_upper) and value > value_upper:
+            self.add_error("value_upper_bound", "Value upper bound must be greater than value")
+        return value_upper
+
+    def clean_single_year_timeframe(self):
+        single_year = self.cleaned_data['single_year_timeframe']
+        
+        if single_year is None or single_year == '':
+            return None
+        
+        if single_year:
+            try:
+                if not (int(single_year) >= 2000 and int(single_year) <= 2050):
+                    self.add_error("single_year_timeframe", "Single Year Timeframe must be between the years 2000 and 2050")
+            except ValueError:
+                self.add_error("single_year_timeframe", "Single Year Timeframe must be a valid number")
+
+        return single_year
+    
+    def clean_multi_year_timeframe(self):
+        multi_year = self.cleaned_data['multi_year_timeframe']
+        
+        if multi_year is None or multi_year == '':
+            return None
+        
+        if multi_year:
+            try:
+                start_year, end_year = map(int, multi_year.split('-'))
+                if not (2000 <= start_year <= end_year <= 2050):
+                    self.add_error("multi_year_timeframe", "Multi Year Timeframe must be between the years 2000 and 2050 and start year must be less than end year")
+            except ValueError:
+                self.add_error("multi_year_timeframe", "Multi Year Timeframe must be a valid number")
+
+        return multi_year
+
 
 class ManageIndicatorData(SinglePeriodMixin, TemplateView):
     template_name = "indicator_data/manage_indicator_data.jinja2"

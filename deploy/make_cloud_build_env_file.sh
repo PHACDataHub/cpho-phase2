@@ -6,19 +6,19 @@ set -o nounset
 # ----- Get configuration variables + secrets helpers -----
 source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
-ENV_FILE=$(dirname "${BASH_SOURCE[0]}")/../.env.cloud_build
+env_file=$(dirname "${BASH_SOURCE[0]}")/../.env.cloud_build
 
-rm -f ${ENV_FILE}
+rm -f "${env_file}"
 
-touch ${ENV_FILE}
+touch "${env_file}"
 
-bash_escape PROJECT_SERVICE_NAME=${PROJECT_SERVICE_NAME} >> ${ENV_FILE}
+bash_escape "PROJECT_SERVICE_NAME=${PROJECT_SERVICE_NAME}" >> "${env_file}"
 
-bash_escape PROJECT_REGION=${PROJECT_REGION} >> ${ENV_FILE}
+bash_escape "PROJECT_REGION=${PROJECT_REGION}" >> "${env_file}"
 
-bash_escape BUILD_CLOUD_RUN_IMAGE_NAME=${BUILD_CLOUD_RUN_IMAGE_NAME} >> ${ENV_FILE}
+bash_escape "BUILD_CLOUD_RUN_IMAGE_NAME=${BUILD_CLOUD_RUN_IMAGE_NAME}" >> "${env_file}"
 
-bash_escape DB_INSTANCE_NAME=${DB_INSTANCE_NAME} >> ${ENV_FILE}
+bash_escape "DB_INSTANCE_NAME=${DB_INSTANCE_NAME}" >> "${env_file}"
 
-bash_escape VPC_CONNECTOR_NAME=${VPC_CONNECTOR_NAME} >> ${ENV_FILE}
+bash_escape "VPC_CONNECTOR_NAME=${VPC_CONNECTOR_NAME}" >> "${env_file}"
  

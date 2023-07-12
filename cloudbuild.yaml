@@ -24,7 +24,7 @@ steps:
   - id: "build and push image"
     name: "gcr.io/cloud-builders/docker"
     env:
-      - "COMMIT_SHA=$COMMIT_SHA"
+      - "COMMIT_SHA=${COMMIT_SHA}"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -35,18 +35,18 @@ steps:
       source .env.cloud_build
 
       echo "Build a new application run time image"
-      docker build -t ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA} ./server
+      docker build -t "${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}" ./server
 
       echo "Remove .env.prod, no longer needed"
       rm server/.env.prod
 
       echo "Push the new image to the project's artifact registry"
-      docker push ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}
+      docker push "${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}"
 
   - id: "deploy to cloud run"
     name: "gcr.io/cloud-builders/gcloud"
     env:
-      - "COMMIT_SHA=$COMMIT_SHA"
+      - "COMMIT_SHA=${COMMIT_SHA}"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -57,11 +57,11 @@ steps:
       source .env.cloud_build
 
       echo "Deploy new image to Cloud Run"
-      gcloud run deploy ${PROJECT_SERVICE_NAME} \
-        --image ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA} \
-        --region ${PROJECT_REGION} \
-        --add-cloudsql-instances ${DB_INSTANCE_NAME} \
-        --vpc-connector ${VPC_CONNECTOR_NAME} \
+      gcloud run deploy "${PROJECT_SERVICE_NAME}" \
+        --image "${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}" \
+        --region "${PROJECT_REGION}" \
+        --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
+        --vpc-connector "${VPC_CONNECTOR_NAME}" \
         --platform managed \
         --allow-unauthenticated
 # [END cloudrun_django_cloudbuild]

@@ -21,9 +21,7 @@ if [[ ${SECRETS_SKIP} != "S" ]]; then
   gcloud services enable secretmanager.googleapis.com
   
   set_secret ${SKEY_DB_USER_PASSWORD} $(openssl rand -base64 80)
-  set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 80)
-  set_secret ${SKEY_DB_URL} postgres://${DB_USER}:$(get_secret $SKEY_DB_USER_PASSWORD)@//cloudsql/${PROJECT_ID}:${PROJECT_REGION}:${DB_INSTANCE_NAME}/${DB_NAME}
-  
+  set_secret ${SKEY_DB_ROOT_PASSWORD} $(openssl rand -base64 80) 
 
   set_secret ${SKEY_DJANGO_SECRET_KEY} $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
 fi

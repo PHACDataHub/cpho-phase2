@@ -9,7 +9,7 @@ def test_predefined_create_from_scratch(vanilla_user_client):
     ind = IndicatorFactory()
     sex_cat = DimensionType.objects.get(code="sex")
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
+        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk, "edit"]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -49,7 +49,7 @@ def test_predefined_existing_data(vanilla_user_client):
     )
 
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
+        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk, "edit"]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -82,7 +82,7 @@ def test_create_agegroups_from_scratch(vanilla_user_client):
     ind = IndicatorFactory()
     age_cat = DimensionType.objects.get(code="age")
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk, "edit"]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -139,7 +139,7 @@ def test_agegroups_existing_data(vanilla_user_client):
     )
 
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk, "edit"]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -213,7 +213,9 @@ def test_modify_all_dimensions(vanilla_user_client):
         value=6,
     )
 
-    url = reverse("manage_indicator_data_all", args=[ind.id, period.id])
+    url = reverse(
+        "manage_indicator_data_all", args=[ind.id, period.id, "edit"]
+    )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 

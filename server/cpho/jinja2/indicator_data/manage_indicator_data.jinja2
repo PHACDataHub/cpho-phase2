@@ -3,7 +3,28 @@
 
 {% macro age_group_form(form) %}
   <tr class="age-group-form">
-    <td class="fw-bold">{{ form.literal_dimension_val }}</td>
+    <td class="fw-bold">
+      {% if read_only %}
+        <span class="d-none">{{ form.literal_dimension_val }}</span>
+        {{ form.instance.literal_dimension_val }}
+      {% else %}
+        <div class="mb-1">{{ form.literal_dimension_val }}</div>
+      {% endif %}
+      <div>
+        {% if form.instance.hso_approved %}
+          <div class="approved-tag">
+            <span>{{ tdt("HSO") }}</span>
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+        {% endif %}
+        {% if form.instance.program_approved %}
+          <div class="approved-tag">
+            <span>{{ tdt("Program") }}</span>
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+        {% endif %}
+      </div>
+    </td>
     <td>{{ form.value }}</td>
     <td>{{ form.value_unit }}</td>
     <td>{{ form.value_lower_bound }}</td>
@@ -11,15 +32,18 @@
     <td>{{ form.data_quality }}</td>
     <td>{{ form.single_year_timeframe }}</td>
     <td>{{ form.multi_year_timeframe }}</td>
-    <td>
-      {{ form.DELETE }}
-      {{ form.id }} {# this is hidden #}
-    </td>
+    {% if not read_only %}
+      <td>
+        {{ form.DELETE }}
+        {{ form.id }} {# this is hidden #}
+      </td>
+    {% endif %}
   </tr>
 {% endmacro %}
 
 {% block content %}
   <h1>{{ tdt("Indcator data for: ") }} {{ indicator.name }} ({{ period }})</h1>
+  {{ dimension_type }}
 
   <table class="d-none age-group-empty-form-container">
     {# This is a form template to be used by 'add new form' feature #}
@@ -55,15 +79,40 @@
             {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
               <tr>
                 {% set form = forms_by_dimension_value[possible_value] %}
+
+                <td class="fw-bold">
+                  {{ possible_value.name }}
+                  <div>
+                    {% if form.instance.hso_approved %}
  
-                <td class="fw-bold">{{ possible_value.name }}</td>
+                      <div class="approved-tag">
+                        <span>{{ tdt("HSO") }}</span>
+                        <i class="bi bi-check-circle-fill"></i>
+                      </div>
+                    {% endif %}
+                    {% if form.instance.program_approved %}
+                      <div class="approved-tag">
+                        <span>{{ tdt("Program") }}</span>
+                        <i class="bi bi-check-circle-fill"></i>
+                      </div>
+                    {% endif %}
+                  </div>
+                </td>
                 <td>{{ form.value }}</td>
                 <td>{{ form.value_unit }}</td>
                 <td>{{ form.value_lower_bound }}</td>
-                <td>{{ form.value_upper_bound }}</td>
-                <td>{{ form.data_quality }}</td>
-                <td>{{ form.single_year_timeframe }}</td>
-                <td>{{ form.multi_year_timeframe }}</td>
+                <td>
+                  {{ form.value_upper_bound }}
+                </td>
+                <td>
+                  {{ form.data_quality }}
+                </td>
+                <td>
+                  {{ form.single_year_timeframe }}
+                </td>
+                <td>
+                  {{ form.multi_year_timeframe }}
+                </td>
               </tr>
             {% endfor %}
 
@@ -73,21 +122,43 @@
     {% endfor %}
     <div class="card mt-5 mb-2">
       <div class="card-header">
-        <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}</div>
+        <div class="h3">
+          {{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}
+        </div>
       </div>
  
       <table class="table mb-0" id="{{ dimension_type }}-table">
         <thead class="table-light text-center">
           <tr>
-            <th width="10%">{{ tdt("Age") }}</th>
-            <th width="9%">{{ tdt("Value") }}</th>
-            <th width="10%">{{ tdt("Value Unit") }}</th>
-            <th width="9%">{{ tdt("Value Lower Bound") }}</th>
-            <th width="9%">{{ tdt("Value Upper Bound") }}</th>
-            <th width="10%">{{ tdt("Data Quality") }}</th>
-            <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
-            <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
-            <th width="5%">{{ tdt("Delete") }}</th>
+            <th width="10%">
+              {{ tdt("Age") }}
+            </th>
+            <th width="9%">
+              {{ tdt("Value") }}
+            </th>
+            <th width="10%">
+              {{ tdt("Value Unit") }}
+            </th>
+            <th width="9%">
+              {{ tdt("Value Lower Bound") }}
+            </th>
+            <th width="9%">
+              {{ tdt("Value Upper Bound") }}
+            </th>
+            <th width="10%">
+              {{ tdt("Data Quality") }}
+            </th>
+            <th width="12%">
+              {{ tdt("Single Year Timeframe") }}
+            </th>
+            <th width="12%">
+              {{ tdt("Multi Year Timeframe") }}
+            </th>
+            {% if not read_only %}
+              <th width="5%">
+                {{ tdt("Delete") }}
+              </th>
+            {% endif %}
           </tr>
         </thead>
         <tbody id="{{ dimension_type }}-table-body"
@@ -95,22 +166,85 @@
           {% for form in age_group_formset %}{{ age_group_form(form) }}{% endfor %}
         </tbody>
       </table>
-      <div class="text-center py-1">
-        <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add another age group") }}</button>
+      {% if read_only %}
+        {% set add_btn_class = "ext-center py-1 d-none" %}
+      {% else %}
+        {% set add_btn_class = "text-center py-1" %}
+      {% endif %}
+      <div class="{{ add_btn_class }}">
+        <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">
+          {{ tdt("Add another age group") }}
+        </button>
       </div>
     </div>
+    {% if not read_only %}
+      <input type="submit"
+             class="btn btn-primary float-end my-3"
+             value="{{ tdt('Submit') }}">
+    {% endif %}
+    {% if action_type=='review' %}
+      <a type="button"
+         data-bs-toggle="modal"
+         data-bs-target="#confirmApproveModal"
+         class="btn btn-success float-end my-3"> {{ tdt('Approve Data') }} </a>
+    {% endif %}
 
-    <input type="submit"
-           class="btn btn-primary float-end my-3"
-           value="{{ tdt("Submit") }}">
+
+    <!-- Modal -->
+    <div class="modal fade"
+         id="confirmApproveModal"
+         tabindex="-1"
+         aria-labelledby="confirmApproveModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmApproveModalLabel">
+              {{ tdt('Confirm Data Approval') }}
+            </h5>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              {{ tdt('Placeholder Text: What happens when you approve data') }}
+            </p>
+            <div class="form-check">
+ 
+              <input class="form-check-input" type="checkbox" id="confirmCheckbox">
+              <label class="form-check-label" for="confirmCheckbox">
+                {{ tdt('Placeholder Text: I confirm data validity and agree to approve') }}
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {{ tdt('Close') }}
+            </button>
+            <button hx-post='{{ url("approve_indicator_data", kwargs={"indicator_id": indicator.pk, "period_id": period.pk}) }}'
+                    id="confirmApproveBtn"
+                    type="button"
+                    class="btn btn-primary">
+              {{ tdt('Confirm Approval') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
+
+ 
 
   <script>
   // this approach is documented here https://www.brennantymrak.com/articles/django-dynamic-formsets-javascript
   // changed a few things, like using an empty-form template
   let addButton = document.querySelector("#add-form")
-
   addButton.addEventListener('click', addForm)
+  
+  
 
   function addForm(e){
       /*
@@ -138,6 +272,23 @@
       
       totalFormsInput.setAttribute('value', `${numForms}`)
   }
+
+  let checkbox = document.getElementById("confirmCheckbox");
+  checkbox.checked = false;
+  let approvebtn = document.getElementById("confirmApproveBtn");
+  approvebtn.disabled = true;
+  console.log("hello")
+  console.log(checkbox);
+  console.log(approvebtn);
+  checkbox.addEventListener('change', function() {
+    if (this.checked) {
+      approvebtn.disabled = false;
+    } else {
+      approvebtn.disabled = true;
+    }
+  });
+  
+ 
   </script>
 
 {% endblock %}

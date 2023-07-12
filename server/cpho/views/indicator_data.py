@@ -4,7 +4,8 @@ from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
 from django.forms.models import ModelForm, inlineformset_factory
-from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, reverse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
@@ -13,6 +14,7 @@ from cpho.models import (
     DimensionValue,
     Indicator,
     IndicatorDatum,
+    Period,
 )
 from cpho.text import tdt, tm
 
@@ -113,6 +115,15 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             id=self.kwargs["dimension_type_id"]
         )
 
+    def action_type(self):
+        return self.kwargs["action"]
+
+    def form_type(self):
+        if self.action_type() == "review" or self.action_type() == "view":
+            return ReadOnlyIndicatorDatumForm
+        elif self.action_type() == "edit":
+            return IndicatorDatumForm
+
     @cached_property
     def age_group_formset(self):
         existing_data = IndicatorDatum.objects.filter(
@@ -125,9 +136,9 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             Indicator,
             IndicatorDatum,
             fk_name="indicator",
-            form=IndicatorDatumForm,
+            form=self.form_type(),
             # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
-            extra=1,
+            extra=1 if self.action_type() == "edit" else 0,
             can_delete=True,
         )
 
@@ -194,7 +205,9 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             instances.append(record)
 
         factory = formset_factory(
-            form=IndicatorDatumForm, formset=InstanceProvidingFormSet, extra=0
+            form=self.form_type(),
+            formset=InstanceProvidingFormSet,
+            extra=0,
         )
         formset_kwargs = {
             "initial": [{} for x in possible_values],
@@ -266,6 +279,69 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
             "age_group_formset": self.age_group_formset,
+            "dimension_type": "all"
+            if self.dimension_type is None
+            else self.dimension_type.code,
+            "read_only": self.action_type() == "view"
+            or self.action_type() == "review",
+            "action_type": self.action_type(),
+            "period": self.period,
         }
 
         return ctx
+
+
+class ReadOnlyFormMixin:
+    """A form mixin for the read only view that includes methods to
+    disable fields and remove placeholders."""
+
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
+
+    def disable_fields(self):
+        """Disable all fields in the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs["disabled"] = True
+
+    def remove_placeholders(self):
+        """Remove all placeholders from the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs.pop("placeholder", None)
+
+
+class ReadOnlyIndicatorDatumForm(IndicatorDatumForm, ReadOnlyFormMixin):
+    def __init__(self, *args, **kwargs):
+        super(IndicatorDatumForm, self).__init__(*args, **kwargs)
+        self.disable_fields()
+        self.remove_placeholders()
+
+
+# ApproveIndicatorData
+class ApproveIndicatorData(TemplateView):
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    def period(self):
+        return Period.objects.get(pk=self.kwargs["period_id"])
+
+    def post(self, *args, **kwargs):
+        response = HttpResponse()
+
+        relevant_data = IndicatorDatum.objects.filter(
+            indicator=self.indicator(), period=self.period()
+        )
+        for data in relevant_data:
+            data.hso_approved = True
+            data.program_approved = True
+            data.save()
+        # print(dir(data.versions.create))
+        # data.versions.latest().hso_approved = True
+        # data.save()
+        # data.versions.create(hso_approved=True)
+        # print(data.versions.latest().hso_approved)
+        # print(dir(data.versions))
+
+        response["HX-Redirect"] = reverse(
+            "view_indicator", kwargs={"pk": self.indicator().pk}
+        )
+        return response

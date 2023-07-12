@@ -141,6 +141,9 @@ class IndicatorDatum(models.Model):
 
     multi_year_timeframe = fields.CharField(max_length=50, null=True)
 
+    hso_approved = models.BooleanField(default=False)
+    program_approved = models.BooleanField(default=False)
+
     def __str__(self):
         return " ".join(
             [

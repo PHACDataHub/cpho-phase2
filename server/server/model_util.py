@@ -55,6 +55,7 @@ class ApprovableCustomVersionModelWithEditor(CustomVersionModelWithEditor):
         abstract = True
 
     approved = models.BooleanField(default=False)
+    # program_approved = models.BooleanField(default=False)
 
 
 def create_history_decorator(version_base_class):

@@ -19,7 +19,7 @@ export PROJECT_IS_USING_WHITENOISE=True
 
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
-export BUILD_TRIGGER_BRANCH_PATTERN=^cloud-run-deployment$ #^main$
+export BUILD_TRIGGER_BRANCH_PATTERN=^main$
 
 #########################################
 # Derived & less likely to need changes #

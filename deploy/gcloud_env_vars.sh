@@ -52,8 +52,9 @@ export DB_USER=${PROJECT_SERVICE_NAME}_db_user
 
 # ----- VPC NETWORK -----
 export VPC_NAME=default
+export VPC_SERVICE_CONNECTION_NAME=${PROJECT_SERVICE_NAME}-google-managed-services-${VPC_NAME}
 export VPC_CONNECTOR_NAME=${PROJECT_SERVICE_NAME}-sql-to-run
-export VPC_RANGE=10.8.0.0/28
+export VPC_CONNECTOR_RANGE=10.8.0.0/28 # must be /28 and unused. 10.8.0.0 should be unused in a fresh project; pick something else otherwise
 
 # ----- SECRET MANAGER (keys only) -----
 export SKEY_DB_USER_PASSWORD=db_user_password

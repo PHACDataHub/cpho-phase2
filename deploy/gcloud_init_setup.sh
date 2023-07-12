@@ -149,18 +149,38 @@ read -n 1 -p "Type S to skip this step, anything else to continue: " VPC_SKIP
 echo ""
 if [[ ${VPC_SKIP} != "S" ]]; then
   gcloud services enable \
-    vpcaccess.googleapis.com \
-    servicenetworking.googleapis.com
+    servicenetworking.googleapis.com \
+    vpcaccess.googleapis.com
 
   if [[ ${VPC_NAME} != "default" ]]; then
-    gcloud compute networks create ${VPC_NAME} --subnet-mode=auto
+    echo "Unless a reason _not_ to use the project's default network is identified, stick to using it. Creating a new VPC, and getting it right, will be tricky"
+    exit 1
   fi
 
+  # Create an IP range within the VPC network, from which the SQL instance's internal IP will be assigned and
+  # to which a serverless VPC access connector will be attached, for the Cloud Run services to connect through
+  gcloud compute addresses create ${VPC_SERVICE_CONNECTION_NAME} \
+    --project ${PROJECT_ID} \
+    --global \
+    --network ${VPC_NAME} \
+    --purpose VPC_PEERING \
+    --prefix-length 24
+
+  # Peer the new VPC network private address range to google's Service Networking service. The Service Networking service
+  # own and manages the VPC networks created for managed/serverless assets such as Cloud Run. Without this peering,
+  # VPC access connectors between the two will not be usable
+  gcloud services vpc-peerings connect \
+    --project ${PROJECT_ID} \
+    --network ${VPC_NAME} \
+    --ranges ${VPC_SERVICE_CONNECTION_NAME} \
+    --service servicenetworking.googleapis.com
+
+  # Create a VPC access connector so that the Cloud Run instances can connect through to addresses inside the project VPC
   gcloud compute networks vpc-access connectors create ${VPC_CONNECTOR_NAME} \
     --project ${PROJECT_ID} \
     --region ${PROJECT_REGION} \
     --network ${VPC_NAME} \
-    --range ${VPC_RANGE}
+    --range ${VPC_CONNECTOR_RANGE}
 fi
 
 
@@ -176,8 +196,8 @@ if [[ ${SQL_SKIP} != "S" ]]; then
     sql-component.googleapis.com \
     sqladmin.googleapis.com 
   
-  # Create Postgres instance
-  gcloud sql instances create ${DB_INSTANCE_NAME} \
+  # Create Postgres instance (beta track necesary to use --allocated-ip-range-name currently)
+  gcloud beta sql instances create ${DB_INSTANCE_NAME} \
     --project ${PROJECT_ID} \
     --region ${PROJECT_REGION} \
     --database-version ${DB_VERSION} \
@@ -185,6 +205,7 @@ if [[ ${SQL_SKIP} != "S" ]]; then
     --root-password $(get_secret ${SKEY_DB_ROOT_PASSWORD}) \
     --network ${VPC_NAME} \
     --no-assign-ip \
+    --allocated-ip-range-name ${VPC_SERVICE_CONNECTION_NAME} \
     --enable-google-private-path
   
   # Create Database

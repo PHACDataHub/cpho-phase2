@@ -19,7 +19,8 @@ export PROJECT_IS_USING_WHITENOISE=True
 
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
-export BUILD_TRIGGER_BRANCH_PATTERN=^main$
+
+export GITHUB_MAIN_BRANCH_NAME=main
 
 #########################################
 # Derived & less likely to need changes #

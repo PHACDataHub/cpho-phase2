@@ -109,8 +109,8 @@ if [[ "${build_skip}" != "S" ]]; then
       --region "${PROJECT_REGION}" \
       --repo-name "${BUILD_GITHUB_REPO_NAME}" \
       --repo-owner "${BUILD_GITHUB_REPO_OWNER}" \
-      --branch-pattern "${BUILD_TRIGGER_BRANCH_PATTERN}" \
       --build-config "${BUILD_CLOUD_BUILD_CONFIG_PATH}" \
+      --branch-pattern ".*" \
       --include-logs-with-status \
       --no-require-approval
   fi

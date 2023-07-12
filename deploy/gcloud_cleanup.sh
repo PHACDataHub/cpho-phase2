@@ -35,7 +35,7 @@ if [[ $VPC_NAME != "default" ]]; then
   gcloud compute networks delete ${VPC_NAME} || :
 fi
 gcloud compute networks vpc-access connectors delete ${VPC_CONNECTOR_NAME} --region ${PROJECT_REGION} || :
-gcloud compute addresses delete ${VPC_SERVICE_CONNECTION_RANGE} --global || :
+gcloud compute addresses delete ${VPC_SERVICE_CONNECTION_NAME} || :
 
 # ----- SECRET MANAGER -----
 SKEY_ENV_VAR_NAMES=$(env -0 | cut -z -f1 -d= | tr '\0' '\n' | grep "^SKEY_")

@@ -156,6 +156,7 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         for form in fs:
             # new unsaved instances' save() crash when no dimension type is specified
             form.instance.dimension_type = age_dimension
+            form.instance.period = self.period
 
         return fs
 

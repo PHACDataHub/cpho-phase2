@@ -75,7 +75,7 @@ if [[ ${BUILD_SKIP} != "S" ]]; then
     --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
     || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
 
-  CLOUD_BUILD_ROLES=("roles/cloudbuild.serviceAgent" "roles/run.admin" "projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}")
+  CLOUD_BUILD_ROLES=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin" "projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}")
   for ROLE in ${CLOUD_BUILD_ROLES[@]}; do
      gcloud projects add-iam-policy-binding ${PROJECT_ID} \
        --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \

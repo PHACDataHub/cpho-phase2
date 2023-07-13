@@ -83,20 +83,20 @@
                 <td>
                   {{ form.value }}
                   {% if form.errors.value %}
-                  {%for error in form.value.errors%}<strong>{{error|escape}}</strong>{% endfor%}
+                  <div class=error-display>{%for error in form.value.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
                   {% endif%}
                 </td>
                 <td>{{ form.value_unit }}</td>
                 <td>
                   {{ form.value_lower_bound }}
                   {% if form.errors.value_lower_bound %}
-                  {%for error in form.value_lower_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}
+                  <div class=error-display>{%for error in form.value_lower_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
                   {% endif%}
                 </td>
                 <td>
                   {{ form.value_upper_bound }}
                   {% if form.errors.value_upper_bound %}
-                  {%for error in form.value_upper_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}
+                  <div class=error-display>{%for error in form.value_upper_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
                   {% endif%}
                 </td>
                 <td>{{ form.data_quality }}
@@ -104,13 +104,13 @@
                 <td>
                   {{ form.single_year_timeframe }}
                   {% if form.errors.single_year_timeframe %}
-                  {%for error in form.single_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}
+                  <div class=error-display>{%for error in form.single_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
                   {% endif%}
                 </td>
                 <td>
                   {{ form.multi_year_timeframe }}
                   {% if form.errors.multi_year_timeframe %}
-                  {%for error in form.multi_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}
+                  <div class=error-display>{%for error in form.multi_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
                   {% endif%}
                 </td>
               </tr>

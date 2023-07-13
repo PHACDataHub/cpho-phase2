@@ -34,3 +34,8 @@ h1 abbr {
     color: #842029;
     border-radius: 10px;
 }
+
+td:has(>.error-display)>input {
+    border: 2px solid #75070c;
+
+}

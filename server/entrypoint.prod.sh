@@ -11,6 +11,11 @@ if [[ -f /secrets/.env.prod ]]; then
   cp /secrets/.env.prod "${APP_HOME}"
 fi
 
+# I'd love for this to be a Docker build time step, but there's subtle differences to the
+# output depending on if .env.dev or .env.prod is used, so it can't happen sooner than here
+echo "Running collectstatic..."
+python manage.py collectstatic --no-input
+
 echo "Applying migrations..."
 python manage.py migrate
 

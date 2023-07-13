@@ -71,9 +71,6 @@ COPY --chown=$USER:app . $APP_HOME
 # change to the app user
 USER $USER
 
-# Run collect static as container build time step, static files won't be changing post-docker build for a given deployment
-RUN python manage.py collectstatic --no-input
-
 EXPOSE 8080
 
 # Entrypoint script to run on-start steps (confirm migrations, etc)

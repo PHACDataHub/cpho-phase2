@@ -14,13 +14,13 @@ export PROJECT_ID=phx-01h4rr1468rj3v5k60b1vserd3
 export PROJECT_SERVICE_NAME=cpho-phase2
 export PROJECT_REGION=northamerica-northeast1
 
-# NOTE: if PROJECT_IS_USING_WHITENOISE is False then no cloud storage will be created for the project
-export PROJECT_IS_USING_WHITENOISE=True
-
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
 export GITHUB_MAIN_BRANCH_NAME=main
+
+# NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
+export PROJECT_IS_USING_WHITENOISE=true
 
 #########################################
 # Derived & less likely to need changes #

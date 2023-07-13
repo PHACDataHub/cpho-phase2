@@ -9,6 +9,9 @@
 steps:
   - id: "Get .env.cloud_build and .env.prod files for configuration in subsequent steps"
     name: gcr.io/cloud-builders/gcloud
+    env:
+      - "BRANCH_NAME=${BRANCH_NAME}"
+      - "COMMIT_SHA=${COMMIT_SHA}"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -16,45 +19,42 @@ steps:
       set -o nounset
 
       echo "Write .env.cloud_build to disk, to provide consistent project configuration values in subsequent steps"
-      deploy/make_cloud_build_env_file.sh
+      deploy/make_cloud_build_env_file.sh "${BRANCH_NAME}" "${COMMIT_SHA}"
 
       echo "Write server/.env.prod to disk, to provide configuration and secrets for the app run-time image built in subsequent steps"
       deploy/make_prod_env_file.sh
 
   - id: "Build and push image"
     name: "gcr.io/cloud-builders/docker"
-    
     script: |
       #!/usr/bin/env bash
       set -o errexit
       set -o pipefail
       set -o nounset
       
-      echo "Get cloud build project configuration values"
+      echo "Get cloud build environment variables"
       source .env.cloud_build
 
       echo "Build a new application run time image"
-      docker build -t "${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}" -f ./server/Dockerfile
+      docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile
 
       echo "Remove .env.prod, no longer needed"
       rm server/.env.prod
 
   - id: "Push image if main"
     name: "gcr.io/cloud-builders/docker"
-    env:
-      - "COMMIT_SHA=${COMMIT_SHA}"
     script: |
       #!/usr/bin/env bash
       set -o errexit
       set -o pipefail
       set -o nounset
       
-      echo "Get cloud build project configuration values"
+      echo "Get cloud build environment variables"
       source .env.cloud_build
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Push the new image to the project's artifact registry"
-        docker push "${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}"
+        docker push "${IMAGE_NAME_FOR_RUN}"
       else
         echo "pass"
         exit 0
@@ -62,21 +62,19 @@ steps:
 
   - id: "Deploy to Cloud Run if main"
     name: "gcr.io/cloud-builders/gcloud"
-    env:
-      - "COMMIT_SHA=${COMMIT_SHA}"
     script: |
       #!/usr/bin/env bash
       set -o errexit
       set -o pipefail
       set -o nounset
       
-      echo "Get cloud build project configuration values"
+      echo "Get cloud build environment variables"
       source .env.cloud_build
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Deploy new image to Cloud Run"
         gcloud run deploy "${PROJECT_SERVICE_NAME}" \
-          --image "${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}" \
+          --image "${IMAGE_NAME_FOR_RUN}" \
           --region "${PROJECT_REGION}" \
           --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
           --vpc-connector "${VPC_CONNECTOR_NAME}" \

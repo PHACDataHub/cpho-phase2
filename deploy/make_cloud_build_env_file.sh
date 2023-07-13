@@ -36,4 +36,5 @@ bash_escape "PROJECT_SERVICE_NAME=${PROJECT_SERVICE_NAME}" >> "${env_file}"
 bash_escape "PROJECT_REGION=${PROJECT_REGION}" >> "${env_file}"
 bash_escape "DB_INSTANCE_NAME=${DB_INSTANCE_NAME}" >> "${env_file}"
 bash_escape "VPC_CONNECTOR_NAME=${VPC_CONNECTOR_NAME}" >> "${env_file}"
- 
+bash_escape "SKEY_DB_USER_PASSWORD=${SKEY_DB_USER_PASSWORD}" >> "${env_file}"
+bash_escape "SKEY_DJANGO_SECRET_KEY=${SKEY_DJANGO_SECRET_KEY}" >> "${env_file}"

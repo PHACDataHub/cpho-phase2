@@ -28,6 +28,7 @@ from phac_aspc.django.settings.utils import (
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Point decouple.Config to the appropriate .env file
+# Reminder: decouple config(...) looks in OS env vars first, configured .env file second
 try:
     config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.prod")))
 except:
@@ -57,7 +58,7 @@ if IS_LOCAL_DEV:
         TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
 
 else:
-    DEBUG = True
+    DEBUG = False
     ENABLE_DEBUG_TOOLBAR = False
     INTERNAL_IPS = ""
 

@@ -20,8 +20,9 @@ echo ""
 if [[ "${secrets_skip}" != "S" ]]; then
   gcloud services enable secretmanager.googleapis.com
   
+  set_secret "${SKEY_DB_ROOT_PASSWORD}" $(openssl rand -base64 80)
+  
   set_secret "${SKEY_DB_USER_PASSWORD}" $(openssl rand -base64 80)
-  set_secret "${SKEY_DB_ROOT_PASSWORD}" $(openssl rand -base64 80) 
 
   set_secret "${SKEY_DJANGO_SECRET_KEY}" $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
 fi
@@ -85,13 +86,6 @@ if [[ "${build_skip}" != "S" ]]; then
     --member "serviceAccount:"${PROJECT_NUMBER}"@cloudbuild.gserviceaccount.com" \
     --role "roles/iam.serviceAccountUser"
 
-  # Give the Cloud Build service account access to the full set of prod env var secrets
-  for skey in "${PROD_ENV_SECRET_KEYS[@]}"; do
-     gcloud secrets add-iam-policy-binding "${skey}" \
-       --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
-       --role roles/secretmanager.secretAccessor
-  done
-  
   echo ""
   read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection via the GCP dashboard, under \"Cloud Build > Repositories\". Press any key to continue: " _
   echo ""
@@ -127,6 +121,16 @@ if [[ "${run_skip}" != "S" ]]; then
   gcloud services enable \
     run.googleapis.com \
     compute.googleapis.com
+
+  # Give the Cloud Run service account access to the necessary prod env secrets
+  # Note: by default, Cloud Run executes as the default compute service account, we may want to switch to
+  # a custom, less privledged, service account later
+  prod_env_secret_keys=("${SKEY_DB_USER_PASSWORD}" "${SKEY_DJANGO_SECRET_KEY}")
+  for skey in "${prod_env_secret_keys[@]}"; do
+     gcloud secrets add-iam-policy-binding "${skey}" \
+       --member "serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+       --role roles/secretmanager.secretAccessor
+  done
 fi
 
 

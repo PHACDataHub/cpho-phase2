@@ -58,16 +58,9 @@ export VPC_CONNECTOR_NAME="${PROJECT_SERVICE_NAME}-sql-to-run"
 export VPC_CONNECTOR_RANGE="10.8.0.0/28" # must be /28 and unused. 10.8.0.0 should be unused in a fresh project; pick something else otherwise
 
 # ----- SECRET MANAGER (keys only) -----
-export SKEY_DB_USER_PASSWORD=db_user_password
 export SKEY_DB_ROOT_PASSWORD=db_root_password
-export SKEY_DB_URL=db_url
-
+export SKEY_DB_USER_PASSWORD=db_user_password
 export SKEY_DJANGO_SECRET_KEY=django_secret_key
-
-# Array of secret keys that Cloud Build needs access to (same set as those used in make_prod_env_file.sh, probably)
-# Keep this up to date, the init setup script uses it to know what keys to give the relevant service accounts access to
-PROD_ENV_SECRET_KEYS=("${SKEY_DB_USER_PASSWORD}" "${SKEY_DJANGO_SECRET_KEY}")
-export PROD_ENV_SECRET_KEYS
 
 
 set_secret () {

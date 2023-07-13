@@ -3,7 +3,7 @@
 # WARNING: this needs to run inside the app docker container, which is alpine linux
 # That means sh instead of bash, different unix utilities, etc
 
-echo "applying migrations..."
+echo "Applying migrations..."
 python manage.py migrate
 
 # TODO: this is a workaround, to be replaced when working out a proper data migration approach, possibly

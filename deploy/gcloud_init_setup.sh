@@ -12,23 +12,6 @@ source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
 
 
-# ----- SECRET MANAGER -----
-echo ""
-echo "Create and store secrets"
-read -n 1 -p "Type S to skip this step, anything else to continue: " secrets_skip
-echo ""
-if [[ "${secrets_skip}" != "S" ]]; then
-  gcloud services enable secretmanager.googleapis.com
-  
-  set_secret "${SKEY_DB_ROOT_PASSWORD}" $(openssl rand -base64 80)
-  
-  set_secret "${SKEY_DB_USER_PASSWORD}" $(openssl rand -base64 80)
-
-  set_secret "${SKEY_DJANGO_SECRET_KEY}" $(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
-fi
-
-
-
 # ----- ARTIFACT REGISTRY -----
 echo ""
 echo "Enable Artifact Registry to store container images for Cloud Run to use"
@@ -65,16 +48,9 @@ if [[ "${build_skip}" != "S" ]]; then
   gcloud services enable \
     sql-component.googleapis.com \
     sqladmin.googleapis.com 
-
    
-   
-   # Set necessary roles for Cloud Build service account
-  gcloud iam roles create "${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}" --project "${PROJECT_ID}" \
-    --title "SQL Instance Lister" --description "Able to use sql instances list" \
-    --permissions "cloudsql.instances.list,cloudsql.instances.get" --stage GA \
-    || : # continue on error; role might exist from an earlier init run, role not currently cleaned up by gcloud_cleanup.sh
-
-  cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin" "projects/${PROJECT_ID}/roles/${BUILD_SQL_INSTANCE_LIST_ROLE_NAME}")
+   # Set necessary roles for Cloud Build service account, including custom 
+  cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
   for role in "${cloud_build_roles[@]}"; do
      gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
        --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
@@ -108,29 +84,6 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
-fi
-
-
-
-# ----- CLOUD RUN -----
-echo ""
-echo "Enable the Cloud Run API"
-read -n 1 -p "Type S to skip this step, anything else to continue: " run_skip
-echo ""
-if [[ "${run_skip}" != "S" ]]; then
-  gcloud services enable \
-    run.googleapis.com \
-    compute.googleapis.com
-
-  # Give the Cloud Run service account access to the necessary prod env secrets
-  # Note: by default, Cloud Run executes as the default compute service account, we may want to switch to
-  # a custom, less privledged, service account later
-  prod_env_secret_keys=("${SKEY_DB_USER_PASSWORD}" "${SKEY_DJANGO_SECRET_KEY}")
-  for skey in "${prod_env_secret_keys[@]}"; do
-     gcloud secrets add-iam-policy-binding "${skey}" \
-       --member "serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-       --role roles/secretmanager.secretAccessor
-  done
 fi
 
 
@@ -200,15 +153,17 @@ if [[ "${sql_skip}" != "S" ]]; then
   # Enable APIs
   gcloud services enable \
     sql-component.googleapis.com \
-    sqladmin.googleapis.com 
+    sqladmin.googleapis.com
   
+  db_root_password=$(openssl rand -base64 80)
+
   # Create Postgres instance (beta track necesary to use --allocated-ip-range-name currently)
   gcloud beta sql instances create "${DB_INSTANCE_NAME}" \
     --project "${PROJECT_ID}" \
     --region "${PROJECT_REGION}" \
     --database-version "${DB_VERSION}" \
     --tier "${DB_TIER}" \
-    --root-password $(get_secret "${SKEY_DB_ROOT_PASSWORD}") \
+    --root-password "${db_root_password}" \
     --network "${VPC_NAME}" \
     --no-assign-ip \
     --allocated-ip-range-name "${VPC_SERVICE_CONNECTION_NAME}" \
@@ -218,13 +173,85 @@ if [[ "${sql_skip}" != "S" ]]; then
   gcloud sql databases create "${DB_NAME}" \
     --instance "${DB_INSTANCE_NAME}"
   
+
+  db_user_password=$(openssl rand -base64 80)
+
   #Create User
   gcloud sql users create "${DB_USER}" \
     --instance "${DB_INSTANCE_NAME}" \
-    --password $(get_secret "${SKEY_DB_USER_PASSWORD}")
+    --password "${db_user_password}"
 fi
 
 
 
-# ----- TODOs -----
-# DNS
+# ----- DNS -----
+# TODO
+
+
+# ----- SECRET MANAGER -----
+echo ""
+echo "Store secrets"
+read -n 1 -p "Type S to skip this step, anything else to continue: " secrets_skip
+echo ""
+if [[ "${secrets_skip}" != "S" ]]; then
+  gcloud services enable secretmanager.googleapis.com
+  
+  set_secret "${SKEY_DB_ROOT_PASSWORD}" "${db_root_password}" 
+
+  # Construct the .env.prod file to store in Secret Manager, using a temp file with a cleanup exit trap to make sure it doesn't stay on-disk
+  tmp_prod_env=$(mktemp -t .env.prod.XXXX)
+  function cleanup {
+    rm -rf "${tmp_prod_env}"
+  }
+  trap cleanup EXIT
+
+  bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_prod_env}"
+  bash_escape "DB_USER=${DB_USER}" >> "${tmp_prod_env}"
+  bash_escape "DB_PASSWORD=${db_user_password}" >> "${tmp_prod_env}"
+  bash_escape "DB_HOST=$(gcloud sql instances list --filter name:"${DB_INSTANCE_NAME}" --format "value(PRIVATE_ADDRESS)")" >> "${tmp_prod_env}"
+  bash_escape "DB_PORT=5432" >> "${tmp_prod_env}"
+  
+  bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_prod_env}"
+  
+  # Prior to the first deploy, the service doesn't exist yet and it's URL is unknown (TODO: well, this will change when the project has a domain name)
+  service_url=$(gcloud run services describe "${PROJECT_SERVICE_NAME}" --platform managed --region "${PROJECT_REGION}" --format "value(status.url)" || echo "")
+  if [[ ! -z $service_url ]]; then
+    # Need to strip the https:// from the URL, just want the host portion
+    ALLOWED_HOSTS=$(echo "${service_url}" | sed 's/^https:\/\///')
+  else
+    # Fall back to 
+    ALLOWED_HOSTS=.
+  fi
+  bash_escape "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> "${tmp_prod_env}"
+  
+  if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
+    bash_escape "MEDIA_BUCKET_NAME=${MEDIA_BUCKET_NAME}" >> "${tmp_prod_env}"
+  fi
+
+  if [[ -n $(gcloud secrets describe --verbosity none "${SKEY_PROD_ENV_FILE}")  ]]; then
+    gcloud secrets versions add "${SKEY_PROD_ENV_FILE}" --data-file "${tmp_prod_env}"
+  else
+    gcloud secrets create --locations "${PROJECT_REGION}" --replication-policy user-managed "${SKEY_PROD_ENV_FILE}" --data-file "${tmp_prod_env}"
+  fi
+
+  # Not strictly necessary with the exit trap, but may as well delete this quickly once it's served it's purpose
+  rm -rf "${tmp_prod_env}"
+fi
+
+
+
+# ----- CLOUD RUN -----
+echo ""
+echo "Enable the Cloud Run API"
+read -n 1 -p "Type S to skip this step, anything else to continue: " run_skip
+echo ""
+if [[ "${run_skip}" != "S" ]]; then
+  gcloud services enable \
+    run.googleapis.com \
+    compute.googleapis.com
+
+  # Give the Cloud Run service account access to the necessary prod env secrets
+  gcloud secrets add-iam-policy-binding "${SKEY_PROD_ENV_FILE}" \
+    --member "serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role roles/secretmanager.secretAccessor
+fi

@@ -1,7 +1,15 @@
 #!/bin/sh
+set -o errexit
+set -o pipefail
+set -o nounset
 
 # WARNING: this needs to run inside the app docker container, which is alpine linux
 # That means sh instead of bash, different unix utilities, etc
+
+if [[ -f /secrets/.env.prod ]]; then
+  echo "Found .env.prod in mounted secrets volume, copying to ${APP_HOME}"
+  cp /secrets/.env.prod "${APP_HOME}"
+fi
 
 echo "Applying migrations..."
 python manage.py migrate

@@ -16,11 +16,8 @@ steps:
       set -o pipefail
       set -o nounset
 
-      echo "Write .env.cloud_build to disk, to provide consistent project configuration (NO secrets) in subsequent steps"
+      echo "Write .env.cloud_build to disk, to provide consistent project configuration (no secrets) in subsequent steps"
       deploy/make_cloud_build_env_file.sh "${BRANCH_NAME}" "${COMMIT_SHA}"
-
-      echo "Write server/.env.prod to disk, to provide configuration (NO secrets) for the app run-time image built in subsequent steps"
-      deploy/make_secret_free_prod_env_file.sh
 
   - id: "Build image"
     name: "gcr.io/cloud-builders/docker"
@@ -35,9 +32,6 @@ steps:
 
       echo "Build a new application run time image"
       docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
-
-      echo "Remove .env.prod, no longer needed"
-      rm server/.env.prod
 
   - id: "Push image if main"
     name: "gcr.io/cloud-builders/docker"
@@ -76,7 +70,7 @@ steps:
           --region "${PROJECT_REGION}" \
           --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
           --vpc-connector "${VPC_CONNECTOR_NAME}" \
-          --update-secrets "DB_PASSWORD=${SKEY_DB_USER_PASSWORD}:latest,SECRET_KEY=${SKEY_DJANGO_SECRET_KEY}:latest" \
+          --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:latest" \
           --platform managed \
           --allow-unauthenticated
       else

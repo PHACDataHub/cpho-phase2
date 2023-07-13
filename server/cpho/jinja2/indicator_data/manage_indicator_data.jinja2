@@ -4,36 +4,37 @@
 {% macro age_group_form(form) %}
   <tr class="age-group-form">
     <td class="fw-bold">{{ form.literal_dimension_val }}</td>
-    <td>{{ form.value }}
-     {% if form.errors.value %}
-                  {%for error in form.value.errors%}<strong>{{error|escape}}</strong>{% endfor%}
-                  {% endif%} 
-    </td> 
+    <td>
+      {{ form.value }}
+      {% if form.errors.value %}
+        {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+      {% endif %}
+    </td>
     <td>{{ form.value_unit }}</td>
     <td>
-        {{ form.value_lower_bound }}
-        {% if form.errors.value_lower_bound %}
-        {%for error in form.value_lower_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}
-        {% endif%}
+      {{ form.value_lower_bound }}
+      {% if form.errors.value_lower_bound %}
+        {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+      {% endif %}
     </td>
     <td>
-        {{ form.value_upper_bound }}
-        {% if form.errors.value_upper_bound %}
-        {%for error in form.value_upper_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}
-        {% endif%}
+      {{ form.value_upper_bound }}
+      {% if form.errors.value_upper_bound %}
+        {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+      {% endif %}
     </td>
     <td>{{ form.data_quality }}</td>
     <td>
-        {{ form.single_year_timeframe }}
-        {% if form.errors.single_year_timeframe %}
-        {%for error in form.single_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}
-        {% endif%}
+      {{ form.single_year_timeframe }}
+      {% if form.errors.single_year_timeframe %}
+        {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+      {% endif %}
     </td>
     <td>
-        {{ form.multi_year_timeframe }}
-        {% if form.errors.value_lower_bound %}
-        {%for error in form.value_lower_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}
-        {% endif%}
+      {{ form.multi_year_timeframe }}
+      {% if form.errors.value_lower_bound %}
+        {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+      {% endif %}
     </td>
     <td>
       {{ form.DELETE }}
@@ -83,35 +84,44 @@
                 <td>
                   {{ form.value }}
                   {% if form.errors.value %}
-                  <div class=error-display>{%for error in form.value.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
-                  {% endif%}
+                    <div class=error-display>
+                      {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                    </div>
+                  {% endif %}
                 </td>
                 <td>{{ form.value_unit }}</td>
                 <td>
                   {{ form.value_lower_bound }}
                   {% if form.errors.value_lower_bound %}
-                  <div class=error-display>{%for error in form.value_lower_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
-                  {% endif%}
+                    <div class=error-display>
+                      {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                    </div>
+                  {% endif %}
                 </td>
                 <td>
                   {{ form.value_upper_bound }}
                   {% if form.errors.value_upper_bound %}
-                  <div class=error-display>{%for error in form.value_upper_bound.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
-                  {% endif%}
+                    <div class=error-display>
+                      {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                    </div>
+                  {% endif %}
                 </td>
-                <td>{{ form.data_quality }}
-                </td>
+                <td>{{ form.data_quality }}</td>
                 <td>
                   {{ form.single_year_timeframe }}
                   {% if form.errors.single_year_timeframe %}
-                  <div class=error-display>{%for error in form.single_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
-                  {% endif%}
+                    <div class=error-display>
+                      {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                    </div>
+                  {% endif %}
                 </td>
                 <td>
                   {{ form.multi_year_timeframe }}
                   {% if form.errors.multi_year_timeframe %}
-                  <div class=error-display>{%for error in form.multi_year_timeframe.errors%}<strong>{{error|escape}}</strong>{% endfor%}</div>
-                  {% endif%}
+                    <div class=error-display>
+                      {% for error in form.multi_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                    </div>
+                  {% endif %}
                 </td>
               </tr>
             {% endfor %}
@@ -122,21 +132,41 @@
     {% endfor %}
     <div class="card mt-5 mb-2">
       <div class="card-header">
-        <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}</div>
+        <div class="h3">
+          {{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}
+        </div>
       </div>
  
       <table class="table mb-0" id="{{ dimension_type }}-table">
         <thead class="table-light text-center">
           <tr>
-            <th width="10%">{{ tdt("Age") }}</th>
-            <th width="9%">{{ tdt("Value") }}</th>
-            <th width="10%">{{ tdt("Value Unit") }}</th>
-            <th width="9%">{{ tdt("Value Lower Bound") }}</th>
-            <th width="9%">{{ tdt("Value Upper Bound") }}</th>
-            <th width="10%">{{ tdt("Data Quality") }}</th>
-            <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
-            <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
-            <th width="5%">{{ tdt("Delete") }}</th>
+            <th width="10%">
+              {{ tdt("Age") }}
+            </th>
+            <th width="9%">
+              {{ tdt("Value") }}
+            </th>
+            <th width="10%">
+              {{ tdt("Value Unit") }}
+            </th>
+            <th width="9%">
+              {{ tdt("Value Lower Bound") }}
+            </th>
+            <th width="9%">
+              {{ tdt("Value Upper Bound") }}
+            </th>
+            <th width="10%">
+              {{ tdt("Data Quality") }}
+            </th>
+            <th width="12%">
+              {{ tdt("Single Year Timeframe") }}
+            </th>
+            <th width="12%">
+              {{ tdt("Multi Year Timeframe") }}
+            </th>
+            <th width="5%">
+              {{ tdt("Delete") }}
+            </th>
           </tr>
         </thead>
         <tbody id="{{ dimension_type }}-table-body"
@@ -145,7 +175,9 @@
         </tbody>
       </table>
       <div class="text-center py-1">
-        <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add another age group") }}</button>
+        <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">
+          {{ tdt("Add another age group") }}
+        </button>
       </div>
     </div>
 

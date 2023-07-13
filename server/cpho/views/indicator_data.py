@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
@@ -7,7 +8,6 @@ from django.forms.models import ModelForm, inlineformset_factory
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
-from django.core.exceptions import ValidationError
 
 from cpho.models import (
     DimensionType,

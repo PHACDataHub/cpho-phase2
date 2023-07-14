@@ -64,7 +64,6 @@ if [[ "${build_skip}" != "S" ]]; then
 
   echo ""
   read -n 1 -p "MANUAL STEP: you will need to manually add the appropriate GitHub connection via the GCP dashboard, under \"Cloud Build > Repositories\". Press any key to continue: " _
-  echo ""
 
   # Connect to the repository can possibly be done more programatically, but it's messy and might need bot GitHub accounts we don't have
   # Just make the connection manually for now
@@ -153,9 +152,10 @@ if [[ "${sql_skip}" != "S" ]]; then
   # Enable APIs
   gcloud services enable \
     sql-component.googleapis.com \
-    sqladmin.googleapis.com
+    sqladmin.googleapis.com \
+    secretmanager.googleapis.com
   
-  db_root_password=$(openssl rand -base64 80)
+  set_secret "${SKEY_DB_ROOT_PASSWORD}" $(openssl rand -base64 80)
 
   # Create Postgres instance (beta track necesary to use --allocated-ip-range-name currently)
   gcloud beta sql instances create "${DB_INSTANCE_NAME}" \
@@ -163,7 +163,7 @@ if [[ "${sql_skip}" != "S" ]]; then
     --region "${PROJECT_REGION}" \
     --database-version "${DB_VERSION}" \
     --tier "${DB_TIER}" \
-    --root-password "${db_root_password}" \
+    --root-password $(get_secret "${SKEY_DB_ROOT_PASSWORD}") \
     --network "${VPC_NAME}" \
     --no-assign-ip \
     --allocated-ip-range-name "${VPC_SERVICE_CONNECTION_NAME}" \
@@ -173,13 +173,14 @@ if [[ "${sql_skip}" != "S" ]]; then
   gcloud sql databases create "${DB_NAME}" \
     --instance "${DB_INSTANCE_NAME}"
   
+  # This secret is short lived, to be deleted once the value has been saved in the .env.prod secret
+  # Storing it as a secret here is just in case this script exits before the whole .env.prod is written
+  set_secret "${SKEY_DB_USER_PASSWORD}" $(openssl rand -base64 80)
 
-  db_user_password=$(openssl rand -base64 80)
-
-  #Create User
+  # Create User
   gcloud sql users create "${DB_USER}" \
     --instance "${DB_INSTANCE_NAME}" \
-    --password "${db_user_password}"
+    --password $(get_secret "${SKEY_DB_USER_PASSWORD}")
 fi
 
 
@@ -190,14 +191,12 @@ fi
 
 # ----- SECRET MANAGER -----
 echo ""
-echo "Store secrets"
+echo "Create and save .env.prod in Secret Manager"
 read -n 1 -p "Type S to skip this step, anything else to continue: " secrets_skip
 echo ""
 if [[ "${secrets_skip}" != "S" ]]; then
   gcloud services enable secretmanager.googleapis.com
   
-  set_secret "${SKEY_DB_ROOT_PASSWORD}" "${db_root_password}" 
-
   # Construct the .env.prod file to store in Secret Manager, using a temp file with a cleanup exit trap to make sure it doesn't stay on-disk
   tmp_prod_env=$(mktemp -t .env.prod.XXXX)
   function cleanup {
@@ -207,20 +206,20 @@ if [[ "${secrets_skip}" != "S" ]]; then
 
   bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_prod_env}"
   bash_escape "DB_USER=${DB_USER}" >> "${tmp_prod_env}"
-  bash_escape "DB_PASSWORD=${db_user_password}" >> "${tmp_prod_env}"
+  bash_escape "DB_PASSWORD=$(get_secret "${SKEY_DB_USER_PASSWORD}")" >> "${tmp_prod_env}"
   bash_escape "DB_HOST=$(gcloud sql instances list --filter name:"${DB_INSTANCE_NAME}" --format "value(PRIVATE_ADDRESS)")" >> "${tmp_prod_env}"
   bash_escape "DB_PORT=5432" >> "${tmp_prod_env}"
   
   bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_prod_env}"
   
-  # Prior to the first deploy, the service doesn't exist yet and it's URL is unknown (TODO: well, this will change when the project has a domain name)
+  # TODO: the ALLOWED_HOSTS configuration will be simpler once the DNS step is in place
   service_url=$(gcloud run services describe "${PROJECT_SERVICE_NAME}" --platform managed --region "${PROJECT_REGION}" --format "value(status.url)" || echo "")
   if [[ ! -z $service_url ]]; then
     # Need to strip the https:// from the URL, just want the host portion
     ALLOWED_HOSTS=$(echo "${service_url}" | sed 's/^https:\/\///')
   else
-    # Fall back to 
-    ALLOWED_HOSTS=.
+    echo "Prior to the first cloud run deploy, the service doesn't exist yet and it's URL is unknown, but a valid config is needed to get the service deployed that first time. A placeholder is used in the initial .env.prod secret, so you'll have to update the Secret Manager value once you know the actual URL."
+    ALLOWED_HOSTS="placeholder.not-a-tld"
   fi
   bash_escape "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> "${tmp_prod_env}"
   
@@ -236,6 +235,9 @@ if [[ "${secrets_skip}" != "S" ]]; then
 
   # Not strictly necessary with the exit trap, but may as well delete this quickly once it's served it's purpose
   rm -rf "${tmp_prod_env}"
+
+  # Only want one source of truth for this, can be deleted now that it is also in the .env.prod secret
+  delete_secret "${SKEY_DB_USER_PASSWORD}"
 fi
 
 

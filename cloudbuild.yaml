@@ -5,7 +5,7 @@
 
 # [START cloudrun_django_cloudbuild]
 steps:
-  - id: "Get .env.cloud_build and .env.prod files for configuration in subsequent steps"
+  - id: "Make .env.cloud_build for subsequent steps"
     name: gcr.io/cloud-builders/gcloud
     env:
       - "BRANCH_NAME=${BRANCH_NAME}"

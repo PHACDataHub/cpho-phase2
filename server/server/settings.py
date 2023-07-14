@@ -16,40 +16,105 @@ from pathlib import Path
 
 from django.urls import reverse_lazy
 
-from decouple import Csv, config
+from decouple import Config, Csv, RepositoryEnv
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,
     configure_middleware,
 )
 
-# During tests, modify settings or monkeypatch things
-if "test" in sys.argv or any("pytest" in arg for arg in sys.argv):
-    from . import monkey_patch_for_testing
+# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Point decouple.Config to the appropriate .env file
+# Reminder: decouple config(...) looks in OS env vars first, configured .env file second
+try:
+    config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.prod")))
+except:
+    config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.dev")))
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+IS_RUNNING_TESTS = (
+    IS_LOCAL_DEV
+    and "test" in sys.argv
+    or any("pytest" in arg for arg in sys.argv)
+)
+if IS_LOCAL_DEV:
+    # For security, these test/dev settings should _never_ be used in production!
+    DEBUG = config("DEBUG", default=False, cast=bool)
+    ENABLE_DEBUG_TOOLBAR = DEBUG and config(
+        "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
+    )
+    INTERNAL_IPS = (
+        config("INTERNAL_IPS", default="") if ENABLE_DEBUG_TOOLBAR else ""
+    )
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+    # Test settings
+    if IS_RUNNING_TESTS:
+        from . import monkey_patch_for_testing
 
+        TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
+
+else:
+    DEBUG = False
+    ENABLE_DEBUG_TOOLBAR = False
+    INTERNAL_IPS = ""
+
+
+# Secrets and security
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
-ENABLE_DEBUG_TOOLBAR = DEBUG and config(
-    "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
-)
-INTERNAL_IPS = config("INTERNAL_IPS", default="")
-IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
-if IS_LOCAL_DEV:
-    SESSION_COOKIE_SECURE = False
-
-
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
-CORS_ALLOWED_ORIGINS = ["*"]
+
+# Additional CORS allowed and CSRF trusted origins should be empty until if/when the app
+# is serving a REST/GraphQL API for external consumption
+CORS_ALLOWED_ORIGINS = []
+# TODO: if the CSRF middleware and tokens were working, this could be empty. See comment
+# on SECURE_SSL_REDIRECT & SECURE_PROXY_SSL_HEADER below for a lead on what might be broken
+CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
+
+# Prod only security settings
+if not IS_LOCAL_DEV:
+    # TODO these might be good to set, may be why an empty CSRF_TRUSTED_ORIGINS doesn't work, assuming
+    # the cloud run load balancer/proxy might be downgrading our connection internally? Something to look in to,
+    # likely requires corresponding changes to the load balancer's configuration though
+    # SECURE_SSL_REDIRECT = True
+    # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
+
+    SECURE_HSTS_SECONDS = 3600  # TODO this could be set longer, most likely
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.1/howto/static-files/
+
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# whitenoise configuration
+if config(
+    "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL_DEV)
+):
+    # requires staticfiles dir, run `./manage.py collectstatic --noinput` as needed!
+    WHITENOISE_USE_FINDERS = False
+    STATICFILES_STORAGE = (
+        "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    )
+else:
+    # with this set, you don't need a staticfiles dir. Whitenoise will find and serve static files automatically
+    # BUT this doesn't work with caching/compression! Do NOT use this in prod!
+    WHITENOISE_USE_FINDERS = True
+
 
 # Application definition
 INSTALLED_APPS = configure_apps(
@@ -60,6 +125,7 @@ INSTALLED_APPS = configure_apps(
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.messages",
+        "whitenoise.runserver_nostatic",
         "django.contrib.staticfiles",
         "graphene_django",
         "django_extensions",
@@ -67,13 +133,10 @@ INSTALLED_APPS = configure_apps(
     ]
 )
 
-STATIC_URL = "/static/"
-STATICFILES_DIRS = (os.path.join("static"),)
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-
 MIDDLEWARE = configure_middleware(
     [
+        "django.middleware.security.SecurityMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
         *(
             [
                 "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -83,10 +146,8 @@ MIDDLEWARE = configure_middleware(
         ),
         "django.middleware.locale.LocaleMiddleware",
         "django.middleware.common.CommonMiddleware",
-        "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
-        # "whitenoise.middleware.WhiteNoiseMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
@@ -99,10 +160,8 @@ MIDDLEWARE = configure_middleware(
 LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = reverse_lazy("list_indicators")
 
-
 ROOT_URLCONF = "server.urls"
 APPEND_SLASH = True
-
 
 TEMPLATES = [
     {
@@ -139,7 +198,7 @@ WSGI_APPLICATION = "server.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     "default": {
@@ -150,22 +209,22 @@ DATABASES = {
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
         #   'OPTIONS': {'sslmode': 'require'},
-        "TEST": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": config("TEST_DB_NAME", default="cpho_test_db"),
-        },
     }
 }
+if IS_RUNNING_TESTS:
+    DATABASES["default"]["TEST"] = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("TEST_DB_NAME"),
+    }
+
+
+# Password validation
+# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 AUTH_USER_MODEL = "cpho.User"
-
-TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -184,7 +243,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
+# https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = "en-ca"
 
@@ -196,10 +255,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-# CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000"]
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

@@ -1,0 +1,80 @@
+# To trigger manually, use `gcloud builds submit --config cloudbuild.yaml`
+# Note: manual triggers differ from GitHub triggers on the available built in substitution values
+# deploy/make_cloud_build_env_file.sh is responsible for providing local fallbacks as needed
+
+
+# [START cloudrun_django_cloudbuild]
+steps:
+  - id: "Make .env.cloud_build for subsequent steps"
+    name: gcr.io/cloud-builders/gcloud
+    env:
+      - "BRANCH_NAME=${BRANCH_NAME}"
+      - "COMMIT_SHA=${COMMIT_SHA}"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+
+      echo "Write .env.cloud_build to disk, to provide consistent project configuration (no secrets) in subsequent steps"
+      deploy/make_cloud_build_env_file.sh "${BRANCH_NAME}" "${COMMIT_SHA}"
+
+  - id: "Build image"
+    name: "gcr.io/cloud-builders/docker"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build environment variables"
+      source .env.cloud_build
+
+      echo "Build a new application run time image"
+      docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+
+  - id: "Push image if main"
+    name: "gcr.io/cloud-builders/docker"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build environment variables"
+      source .env.cloud_build
+
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+        echo "Push the new image to the project's artifact registry"
+        docker push "${IMAGE_NAME_FOR_RUN}"
+      else
+        echo "pass"
+        exit 0
+      fi
+
+  - id: "Deploy to Cloud Run if main"
+    name: "gcr.io/cloud-builders/gcloud"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build environment variables"
+      source .env.cloud_build
+
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+        echo "Deploy new image to Cloud Run"
+        gcloud run deploy "${PROJECT_SERVICE_NAME}" \
+          --image "${IMAGE_NAME_FOR_RUN}" \
+          --region "${PROJECT_REGION}" \
+          --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
+          --vpc-connector "${VPC_CONNECTOR_NAME}" \
+          --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:latest" \
+          --platform managed \
+          --allow-unauthenticated
+      else
+        echo "pass"
+        exit 0
+      fi
+# [END cloudrun_django_cloudbuild]

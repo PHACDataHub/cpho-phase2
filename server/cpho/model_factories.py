@@ -75,11 +75,11 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
         "pyfloat", positive=True, min_value=1, max_value=20
     )
     value_upper_bound = factory.Faker(
-        "pyfloat", positive=True, min_value=21, max_value=79
+        "pyfloat", positive=True, min_value=80, max_value=100
     )
     value = factory.Faker(
         "pyfloat",
         positive=True,
-        min_value=80,
-        max_value=100,
+        min_value=21,
+        max_value=79,
     )

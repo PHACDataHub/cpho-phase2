@@ -57,7 +57,7 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
         yes_declaration=None,
         no_declaration=factory.SubFactory(DimensionValueFactory),
     )
-    value = factory.Faker("pyfloat")
+
     data_quality = factory.LazyFunction(
         lambda: random.choice(
             [p[0] for p in IndicatorDatum.DATA_QUALITY_CHOICES]
@@ -71,5 +71,15 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
     literal_dimension_val = factory.LazyAttribute(
         lambda o: "custom value" if o.dimension_type.is_literal else None
     )
-    value_lower_bound = factory.Faker("pyfloat")
-    value_upper_bound = factory.Faker("pyfloat")
+    value_lower_bound = factory.Faker(
+        "pyfloat", positive=True, min_value=1, max_value=20
+    )
+    value_upper_bound = factory.Faker(
+        "pyfloat", positive=True, min_value=21, max_value=79
+    )
+    value = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=80,
+        max_value=100,
+    )

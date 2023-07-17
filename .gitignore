@@ -25,3 +25,4 @@ runserver.sh
 **/logfile
 
 server/logfile
+server/postgres.env

@@ -99,16 +99,19 @@ class IndicatorDatumForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        data = cleaned_data['value']
+        value = cleaned_data['value']
         value_unit = cleaned_data['value_unit']
-        print(data)
         if value_unit == "%":
-            if data and data > 100 or data < 0:
+            if value and (value > 100 or value < 0):
                 self.add_error("value", tdt("Value must be a percentage between 0-100"))
-        if data and data < 0:
+        return cleaned_data
+
+    def clean_value(self):
+        value = self.cleaned_data['value']
+        if value and value < 0:
             print("invalid")
             self.add_error("value", tdt("Value cannot be negative"))
-        return cleaned_data
+        return value    
 
     def clean_value_lower_bound(self):
         value = self.cleaned_data['value']
@@ -151,7 +154,7 @@ class IndicatorDatumForm(ModelForm):
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error("multi_year_timeframe", tdt("Multi Year Timeframe must be between the years 2000 and 2050 and start year must be less than end year"))
             except ValueError:
-                self.add_error("multi_year_timeframe", tdt("Multi Year Timeframe must be a valid number"))
+                self.add_error("multi_year_timeframe", tdt("Multiyear timeframe must be in the form: 'YYYY-YYYY"))
 
         return multi_year
 

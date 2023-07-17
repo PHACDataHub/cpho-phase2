@@ -50,6 +50,8 @@ class IndicatorDatumForm(ModelForm):
             "single_year_timeframe",
             "multi_year_timeframe",
             "literal_dimension_val",
+            "hso_approved",
+            "program_approved",
         ]
 
     value = forms.FloatField(
@@ -244,9 +246,41 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         if predefined_valid and age_group_valid:
             with transaction.atomic():
                 for form in self.predefined_values_formset:
-                    form.save()
+                    if form.has_changed():
+                        # for field in form.changed_data():
+                        print(form.changed_data)
+                        if form.changed_data in [
+                            ["program_approved"],
+                            ["hso_approved"],
+                            ["program_approved", "hso_approved"],
+                        ]:
+                            form.save()
+                        else:
+                            obj = form.save(commit=False)
+                            obj.program_approved = False
+                            obj.hso_approved = False
+                            obj.save()
 
-                self.age_group_formset.save()
+                for form in self.age_group_formset:
+                    if form.has_changed():
+                        # for field in form.changed_data():
+                        print(form.changed_data)
+                        if "DELETE" in form.changed_data:
+                            if form.instance.id is not None:
+                                form.instance.delete()
+                        elif form.changed_data in [
+                            ["program_approved"],
+                            ["hso_approved"],
+                            ["program_approved", "hso_approved"],
+                        ]:
+                            form.save()
+                        else:
+                            obj = form.save(commit=False)
+                            obj.program_approved = False
+                            obj.hso_approved = False
+                            obj.save()
+
+                # self.age_group_formset.save()
 
                 messages.success(
                     self.request, tdt("Data saved."), messages.SUCCESS
@@ -257,9 +291,18 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
                 )
         else:
             # get will just render the forms and their errors
-            import IPython
+            # import IPython
 
-            IPython.embed()
+            # IPython.embed()
+
+            print(
+                "predefined_values_formset.errors",
+                self.predefined_values_formset.errors,
+            )
+            print("age_group_formset.errors", self.age_group_formset.errors)
+            for form in self.age_group_formset:
+                print("form.value", form.instance.value)
+                print("form.errors", form.errors)
             return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -302,7 +345,9 @@ class ReadOnlyFormMixin:
     def disable_fields(self):
         """Disable all fields in the form."""
         for field in self.fields:
-            self.fields[field].widget.attrs["disabled"] = True
+            # print(field)
+            if field not in ["hso_approved", "program_approved"]:
+                self.fields[field].widget.attrs["disabled"] = True
 
     def remove_placeholders(self):
         """Remove all placeholders from the form."""
@@ -317,32 +362,31 @@ class ReadOnlyIndicatorDatumForm(IndicatorDatumForm, ReadOnlyFormMixin):
         self.remove_placeholders()
 
 
-# ApproveIndicatorData
-class ApproveIndicatorData(TemplateView):
-    def indicator(self):
-        return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+# class ApproveIndicatorData(TemplateView):
+#     def indicator(self):
+#         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
 
-    def period(self):
-        return Period.objects.get(pk=self.kwargs["period_id"])
+#     def period(self):
+#         return Period.objects.get(pk=self.kwargs["period_id"])
 
-    def post(self, *args, **kwargs):
-        response = HttpResponse()
+#     def post(self, *args, **kwargs):
+#         response = HttpResponse()
 
-        relevant_data = IndicatorDatum.objects.filter(
-            indicator=self.indicator(), period=self.period()
-        )
-        for data in relevant_data:
-            data.hso_approved = True
-            data.program_approved = True
-            data.save()
-        # print(dir(data.versions.create))
-        # data.versions.latest().hso_approved = True
-        # data.save()
-        # data.versions.create(hso_approved=True)
-        # print(data.versions.latest().hso_approved)
-        # print(dir(data.versions))
+#         relevant_data = IndicatorDatum.objects.filter(
+#             indicator=self.indicator(), period=self.period()
+#         )
+#         for data in relevant_data:
+#             data.hso_approved = True
+#             data.program_approved = True
+#             data.save()
+#         # print(dir(data.versions.create))
+#         # data.versions.latest().hso_approved = True
+#         # data.save()
+#         # data.versions.create(hso_approved=True)
+#         # print(data.versions.latest().hso_approved)
+#         # print(dir(data.versions))
 
-        response["HX-Redirect"] = reverse(
-            "view_indicator", kwargs={"pk": self.indicator().pk}
-        )
-        return response
+#         response["HX-Redirect"] = reverse(
+#             "view_indicator", kwargs={"pk": self.indicator().pk}
+#         )
+#         return response

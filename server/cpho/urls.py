@@ -50,9 +50,9 @@ urlpatterns = [
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data_all",
     ),
-    path(
-        "indicators/<int:indicator_id>/period/<int:period_id>/approve/",
-        views.ApproveIndicatorData.as_view(),
-        name="approve_indicator_data",
-    ),
+    # path(
+    #     "indicators/<int:indicator_id>/period/<int:period_id>/approve/",
+    #     views.ApproveIndicatorData.as_view(),
+    #     name="approve_indicator_data",
+    # ),
 ]

@@ -17,7 +17,9 @@
                 <div class="col-1 text-center">
                   <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id, 'edit']) }}">{{ tdt("Edit") }}</a>
                 </div>
-                <div class="col-2"></div>
+                <div class="col-2 text-center">
+                  <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id, 'review']) }}">{{ tdt("Review and approve") }}</a>
+                </div>
               </div>
             </div>
           </div>

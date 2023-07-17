@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import logging.config
 import os
 import sys
 from pathlib import Path
@@ -23,7 +24,11 @@ from phac_aspc.django.settings.utils import (
     configure_middleware,
 )
 
+<<<<<<< HEAD
 from server.settings_util import get_project_config
+=======
+from server.logging_utils import get_logging_dict_config
+>>>>>>> 558d471 (Bring over (portions of) logging config from past projects)
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -262,3 +267,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # BUSINESS LOGIC CONFIGURATION
 
 CURRENT_YEAR = 2021
+
+# Logging
+
+# LOGGING_CONFIG = None drops the Django default logging config rather than merging our rules with it.
+# I preffer this as having to consult the default rules and work out what is or isn't overwritten
+# by the merging just feels like gotcha city for future maintainers. Note that the config here is still based
+# on the Django 4.1 default https://docs.djangoproject.com/en/4.1/ref/logging/#default-logging-definition
+LOGGING_CONFIG = None
+
+# There's a separate class of warnings (e.g. warning.warn) that, by default, are handled outside the logging system
+# (even though logging has its own WARNING category). Annoying. This unifies things
+logging.captureWarnings(True)
+
+# Mute console logging stream when running tests, because it conflicts with pytests own console output (which
+# captures any errors we want to see while testing anyway)
+logging.config.dictConfig(
+    get_logging_dict_config(mute_console=IS_RUNNING_TESTS)
+)

@@ -52,8 +52,9 @@ h1 abbr {
     padding: 0rem 0.1rem;
     border: 2px solid #0c3816;
     margin: 1px;
+}
 
-
-
+td:has(>.error-display)>input {
+    border: 2px solid #75070c;
 
 }

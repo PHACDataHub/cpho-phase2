@@ -24,13 +24,52 @@
         {% endif %}
       </div>
     </td>
-    <td>{{ form.value }}</td>
+    <td>
+      {{ form.value }}
+      {% if form.errors.value %}
+        <div class=error-display>
+          {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
     <td>{{ form.value_unit }}</td>
-    <td>{{ form.value_lower_bound }}</td>
-    <td>{{ form.value_upper_bound }}</td>
+    <td>
+      {{ form.value_lower_bound }}
+      {% if form.errors.value_lower_bound %}
+        <div class=error-display>
+          {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
+    <td>
+      {{ form.value_upper_bound }}
+      {% if form.errors.value_upper_bound %}
+        <div class=error-display>
+          {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
     <td>{{ form.data_quality }}</td>
-    <td>{{ form.single_year_timeframe }}</td>
-    <td>{{ form.multi_year_timeframe }}</td>
+    {# <td>{{ form.single_year_timeframe }}</td> #}
+    <td>
+      {{ form.single_year_timeframe }}
+      {% if form.errors.single_year_timeframe %}
+        <div class=error-display>
+          {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
+    {# <td>{{ form.multi_year_timeframe }}</td> #}
+    <td>
+      {{ form.multi_year_timeframe }}
+      {% if form.errors.multi_year_timeframe %}
+        <div class=error-display>
+          {% for error in form.multi_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
+ 
+
     <td class="{{ approval_checkbox_class }} hso-checkbox">{{ form.hso_approved }} {{ approval_checkbox_class }}</td>
     <td class="{{ approval_checkbox_class }} program-checkbox">{{ form.program_approved }}</td>
     {% if action_type == 'edit' %}
@@ -98,8 +137,12 @@
                   <th width="9%">{{ tdt("Value Lower Bound") }}</th>
                   <th width="9%">{{ tdt("Value Upper Bound") }}</th>
                   <th width="10%">{{ tdt("Data Quality") }}</th>
-                  <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
-                  <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
+                  <th width="12%">
+                    {{ tdt("Single Year Timeframe") }}
+                  </th>
+                  <th width="12%">
+                    {{ tdt("Multi Year Timeframe") }}
+                  </th>
                   <th class="{{ approval_checkbox_class }}" width="5%">
                     {{ tdt("HSO Approved") }}
                   </th>
@@ -130,26 +173,54 @@
                         {% endif %}
                       </div>
                     </td>
+                    {# <td>
+                      {{ form.value }}
+                    </td> #}
                     <td>
                       {{ form.value }}
+                      {% if form.errors.value %}
+                        <div class=error-display>
+                          {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                        </div>
+                      {% endif %}
                     </td>
                     <td>
                       {{ form.value_unit }}
                     </td>
                     <td>
                       {{ form.value_lower_bound }}
+                      {% if form.errors.value_lower_bound %}
+                        <div class=error-display>
+                          {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                        </div>
+                      {% endif %}
                     </td>
                     <td>
                       {{ form.value_upper_bound }}
+                      {% if form.errors.value_upper_bound %}
+                        <div class=error-display>
+                          {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                        </div>
+                      {% endif %}
                     </td>
                     <td>
                       {{ form.data_quality }}
                     </td>
                     <td>
                       {{ form.single_year_timeframe }}
+                      {% if form.errors.single_year_timeframe %}
+                        <div class=error-display>
+                          {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                        </div>
+                      {% endif %}
                     </td>
                     <td>
                       {{ form.multi_year_timeframe }}
+                      {% if form.errors.multi_year_timeframe %}
+                        <div class=error-display>
+                          {% for error in form.multi_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+                        </div>
+                      {% endif %}
                     </td>
                     <td class="{{ approval_checkbox_class }} hso-checkbox">
                       {{ form.hso_approved }}
@@ -240,7 +311,6 @@
         {% endif %}
 
 
-        <!-- Modal -->
         <div class="modal fade"
              id="confirmApproveModal"
              tabindex="-1"

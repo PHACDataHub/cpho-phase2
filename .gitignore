@@ -4,8 +4,12 @@
 # Cache
 **/__pycache__/
 
-# environment variables
-**/*.env
+# Django
+**/staticfiles
+
+# environment variables (only allow .env.dev, no other env files)
+**/.env*
+!**/.env.dev
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and PDM
 **/__pypackages__/
@@ -21,3 +25,4 @@ runserver.sh
 **/logfile
 
 server/logfile
+server/postgres.env

@@ -5,10 +5,11 @@ README.md
 .dockerignore
 .python-version
 .coverage
-**/*.env
 **/*.sqlite
 **/*.pyc
 cloudbuild.yaml
 kubernetes
 **/__pycache__
 docker-compose.yaml
+staticfiles/*
+

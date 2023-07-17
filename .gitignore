@@ -7,7 +7,7 @@
 # Django
 **/staticfiles
 
-# environment variables (only allow .env.dev, no other env files)
+# environment variables (only allow .env.dev-public, no other env files)
 **/.env*
 !**/.env.dev-public
 

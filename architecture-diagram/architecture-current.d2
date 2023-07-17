@@ -1,0 +1,114 @@
+devs: Developers {
+  icon: ./icons/Developer_(94088)_-_The_Noun_Project.svg
+  shape: image
+}
+
+gitHub: GitHub {
+  icon: ./icons/octicons-mark-github.svg
+  shape: image
+}
+
+internet: Internet {
+  icon: ./icons/my_cloud.svg
+  shape: image
+}
+
+Google Cloud: {
+  style: {
+    stroke: "#000000"
+    fill: "#f1f3f4"
+  }
+
+  gcpvpc: Google managed Serverless VPC {
+    style: {
+      stroke: blue
+      font-color: blue
+      stroke-dash: 3
+      fill: transparent
+    }
+    cloudRun: Cloud Run (application code) {
+      icon: ./icons/cloud_run.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+  }
+
+  CICD: CI/CD from \"main\" branch {
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+    cloudBuild: Cloud Build {
+      icon: ./icons/cloud_build.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    artifactRegistry: Artifact Registry {
+      icon: ./icons/artifact_registry.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+  }
+
+  secretManager: Secret Manager {
+    icon: ./icons/secret_manager.svg
+    style: {
+      stroke: "#000000"
+      fill: "#ffffff"
+    }
+  }
+
+  Project: {
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+
+    connector: Serverless VPC Connector {
+      icon: ./icons/serverless_vpc_connector.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    vpc: User managed VPC (default network) {
+      style: {
+        stroke: blue
+        font-color: blue
+        stroke-dash: 3
+        fill: transparent
+      }
+      clod_sql: Cloud SQL (PostgreSQL with Internal IP) {
+        icon: ./icons/cloud_sql.svg
+        style: {
+          stroke: "#000000"
+          fill: "#ffffff"
+        }
+      }
+    }
+  }
+}
+
+# Dev path
+devs <-> gitHub
+gitHub -> Google Cloud.CICD.cloudBuild: Cloud Build pull trigger
+devs -> Google Cloud.Project.vpc.clod_sql: TBD: access to DB \nfor maintenance of data
+devs -> Google Cloud.secretManager: Write access
+
+# CI/CD path
+Google Cloud.CICD.cloudBuild -> Google Cloud.CICD.artifactRegistry
+Google Cloud.CICD -> Google Cloud.gcpvpc.cloudRun: deploy
+Google Cloud.secretManager -> Google Cloud.gcpvpc.cloudRun: .env.prod
+
+# User path
+internet <-> Google Cloud.gcpvpc.cloudRun: https
+Google Cloud.gcpvpc.cloudRun <-> Google Cloud.Project.connector
+Google Cloud.Project.connector <-> Google Cloud.Project.vpc.clod_sql

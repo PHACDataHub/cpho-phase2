@@ -4,15 +4,28 @@ from abc import ABCMeta, abstractmethod
 from logging import Handler, getLogger
 
 import requests
+import structlog
 from decouple import config
+
+structlog_pre_chain = [
+    structlog.contextvars.merge_contextvars,
+    structlog.processors.TimeStamper(fmt="iso"),
+    structlog.stdlib.add_logger_name,
+    structlog.stdlib.add_log_level,
+    structlog.stdlib.PositionalArgumentsFormatter(),
+    structlog.processors.StackInfoRenderer(),
+    structlog.processors.format_exc_info,
+    structlog.processors.UnicodeDecoder(),
+]
 
 
 def get_logging_dict_config(
     lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
+    format_console_logs_as_json=config("FORMAT_CONSOLE_LOGS_AS_JSON", True),
     slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
     slack_webhook_fail_silent=config(
         "SLACK_WEBHOOK_FAIL_SILENT",
-        # default to failing silent if webhook URL set, failing loud otherwise
+        # default to failing silent if webhook URL not set, failing loud otherwise
         bool(config("SLACK_WEBHOOK_URL", None)),
     ),
     mute_console=False,
@@ -21,7 +34,17 @@ def get_logging_dict_config(
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "standard": {
+            "flat_console_formatter": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.dev.ConsoleRenderer(),
+                "foreign_pre_chain": structlog_pre_chain,
+            },
+            "json_formatter": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.processors.JSONRenderer(),
+                "foreign_pre_chain": structlog_pre_chain,
+            },
+            "plaintext_formatter": {
                 "format": "[%(asctime)s] %(levelname)s [%(name)s:%(module)s:%(lineno)s] %(message)s",
                 "datefmt": "%d/%b/%Y %H:%M:%S",
             },
@@ -33,14 +56,16 @@ def get_logging_dict_config(
                 "stream": "ext://sys.stdout"
                 if not mute_console
                 else open(os.devnull, "w"),
-                "formatter": "standard",
+                "formatter": "json_formatter"
+                if format_console_logs_as_json
+                else "console_formatter",
             },
             "slack": {
                 "level": "ERROR",
                 "class": "server.logging_utils.SlackWebhookHandler",
                 "url": slack_webhook_url,
                 "fail_silent": slack_webhook_fail_silent,
-                "formatter": "standard",
+                "formatter": "plaintext_formatter",
             },
         },
         "root": {

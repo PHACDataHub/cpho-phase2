@@ -24,11 +24,8 @@ from phac_aspc.django.settings.utils import (
     configure_middleware,
 )
 
-<<<<<<< HEAD
-from server.settings_util import get_project_config
-=======
 from server.logging_utils import get_logging_dict_config
->>>>>>> 558d471 (Bring over (portions of) logging config from past projects)
+from server.settings_util import get_project_config
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -280,8 +277,10 @@ LOGGING_CONFIG = None
 # (even though logging has its own WARNING category). Annoying. This unifies things
 logging.captureWarnings(True)
 
-# Mute console logging stream when running tests, because it conflicts with pytests own console output (which
-# captures any errors we want to see while testing anyway)
+# Mute console logging output when running tests, because it conflicts with pytests own console output (which
+# captures and reports errors after all tests have finished running)
 logging.config.dictConfig(
-    get_logging_dict_config(mute_console=IS_RUNNING_TESTS)
+    get_logging_dict_config(
+        mute_console=IS_RUNNING_TESTS,
+    )
 )

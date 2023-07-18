@@ -30,6 +30,8 @@ bash_escape "COMMIT_SHA=${commit_sha}" >> "${env_file}"
 
 bash_escape "IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUN_IMAGE_NAME}:${commit_sha}" >> "${env_file}"
 
+bash_escape "CODECOV_TOKEN=$(gcloud secrets versions access 1 --secret=$SKEY_CODECOV_TOKEN)" >> "${env_file}"
+
 # re-exports from gcloud_env_vars.sh
 bash_escape "GITHUB_MAIN_BRANCH_NAME=${GITHUB_MAIN_BRANCH_NAME}" >> "${env_file}"
 bash_escape "PROJECT_SERVICE_NAME=${PROJECT_SERVICE_NAME}" >> "${env_file}"
@@ -37,3 +39,4 @@ bash_escape "PROJECT_REGION=${PROJECT_REGION}" >> "${env_file}"
 bash_escape "DB_INSTANCE_NAME=${DB_INSTANCE_NAME}" >> "${env_file}"
 bash_escape "VPC_CONNECTOR_NAME=${VPC_CONNECTOR_NAME}" >> "${env_file}"
 bash_escape "SKEY_PROD_ENV_FILE=${SKEY_PROD_ENV_FILE}" >> "${env_file}"
+

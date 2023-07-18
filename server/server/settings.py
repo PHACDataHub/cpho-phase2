@@ -16,23 +16,21 @@ from pathlib import Path
 
 from django.urls import reverse_lazy
 
-from decouple import Config, Csv, RepositoryEnv
+from decouple import Csv
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,
     configure_middleware,
 )
 
+from server.settings_util import get_project_config
+
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Point decouple.Config to the appropriate .env file
-# Reminder: decouple config(...) looks in OS env vars first, configured .env file second
-try:
-    config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.prod")))
-except:
-    config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.dev")))
+
+config = get_project_config(BASE_DIR)
 
 
 IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)

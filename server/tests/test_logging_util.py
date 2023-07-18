@@ -8,7 +8,7 @@ import responses
 from pytest import skip
 from testfixtures import LogCapture
 
-from server.logging_utils import AbstractJSONPostHandler, SlackWebhookHandler
+from server.logging_util import AbstractJSONPostHandler, SlackWebhookHandler
 
 
 # found this pattern while looking around at handler libraries on GitHub,
@@ -104,13 +104,13 @@ def test_json_post_handler_logs_own_errors_without_trying_to_rehandle_them(
         )
     )
 
-    # by convention, any logger belonging to proj/logging_utils.py should be prefixed by "bennies.logging_utils",
+    # by convention, any logger belonging to server/logging_util.py should be prefixed by "server.logging_util",
     # so _not_ really relying on an implementation detail here... but brittle to the module renaming or the convention being broken
     assert (
         len(
             list(
                 filter(
-                    lambda record: record.name.find("bennies.logging_utils"),
+                    lambda record: record.name.find("server.logging_utils"),
                     log_capture.records,
                 )
             )

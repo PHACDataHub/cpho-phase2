@@ -66,7 +66,7 @@ def get_logging_dict_config(
             },
             "slack": {
                 "level": "ERROR",
-                "class": "server.logging_utils.SlackWebhookHandler",
+                "class": "server.logging_util.SlackWebhookHandler",
                 "url": slack_webhook_url,
                 "fail_silent": slack_handler_fail_silent,
                 "formatter": "plaintext_formatter",

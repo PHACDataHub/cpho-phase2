@@ -49,9 +49,8 @@ steps:
 
       echo "Run tests and create coverage report"
       source .env.cloud_build
-      # docker compose exec -T server pytest --cov=./server --cov-report=xml
-      docker compose exec server python -m pytest --cov ./server --cov-report xml:coverage.xml
-      echo `pwd`/coverage.xml
+      docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage.xml
+      echo `pwd`
       
       echo "List of files in the current directory: "
 
@@ -65,25 +64,6 @@ steps:
        echo "$file"
       done
       
-      echo ""
-      echo "in server/server:"
-      for file in server/server/*; do
-        echo "$file"
-      done
-      
-      echo ""
-      echo "in server/tests:"
-      for file in server/server/*; do
-        echo "$file"
-      done
-      
-      echo ""
-      echo "in server/cpho:"
-      for file in server/server/*; do
-        echo "$file"
-      done
-
-
   - id: "Upload Test Coverage report to Codecov"
     name: "gcr.io/cloud-builders/curl"
     env:
@@ -102,16 +82,12 @@ steps:
       if [[ "$trimmed_token" != "" ]]; then
         echo "Printing working directory:"
         echo "$(pwd)"
-        # echo "Printing root directory:"
-        # echo df -P /
         echo "Getting Codecov Cloud Uploader"
         curl -Os https://uploader.codecov.io/latest/linux/codecov
-        # curl -Os https://uploader.codecov.io/latest/alpine/codecov
         chmod +x codecov
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -f coverage.xml 
-        # -R ./server
-        # ${PATH#/} /usr/src/app /cpho/web
+        ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -f coverage.xml -R ~/web
+        #/cpho/web
       else
         echo "Codecov not set up - skipping..."
       fi

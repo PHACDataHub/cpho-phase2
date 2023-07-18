@@ -23,3 +23,11 @@ python-decouple==3.6
 pytz==2022.2.1
 requests==2.28.2
 whitenoise==6.4.0
+
+#temporarily bringing over requirment.dev so no recent wheel  issues - will need to remove later
+coverage==7.1.0
+pytest==7.1.2
+pytest-django==4.5.2
+pytest-watch==4.2.0
+pytest-cov
+factory-boy===3.2.1

@@ -63,6 +63,11 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
+      # IMPORTANT: don't just use latest. The secrets are mounted at container start, not deploy time,
+      # so instances deployed with "latest" may end up using incompatable secret versions as new secret
+      # versions are pushed, but before the coresponding images are pushed
+      prod_env_secret_version=6
+
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Deploy new image to Cloud Run"
         gcloud run deploy "${PROJECT_SERVICE_NAME}" \
@@ -70,7 +75,7 @@ steps:
           --region "${PROJECT_REGION}" \
           --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
           --vpc-connector "${VPC_CONNECTOR_NAME}" \
-          --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:latest" \
+          --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:${prod_env_secret_version}" \
           --platform managed \
           --allow-unauthenticated
       else

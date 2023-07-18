@@ -7,9 +7,9 @@
 # Django
 **/staticfiles
 
-# environment variables (only allow .env.dev, no other env files)
+# environment variables (only allow .env.dev-public, no other env files)
 **/.env*
-!**/.env.dev
+!**/.env.dev-public
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and PDM
 **/__pypackages__/

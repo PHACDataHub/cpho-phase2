@@ -335,7 +335,6 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             with transaction.atomic():
                 for form in self.predefined_values_formset:
                     if form.has_changed():
-                        # for field in form.changed_data():
                         print(form.changed_data)
                         if form.changed_data in [
                             ["program_approved"],
@@ -351,7 +350,6 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
 
                 for form in self.age_group_formset:
                     if form.has_changed():
-                        # for field in form.changed_data():
                         print(form.changed_data)
                         if "DELETE" in form.changed_data:
                             if form.instance.id is not None:

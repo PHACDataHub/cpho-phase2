@@ -50,36 +50,36 @@ steps:
       docker compose exec -T server pytest --cov=./server --cov-report=xml
 
 
-#   - id: "Upload Test Coverage report to Codecov"
-#     name: "gcr.io/cloud-builders/curl"
-#     env:
-#       - "COMMIT_SHA=$COMMIT_SHA"
-#     # entrypoint: bash
-#     # args: ["./scripts/codecov-upload.bash", "$_CODECOV_TOKEN"]
-#     script: |
-#       #!/usr/bin/env bash
-#       set -o errexit
-#       set -o pipefail
-#       set -o nounset
+  - id: "Upload Test Coverage report to Codecov"
+    name: "gcr.io/cloud-builders/curl"
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
+    # entrypoint: bash
+    # args: ["./scripts/codecov-upload.bash", "$_CODECOV_TOKEN"]
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
 
-#       echo "Get cloud build project configuration values"
-#       source .env.cloud_build
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build
 
-#       echo "Check if Codecov token has been set in GCP Secret Manager"
-#       if [[ "$codecov_secret" != "" ]]; then
-#         pass
-#       else;
-#         SKEY_CODECOV_TOKEN=$(get_secret "SKEY_CODECOV_TOKEN")
+      echo "Check if Codecov token has been set in GCP Secret Manager"
+      if [[ "$codecov_secret" != "" ]]; then
+        pass
+      else;
+        SKEY_CODECOV_TOKEN=$(get_secret "SKEY_CODECOV_TOKEN")
     
-#         echo "Get Codecov Cloud Uploader"
-#         curl -Os https://uploader.codecov.io/latest/linux/codecov
-#         chmod +x codecov
+        echo "Get Codecov Cloud Uploader"
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
 
-#         echo "Upload test coverage report to codecov"
-#         ./codecov -t "$SKEY_CODECOV_TOKEN" -B "$BRANCH_NAME"
-#       fi
-#  # if [ ! -z $(get_secret "codecov_secret") 2>/dev/null ]; then
-#   # codecov --token=X --disable=detect --commit=$COMMIT_SHA --branch=$BRANCH_NAME 
+        echo "Upload test coverage report to codecov"
+        ./codecov -t "$SKEY_CODECOV_TOKEN" -B "$BRANCH_NAME"
+      fi
+ # if [ ! -z $(get_secret "codecov_secret") 2>/dev/null ]; then
+  # codecov --token=X --disable=detect --commit=$COMMIT_SHA --branch=$BRANCH_NAME 
   
 
   - id: "Tear down from tests"

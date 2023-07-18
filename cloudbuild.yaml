@@ -19,7 +19,83 @@ steps:
       echo "Write .env.cloud_build to disk, to provide consistent project configuration (no secrets) in subsequent steps"
       deploy/make_cloud_build_env_file.sh "${BRANCH_NAME}" "${COMMIT_SHA}"
 
-  - id: "Build image"
+  - id: "Build server and postgres images for testing"
+    name: "gcr.io/cloud-builders/docker"
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build
+
+      echo "Build a new application run time image and postgres db for testing"
+      docker compose up --build -d 
+
+  - id: "run tests and produce coverage report"
+    name: 'gcr.io/cloud-builders/docker'
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+
+      echo "Run tests and create coverage report"
+      source .env.cloud_build
+      docker compose exec -T server pytest --cov=./server --cov-report=xml
+
+
+#   - id: "Upload Test Coverage report to Codecov"
+#     name: "gcr.io/cloud-builders/curl"
+#     env:
+#       - "COMMIT_SHA=$COMMIT_SHA"
+#     # entrypoint: bash
+#     # args: ["./scripts/codecov-upload.bash", "$_CODECOV_TOKEN"]
+#     script: |
+#       #!/usr/bin/env bash
+#       set -o errexit
+#       set -o pipefail
+#       set -o nounset
+
+#       echo "Get cloud build project configuration values"
+#       source .env.cloud_build
+
+#       echo "Check if Codecov token has been set in GCP Secret Manager"
+#       if [[ "$codecov_secret" != "" ]]; then
+#         pass
+#       else;
+#         SKEY_CODECOV_TOKEN=$(get_secret "SKEY_CODECOV_TOKEN")
+    
+#         echo "Get Codecov Cloud Uploader"
+#         curl -Os https://uploader.codecov.io/latest/linux/codecov
+#         chmod +x codecov
+
+#         echo "Upload test coverage report to codecov"
+#         ./codecov -t "$SKEY_CODECOV_TOKEN" -B "$BRANCH_NAME"
+#       fi
+#  # if [ ! -z $(get_secret "codecov_secret") 2>/dev/null ]; then
+#   # codecov --token=X --disable=detect --commit=$COMMIT_SHA --branch=$BRANCH_NAME 
+  
+
+  - id: "Tear down from tests"
+    name: 'gcr.io/cloud-builders/docker'
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+
+      echo "docker compose down"
+      docker compose down -v
+
+  - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"
     script: |
       #!/usr/bin/env bash
@@ -30,8 +106,27 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
-      echo "Build a new application run time image"
-      docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+        echo "Build a new application run time image"
+        docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+       else
+        echo "pass"
+      fi
+
+  # - id: "Build image"
+  #   name: "gcr.io/cloud-builders/docker"
+  #   script: |
+  #     #!/usr/bin/env bash
+  #     set -o errexit
+  #     set -o pipefail
+  #     set -o nounset
+      
+  #     echo "Get cloud build environment variables"
+  #     source .env.cloud_build
+
+  #     echo "Build a new application run time image"
+  #     docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+  
 
   - id: "Push image if main"
     name: "gcr.io/cloud-builders/docker"

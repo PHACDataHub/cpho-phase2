@@ -30,7 +30,6 @@ from server.settings_util import get_project_config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Reminder: decouple config(...) looks in OS env vars first, configured .env file second
 config = get_project_config(BASE_DIR)
 
 

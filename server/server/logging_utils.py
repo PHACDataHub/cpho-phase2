@@ -6,17 +6,6 @@ from logging import Handler, getLogger
 import requests
 import structlog
 
-structlog_pre_chain = [
-    structlog.contextvars.merge_contextvars,
-    structlog.processors.TimeStamper(fmt="iso"),
-    structlog.stdlib.add_logger_name,
-    structlog.stdlib.add_log_level,
-    structlog.stdlib.PositionalArgumentsFormatter(),
-    structlog.processors.StackInfoRenderer(),
-    structlog.processors.format_exc_info,
-    structlog.processors.UnicodeDecoder(),
-]
-
 
 def get_logging_dict_config(
     lowest_level_to_log="INFO",
@@ -25,6 +14,30 @@ def get_logging_dict_config(
     slack_webhook_fail_silent=False,
     mute_console=False,
 ):
+    structlog_pre_chain = [
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+    ]
+
+    console_handler_stream = (
+        "ext://sys.stdout" if not mute_console else open(os.devnull, "w")
+    )
+    console_handler_formatter = (
+        "json_formatter"
+        if format_console_logs_as_json
+        else "console_formatter"
+    )
+
+    slack_handler_fail_silent = (
+        True if slack_webhook_url is None else slack_webhook_fail_silent
+    )
+
     return {
         "version": 1,
         "disable_existing_loggers": False,
@@ -48,20 +61,14 @@ def get_logging_dict_config(
             "console": {
                 "level": "DEBUG",
                 "class": "logging.StreamHandler",
-                "stream": "ext://sys.stdout"
-                if not mute_console
-                else open(os.devnull, "w"),
-                "formatter": "json_formatter"
-                if format_console_logs_as_json
-                else "console_formatter",
+                "stream": console_handler_stream,
+                "formatter": console_handler_formatter,
             },
             "slack": {
                 "level": "ERROR",
                 "class": "server.logging_utils.SlackWebhookHandler",
                 "url": slack_webhook_url,
-                "fail_silent": True
-                if slack_webhook_url is None
-                else slack_webhook_fail_silent,
+                "fail_silent": slack_handler_fail_silent,
                 "formatter": "plaintext_formatter",
             },
         },

@@ -281,7 +281,7 @@ logging.config.dictConfig(
     get_logging_dict_config(
         lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
         format_console_logs_as_json=config(
-            "FORMAT_CONSOLE_LOGS_AS_JSON", True
+            "FORMAT_CONSOLE_LOGS_AS_JSON", cast=bool, default=True
         ),
         slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
         slack_webhook_fail_silent=config(

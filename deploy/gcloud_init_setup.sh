@@ -83,6 +83,28 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
+
+  # Code coverage reporting with Codecov in with Cloud Build
+  echo ""
+  echo "Enable Test Coverage Reporting to be captured by Cloud Build with Codecov."
+  read -n 1 -p "Type S to skip this step, anything else to continue: " build_codecov
+  echo ""
+  
+  if [[ "${build_codecov}" != "S" ]]; then
+    echo ""
+    read -n 1 -p "OPTIONAL & MANUAL STEP: you will need to manually generate a codecov token if one hasn't already been set up for the project. To do this, go to https://about.codecov.io/sign-up/ to link GitHub, and then generate token for uploading the test coverage report. Be sure to set CODECOV_TOKEN in the GCP Secret Manager. Press any key to continue: " _
+    # Enable secret manager first
+    # Create GCP secret: gcloud secrets create "SKEY_CODECOV_TOKEN" --replication-policy="user-managed" --locations="${PROJECT_REGION}"
+    # add version: echo -n "<put code here>" | gcloud secrets versions add SKEY_CODECOV_TOKEN --data-file=-   (https://cloud.google.com/secret-manager/docs/add-secret-version)
+    # to read back (need secret accessor role): gcloud secrets versions access latest --secret "${key}"
+    echo ""
+    ##TODO - add step to add secret now to GCP
+  fi
+
+  # Allow Cloud Build access to secret
+  gcloud secrets add-iam-policy-binding "CODECOV_TOKEN" \
+  --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --role roles/secretmanager.secretAccessor
 fi
 
 

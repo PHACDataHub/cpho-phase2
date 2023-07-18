@@ -24,7 +24,7 @@ from phac_aspc.django.settings.utils import (
     configure_middleware,
 )
 
-from server.logging_util import get_logging_dict_config
+from server.logging_util import configure_logging
 from server.settings_util import get_project_config
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -153,6 +153,7 @@ MIDDLEWARE = configure_middleware(
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "versionator.middleware.WhodidMiddleware",
+        "django_structlog.middlewares.RequestMiddleware",
     ]
 )
 
@@ -269,28 +270,22 @@ CURRENT_YEAR = 2021
 
 # LOGGING_CONFIG = None drops the Django default logging config rather than merging our rules with it.
 # I preffer this as having to consult the default rules and work out what is or isn't overwritten
-# by the merging just feels like gotcha city for future maintainers. Note that the config here is still based
-# on the Django 4.1 default https://docs.djangoproject.com/en/4.1/ref/logging/#default-logging-definition
+# by the merging just feels like gotcha city for future maintainers. This doesn't disable built-in loggers,
+# just let's us cleanly customize handlers and formatters
 LOGGING_CONFIG = None
 
-# There's a separate class of warnings (e.g. warning.warn) that, by default, are handled outside the logging system
-# (even though logging has its own WARNING category). Annoying. This unifies things
-logging.captureWarnings(True)
-
-logging.config.dictConfig(
-    get_logging_dict_config(
-        lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
-        format_console_logs_as_json=config(
-            "FORMAT_CONSOLE_LOGS_AS_JSON", cast=bool, default=True
-        ),
-        slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
-        slack_webhook_fail_silent=config(
-            "SLACK_WEBHOOK_FAIL_SILENT",
-            # default to failing silent if webhook URL not set, failing loud otherwise
-            bool(config("SLACK_WEBHOOK_URL", None)),
-        ),
-        # Mute console logging output when running tests, because it conflicts with pytests own
-        # console output (which captures and reports errors after all tests have finished running)
-        mute_console=IS_RUNNING_TESTS,
-    )
+configure_logging(
+    lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
+    format_console_logs_as_json=config(
+        "FORMAT_CONSOLE_LOGS_AS_JSON", cast=bool, default=True
+    ),
+    slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
+    slack_webhook_fail_silent=config(
+        "SLACK_WEBHOOK_FAIL_SILENT",
+        # default to failing silent if webhook URL not set, failing loud otherwise
+        bool(config("SLACK_WEBHOOK_URL", None)),
+    ),
+    # Mute console logging output when running tests, because it conflicts with pytests own
+    # console output (which captures and reports errors after all tests have finished running)
+    mute_console=IS_RUNNING_TESTS,
 )

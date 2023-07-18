@@ -1,20 +1,20 @@
 import getpass
+import logging
 import os
 from abc import ABCMeta, abstractmethod
-from logging import Handler, getLogger
 
 import requests
 import structlog
 
 
-def get_logging_dict_config(
+def configure_logging(
     lowest_level_to_log="INFO",
     format_console_logs_as_json=True,
     slack_webhook_url=None,
     slack_webhook_fail_silent=False,
     mute_console=False,
 ):
-    structlog_pre_chain = [
+    common_structlog_processors = [
         structlog.contextvars.merge_contextvars,
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.stdlib.add_logger_name,
@@ -22,9 +22,64 @@ def get_logging_dict_config(
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
+        structlog.processors.CallsiteParameterAdder(
+            {
+                structlog.processors.CallsiteParameter.FUNC_NAME,
+                structlog.processors.CallsiteParameter.LINENO,
+            }
+        ),
         structlog.processors.UnicodeDecoder(),
     ]
 
+    # There's a separate class of warnings (e.g. warning.warn) that, by default, are handled outside the logging system
+    # (even though logging has its own WARNING category). They can be configured to surface as warning-level logs, which we want
+    logging.captureWarnings(True)
+
+    # Configure the standard library logging module, using structlog for formatting
+    logging.config.dictConfig(
+        get_logging_dict_config(
+            common_structlog_processors,
+            lowest_level_to_log,
+            format_console_logs_as_json,
+            slack_webhook_url,
+            slack_webhook_fail_silent,
+            mute_console,
+        )
+    )
+
+    # From https://www.structlog.org/en/stable/standard-library.html#rendering-within-structlog
+    # Effectively makes structlog a wrapper for the sandard library `logging` module, which makes
+    # our above `logging` configuration the single source of truth (processors aside) on project logging, and means
+    # `logging.getLogger()` and `structlog.get_logger()` produce consistent output (which is very nice to have when
+    # packages might be logging via either)
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            *common_structlog_processors,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        # `wrapper_class` is the bound logger that you get back from
+        # get_logger(). This one imitates the API of `logging.Logger`.
+        wrapper_class=structlog.stdlib.BoundLogger,
+        # `logger_factory` is used to create wrapped loggers that are used for
+        # OUTPUT. This one returns a `logging.Logger`. The final value (a JSON
+        # string) from the final processor (`JSONRenderer`) will be passed to
+        # the method of the same name as that you've called on the bound logger.
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        # Effectively freeze configuration after creating the first bound
+        # logger.
+        cache_logger_on_first_use=True,
+    )
+
+
+def get_logging_dict_config(
+    common_structlog_processors,
+    lowest_level_to_log,
+    format_console_logs_as_json,
+    slack_webhook_url,
+    slack_webhook_fail_silent,
+    mute_console,
+):
     console_handler_stream = (
         "ext://sys.stdout" if not mute_console else open(os.devnull, "w")
     )
@@ -45,12 +100,12 @@ def get_logging_dict_config(
             "console_formatter": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.dev.ConsoleRenderer(),
-                "foreign_pre_chain": structlog_pre_chain,
+                "foreign_pre_chain": common_structlog_processors,
             },
             "json_formatter": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.processors.JSONRenderer(),
-                "foreign_pre_chain": structlog_pre_chain,
+                "foreign_pre_chain": common_structlog_processors,
             },
             "plaintext_formatter": {
                 "format": "[%(asctime)s] %(levelname)s [%(name)s:%(module)s:%(lineno)s] %(message)s",
@@ -79,10 +134,12 @@ def get_logging_dict_config(
     }
 
 
-class AbstractJSONPostHandler(Handler, metaclass=ABCMeta):
+class AbstractJSONPostHandler(logging.Handler, metaclass=ABCMeta):
     def __init__(self, url, fail_silent):
         super().__init__()
-        self.logger = getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}"
+        )
 
         self.url = url
         self.fail_silent = fail_silent

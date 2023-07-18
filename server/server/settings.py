@@ -222,6 +222,7 @@ if IS_RUNNING_TESTS:
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 AUTH_USER_MODEL = "cpho.User"

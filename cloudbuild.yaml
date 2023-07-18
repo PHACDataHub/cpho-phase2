@@ -19,6 +19,7 @@ steps:
       echo "Write .env.cloud_build to disk, to provide consistent project configuration (no secrets) in subsequent steps"
       deploy/make_cloud_build_env_file.sh "${BRANCH_NAME}" "${COMMIT_SHA}"
 
+
   - id: "Build server and postgres images for testing"
     name: "gcr.io/cloud-builders/docker"
     env:
@@ -32,14 +33,11 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
-      echo ""
-      echo "************* $CODECOV_TOKEN"
-      echo ""
-
       echo "Build a new application run time image and postgres db for testing"
       docker compose up --build -d 
 
-  - id: "run tests and produce coverage report"
+
+  - id: "Run tests and produce coverage report"
     name: 'gcr.io/cloud-builders/docker'
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
@@ -51,7 +49,39 @@ steps:
 
       echo "Run tests and create coverage report"
       source .env.cloud_build
-      docker compose exec -T server pytest --cov=./server --cov-report=xml
+      # docker compose exec -T server pytest --cov=./server --cov-report=xml
+      docker compose exec server python -m pytest --cov ./server --cov-report xml:coverage.xml
+      echo `pwd`/coverage.xml
+      
+      echo "List of files in the current directory: "
+
+      for file in *; do
+          echo $file
+      done
+      
+      echo ""
+      echo "in server:"
+      for file in server/*; do
+       echo "$file"
+      done
+      
+      echo ""
+      echo "in server/server:"
+      for file in server/server/*; do
+        echo "$file"
+      done
+      
+      echo ""
+      echo "in server/tests:"
+      for file in server/server/*; do
+        echo "$file"
+      done
+      
+      echo ""
+      echo "in server/cpho:"
+      for file in server/server/*; do
+        echo "$file"
+      done
 
 
   - id: "Upload Test Coverage report to Codecov"
@@ -70,16 +100,21 @@ steps:
       echo "Check if CODECOV_TOKEN has value ie. exists in GCP Secret Manager"
       trimmed_token=$(echo "$CODECOV_TOKEN" | tr -d '[:space:]')
       if [[ "$trimmed_token" != "" ]]; then
-      # if [[ "$CODECOV_TOKEN" != "" ]]; then
+        echo "Printing working directory:"
+        echo "$(pwd)"
+        # echo "Printing root directory:"
+        # echo df -P /
         echo "Getting Codecov Cloud Uploader"
         curl -Os https://uploader.codecov.io/latest/linux/codecov
+        # curl -Os https://uploader.codecov.io/latest/alpine/codecov
         chmod +x codecov
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME"
+        ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -f coverage.xml 
+        # -R ./server
+        # ${PATH#/} /usr/src/app /cpho/web
       else
         echo "Codecov not set up - skipping..."
       fi
- # if [ ! -z $(get_secret "codecov_secret") 2>/dev/null ]; then
   # codecov --token=X --disable=detect --commit=$COMMIT_SHA --branch=$BRANCH_NAME 
   
 
@@ -95,6 +130,7 @@ steps:
 
       echo "docker compose down"
       docker compose down -v
+
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"
@@ -113,20 +149,6 @@ steps:
        else
         echo "pass"
       fi
-
-  # - id: "Build image"
-  #   name: "gcr.io/cloud-builders/docker"
-  #   script: |
-  #     #!/usr/bin/env bash
-  #     set -o errexit
-  #     set -o pipefail
-  #     set -o nounset
-      
-  #     echo "Get cloud build environment variables"
-  #     source .env.cloud_build
-
-  #     echo "Build a new application run time image"
-  #     docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
   
 
   - id: "Push image if main"
@@ -147,6 +169,7 @@ steps:
         echo "pass"
         exit 0
       fi
+
 
   - id: "Deploy to Cloud Run if main"
     name: "gcr.io/cloud-builders/gcloud"

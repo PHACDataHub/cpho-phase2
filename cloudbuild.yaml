@@ -32,6 +32,10 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
+      echo ""
+      echo "************* $CODECOV_TOKEN"
+      echo ""
+
       echo "Build a new application run time image and postgres db for testing"
       docker compose up --build -d 
 
@@ -54,8 +58,6 @@ steps:
     name: "gcr.io/cloud-builders/curl"
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
-    # entrypoint: bash
-    # args: ["./scripts/codecov-upload.bash", "$_CODECOV_TOKEN"]
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -65,18 +67,17 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
-      echo "Check if Codecov token has been set in GCP Secret Manager"
-      if [[ "$codecov_secret" != "" ]]; then
-        pass
-      else;
-        SKEY_CODECOV_TOKEN=$(get_secret "SKEY_CODECOV_TOKEN")
-    
-        echo "Get Codecov Cloud Uploader"
+      echo "Check if CODECOV_TOKEN has value ie. exists in GCP Secret Manager"
+      trimmed_token=$(echo "$CODECOV_TOKEN" | tr -d '[:space:]')
+      if [[ "$trimmed_token" != "" ]]; then
+      # if [[ "$CODECOV_TOKEN" != "" ]]; then
+        echo "Getting Codecov Cloud Uploader"
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x codecov
-
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$SKEY_CODECOV_TOKEN" -B "$BRANCH_NAME"
+        ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME"
+      else
+        echo "Codecov not set up - skipping..."
       fi
  # if [ ! -z $(get_secret "codecov_secret") 2>/dev/null ]; then
   # codecov --token=X --disable=detect --commit=$COMMIT_SHA --branch=$BRANCH_NAME 

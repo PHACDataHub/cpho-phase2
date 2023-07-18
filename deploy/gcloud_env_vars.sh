@@ -61,7 +61,7 @@ export VPC_CONNECTOR_RANGE="10.8.0.0/28" # must be /28 and unused. 10.8.0.0 shou
 export SKEY_DB_ROOT_PASSWORD=db_root_password
 export SKEY_DB_USER_PASSWORD=db_user_password
 export SKEY_PROD_ENV_FILE=django_production_env
-export CODECOV_TOKEN=CODECOV_TOKEN
+# export CODECOV_TOKEN=CODECOV_TOKEN
 export SKEY_CODECOV_TOKEN=CODECOV_TOKEN
 
 

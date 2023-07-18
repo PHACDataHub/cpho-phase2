@@ -11,33 +11,33 @@ DEV_SECRET_ENV_FILE_NAME = ".env.dev-secret"
 def get_project_config(BASE_DIR):
     try:
         # If the prod env file exists, use it exclusively
-        config = Config(
+        return Config(
             RepositoryEnv(os.path.join(BASE_DIR, PROD_ENV_FILE_NAME))
         )
     except FileNotFoundError:
-        # If the prod env file doesn't exist
-        #   1) look for the secret in the dev-secret env file
-        #   2) if the dev-secret env file doesn't exist OR the the secret isn't
-        #      found in it, look in the dev-public file
-        #   3) if still not found, fall back to provided `default` (if any)
+        dev_public_config = Config(
+            RepositoryEnv(os.path.join(BASE_DIR, DEV_PUBLIC_ENV_FILE_NAME))
+        )
 
-        # IMPORTANT: dev_config_merged must support the API of decouple's config function! Masquerades as it in use
-        def dev_config_merged(*args, default=undefined, **kwargs):
+        # If the dev-secret env file doesn't exist, just use the dev-public config
+        try:
+            dev_secret_config = Config(
+                RepositoryEnv(os.path.join(BASE_DIR, DEV_SECRET_ENV_FILE_NAME))
+            )
+        except FileNotFoundError:
+            return dev_public_config
+
+        # If the dev-secret env file DOES exist, use a wrapper to effectively merge it with dev-public:
+        #  1) look for the secret in the dev-secret env file
+        #  3) if not found in dev-secret, look in the dev-public file
+        #  4) if still not found, fall back to provided `default` (if any)
+        # IMPORTANT: dev_merged_config must support the API of decouple's `config`! Masquerades as it in use
+        def dev_merged_config(*args, default=undefined, **kwargs):
             try:
-                # Note that the `default` value is not propogated to the dev-secret call,
-                # else the default would be returned without looking in dev-public
-                return Config(
-                    RepositoryEnv(
-                        os.path.join(BASE_DIR, DEV_SECRET_ENV_FILE_NAME)
-                    )
-                )(*args, **kwargs)
-            except (FileNotFoundError, UndefinedValueError):
-                return Config(
-                    RepositoryEnv(
-                        os.path.join(BASE_DIR, DEV_PUBLIC_ENV_FILE_NAME)
-                    )
-                )(*args, default, **kwargs)
+                # Note that the `default` value is not propogated to the dev_secret_config call,
+                # else the default would be returned here without looking in dev-public
+                return dev_secret_config(*args, **kwargs)
+            except UndefinedValueError:
+                return dev_public_config(*args, default, **kwargs)
 
-        config = dev_config_merged
-
-    return config
+        return dev_merged_config

@@ -5,7 +5,6 @@ from logging import Handler, getLogger
 
 import requests
 import structlog
-from decouple import config
 
 structlog_pre_chain = [
     structlog.contextvars.merge_contextvars,
@@ -20,21 +19,17 @@ structlog_pre_chain = [
 
 
 def get_logging_dict_config(
-    lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
-    format_console_logs_as_json=config("FORMAT_CONSOLE_LOGS_AS_JSON", True),
-    slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
-    slack_webhook_fail_silent=config(
-        "SLACK_WEBHOOK_FAIL_SILENT",
-        # default to failing silent if webhook URL not set, failing loud otherwise
-        bool(config("SLACK_WEBHOOK_URL", None)),
-    ),
+    lowest_level_to_log="INFO",
+    format_console_logs_as_json=True,
+    slack_webhook_url=None,
+    slack_webhook_fail_silent=False,
     mute_console=False,
 ):
     return {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "flat_console_formatter": {
+            "console_formatter": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.dev.ConsoleRenderer(),
                 "foreign_pre_chain": structlog_pre_chain,
@@ -64,7 +59,9 @@ def get_logging_dict_config(
                 "level": "ERROR",
                 "class": "server.logging_utils.SlackWebhookHandler",
                 "url": slack_webhook_url,
-                "fail_silent": slack_webhook_fail_silent,
+                "fail_silent": True
+                if slack_webhook_url is None
+                else slack_webhook_fail_silent,
                 "formatter": "plaintext_formatter",
             },
         },

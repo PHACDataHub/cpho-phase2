@@ -277,10 +277,20 @@ LOGGING_CONFIG = None
 # (even though logging has its own WARNING category). Annoying. This unifies things
 logging.captureWarnings(True)
 
-# Mute console logging output when running tests, because it conflicts with pytests own console output (which
-# captures and reports errors after all tests have finished running)
 logging.config.dictConfig(
     get_logging_dict_config(
+        lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
+        format_console_logs_as_json=config(
+            "FORMAT_CONSOLE_LOGS_AS_JSON", True
+        ),
+        slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
+        slack_webhook_fail_silent=config(
+            "SLACK_WEBHOOK_FAIL_SILENT",
+            # default to failing silent if webhook URL not set, failing loud otherwise
+            bool(config("SLACK_WEBHOOK_URL", None)),
+        ),
+        # Mute console logging output when running tests, because it conflicts with pytests own
+        # console output (which captures and reports errors after all tests have finished running)
         mute_console=IS_RUNNING_TESTS,
     )
 )

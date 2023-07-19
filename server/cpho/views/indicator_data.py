@@ -101,6 +101,30 @@ class IndicatorDatumForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
+    def save_changes(self):
+        """
+        Save form only if it has changed, otherwise do nothing.
+        Implementing as a form function so upload can use it too(in the future)
+        Bonus: This will prevent creating multiple history/version records
+        """
+        if self.has_changed():
+            print("changed")
+            print(self.changed_data)
+            if "DELETE" in self.changed_data:
+                if self.instance.id is not None:
+                    self.instance.delete()
+            elif self.changed_data in [
+                ["program_approved"],
+                ["hso_approved"],
+                ["program_approved", "hso_approved"],
+            ]:
+                self.save()
+            else:
+                obj = self.save(commit=False)
+                obj.program_approved = False
+                obj.hso_approved = False
+                obj.save()
+
     def clean(self):
         cleaned_data = super().clean()
         value = cleaned_data["value"]
@@ -334,37 +358,10 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         if predefined_valid and age_group_valid:
             with transaction.atomic():
                 for form in self.predefined_values_formset:
-                    if form.has_changed():
-                        print(form.changed_data)
-                        if form.changed_data in [
-                            ["program_approved"],
-                            ["hso_approved"],
-                            ["program_approved", "hso_approved"],
-                        ]:
-                            form.save()
-                        else:
-                            obj = form.save(commit=False)
-                            obj.program_approved = False
-                            obj.hso_approved = False
-                            obj.save()
+                    form.save_changes()
 
                 for form in self.age_group_formset:
-                    if form.has_changed():
-                        print(form.changed_data)
-                        if "DELETE" in form.changed_data:
-                            if form.instance.id is not None:
-                                form.instance.delete()
-                        elif form.changed_data in [
-                            ["program_approved"],
-                            ["hso_approved"],
-                            ["program_approved", "hso_approved"],
-                        ]:
-                            form.save()
-                        else:
-                            obj = form.save(commit=False)
-                            obj.program_approved = False
-                            obj.hso_approved = False
-                            obj.save()
+                    form.save_changes()
 
                 # self.age_group_formset.save()
 

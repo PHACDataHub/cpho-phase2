@@ -1,0 +1,11 @@
+codecov:
+  ci:
+    - cloud.google.com       
+
+coverage:
+  status:
+    project:
+      default:
+        # target: auto
+        target: 2% 
+        threshold: 2%

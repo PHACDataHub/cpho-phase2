@@ -75,9 +75,6 @@ steps:
     volumes:
     - name: 'coverage'
       path: '/workspace/coverage'
-    env:
-      - "COMMIT_SHA=$COMMIT_SHA"
-      - "SLUG=PHACDataHub/cpho-phase2"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -99,23 +96,14 @@ steps:
         # https://medium.com/google-cloud/code-coverage-on-google-cloud-build-7fcf1b67f182
 
         ./codecov --disable=detect -t "$CODECOV_TOKEN" --branch="$BRANCH_NAME" --sha="$COMMIT_SHA" -f /coverage/coverage.xml -R /workspace
-        echo "$BRANCH_NAME"
         
-        # --disable=detect 
-        # 
-        # -f coverage.xml -R /workspace 
-        # -r
-        # -r "$SLUG"  --disable=detect
-        #  
         # env CI= ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -C "$COMMIT_SHA" -R /workspace -f /workspace/coverage.xml 
-        # -r "$REPO"
-        # -R ~/web
-        #/cpho/web
+      
       
       else
         echo "Codecov not set up - skipping..."
       fi
-  # codecov --token=X --disable=detect --commit=$COMMIT_SHA --branch=$BRANCH_NAME 
+
   
 
   - id: "Tear down from tests"

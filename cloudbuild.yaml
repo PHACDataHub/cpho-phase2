@@ -96,7 +96,9 @@ steps:
         chmod +x codecov
 
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" --branch "$BRANCH_NAME" --sha "$COMMIT_SHA" -f /coverage/coverage.xml -R /workspace
+        # https://medium.com/google-cloud/code-coverage-on-google-cloud-build-7fcf1b67f182
+
+        ./codecov -t "$CODECOV_TOKEN" --branch="$BRANCH_NAME" --sha="$COMMIT_SHA" -f /coverage/coverage.xml -R /workspace
         
         # --disable=detect 
         # 

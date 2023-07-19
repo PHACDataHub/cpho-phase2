@@ -1,6 +1,7 @@
 # To trigger manually, use `gcloud builds submit --config cloudbuild.yaml`
 # Note: manual triggers differ from GitHub triggers on the available built in substitution values
 # deploy/make_cloud_build_env_file.sh is responsible for providing local fallbacks as needed
+# Also note: codecov will not work with manual push.
 
 
 # [START cloudrun_django_cloudbuild]
@@ -93,9 +94,10 @@ steps:
         chmod +x codecov
 
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" --disable=detect --branch "$BRANCH_NAME" --C "$COMMIT_SHA" -f /workspace/coverage.xml -r
-        # -r "$SLUG"
-        #  -R /workspace 
+        ./codecov -t "$CODECOV_TOKEN" --branch "$BRANCH_NAME" --sha "$COMMIT_SHA" -f coverage.xml -R /workspace 
+        # -r
+        # -r "$SLUG"  --disable=detect
+        #  
         # env CI= ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -C "$COMMIT_SHA" -R /workspace -f /workspace/coverage/coverage.xml 
         # -r "$REPO"
         # -R ~/web

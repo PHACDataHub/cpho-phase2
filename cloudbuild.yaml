@@ -96,7 +96,8 @@ steps:
         chmod +x codecov
 
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" --disable=detect --branch "$BRANCH_NAME" --sha "$COMMIT_SHA" 
+        ./codecov -t "$CODECOV_TOKEN" --disable=detect 
+        # --branch "$BRANCH_NAME" --sha "$COMMIT_SHA" 
         # -f coverage.xml -R /workspace 
         # -r
         # -r "$SLUG"  --disable=detect

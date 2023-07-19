@@ -39,6 +39,9 @@ steps:
 
   - id: "Run tests and produce coverage report"
     name: 'gcr.io/cloud-builders/docker'
+    volumes:
+      - name: 'coverage'
+        path: '/workspace/coverage'
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
     script: |
@@ -52,22 +55,26 @@ steps:
       docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage.xml
       echo `pwd`
       
-      echo "List of files in the current directory: "
+      # echo "List of files in the current directory: "
 
-      for file in *; do
-          echo $file
-      done
+      # for file in *; do
+      #     echo $file
+      # done
       
-      echo ""
-      echo "in server:"
-      for file in server/*; do
-       echo "$file"
-      done
+      # echo ""
+      # echo "in server:"
+      # for file in server/*; do
+      #  echo "$file"
+      # done
       
   - id: "Upload Test Coverage report to Codecov"
     name: "gcr.io/cloud-builders/curl"
+    volumes:
+    - name: 'coverage'
+      path: '/workspace/coverage'
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
+      - "SLUG=PHACDataHub/cpho-phase2"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -80,14 +87,20 @@ steps:
       echo "Check if CODECOV_TOKEN has value ie. exists in GCP Secret Manager"
       trimmed_token=$(echo "$CODECOV_TOKEN" | tr -d '[:space:]')
       if [[ "$trimmed_token" != "" ]]; then
-        echo "Printing working directory:"
-        echo "$(pwd)"
-        echo "Getting Codecov Cloud Uploader"
+        
+        echo "Download Codecov Cloud Uploader"
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x codecov
+
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -f coverage.xml -R ~/web
+        ./codecov -t "$CODECOV_TOKEN" --disable=detect --branch "$BRANCH_NAME" --C "$COMMIT_SHA" -f /workspace/coverage/coverage.xml -r
+        # -r "$SLUG"
+        #  -R /workspace 
+        # env CI= ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -C "$COMMIT_SHA" -R /workspace -f /workspace/coverage/coverage.xml 
+        # -r "$REPO"
+        # -R ~/web
         #/cpho/web
+      
       else
         echo "Codecov not set up - skipping..."
       fi

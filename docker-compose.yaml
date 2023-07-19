@@ -33,6 +33,8 @@ services:
     environment:
       - DB_HOST=db
       - POSTGRES_HOST_AUTH_METHOD=trust 
+    volumes:
+      - coverage:/cpho/web
     depends_on:
       - db
 
@@ -40,6 +42,8 @@ services:
 volumes:
   db:
     driver: local
+  coverage:
+    external: true
 
 networks:
   default:

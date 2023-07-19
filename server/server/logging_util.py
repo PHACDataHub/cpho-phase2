@@ -1,10 +1,28 @@
 import getpass
 import logging
 import os
+import sys
 from abc import ABCMeta, abstractmethod
 
 import requests
 import structlog
+
+COMMON_STRUCTLOG_PROCESSORS = [
+    structlog.contextvars.merge_contextvars,
+    structlog.processors.TimeStamper(fmt="iso"),
+    structlog.stdlib.add_logger_name,
+    structlog.stdlib.add_log_level,
+    structlog.stdlib.PositionalArgumentsFormatter(),
+    structlog.processors.StackInfoRenderer(),
+    structlog.processors.format_exc_info,
+    structlog.processors.CallsiteParameterAdder(
+        {
+            structlog.processors.CallsiteParameter.FUNC_NAME,
+            structlog.processors.CallsiteParameter.LINENO,
+        }
+    ),
+    structlog.processors.UnicodeDecoder(),
+]
 
 
 def configure_logging(
@@ -14,23 +32,6 @@ def configure_logging(
     slack_webhook_fail_silent=False,
     mute_console=False,
 ):
-    common_structlog_processors = [
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.processors.CallsiteParameterAdder(
-            {
-                structlog.processors.CallsiteParameter.FUNC_NAME,
-                structlog.processors.CallsiteParameter.LINENO,
-            }
-        ),
-        structlog.processors.UnicodeDecoder(),
-    ]
-
     # There's a separate class of warnings (e.g. warning.warn) that, by default, are handled outside the logging system
     # (even though logging has its own WARNING category). They can be configured to surface as warning-level logs, which we want
     logging.captureWarnings(True)
@@ -38,7 +39,6 @@ def configure_logging(
     # Configure the standard library logging module, using structlog for formatting
     logging.config.dictConfig(
         get_logging_dict_config(
-            common_structlog_processors,
             lowest_level_to_log,
             format_console_logs_as_json,
             slack_webhook_url,
@@ -55,7 +55,7 @@ def configure_logging(
     structlog.configure(
         processors=[
             structlog.stdlib.filter_by_level,
-            *common_structlog_processors,
+            *COMMON_STRUCTLOG_PROCESSORS,
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         # `wrapper_class` is the bound logger that you get back from
@@ -73,7 +73,6 @@ def configure_logging(
 
 
 def get_logging_dict_config(
-    common_structlog_processors,
     lowest_level_to_log,
     format_console_logs_as_json,
     slack_webhook_url,
@@ -81,7 +80,7 @@ def get_logging_dict_config(
     mute_console,
 ):
     console_handler_stream = (
-        "ext://sys.stdout" if not mute_console else open(os.devnull, "w")
+        sys.stdout if not mute_console else open(os.devnull, "w")
     )
     console_handler_formatter = (
         "json_formatter"
@@ -98,14 +97,10 @@ def get_logging_dict_config(
         "disable_existing_loggers": False,
         "formatters": {
             "console_formatter": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.dev.ConsoleRenderer(),
-                "foreign_pre_chain": common_structlog_processors,
+                "()": FlatConsoleLogFormatter,
             },
             "json_formatter": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.processors.JSONRenderer(),
-                "foreign_pre_chain": common_structlog_processors,
+                "()": JSONLogFormatter,
             },
             "plaintext_formatter": {
                 "format": "[%(asctime)s] %(levelname)s [%(name)s:%(module)s:%(lineno)s] %(message)s",
@@ -132,6 +127,26 @@ def get_logging_dict_config(
             "handlers": ["console", "slack"],
         },
     }
+
+
+class FlatConsoleLogFormatter(structlog.stdlib.ProcessorFormatter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args,
+            processor=structlog.dev.ConsoleRenderer(),
+            foreign_pre_chain=COMMON_STRUCTLOG_PROCESSORS,
+            **kwargs,
+        )
+
+
+class JSONLogFormatter(structlog.stdlib.ProcessorFormatter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args,
+            processor=structlog.processors.JSONRenderer(),
+            foreign_pre_chain=COMMON_STRUCTLOG_PROCESSORS,
+            **kwargs,
+        )
 
 
 class AbstractJSONPostHandler(logging.Handler, metaclass=ABCMeta):

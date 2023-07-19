@@ -1,34 +1,58 @@
-import grp
+import json
 import logging
 import os
-import pwd
 
 import pytest
 import responses
+import structlog
 from pytest import skip
 from testfixtures import LogCapture
 
-from server.logging_util import AbstractJSONPostHandler, SlackWebhookHandler
+from server.logging_util import (
+    AbstractJSONPostHandler,
+    JSONLogFormatter,
+    SlackWebhookHandler,
+)
 
 
 # found this pattern while looking around at handler libraries on GitHub,
 # specifically from https://github.com/Mulanir/python-elasticsearch-logging/blob/main/tests/conftest.py
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def logger_factory():
-    test_logger = logging.getLogger("test_logger")
-    test_logger.setLevel(logging.DEBUG)
+    loggers = (
+        logging.getLogger("test_logger"),
+        structlog.getLogger("test_structlogger"),
+    )
 
-    def factory(handler):
-        test_logger.addHandler(handler)
+    loggers_init_level = map(lambda logger: logger.level, loggers)
+    loggers_init_handlers = map(lambda logger: logger.handlers, loggers)
 
-        return test_logger
+    for logger in loggers:
+        logger.setLevel(logging.DEBUG)
+
+    def factory(handler=None):
+        if handler:
+            for logger in loggers:
+                logger.addHandler(handler)
+
+        return loggers
 
     yield factory
 
-    test_logger.handlers.clear()
+    for logger, init_level, init_handlers in zip(
+        loggers, loggers_init_level, loggers_init_handlers
+    ):
+        logger.setLevel(init_level)
+
+        logger.handlers.clear()
+        for handler in init_handlers:
+            logger.Handler(handler)
 
 
-@pytest.fixture(autouse=True)
+# IMPORTANT: while active, logCapture clobbers any existing logging configuration. This is reverted
+# when it's `uninstall()` method is called, but that means it is only useful for testing config-agnostic
+# things and properties
+@pytest.fixture()
 def log_capture():
     capture = LogCapture()
     yield capture
@@ -36,6 +60,46 @@ def log_capture():
 
 
 TEST_URL = "http://testing.notarealtld"
+
+
+def test_json_logging_consistent_between_standard_logger_and_structlogger(
+    logger_factory,
+):
+    # specifically want to test the project's logging configuration itself, so can't use log_capture (which
+    # clobbers existing logging configuration). Need to do a bit of extra set up to capture log output,
+    # using the logging configuration initialized in settings.py and, specifically, our JSONLogFormatter
+    class CapturingHandler(logging.Handler):
+        captured_logs = list()
+
+        def emit(self, record):
+            formatted = self.format(record)
+            self.captured_logs.append(formatted)
+
+    capturingHandler = CapturingHandler(level=logging.DEBUG)
+    capturingHandler.setFormatter(JSONLogFormatter())
+    test_logger, test_structlogger = logger_factory(capturingHandler)
+
+    test_log_content = "Original error should be present in captured logs"
+
+    test_logger.error(test_log_content)
+    test_structlogger.error(test_log_content)
+
+    captured_logs = capturingHandler.captured_logs
+    assert len(captured_logs) == 2
+    assert test_log_content in captured_logs[0]
+
+    keys_to_ignore = ("logger", "lineno", "timestamp")
+
+    def log_to_filtered_dict(json_string):
+        return {
+            k: v
+            for k, v in json.loads(json_string).items()
+            if k not in keys_to_ignore
+        }
+
+    assert log_to_filtered_dict(captured_logs[0]) == log_to_filtered_dict(
+        captured_logs[1]
+    )
 
 
 # using the responses library is annoyingly surfacing the implementation detail that we currently use the requests library
@@ -77,7 +141,7 @@ def test_json_post_handler_posts_json_containing_logged_text_to_provided_url(
     unexpected_endpoint = responses.post(TEST_URL)
 
     handler = SlackWebhookHandler(url=TEST_URL, fail_silent=False)
-    test_logger = logger_factory(handler)
+    test_logger, _ = logger_factory(handler)
     test_logger.error(error_message)
 
     assert expected_endpoint.call_count == 1
@@ -85,7 +149,7 @@ def test_json_post_handler_posts_json_containing_logged_text_to_provided_url(
 
 
 @responses.activate
-# @pytest.mark.timeout(3)
+@pytest.mark.timeout(3)
 def test_json_post_handler_logs_own_errors_without_trying_to_rehandle_them(
     logger_factory, log_capture
 ):
@@ -94,7 +158,7 @@ def test_json_post_handler_logs_own_errors_without_trying_to_rehandle_them(
     responses.post(TEST_URL, status=500)
     handler = SlackWebhookHandler(url=TEST_URL, fail_silent=False)
 
-    test_logger = logger_factory(handler)
+    test_logger, _ = logger_factory(handler)
     test_logger.error("Original error should be present in captured logs")
     log_capture.check_present(
         (
@@ -129,7 +193,7 @@ def test_json_post_handler_emits_no_error_logs_in_fail_silent_mode(
     responses.post(TEST_URL, status=500)
     handler = SlackWebhookHandler(url=TEST_URL, fail_silent=True)
 
-    test_logger = logger_factory(handler)
+    test_logger, _ = logger_factory(handler)
     test_logger.error("Original error should be the only captured log")
     log_capture.check(
         (

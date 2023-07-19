@@ -53,6 +53,7 @@ steps:
 
       echo "Run tests and create coverage report"
       source .env.cloud_build
+
       docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage/coverage.xml
       echo `pwd`
       

@@ -36,7 +36,8 @@ services:
       - DB_HOST=db
       - POSTGRES_HOST_AUTH_METHOD=trust 
     volumes:
-      - coverage:/cpho/web/coverage
+      # - coverage:/cpho/web/coverage
+      - coverage:/cpho/web/
     depends_on:
       - db
 

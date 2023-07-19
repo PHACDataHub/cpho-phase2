@@ -54,7 +54,8 @@ steps:
       echo "Run tests and create coverage report"
       source .env.cloud_build
 
-      docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage/coverage.xml
+      # docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage/coverage.xml
+      docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage.xml
       echo `pwd`
       
       # echo "List of files in the current directory: "
@@ -100,7 +101,7 @@ steps:
         # -r
         # -r "$SLUG"  --disable=detect
         #  
-        # env CI= ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -C "$COMMIT_SHA" -R /workspace -f /workspace/coverage/coverage.xml 
+        # env CI= ./codecov -t "$CODECOV_TOKEN" -B "$BRANCH_NAME" -C "$COMMIT_SHA" -R /workspace -f /workspace/coverage.xml 
         # -r "$REPO"
         # -R ~/web
         #/cpho/web

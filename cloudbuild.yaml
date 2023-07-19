@@ -53,7 +53,7 @@ steps:
 
       echo "Run tests and create coverage report"
       source .env.cloud_build
-      docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage.xml
+      docker compose exec -T server pytest --cov=./server --cov-report=xml:coverage/coverage.xml
       echo `pwd`
       
       # echo "List of files in the current directory: "
@@ -94,7 +94,7 @@ steps:
         chmod +x codecov
 
         echo "Upload test coverage report to codecov"
-        ./codecov -t "$CODECOV_TOKEN" --branch "$BRANCH_NAME" --sha "$COMMIT_SHA" 
+        ./codecov -t "$CODECOV_TOKEN" --disable=detect --branch "$BRANCH_NAME" --sha "$COMMIT_SHA" 
         # -f coverage.xml -R /workspace 
         # -r
         # -r "$SLUG"  --disable=detect

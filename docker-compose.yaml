@@ -18,8 +18,6 @@ services:
   server:
     build: ./server
     image: ${IMAGE_NAME_FOR_RUN}
-    # ${BUILD_CLOUD_RUN_IMAGE_NAME}:${COMMIT_SHA}
-    # image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:${COMMIT_SHA}
     command: >
       sh -c "
       python ./manage.py migrate && \

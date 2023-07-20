@@ -21,9 +21,6 @@ steps:
 
   - id: "Build server and postgres images for testing"
     name: "gcr.io/cloud-builders/docker"
-    # env:
-    #   - "COMMIT_SHA=$COMMIT_SHA"
-    #   - "BUILD_CLOUD_RUN_IMAGE_NAME=$BUILD_CLOUD_RUN_IMAGE_NAME"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -38,9 +35,6 @@ steps:
 
   - id: "Run tests and produce coverage report"
     name: 'gcr.io/cloud-builders/docker'
-    # env:
-    #   - "COMMIT_SHA=$COMMIT_SHA"
-    #   # - "BUILD_CLOUD_RUN_IMAGE_NAME=$BUILD_CLOUD_RUN_IMAGE_NAME"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -52,13 +46,10 @@ steps:
 
       echo "Run tests and create coverage report"
       docker compose --env-file .env.cloud_build exec -T server coverage run -m pytest
-      docker compose --env-file .env.cloud_build exec -T server coverage report 
+      docker compose --env-file .env.cloud_build exec -T server coverage report --show-missing
   
   - id: "Tear down from tests"
     name: 'gcr.io/cloud-builders/docker'
-    # env:
-    #   - "COMMIT_SHA=$COMMIT_SHA"
-    #   # - "BUILD_CLOUD_RUN_IMAGE_NAME=$BUILD_CLOUD_RUN_IMAGE_NAME"
     script: |
       #!/usr/bin/env bash
       set -o errexit

@@ -83,7 +83,7 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
-
+fi
 
 
 # ----- CLOUD STORAGE (optional) -----

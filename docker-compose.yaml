@@ -25,8 +25,6 @@ services:
       python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml && \
       python ./manage.py loaddata cpho/fixtures/periods.yaml && \
       python ./manage.py runscript cpho.scripts.dev && \
-      mkdir coverage
-      chmod +rwx coverage
       exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 server.wsgi:application"
     ports:
       - 8080:8080
@@ -35,18 +33,12 @@ services:
     environment:
       - DB_HOST=db
       - POSTGRES_HOST_AUTH_METHOD=trust 
-    volumes:
-      # - coverage:/cpho/web/coverage
-      - coverage:/cpho/web/
     depends_on:
       - db
-
 
 volumes:
   db:
     driver: local
-  coverage:
-    external: true
 
 networks:
   default:

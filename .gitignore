@@ -25,3 +25,5 @@ runserver.sh
 **/logfile
 
 server/logfile
+
+.coverage

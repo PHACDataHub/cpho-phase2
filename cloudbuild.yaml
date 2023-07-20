@@ -21,8 +21,8 @@ steps:
 
   - id: "Build server and postgres images for testing"
     name: "gcr.io/cloud-builders/docker"
-    # env:
-    #   - "COMMIT_SHA=$COMMIT_SHA"
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -37,8 +37,8 @@ steps:
 
   - id: "Run tests and produce coverage report"
     name: 'gcr.io/cloud-builders/docker'
-    # env:
-    #   - "COMMIT_SHA=$COMMIT_SHA"
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -53,8 +53,8 @@ steps:
   
   - id: "Tear down from tests"
     name: 'gcr.io/cloud-builders/docker'
-    # env:
-    #   - "COMMIT_SHA=$COMMIT_SHA"
+    env:
+      - "COMMIT_SHA=$COMMIT_SHA"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -62,7 +62,7 @@ steps:
       set -o nounset
 
       source .env.cloud_build
-      
+
       echo "docker compose down"
       docker compose down -v
 

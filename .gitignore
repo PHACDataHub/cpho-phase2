@@ -26,4 +26,4 @@ runserver.sh
 
 server/logfile
 
-.coverage
+**/.coverage

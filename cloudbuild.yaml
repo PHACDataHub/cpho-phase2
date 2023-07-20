@@ -30,7 +30,7 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
-      echo "Build a new application run time image and postgres db for testing"
+      echo "Build new server and postgres db images for testing"
       docker compose --env-file .env.cloud_build up --build -d 
 
   - id: "Run tests and produce coverage report"

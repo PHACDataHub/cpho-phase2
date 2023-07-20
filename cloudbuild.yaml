@@ -37,9 +37,6 @@ steps:
 
   - id: "Run tests and produce coverage report"
     name: 'gcr.io/cloud-builders/docker'
-    volumes:
-      - name: 'coverage'
-        path: '/workspace/coverage'
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
     script: |
@@ -51,7 +48,7 @@ steps:
       echo "Run tests and create coverage report"
       source .env.cloud_build
 
-      docker compose exec -T server pytest  --cov-report term --cov=./server
+      docker compose exec -T server pytest  --cov-report term --cov=./
   
   - id: "Tear down from tests"
     name: 'gcr.io/cloud-builders/docker'

@@ -4,3 +4,6 @@ omit =
     **/__init__.py
     **/migrations/*
     **/monkey_patch_for_testing.py  
+    ./manage.py 
+    server/wsgi.py
+    server/asgi.py

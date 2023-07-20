@@ -23,6 +23,7 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
+      - "BUILD_CLOUD_RUN_IMAGE_NAME=$BUILD_CLOUD_RUN_IMAGE_NAME"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -39,6 +40,7 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
+      - "BUILD_CLOUD_RUN_IMAGE_NAME=$BUILD_CLOUD_RUN_IMAGE_NAME"
     script: |
       #!/usr/bin/env bash
       set -o errexit
@@ -49,12 +51,13 @@ steps:
       source .env.cloud_build
 
       docker compose exec -T server coverage run -m pytest
-      docker compose exec -T server coverage report 
+      docker compose exec -T server coverage report term-missing
   
   - id: "Tear down from tests"
     name: 'gcr.io/cloud-builders/docker'
     env:
       - "COMMIT_SHA=$COMMIT_SHA"
+      - "BUILD_CLOUD_RUN_IMAGE_NAME=$BUILD_CLOUD_RUN_IMAGE_NAME"
     script: |
       #!/usr/bin/env bash
       set -o errexit

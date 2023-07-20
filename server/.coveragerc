@@ -1,5 +1,6 @@
 [run]
 omit =
-    tests/*
+    tests/**
     **/__init__.py
     **/migrations/*
+    **/monkey_patch_for_testing.py  

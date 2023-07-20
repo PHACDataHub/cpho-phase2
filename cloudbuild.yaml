@@ -52,7 +52,7 @@ steps:
 
       echo "Run tests and create coverage report"
       docker compose --env-file .env.cloud_build exec -T server coverage run -m pytest
-      docker compose --env-file .env.cloud_build exec -T server coverage report term-missing
+      docker compose --env-file .env.cloud_build exec -T server coverage report 
   
   - id: "Tear down from tests"
     name: 'gcr.io/cloud-builders/docker'

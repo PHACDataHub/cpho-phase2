@@ -61,6 +61,8 @@ steps:
       set -o pipefail
       set -o nounset
 
+      source .env.cloud_build
+      
       echo "docker compose down"
       docker compose down -v
 

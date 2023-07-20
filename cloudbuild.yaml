@@ -47,9 +47,10 @@ steps:
       set -o pipefail
       set -o nounset
 
-      echo "Run tests and create coverage report"
+      echo "Get cloud build project configuration values"
       source .env.cloud_build
 
+      echo "Run tests and create coverage report"
       docker compose --env-file .env.cloud_build exec -T server coverage run -m pytest
       docker compose --env-file .env.cloud_build exec -T server coverage report term-missing
   
@@ -64,9 +65,10 @@ steps:
       set -o pipefail
       set -o nounset
 
+      echo "Get cloud build project configuration values"
       source .env.cloud_build
 
-      echo "docker compose down"
+      echo "docker compose down with volumes"
       docker compose --env-file .env.cloud_build down -v
 
   - id: "Build image if main"

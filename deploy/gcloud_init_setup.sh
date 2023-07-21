@@ -21,6 +21,7 @@ if [[ "${dns_skip}" != "S" ]]; then
   gcloud services enable dns.googleapis.com
 
   # TODO enable DNS sec?
+  # TODO also maybe enable DNS logging?
   gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} \
     --project "${PROJECT_ID}" \
     --description "${PROJECT_SERVICE_NAME} zone, for PHAC alpha-dns" \
@@ -356,6 +357,7 @@ if [[ "${secrets_skip}" != "S" ]]; then
   
   bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_prod_env}"
   
+  # TODO add new version of existing secret to use this domain name, before this branch (dns-setup) is merged
   bash_escape "ALLOWED_HOSTS=${DNS_PROJECT_DOMAIN}" >> "${tmp_prod_env}"
   
   if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then

@@ -51,14 +51,16 @@ spec:
     - "${dns_name_servers[1]}"
     - "${dns_name_servers[2]}"
     - "${dns_name_servers[3]}"
----
-apiVersion: dns.cnrm.cloud.google.com/v1beta1
-kind: DNSManagedZone
-metadata:
-  name: "${DNS_PROJECT_ZONE_NAME}"
-spec:
-  dnsName: "${DNS_PROJECT_DOMAIN}."
 EOT
+# TODO determine if the block below will be needed in the alpha DNS config yaml
+# Won't be if we use a setup like https://github.com/PHACDataHub/phac-epi-garden/tree/main/deploy#readme
+#---
+#apiVersion: dns.cnrm.cloud.google.com/v1beta1
+#kind: DNSManagedZone
+#metadata:
+#  name: "${DNS_PROJECT_ZONE_NAME}"
+#spec:
+#  dnsName: "${DNS_PROJECT_DOMAIN}."
 
   echo "PHAC alpha DNS configuration output to ${dns_config_file}"
   read -n 1 -p "MANUAL STEP: open a PR adding this yaml file to the PHAC alpha DNS repo. You can do this now or later, but it needs to be merged for your new subdomain to work. Press any key to continue: " _

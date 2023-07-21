@@ -11,8 +11,10 @@
 #####################
 
 export PROJECT_ID=phx-01h4rr1468rj3v5k60b1vserd3
-export PROJECT_SERVICE_NAME=cpho-phase2
 export PROJECT_REGION=northamerica-northeast1
+
+export PROJECT_SERVICE_NAME=cpho-phase2
+export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
 
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
@@ -42,9 +44,9 @@ export DNS_PHAC_ALPHA_DOMAIN="phac-aspc.alpha.canada.ca"
 export DNS_PHAC_ALPHA_NAME="phac-aspc-alpha-canada-ca"
 export DNS_PHAC_ALPHA_NS_NAME="alpha-dns"
 # project DNS vars
-export DNS_PROJECT_DOMAIN="${PROJECT_SERVICE_NAME}.${DNS_PHAC_ALPHA_DOMAIN}"
-export DNS_PROJECT_ZONE_NAME="${PROJECT_SERVICE_NAME}-${DNS_PHAC_ALPHA_NAME}-zone"
-export DNS_PROJECT_NS_NAME="${PROJECT_SERVICE_NAME}-${DNS_PHAC_ALPHA_NAME}-ns"
+export DNS_PROJECT_DOMAIN="${PROJECT_ALPHA_SUB_DOMAIN}.${DNS_PHAC_ALPHA_DOMAIN}"
+export DNS_PROJECT_ZONE_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-zone"
+export DNS_PROJECT_NS_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-ns"
 
 # ----- ARTIFACT REGISTRY -----
 export ARTIFACT_REGISTRY_REPO="${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run"

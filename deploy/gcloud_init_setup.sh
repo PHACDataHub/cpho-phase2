@@ -20,17 +20,17 @@ echo ""
 if [[ "${dns_skip}" != "S" ]]; then
   gcloud services enable dns.googleapis.com
 
+  # TODO enable DNS sec?
   gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} \
     --project "${PROJECT_ID}" \
     --description "${PROJECT_SERVICE_NAME} zone, for PHAC alpha-dns" \
-    --dns-name "${DNS_PROJECT_DOMAIN}" \
+    --dns-name "${DNS_PROJECT_DOMAIN}." \
     --visibility public
 
   IFS=',' read -r -a dns_name_servers <<< \
-    $(gcloud dns record-sets describe "${DNS_PROJECT_DOMAIN}" --zone ${PROJECT_SERVICE_NAME} --type NS --format "value[separator=\",\"](DATA)")
+    $(gcloud dns record-sets describe "${DNS_PROJECT_DOMAIN}." --zone ${PROJECT_SERVICE_NAME} --type NS --format "value[separator=\",\"](DATA)")
 
-  # DNS_PROJECT_DOMAIN ends in a ., so just append the yaml exstension directly 
-  dns_config_file=$(dirname "${BASH_SOURCE[0]}")/"${DNS_PROJECT_DOMAIN}yaml"
+  dns_config_file=$(dirname "${BASH_SOURCE[0]}")/"${DNS_PROJECT_DOMAIN}.yaml"
   rm -rf "${dns_config_file}"
 
   cat <<EOT >> "${dns_config_file}"
@@ -40,7 +40,7 @@ metadata:
   name: "${DNS_PROJECT_NS_NAME}"
   namespace: "${DNS_PHAC_ALPHA_NS_NAME}"
 spec:
-  name: "${DNS_PROJECT_DOMAIN}"
+  name: "${DNS_PROJECT_DOMAIN}."
   type: "NS"
   ttl: 300
   managedZoneRef:
@@ -56,7 +56,7 @@ kind: DNSManagedZone
 metadata:
   name: "${DNS_PROJECT_ZONE_NAME}"
 spec:
-  dnsName: "${DNS_PROJECT_DOMAIN}"
+  dnsName: "${DNS_PROJECT_DOMAIN}."
 EOT
 
   echo "PHAC alpha DNS configuration output to ${dns_config_file}"
@@ -356,16 +356,7 @@ if [[ "${secrets_skip}" != "S" ]]; then
   
   bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_prod_env}"
   
-  # TODO: the ALLOWED_HOSTS configuration will be simpler once the DNS step is in place
-  service_url=$(gcloud run services describe "${PROJECT_SERVICE_NAME}" --platform managed --region "${PROJECT_REGION}" --format "value(status.url)" || echo "")
-  if [[ ! -z $service_url ]]; then
-    # Need to strip the https:// from the URL, just want the host portion
-    ALLOWED_HOSTS=$(echo "${service_url}" | sed 's/^https:\/\///')
-  else
-    echo "Prior to the first cloud run deploy, the service doesn't exist yet and it's URL is unknown, but a valid config is needed to get the service deployed that first time. A placeholder is used in the initial .env.prod secret, so you'll have to update the Secret Manager value once you know the actual URL."
-    ALLOWED_HOSTS="placeholder.not-a-tld"
-  fi
-  bash_escape "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> "${tmp_prod_env}"
+  bash_escape "ALLOWED_HOSTS=${DNS_PROJECT_DOMAIN}" >> "${tmp_prod_env}"
   
   if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
     bash_escape "MEDIA_BUCKET_NAME=${MEDIA_BUCKET_NAME}" >> "${tmp_prod_env}"

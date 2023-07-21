@@ -30,16 +30,13 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
-      echo "Build new server and db images for testing"
-      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build up --build -d 
-
-      echo "Run tests and create coverage report"
-      #TODO: Upload coverage report and make more visable - currently need to dig through Cloud Build logs in order to view the report.  
-      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build exec -T server coverage run -m pytest
-      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build exec -T server coverage report --show-missing
+      echo "Build images for testing, run tests, create report"
+      # TODO: Upload coverage report and make more visable - currently need to dig through Cloud Build logs in order to view the report.  
+      # NOTE: Tests are run within the docker compose - when --exit-code-from is used, build/ command fail, this step fails
+      docker compose  -f docker-compose.run-tests.yaml --env-file .env.cloud_build up  --exit-code-from server
 
       echo "Docker compose down with volume"
-      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build down -v
+      docker compose -f docker-compose.run-tests.yaml --env-file .env.cloud_build down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

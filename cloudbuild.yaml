@@ -31,14 +31,14 @@ steps:
       source .env.cloud_build
 
       echo "Build new server and db images for testing"
-      docker compose --env-file .env.cloud_build up --build -d 
+      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build up --build -d 
 
       echo "Run tests and create coverage report"
-      docker compose --env-file .env.cloud_build exec -T server coverage run -m pytest
-      docker compose --env-file .env.cloud_build exec -T server coverage report --show-missing
+      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build exec -T server coverage run -m pytest
+      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build exec -T server coverage report --show-missing
 
       echo "Docker compose down with volume"
-      docker compose --env-file .env.cloud_build down -v
+      docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

@@ -1,11 +1,14 @@
+# Docker compose file for running tests in Cloud Build.
+# Note: If testing locally, 
+#       - Set IMAGE_NAME_FOR_RUN (export IMAGE_NAME_FOR_RUN=image_for_tests)
+#       - Change the network to external: false.
+
 version: '3.8'
 
 services:
   db:
     image: postgres:13.0-alpine
     restart: always
-    ports:
-      - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
       - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -13,25 +16,17 @@ services:
       - ./server/.env.dev
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
- 
 
   server:
     build: ./server
     image: ${IMAGE_NAME_FOR_RUN}
     command: >
       sh -c "
-      python ./manage.py migrate && \
-      python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml && \
-      python ./manage.py loaddata cpho/fixtures/periods.yaml && \
-      python ./manage.py runscript cpho.scripts.dev && \
       exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 server.wsgi:application"
-    ports:
-      - 8080:8080
     env_file:
       - ./server/.env.dev
     environment:
       - DB_HOST=db
-      - POSTGRES_HOST_AUTH_METHOD=trust 
     depends_on:
       - db
 
@@ -42,6 +37,6 @@ volumes:
 networks:
   default:
     name: cloudbuild
-    external: true
-    # external: false
+    # external: true
+    external: false
 

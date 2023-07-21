@@ -37,6 +37,6 @@ volumes:
 networks:
   default:
     name: cloudbuild
-    # external: true
-    external: false
+    external: true
+    # external: false
 

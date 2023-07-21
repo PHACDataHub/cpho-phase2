@@ -24,6 +24,9 @@ if "${allow_cleanup}"; then
   # ----- CLOUD SQL -----
   gcloud sql instances delete "${DB_INSTANCE_NAME}" || :
   
+  # ----- Cloud DNS -----
+  gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} || :
+
   # ----- VPC NETWORK -----
   if [[ $VPC_NAME != "default" ]]; then
     gcloud compute networks delete "${VPC_NAME}" || :

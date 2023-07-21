@@ -36,6 +36,16 @@ gcloud config set compute/region "${PROJECT_REGION}"
 # ----- PROJECT -----
 export PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")
 
+# ----- Cloud DNS -----
+# phac-alpha DNS vars
+export DNS_PHAC_ALPHA_DOMAIN="phac-aspc.alpha.canada.ca"
+export DNS_PHAC_ALPHA_NAME="phac-aspc-alpha-canada-ca"
+export DNS_PHAC_ALPHA_NS_NAME="alpha-dns"
+# project DNS vars
+export DNS_PROJECT_DOMAIN="${PROJECT_SERVICE_NAME}.${DNS_PHAC_ALPHA_DOMAIN}."
+export DNS_PROJECT_ZONE_NAME="${PROJECT_SERVICE_NAME}-${DNS_PHAC_ALPHA_NAME}-zone"
+export DNS_PROJECT_NS_NAME="${PROJECT_SERVICE_NAME}-${DNS_PHAC_ALPHA_NAME}-ns"
+
 # ----- ARTIFACT REGISTRY -----
 export ARTIFACT_REGISTRY_REPO="${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run"
 

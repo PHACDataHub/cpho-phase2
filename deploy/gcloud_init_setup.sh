@@ -12,6 +12,60 @@ source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
 
 
+# ----- Cloud DNS -----
+echo ""
+echo "Enable the Cloud DNS API, create a managed zone for the project, and output the project's DNS yaml"
+read -n 1 -p "Type S to skip this step, anything else to continue: " dns_skip
+echo ""
+if [[ "${dns_skip}" != "S" ]]; then
+  gcloud services enable dns.googleapis.com
+
+  gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} \
+    --project "${PROJECT_ID}" \
+    --description "${PROJECT_SERVICE_NAME} zone, for PHAC alpha-dns" \
+    --dns-name "${DNS_PROJECT_DOMAIN}" \
+    --visibility public
+
+  IFS=',' read -r -a dns_name_servers <<< \
+    $(gcloud dns record-sets describe "${DNS_PROJECT_DOMAIN}" --zone ${PROJECT_SERVICE_NAME} --type NS --format "value[separator=\",\"](DATA)")
+
+  # DNS_PROJECT_DOMAIN ends in a ., so just append the yaml exstension directly 
+  dns_config_file=$(dirname "${BASH_SOURCE[0]}")/"${DNS_PROJECT_DOMAIN}yaml"
+  rm -rf "${dns_config_file}"
+
+  cat <<EOT >> "${dns_config_file}"
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: "${DNS_PROJECT_NS_NAME}"
+  namespace: "${DNS_PHAC_ALPHA_NS_NAME}"
+spec:
+  name: "${DNS_PROJECT_DOMAIN}"
+  type: "NS"
+  ttl: 300
+  managedZoneRef:
+    external: "${DNS_PHAC_ALPHA_NAME}"
+  rrdatas:
+    - "${dns_name_servers[0]}"
+    - "${dns_name_servers[1]}"
+    - "${dns_name_servers[2]}"
+    - "${dns_name_servers[3]}"
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSManagedZone
+metadata:
+  name: "${DNS_PROJECT_ZONE_NAME}"
+spec:
+  dnsName: "${DNS_PROJECT_DOMAIN}"
+EOT
+
+  echo "PHAC alpha DNS configuration output to ${dns_config_file}"
+  read -n 1 -p "MANUAL STEP: open a PR adding this yaml file to the PHAC alpha DNS repo. You can do this now or later, but it needs to be merged for your new subdomain to work. Press any key to continue: " _
+
+fi
+
+
+
 # ----- ARTIFACT REGISTRY -----
 echo ""
 echo "Enable Artifact Registry to store container images for Cloud Run to use"
@@ -279,10 +333,6 @@ fi
 
 
 
-# ----- DNS -----
-# TODO
-
-
 # ----- SECRET MANAGER -----
 echo ""
 echo "Create and save .env.prod in Secret Manager"
@@ -338,7 +388,7 @@ fi
 
 # ----- CLOUD RUN -----
 echo ""
-echo "Enable the Cloud Run API"
+echo "Enable the Cloud Run API, grant access to .env.prod secret"
 read -n 1 -p "Type S to skip this step, anything else to continue: " run_skip
 echo ""
 if [[ "${run_skip}" != "S" ]]; then

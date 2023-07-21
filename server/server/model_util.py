@@ -54,8 +54,8 @@ class ApprovableCustomVersionModelWithEditor(CustomVersionModelWithEditor):
     class Meta(CustomVersionModelWithEditor.Meta):
         abstract = True
 
-    approved = models.BooleanField(default=False)
-    # program_approved = models.BooleanField(default=False)
+    is_program_approved = models.BooleanField(default=False)
+    is_hso_approved = models.BooleanField(default=False)
 
 
 def create_history_decorator(version_base_class):

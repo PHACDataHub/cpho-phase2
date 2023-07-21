@@ -62,9 +62,57 @@ class Indicator(models.Model):
         )
 
 
+class IndicatorDatumQueryset(models.QuerySet):
+    def with_last_version_date(self):
+        last_version_date = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-system_date")
+            .values("system_date")[:1]
+        )
+        return self.annotate(last_version_date=last_version_date)
+
+    def with_last_version_username(self, date_field="system_date"):
+        last_version_edited_by_username = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-system_date")
+            .values("edited_by__username")[:1]
+        )
+        return self.annotate(
+            last_version_edited_by_username=last_version_edited_by_username
+        )
+
+    def with_last_version_id(self):
+        last_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-system_date")
+            .values("id")[:1]
+        )
+        return self.annotate(last_version_id=last_version_id)
+
+    def with_last_approved_version_id(self):
+        last_approved_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk"),
+                is_hso_approved=True,
+                is_program_approved=True,
+            )
+            .order_by("-system_date")
+            .values("id")[:1]
+        )
+        return self.annotate(last_approved_version_id=last_approved_version_id)
+
+
 @add_to_admin
 @track_versions_with_editor_and_approval
 class IndicatorDatum(models.Model):
+    objects = models.Manager.from_queryset(IndicatorDatumQueryset)()
+
     class Meta:
         unique_together = [
             ("indicator", "period", "dimension_type", "dimension_value"),
@@ -140,9 +188,6 @@ class IndicatorDatum(models.Model):
     single_year_timeframe = fields.CharField(max_length=50, null=True)
 
     multi_year_timeframe = fields.CharField(max_length=50, null=True)
-
-    hso_approved = models.BooleanField(default=False)
-    program_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return " ".join(

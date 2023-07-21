@@ -37,7 +37,7 @@ steps:
       docker compose --env-file .env.cloud_build exec -T server coverage run -m pytest
       docker compose --env-file .env.cloud_build exec -T server coverage report --show-missing
 
-      echo "Docker compose down with volumes"
+      echo "Docker compose down with volume"
       docker compose --env-file .env.cloud_build down -v
 
   - id: "Build image if main"

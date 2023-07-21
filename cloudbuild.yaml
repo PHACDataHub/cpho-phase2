@@ -34,6 +34,7 @@ steps:
       docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build up --build -d 
 
       echo "Run tests and create coverage report"
+      #TODO: Upload coverage report and make more visable - currently need to dig through Cloud Build logs in order to view the report.  
       docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build exec -T server coverage run -m pytest
       docker compose -f docker-compose.cloud-build-test-env.yaml --env-file .env.cloud_build exec -T server coverage report --show-missing
 

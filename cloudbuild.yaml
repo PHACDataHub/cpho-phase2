@@ -30,6 +30,9 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
+      echo "Docker compose down to pre-clean up"
+      docker compose -f docker-compose.run-tests.yaml --env-file .env.cloud_build down -v
+      
       echo "Build images for testing, run tests, create report"
       # TODO: Upload coverage report and make more visable - currently need to dig through Cloud Build logs in order to view the report.  
       # NOTE: Tests are run within the docker compose - when --exit-code-from is used, build/ command fail, this step fails

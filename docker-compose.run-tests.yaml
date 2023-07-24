@@ -46,4 +46,6 @@ networks:
     name: cloudbuild
     external: true
     # external: false
+    # NOTE:  This had an issue with label being incorrect - fixed by: docker network create --label com.docker.compose.network=cloudbuild cloudbuild
+
 

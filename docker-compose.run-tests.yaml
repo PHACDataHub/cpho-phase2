@@ -14,10 +14,10 @@ services:
     volumes: 
       - db:/var/lib/postgresql/data
       - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
-      # - ./server/.env.dev:/docker-entrypoint-initdb.d/.env.dev
+      - ./server/.env.dev:/docker-entrypoint-initdb.d/.env.dev
       # - ./server/dev-db-init.sh:/docker-entrypoint-initdb.d/dev-db-init.sh
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust  
+    # environment:
+    #   - POSTGRES_HOST_AUTH_METHOD=trust  
 
   server:
     build: ./server
@@ -30,8 +30,9 @@ services:
       - ./server/.env.dev
     environment:
     # NOTE: Given Compose environment variable precedence (https://docs.docker.com/compose/environment-variables/envvars-precedence/),
-    #       the environment variable set here ONLY overrides variable set in env_file because decouple.Config looks in OS env vars before .env files. 
-    #       If behaviour changes, or this is run without using decouple, this will no longer work. 
+    #       the environment variable set here will ONLY override variables set in env_file because we're using decouple, and 
+    #       decouple.Config looks in OS env vars before .env files. 
+    #       If the behaviour changes, or if this is run without using decouple, this will no longer work. 
       - DB_HOST=db
     depends_on:
       - db
@@ -43,6 +44,6 @@ volumes:
 networks:
   default:
     name: cloudbuild
-    # external: true
-    external: false
+    external: true
+    # external: false
 

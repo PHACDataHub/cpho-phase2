@@ -1,6 +1,6 @@
 {% extends 'base.jinja2' %}
 {% from 'generic_macros.jinja2' import date_display, todo_block %}
-{% from 'cpho_macros.jinja2' import indicator_data_table_w_approvals %}
+{% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions %}
 
 
 {% block content %}
@@ -12,10 +12,10 @@
       {% for dimension_type in view.dimension_types %}
         <div>
           <div class="h5">
-            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ view.approval_statuses['statuses_by_dimension_type_id'][dimension_type.id] }}</sm>
+            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id] }}</sm>
           </div>
  
-          <div>{{ indicator_data_table_w_approvals(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
+          <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
         </div>
       {% endfor %}
     </div>
@@ -49,20 +49,20 @@
                 aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>{{ tdt("Placeholder Text: What happens when you approve data") }}</p>
+        <p>{{ tdt("Placeholder Text: What happens when you submit data") }}</p>
  
         <div class="border p-2 ps-0">
           <div>TODO: this field will dissapear and be automatically inferred from user type</div>
           <div>
             <input type="radio"
-                   name="approval_type"
-                   id="approvalType1"
+                   name="submission_type"
+                   id="submissionType1"
                    value="program"
                    checked>
-            <label for="html">Surveillance program approval</label>
+            <label for="html">Surveillance program submission</label>
             <br>
-            <input type="radio" name="approval_type" id="approvalType1" value="hso">
-            <label for="html">HSO approval</label>
+            <input type="radio" name="submission_type" id="submissionType1" value="hso">
+            <label for="html">HSO submission</label>
             {{ csrf_input }}
             <br>
           </div>
@@ -74,7 +74,7 @@
                  id="confirmCheckbox"
                  required>
           <label class="form-check-label" for="confirmCheckbox">
-            {{ tdt("Placeholder Text: I confirm data validity and agree to approve") }}
+            {{ tdt("Placeholder Text: I confirm data validity and agree to submit") }}
           </label>
         </div>
       </div>

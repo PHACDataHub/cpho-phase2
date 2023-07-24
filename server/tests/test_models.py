@@ -91,7 +91,7 @@ def test_indicator_datum_version_annotations():
     live_record.save()
 
     v2 = live_record.versions.last()
-    v2.is_program_approved = True
+    v2.is_program_submitted = True
     v2.save()
 
     live_record.reset_version_attrs()
@@ -99,8 +99,8 @@ def test_indicator_datum_version_annotations():
     live_record.save()
 
     v3 = live_record.versions.last()
-    v3.is_hso_approved = True
-    v3.is_program_approved = True
+    v3.is_hso_submitted = True
+    v3.is_program_submitted = True
     v3.save()
 
     live_record.reset_version_attrs()
@@ -112,8 +112,8 @@ def test_indicator_datum_version_annotations():
     refetched_record = (
         IndicatorDatum.objects.all()
         .with_last_version_id()
-        .with_last_approved_version_id()
+        .with_last_submitted_version_id()
         .get(id=live_record.id)
     )
     assert refetched_record.last_version_id == v4.id
-    assert refetched_record.last_approved_version_id == v3.id
+    assert refetched_record.last_submitted_version_id == v3.id

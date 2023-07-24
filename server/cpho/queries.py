@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from cpho.constants import APPROVAL_STATUSES
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import DimensionType, DimensionValue
 from cpho.util import group_by
 
@@ -11,36 +11,39 @@ def is_submission_out_of_date(indicator_datum):
 
 def aggregate_statuses(statuses):
     if len(statuses) < 1:
-        return APPROVAL_STATUSES.NO_DATA
+        return SUBMISSION_STATUSES.NO_DATA
 
-    if all(status == APPROVAL_STATUSES.SUBMITTED for status in statuses):
-        return APPROVAL_STATUSES.SUBMITTED
+    if all(status == SUBMISSION_STATUSES.SUBMITTED for status in statuses):
+        return SUBMISSION_STATUSES.SUBMITTED
     elif all(
         status
-        in (APPROVAL_STATUSES.PROGRAM_SUBMITTED, APPROVAL_STATUSES.SUBMITTED)
+        in (
+            SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            SUBMISSION_STATUSES.SUBMITTED,
+        )
         for status in statuses
     ):
-        return APPROVAL_STATUSES.PROGRAM_SUBMITTED
-    elif any(status == APPROVAL_STATUSES.NO_DATA for status in statuses):
-        return APPROVAL_STATUSES.NO_DATA
+        return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+    elif any(status == SUBMISSION_STATUSES.NO_DATA for status in statuses):
+        return SUBMISSION_STATUSES.NO_DATA
     elif any(
-        status == APPROVAL_STATUSES.NOT_YET_SUBMITTED for status in statuses
+        status == SUBMISSION_STATUSES.NOT_YET_SUBMITTED for status in statuses
     ):
-        return APPROVAL_STATUSES.NOT_YET_SUBMITTED
+        return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
     elif any(
-        status == APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        status == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
         for status in statuses
     ):
-        return APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
 
     else:
         raise Exception("Shouldn't get here...")
 
 
-def get_approval_statuses(indicator, period):
+def get_submission_statuses(indicator, period):
     data = (
         indicator.data.filter(period=period)
-        .with_approval_annotations()
+        .with_submission_annotations()
         .prefetch_related("dimension_value", "dimension_type")
     )
 
@@ -49,30 +52,32 @@ def get_approval_statuses(indicator, period):
     # data_by_dimension_value_id = {d.dimension_value_id: d for d in data}
     data_by_dimension_type_id = group_by(data, lambda d: d.dimension_type_id)
 
-    approval_status_by_dimension_type_id = defaultdict(
-        lambda: APPROVAL_STATUSES.NO_DATA
+    submission_status_by_dimension_type_id = defaultdict(
+        lambda: SUBMISSION_STATUSES.NO_DATA
     )
 
     for dimension_type in dimension_types:
         dim_id = dimension_type.id
         if not data_by_dimension_type_id[dim_id]:
-            approval_status_by_dimension_type_id[
+            submission_status_by_dimension_type_id[
                 dim_id
-            ] = APPROVAL_STATUSES.NO_DATA
+            ] = SUBMISSION_STATUSES.NO_DATA
             continue
 
         data_for_dim = data_by_dimension_type_id[dim_id]
-        approval_statuses = [datum.submission_status for datum in data_for_dim]
+        submission_statuses = [
+            datum.submission_status for datum in data_for_dim
+        ]
 
-        approval_status_by_dimension_type_id[dim_id] = aggregate_statuses(
-            approval_statuses
+        submission_status_by_dimension_type_id[dim_id] = aggregate_statuses(
+            submission_statuses
         )
 
     global_status = aggregate_statuses(
-        list(approval_status_by_dimension_type_id.values())
+        list(submission_status_by_dimension_type_id.values())
     )
 
     return {
-        "statuses_by_dimension_type_id": approval_status_by_dimension_type_id,
+        "statuses_by_dimension_type_id": submission_status_by_dimension_type_id,
         "global_status": global_status,
     }

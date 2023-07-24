@@ -4,10 +4,10 @@ from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
-    track_versions_with_editor_and_approval,
+    track_versions_with_editor_and_submission,
 )
 
-from cpho.constants import APPROVAL_STATUSES
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.text import tdt
 
 
@@ -96,41 +96,43 @@ class IndicatorDatumQueryset(models.QuerySet):
         )
         return self.annotate(last_version_id=last_version_id)
 
-    def with_last_program_approved_version_id(self):
-        last_approved_version_id = models.Subquery(
+    def with_last_program_submitted_version_id(self):
+        last_submitted_version_id = models.Subquery(
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk"),
-                is_program_approved=True,
+                is_program_submitted=True,
             )
             .order_by("-system_date")
             .values("id")[:1]
         )
         return self.annotate(
-            last_program_approved_version_id=last_approved_version_id
+            last_program_submitted_version_id=last_submitted_version_id
         )
 
-    def with_last_approved_version_id(self):
-        last_approved_version_id = models.Subquery(
+    def with_last_submitted_version_id(self):
+        last_submitted_version_id = models.Subquery(
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk"),
-                is_hso_approved=True,
-                is_program_approved=True,
+                is_hso_submitted=True,
+                is_program_submitted=True,
             )
             .order_by("-system_date")
             .values("id")[:1]
         )
-        return self.annotate(last_approved_version_id=last_approved_version_id)
+        return self.annotate(
+            last_submitted_version_id=last_submitted_version_id
+        )
 
-    def with_approval_annotations(self):
+    def with_submission_annotations(self):
         return (
             self.with_last_version_id()
-            .with_last_approved_version_id()
-            .with_last_program_approved_version_id()
+            .with_last_submitted_version_id()
+            .with_last_program_submitted_version_id()
         )
 
 
 @add_to_admin
-@track_versions_with_editor_and_approval
+@track_versions_with_editor_and_submission
 class IndicatorDatum(models.Model):
     objects = models.Manager.from_queryset(IndicatorDatumQueryset)()
 
@@ -228,21 +230,21 @@ class IndicatorDatum(models.Model):
     def submission_status(self):
         try:
             self.last_version_id
-            self.last_approved_version_id
-            self.last_program_approved_version_id
+            self.last_submitted_version_id
+            self.last_program_submitted_version_id
         except AttributeError:
-            raise Exception("You must add the approval_annotations")
+            raise Exception("You must add the submission_annotations")
 
-        if not self.last_program_approved_version_id:
-            return APPROVAL_STATUSES.NOT_YET_SUBMITTED
+        if not self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
 
-        if self.last_version_id == self.last_approved_version_id:
-            return APPROVAL_STATUSES.SUBMITTED
+        if self.last_version_id == self.last_submitted_version_id:
+            return SUBMISSION_STATUSES.SUBMITTED
 
-        if self.last_version_id == self.last_program_approved_version_id:
-            return APPROVAL_STATUSES.PROGRAM_SUBMITTED
+        if self.last_version_id == self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
 
-        return APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
 
 
 # the following commented-out models don't really do anything yet,

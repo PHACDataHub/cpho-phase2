@@ -1,4 +1,4 @@
-from cpho.constants import APPROVAL_STATUSES
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.model_factories import (
     DimensionTypeFactory,
     DimensionValueFactory,
@@ -10,12 +10,12 @@ from cpho.models import (
     IndicatorDataSubmission,
     Period,
 )
-from cpho.queries import get_approval_statuses
+from cpho.queries import get_submission_statuses
 from cpho.services import SubmitIndicatorDataService
 
 # These tests are very heavy on data-generation
 
-NO_DATA_TRIPLE = [APPROVAL_STATUSES.NO_DATA] * 3
+NO_DATA_TRIPLE = [SUBMISSION_STATUSES.NO_DATA] * 3
 
 
 def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
@@ -45,7 +45,7 @@ def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
 
     for dim_type, val_statuses in vals_by_dim.items():
         for dim_val, status in val_statuses:
-            if status == APPROVAL_STATUSES.NO_DATA:
+            if status == SUBMISSION_STATUSES.NO_DATA:
                 continue
 
             datum = ind.data.create(
@@ -54,28 +54,28 @@ def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
                 dimension_value=dim_val,
                 value=1.0,
             )
-            if status == APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION:
+            if status == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION:
                 # submit a version and then create a new one
                 v1 = datum.versions.last()
-                v1.is_hso_approved = True
-                v1.is_program_approved = True
+                v1.is_hso_submitted = True
+                v1.is_program_submitted = True
                 v1.save()
 
                 datum.reset_version_attrs()
                 datum.save()
 
-            elif status == APPROVAL_STATUSES.SUBMITTED:
+            elif status == SUBMISSION_STATUSES.SUBMITTED:
                 v1 = datum.versions.last()
-                v1.is_hso_approved = True
-                v1.is_program_approved = True
+                v1.is_hso_submitted = True
+                v1.is_program_submitted = True
                 v1.save()
 
-            elif status == APPROVAL_STATUSES.PROGRAM_SUBMITTED:
+            elif status == SUBMISSION_STATUSES.PROGRAM_SUBMITTED:
                 v1 = datum.versions.last()
-                v1.is_program_approved = True
+                v1.is_program_submitted = True
                 v1.save()
 
-            elif status == APPROVAL_STATUSES.NOT_YET_SUBMITTED:
+            elif status == SUBMISSION_STATUSES.NOT_YET_SUBMITTED:
                 pass
 
             else:
@@ -86,100 +86,100 @@ def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
 
 def test_fully_submitted():
     ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[APPROVAL_STATUSES.SUBMITTED] * 3,
-        xyz=[APPROVAL_STATUSES.SUBMITTED] * 3,
-        ijk=[APPROVAL_STATUSES.SUBMITTED] * 3,
+        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        ijk=[SUBMISSION_STATUSES.SUBMITTED] * 3,
     )
-    statuses = get_approval_statuses(ind, period)
+    statuses = get_submission_statuses(ind, period)
     assert statuses == {
         "statuses_by_dimension_type_id": {
-            abc_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            xyz_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            ijk_dim.id: APPROVAL_STATUSES.SUBMITTED,
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.SUBMITTED,
         },
-        "global_status": APPROVAL_STATUSES.SUBMITTED,
+        "global_status": SUBMISSION_STATUSES.SUBMITTED,
     }
 
 
 def test_fully_submitted_with_program_caveat():
     ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[APPROVAL_STATUSES.SUBMITTED] * 3,
-        xyz=[APPROVAL_STATUSES.SUBMITTED] * 3,
+        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
         ijk=[
-            APPROVAL_STATUSES.SUBMITTED,
-            APPROVAL_STATUSES.PROGRAM_SUBMITTED,
-            APPROVAL_STATUSES.SUBMITTED,
+            SUBMISSION_STATUSES.SUBMITTED,
+            SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            SUBMISSION_STATUSES.SUBMITTED,
         ],
     )
-    statuses = get_approval_statuses(ind, period)
+    statuses = get_submission_statuses(ind, period)
     assert statuses == {
         "statuses_by_dimension_type_id": {
-            abc_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            xyz_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            ijk_dim.id: APPROVAL_STATUSES.PROGRAM_SUBMITTED,
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
         },
-        "global_status": APPROVAL_STATUSES.PROGRAM_SUBMITTED,
+        "global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
     }
 
 
 def test_fully_submitted_with_edit():
     ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[APPROVAL_STATUSES.SUBMITTED] * 3,
-        xyz=[APPROVAL_STATUSES.SUBMITTED] * 3,
+        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
         ijk=[
-            APPROVAL_STATUSES.SUBMITTED,
-            APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-            APPROVAL_STATUSES.SUBMITTED,
+            SUBMISSION_STATUSES.SUBMITTED,
+            SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+            SUBMISSION_STATUSES.SUBMITTED,
         ],
     )
-    statuses = get_approval_statuses(ind, period)
+    statuses = get_submission_statuses(ind, period)
     assert statuses == {
         "statuses_by_dimension_type_id": {
-            abc_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            xyz_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            ijk_dim.id: APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
         },
-        "global_status": APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
     }
 
 
 def test_modified_takes_precedence_over_program_submitted():
     ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[APPROVAL_STATUSES.SUBMITTED] * 3,
-        xyz=[APPROVAL_STATUSES.SUBMITTED] * 3,
+        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
         ijk=[
-            APPROVAL_STATUSES.PROGRAM_SUBMITTED,
-            APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-            APPROVAL_STATUSES.SUBMITTED,
+            SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+            SUBMISSION_STATUSES.SUBMITTED,
         ],
     )
-    statuses = get_approval_statuses(ind, period)
+    statuses = get_submission_statuses(ind, period)
     assert statuses == {
         "statuses_by_dimension_type_id": {
-            abc_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            xyz_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            ijk_dim.id: APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
         },
-        "global_status": APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
     }
 
 
 def test_not_submitted_takes_precedence_over_modified_since_submitted():
     ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[APPROVAL_STATUSES.SUBMITTED] * 3,
-        xyz=[APPROVAL_STATUSES.SUBMITTED] * 3,
+        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
         ijk=[
-            APPROVAL_STATUSES.NOT_YET_SUBMITTED,
-            APPROVAL_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-            APPROVAL_STATUSES.SUBMITTED,
+            SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+            SUBMISSION_STATUSES.SUBMITTED,
         ],
     )
-    statuses = get_approval_statuses(ind, period)
+    statuses = get_submission_statuses(ind, period)
     assert statuses == {
         "statuses_by_dimension_type_id": {
-            abc_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            xyz_dim.id: APPROVAL_STATUSES.SUBMITTED,
-            ijk_dim.id: APPROVAL_STATUSES.NOT_YET_SUBMITTED,
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
         },
-        "global_status": APPROVAL_STATUSES.NOT_YET_SUBMITTED,
+        "global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
     }

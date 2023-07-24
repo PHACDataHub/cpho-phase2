@@ -1,6 +1,6 @@
 {% extends 'base.jinja2' %}
 {% from 'generic_macros.jinja2' import date_display %}
-{% from 'cpho_macros.jinja2' import indicator_data_table_w_approvals %}
+{% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions %}
 
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }} {{ period }}</div>
@@ -10,10 +10,10 @@
       {% for dimension_type in dimension_types %}
         <div>
           <div class="h5">
-            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ approval_statuses['statuses_by_dimension_type_id'][dimension_type.id] }}</sm>
+            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ submission_statuses['statuses_by_dimension_type_id'][dimension_type.id] }}</sm>
           </div>
  
-          <div>{{ indicator_data_table_w_approvals(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
+          <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
           <div class="text-end">
             <a class="btn btn-primary"
                href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Edit") }}</a>

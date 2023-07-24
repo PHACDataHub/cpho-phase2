@@ -9,14 +9,14 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
-from cpho.constants import APPROVAL_STATUSES
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     DimensionType,
     DimensionValue,
     Indicator,
     IndicatorDatum,
 )
-from cpho.queries import get_approval_statuses
+from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 
 from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
@@ -205,7 +205,7 @@ class ManageIndicatorData(
                 period=self.period,
             )
             .order_by("dimension_value__order")
-            .with_approval_annotations()
+            .with_submission_annotations()
         )
 
         InlineFormsetCls = forms.inlineformset_factory(
@@ -247,7 +247,7 @@ class ManageIndicatorData(
                 period=self.period,
             )
             .order_by("dimension_value__order")
-            .with_approval_annotations()
+            .with_submission_annotations()
         )
 
         # value for all not selected only get data for stratifier selected
@@ -349,14 +349,14 @@ class ManageIndicatorData(
 
     @cached_property
     def submission_statuses(self):
-        return get_approval_statuses(self.indicator, self.period)
+        return get_submission_statuses(self.indicator, self.period)
 
     @cached_property
     def submission_status(self):
         if self.dimension_type:
             return self.submission_statuses[
                 "statuses_by_dimension_type_id"
-            ].get(self.dimension_type.id, APPROVAL_STATUSES.NO_DATA)
+            ].get(self.dimension_type.id, SUBMISSION_STATUSES.NO_DATA)
         else:
             return self.submission_statuses["global_status"]
 

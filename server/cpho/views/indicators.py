@@ -16,7 +16,7 @@ from django.views.generic import (
 )
 
 from cpho.models import DimensionType, Indicator, Period
-from cpho.queries import get_approval_statuses
+from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
 
@@ -116,7 +116,7 @@ class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
             self.indicator.data.filter(period=self.period)
             .select_related("dimension_value")
             .prefetch_related("dimension_type")
-            .with_approval_annotations()
+            .with_submission_annotations()
             .with_last_version_date()
             .order_by("dimension_value")
         )
@@ -131,7 +131,7 @@ class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
         return {
             **super().get_context_data(*args, **kwargs),
             "dimension_types": DimensionType.objects.all(),
-            "approval_statuses": get_approval_statuses(
+            "submission_statuses": get_submission_statuses(
                 self.object, self.period
             ),
             "indicator_data_by_dimension_type": self.indicator_data_by_dimension_type,

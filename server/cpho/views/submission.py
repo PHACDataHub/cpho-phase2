@@ -11,9 +11,9 @@ from django.utils.functional import cached_property
 from django.views.generic import DetailView, TemplateView, View
 
 from cpho.constants import (
-    APPROVAL_STATUSES,
-    HSO_APPROVAL_TYPE,
-    PROGRAM_APPROVAL_TYPE,
+    HSO_SUBMISSION_TYPE,
+    PROGRAM_SUBMISSION_TYPE,
+    SUBMISSION_STATUSES,
 )
 from cpho.models import (
     DimensionType,
@@ -21,7 +21,7 @@ from cpho.models import (
     Indicator,
     IndicatorDatum,
 )
-from cpho.queries import get_approval_statuses
+from cpho.queries import get_submission_statuses
 from cpho.services import SubmitIndicatorDataService
 from cpho.text import tdt, tm
 from cpho.util import group_by
@@ -39,13 +39,13 @@ class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
         # alternatively might want to make this a url or post param
         # so admins can approve as programs?
 
-        approval_type = self.request.POST["approval_type"]
+        submission_type = self.request.POST["submission_type"]
 
         SubmitIndicatorDataService(
             indicator=self.indicator,
             period=self.period,
             dimension_type=self.dimension_type,
-            approval_type=approval_type,
+            submission_type=submission_type,
             user=self.request.user,
         ).perform()
         messages.success(
@@ -73,7 +73,7 @@ class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
             self.indicator.data.filter(period=self.period)
             .select_related("dimension_value")
             .prefetch_related("dimension_type")
-            .with_approval_annotations()
+            .with_submission_annotations()
             .with_last_version_date()
             .order_by("dimension_value")
         )
@@ -90,17 +90,17 @@ class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
         )
 
     @cached_property
-    def approval_statuses(self):
-        return get_approval_statuses(self.indicator, self.period)
+    def submission_statuses(self):
+        return get_submission_statuses(self.indicator, self.period)
 
     @cached_property
-    def approval_status(self):
+    def submission_status(self):
         if self.dimension_type:
-            return self.approval_statuses["statuses_by_dimension_type_id"][
+            return self.submission_statuses["statuses_by_dimension_type_id"][
                 self.dimension_type.id
             ]
         else:
-            return self.approval_statuses["global_status"]
+            return self.submission_statuses["global_status"]
 
     @cached_property
     def dimension_types(self):

@@ -1,0 +1,115 @@
+from django import forms
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.forms import BaseFormSet
+from django.forms.formsets import formset_factory
+from django.forms.models import ModelForm, inlineformset_factory
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.functional import cached_property
+from django.views.generic import DetailView, TemplateView, View
+
+from cpho.constants import (
+    APPROVAL_STATUSES,
+    HSO_APPROVAL_TYPE,
+    PROGRAM_APPROVAL_TYPE,
+)
+from cpho.models import (
+    DimensionType,
+    DimensionValue,
+    Indicator,
+    IndicatorDatum,
+)
+from cpho.queries import get_approval_statuses
+from cpho.services import SubmitIndicatorDataService
+from cpho.text import tdt, tm
+from cpho.util import group_by
+
+from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
+
+
+class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    def post(self, *args, **kwargs):
+        # TODO: modify once we have users figured out
+        # alternatively might want to make this a url or post param
+        # so admins can approve as programs?
+
+        approval_type = self.request.POST["approval_type"]
+
+        SubmitIndicatorDataService(
+            indicator=self.indicator,
+            period=self.period,
+            dimension_type=self.dimension_type,
+            approval_type=approval_type,
+            user=self.request.user,
+        ).perform()
+        messages.success(
+            self.request, tdt("Submission successful"), messages.SUCCESS
+        )
+        return redirect(
+            reverse(
+                "view_indicator_for_year",
+                args=[self.indicator.id, self.period.id],
+            ),
+        )
+
+
+class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
+    model = Indicator
+    template_name = "review_data.jinja2"
+
+    @cached_property
+    def indicator(self):
+        return get_object_or_404(Indicator, pk=self.kwargs["indicator_id"])
+
+    @cached_property
+    def indicator_data(self):
+        qs = (
+            self.indicator.data.filter(period=self.period)
+            .select_related("dimension_value")
+            .prefetch_related("dimension_type")
+            .with_approval_annotations()
+            .with_last_version_date()
+            .order_by("dimension_value")
+        )
+
+        if self.dimension_type:
+            qs = qs.filter(dimension_type=self.dimension_type)
+
+        return qs
+
+    @cached_property
+    def indicator_data_by_dimension_type(self):
+        return group_by(
+            list(self.indicator_data), lambda d: d.dimension_type_id
+        )
+
+    @cached_property
+    def approval_statuses(self):
+        return get_approval_statuses(self.indicator, self.period)
+
+    @cached_property
+    def approval_status(self):
+        if self.dimension_type:
+            return self.approval_statuses["statuses_by_dimension_type_id"][
+                self.dimension_type.id
+            ]
+        else:
+            return self.approval_statuses["global_status"]
+
+    @cached_property
+    def dimension_types(self):
+        qs = DimensionType.objects.all()
+        if self.dimension_type:
+            qs = qs.filter(pk=self.dimension_type.pk)
+        return qs
+
+    def get_context_data(self, *args, **kwargs):
+        return {
+            **super().get_context_data(*args, **kwargs),
+        }

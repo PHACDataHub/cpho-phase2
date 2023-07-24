@@ -1,0 +1,31 @@
+{% from 'generic_macros.jinja2' import date_display %}
+
+{% macro indicator_data_table_w_approvals(data) %}
+  {# assumes dimension_type and dimension_value are prefetched #}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{{ tdt("Stratifier value") }}</th>
+        <th>{{ tdt("Indicator value") }}</th>
+        <th>{{ tdt("Last modified") }}</th>
+        <th>{{ tdt("Approval Status") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for datum in data %}
+        <tr>
+          <th>
+            {% if datum.dimension_type.is_literal %}
+              {{ datum.literal_dimension_val }}
+            {% else %}
+              {{ datum.dimension_value.name }}
+            {% endif %}
+          </th>
+          <td>{{ datum.value }}</td>
+          <td>{{ date_display(datum.last_version_date) }}</td>
+          <td>{{ datum.submission_status }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endmacro %}

@@ -1,25 +1,25 @@
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
-from django.forms.models import ModelForm, inlineformset_factory
-from django.http import HttpResponse
-from django.shortcuts import redirect, reverse
+from django.forms.models import ModelForm
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
+from cpho.constants import APPROVAL_STATUSES
 from cpho.models import (
     DimensionType,
     DimensionValue,
     Indicator,
     IndicatorDatum,
-    Period,
 )
+from cpho.queries import get_approval_statuses
 from cpho.text import tdt, tm
 
-from .view_util import SinglePeriodMixin
+from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
 
 
 class InstanceProvidingFormSet(BaseFormSet):
@@ -51,8 +51,6 @@ class IndicatorDatumForm(ModelForm):
             "single_year_timeframe",
             "multi_year_timeframe",
             "literal_dimension_val",
-            "hso_approved",
-            "program_approved",
         ]
 
     value = forms.FloatField(
@@ -100,30 +98,6 @@ class IndicatorDatumForm(ModelForm):
     literal_dimension_val = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-
-    def save_changes(self):
-        """
-        Save form only if it has changed, otherwise do nothing.
-        Implementing as a form function so upload can use it too(in the future)
-        Bonus: This will prevent creating multiple history/version records
-        """
-        if self.has_changed():
-            print("changed")
-            print(self.changed_data)
-            if "DELETE" in self.changed_data:
-                if self.instance.id is not None:
-                    self.instance.delete()
-            elif self.changed_data in [
-                ["program_approved"],
-                ["hso_approved"],
-                ["program_approved", "hso_approved"],
-            ]:
-                self.save()
-            else:
-                obj = self.save(commit=False)
-                obj.program_approved = False
-                obj.hso_approved = False
-                obj.save()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -213,7 +187,9 @@ class IndicatorDatumForm(ModelForm):
         return multi_year
 
 
-class ManageIndicatorData(SinglePeriodMixin, TemplateView):
+class ManageIndicatorData(
+    SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView
+):
     template_name = "indicator_data/manage_indicator_data.jinja2"
 
     @cached_property
@@ -221,38 +197,24 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
 
     @cached_property
-    def dimension_type(self):
-        if "dimension_type_id" not in self.kwargs:
-            return None
-
-        return DimensionType.objects.prefetch_related("possible_values").get(
-            id=self.kwargs["dimension_type_id"]
-        )
-
-    def action_type(self):
-        return self.kwargs["action"]
-
-    def form_type(self):
-        if self.action_type() == "review" or self.action_type() == "view":
-            return ReadOnlyIndicatorDatumForm
-        elif self.action_type() == "edit":
-            return IndicatorDatumForm
-
-    @cached_property
     def age_group_formset(self):
-        existing_data = IndicatorDatum.objects.filter(
-            indicator=self.indicator,
-            dimension_type__code="age",
-            period=self.period,
-        ).order_by("dimension_value__order")
+        existing_data = (
+            IndicatorDatum.objects.filter(
+                indicator=self.indicator,
+                dimension_type__code="age",
+                period=self.period,
+            )
+            .order_by("dimension_value__order")
+            .with_approval_annotations()
+        )
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
             IndicatorDatum,
             fk_name="indicator",
-            form=self.form_type(),
+            form=IndicatorDatumForm,
             # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
-            extra=1 if self.action_type() == "edit" else 0,
+            extra=1,
             can_delete=True,
         )
 
@@ -270,7 +232,6 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         for form in fs:
             # new unsaved instances' save() crash when no dimension type is specified
             form.instance.dimension_type = age_dimension
-            form.instance.period = self.period
 
         return fs
 
@@ -279,11 +240,15 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         # TODO: filter by period
 
         # getting all indicator data for this indicator
-        existing_data = IndicatorDatum.objects.filter(
-            indicator=self.indicator,
-            dimension_type__is_literal=False,
-            period=self.period,
-        ).order_by("dimension_value__order")
+        existing_data = (
+            IndicatorDatum.objects.filter(
+                indicator=self.indicator,
+                dimension_type__is_literal=False,
+                period=self.period,
+            )
+            .order_by("dimension_value__order")
+            .with_approval_annotations()
+        )
 
         # value for all not selected only get data for stratifier selected
         if self.dimension_type is not None:
@@ -320,9 +285,7 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             instances.append(record)
 
         factory = formset_factory(
-            form=self.form_type(),
-            formset=InstanceProvidingFormSet,
-            extra=0,
+            form=IndicatorDatumForm, formset=InstanceProvidingFormSet, extra=0
         )
         formset_kwargs = {
             "initial": [{} for x in possible_values],
@@ -352,41 +315,50 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             .filter(is_literal=False)
         }
 
+    @cached_property
+    def has_age_group_forms(self):
+        return self.dimension_type is None or self.dimension_type.code == "age"
+
     def post(self, *args, **kwargs):
         predefined_valid = self.predefined_values_formset.is_valid()
-        age_group_valid = self.age_group_formset.is_valid()
+        age_group_valid = (
+            not self.has_age_group_forms or self.age_group_formset.is_valid()
+        )
         if predefined_valid and age_group_valid:
             with transaction.atomic():
                 for form in self.predefined_values_formset:
-                    form.save_changes()
+                    if form.has_changed():
+                        form.save()
 
-                for form in self.age_group_formset:
-                    form.save_changes()
+                if self.has_age_group_forms:
+                    self.age_group_formset.save()
 
-                # self.age_group_formset.save()
-
-                messages.success(
-                    self.request, tdt("Data saved."), messages.SUCCESS
-                )
+                messages.success(self.request, tdt("Data saved."))
                 return redirect(
-                    "view_indicator",
-                    pk=self.indicator.pk,
+                    reverse(
+                        "view_indicator_for_year",
+                        args=[self.indicator.pk, self.period.id],
+                    ),
                 )
         else:
             # get will just render the forms and their errors
             # import IPython
-
             # IPython.embed()
 
-            print(
-                "predefined_values_formset.errors",
-                self.predefined_values_formset.errors,
-            )
-            print("age_group_formset.errors", self.age_group_formset.errors)
-            for form in self.age_group_formset:
-                print("form.value", form.instance.value)
-                print("form.errors", form.errors)
             return self.get(*args, **kwargs)
+
+    @cached_property
+    def submission_statuses(self):
+        return get_approval_statuses(self.indicator, self.period)
+
+    @cached_property
+    def submission_status(self):
+        if self.dimension_type:
+            return self.submission_statuses[
+                "statuses_by_dimension_type_id"
+            ].get(self.dimension_type.id, APPROVAL_STATUSES.NO_DATA)
+        else:
+            return self.submission_statuses["global_status"]
 
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:
@@ -406,70 +378,9 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
             "age_group_formset": self.age_group_formset,
-            "dimension_type": "all"
-            if self.dimension_type is None
-            else self.dimension_type.code,
-            "read_only": self.action_type() == "view"
-            or self.action_type() == "review",
-            "action_type": self.action_type(),
-            "period": self.period,
+            "show_age_group": self.has_age_group_forms,
+            "submission_statuses": self.submission_statuses,
+            "submission_status": self.submission_status,
         }
 
         return ctx
-
-
-class ReadOnlyFormMixin:
-    """A form mixin for the read only view that includes methods to
-    disable fields and remove placeholders."""
-
-    def __init__(self, *args, **kwargs):
-        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
-
-    def disable_fields(self):
-        """Disable all fields in the form."""
-        for field in self.fields:
-            # print(field)
-            if field not in ["hso_approved", "program_approved"]:
-                self.fields[field].widget.attrs["disabled"] = True
-
-    def remove_placeholders(self):
-        """Remove all placeholders from the form."""
-        for field in self.fields:
-            self.fields[field].widget.attrs.pop("placeholder", None)
-
-
-class ReadOnlyIndicatorDatumForm(IndicatorDatumForm, ReadOnlyFormMixin):
-    def __init__(self, *args, **kwargs):
-        super(IndicatorDatumForm, self).__init__(*args, **kwargs)
-        self.disable_fields()
-        self.remove_placeholders()
-
-
-# class ApproveIndicatorData(TemplateView):
-#     def indicator(self):
-#         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
-
-#     def period(self):
-#         return Period.objects.get(pk=self.kwargs["period_id"])
-
-#     def post(self, *args, **kwargs):
-#         response = HttpResponse()
-
-#         relevant_data = IndicatorDatum.objects.filter(
-#             indicator=self.indicator(), period=self.period()
-#         )
-#         for data in relevant_data:
-#             data.hso_approved = True
-#             data.program_approved = True
-#             data.save()
-#         # print(dir(data.versions.create))
-#         # data.versions.latest().hso_approved = True
-#         # data.save()
-#         # data.versions.create(hso_approved=True)
-#         # print(data.versions.latest().hso_approved)
-#         # print(dir(data.versions))
-
-#         response["HX-Redirect"] = reverse(
-#             "view_indicator", kwargs={"pk": self.indicator().pk}
-#         )
-#         return response

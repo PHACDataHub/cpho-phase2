@@ -2,6 +2,10 @@ from collections import defaultdict
 
 from django.utils.translation import get_language
 
+import pytz
+
+eastern_timezone = pytz.timezone("Canada/Eastern")
+
 
 def get_lang_code():
     lang_locale = get_language()

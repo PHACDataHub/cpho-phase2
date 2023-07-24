@@ -11,14 +11,11 @@
               <div class="card-body row">
                 <div class="col-5 h5">{{ tdt("Manage data for ") }} {{ dimension_type.name }}</div>
                 <div class="col-3"></div>
-                <div class="col-1 text-center">
-                  <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id, 'view']) }}">{{ tdt("View") }}</a>
-                </div>
-                <div class="col-1 text-center">
-                  <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id, 'edit']) }}">{{ tdt("Edit") }}</a>
+                <div class="col-2 text-center">
+                  <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Edit") }}</a>
                 </div>
                 <div class="col-2 text-center">
-                  <a href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id, 'review']) }}">{{ tdt("Review and approve") }}</a>
+                  {{ approval_statuses['statuses_by_dimension_type_id'][dimension_type.id] or "no data" }}
                 </div>
               </div>
             </div>
@@ -31,18 +28,12 @@
             <div class="card-body row">
               <div class="col-5 h5">{{ tdt("Manage data for ") }} {{ tdt("All") }}</div>
               <div class="col-3"></div>
-              <div class="col-1 text-center">
-                <a href="{{ url('manage_indicator_data_all', args=[object.id, period.id, 'view']) }}">{{ tdt("View") }}</a>
-              </div>
-              <div class="col-1 text-center">
-                <a href="{{ url('manage_indicator_data_all', args=[object.id, period.id, 'edit']) }}">{{ tdt("Edit") }}</a>
-              </div>
               <div class="col-2 text-center">
-                <a href="{{ url('manage_indicator_data_all', args=[object.id, period.id, 'review']) }}">{{ tdt("Review and approve") }}</a>
+                <a href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Edit") }}</a>
               </div>
+              <div class="col-2"></div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  {% endblock %}
+    {% endblock %}

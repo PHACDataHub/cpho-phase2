@@ -9,7 +9,7 @@ def test_predefined_create_from_scratch(vanilla_user_client):
     ind = IndicatorFactory()
     sex_cat = DimensionType.objects.get(code="sex")
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk, "edit"]
+        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -49,7 +49,7 @@ def test_predefined_existing_data(vanilla_user_client):
     )
 
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk, "edit"]
+        "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -76,13 +76,19 @@ def test_predefined_existing_data(vanilla_user_client):
     assert male_record.value == 1.1
     assert ind.data.get(dimension_value=female_val).value == 2.0
 
+    # submit the same data and check no new versions are created
+    assert male_record.versions.count() == 2
+    response = vanilla_user_client.post(url, data=data)
+    assert response.status_code == 302
+    assert male_record.versions.count() == 2
+
 
 def test_create_agegroups_from_scratch(vanilla_user_client):
     period = Period.objects.first()
     ind = IndicatorFactory()
     age_cat = DimensionType.objects.get(code="age")
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk, "edit"]
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -139,7 +145,7 @@ def test_agegroups_existing_data(vanilla_user_client):
     )
 
     url = reverse(
-        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk, "edit"]
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
     )
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
@@ -184,6 +190,12 @@ def test_agegroups_existing_data(vanilla_user_client):
     # assert deleted
     assert not IndicatorDatum.objects.filter(id=record_51_75.id).exists()
 
+    # try submitting the same data and check that no new versions are created when data doesn't change,
+    assert ind.data.get(literal_dimension_val="0-25").versions.count() == 2
+    response = vanilla_user_client.post(url, data=data)
+    assert response.status_code == 302
+    assert ind.data.get(literal_dimension_val="0-25").versions.count() == 2
+
 
 def test_modify_all_dimensions(vanilla_user_client):
     period = Period.objects.first()
@@ -213,9 +225,7 @@ def test_modify_all_dimensions(vanilla_user_client):
         value=6,
     )
 
-    url = reverse(
-        "manage_indicator_data_all", args=[ind.id, period.id, "edit"]
-    )
+    url = reverse("manage_indicator_data_all", args=[ind.id, period.id])
     response = vanilla_user_client.get(url)
     assert response.status_code == 200
 

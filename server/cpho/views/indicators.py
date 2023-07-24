@@ -15,6 +15,7 @@ from django.views.generic import (
 )
 
 from cpho.models import DimensionType, Indicator, Period
+from cpho.queries import get_approval_statuses
 from cpho.text import tdt, tm
 
 from .view_util import SinglePeriodMixin
@@ -107,6 +108,9 @@ class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
         return {
             **super().get_context_data(*args, **kwargs),
             "dimension_types": DimensionType.objects.all(),
+            "approval_statuses": get_approval_statuses(
+                self.object, self.period
+            ),
         }
 
 

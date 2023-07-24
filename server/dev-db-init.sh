@@ -6,6 +6,8 @@ set -o nounset
 # ----- Get environment variables  -----
 source $(dirname "${BASH_SOURCE[0]}")/.env.dev
 
+cat server/.env.dev
+
 # Create "cpho_db_user" role if not exists
 if ! psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM pg_roles WHERE rolname='cpho_db_user'" | grep -q 1; then
     # Role does not exist - create it
@@ -13,7 +15,9 @@ if ! psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM pg_roles
         CREATE ROLE cpho_db_user WITH LOGIN PASSWORD '';
         ALTER ROLE cpho_db_user CREATEDB;
 EOSQL
-# echo "Created cpho_db_user role."
+    echo "Creating cpho_db_user role"
+else 
+    echo "cpho_db_user role already exists."
 fi
 
 # Create "cpho_dev_db" if not exists
@@ -22,5 +26,7 @@ if ! psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -lqt | cut -d \| -f 1 | grep
     psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" <<-EOSQL
         CREATE DATABASE cpho_dev_db WITH OWNER cpho_db_user;
 EOSQL
-# echo "Created cpho_dev_db database."
+    echo "Created cpho_dev_db database."
+else
+    echo "cpho_dev_db database  already exists."
 fi

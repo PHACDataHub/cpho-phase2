@@ -26,6 +26,16 @@ def create_users():
         username="person1",
         password="person1",
     )
+    User.objects.filter(username="hso").delete()
+    User.objects.create_user(
+        username="hso",
+        password="hso",
+    )
+    User.objects.filter(username="program").delete()
+    User.objects.create_user(
+        username="program",
+        password="program",
+    )
 
 
 def create_data():

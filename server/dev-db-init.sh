@@ -3,37 +3,18 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-# ----- Get environment variables  -----
+# Get environment variables
 source $(dirname "${BASH_SOURCE[0]}")/.env.dev
+
+# Set default password
 POSTGRES_USER=postgres
 
+# Create DB user and database for dev and testing. 
+echo "Create $DB_USER role and $DB_NAME database"
+
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER"  <<-EOSQL
-	CREATE USER $DB_USER;
-    ALTER ROLE $DB_USER CREATEDB;
-	CREATE DATABASE $DB_NAME
+    CREATE ROLE $DB_USER WITH LOGIN PASSWORD '';
+	ALTER ROLE $DB_USER CREATEDB;
+	CREATE DATABASE $DB_NAME WITH OWNER $DB_USER;
 EOSQL
-	# GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
-# # cat .env.dev
 
-# # Create "cpho_db_user" role if not exists
-# if ! psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM pg_roles WHERE rolname='cpho_db_user'" | grep -q 1; then
-#     # Role does not exist - create it
-#     psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" <<-EOSQL
-#         CREATE ROLE cpho_db_user WITH LOGIN PASSWORD '';
-#         ALTER ROLE cpho_db_user CREATEDB;
-# EOSQL
-#     echo "Creating cpho_db_user role"
-# else 
-#     echo "cpho_db_user role already exists."
-# fi
-
-# # Create "cpho_dev_db" if not exists
-# if ! psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" -lqt | cut -d \| -f 1 | grep -qw "cpho_dev_db"; then
-#     # Database does not exist, so create it
-#     psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" <<-EOSQL
-#         CREATE DATABASE cpho_dev_db WITH OWNER cpho_db_user;
-# EOSQL
-#     echo "Created cpho_dev_db database."
-# else
-#     echo "cpho_dev_db database  already exists."
-# fi

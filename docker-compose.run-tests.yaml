@@ -1,7 +1,5 @@
-# Docker compose file for running tests in Cloud Build.
-# Note: If testing locally, 
-#       - Set IMAGE_NAME_FOR_RUN (export IMAGE_NAME_FOR_RUN=image_for_tests)
-#       - Change the network to external: false.
+# Docker compose file for running tests.
+# Note: If testing locally, change the network to external: false.
 
 version: '3.8'
 
@@ -9,8 +7,6 @@ services:
   db:
     image: postgres:13.0-alpine
     restart: always
-    ports:
-      - "5432:5432" 
     volumes: 
       - db:/var/lib/postgresql/data
       - ./server/.env.dev:/docker-entrypoint-initdb.d/.env.dev
@@ -33,7 +29,7 @@ services:
     # NOTE: Given Compose environment variable precedence (https://docs.docker.com/compose/environment-variables/envvars-precedence/),
     #       the environment variable set here will ONLY override variables set in env_file because we're using decouple, and 
     #       decouple.Config looks in OS env vars before .env files. 
-    #       If the behaviour changes, or if this is run without using decouple, this will no longer work. 
+    #       If the behaviour changes, or if this is run without using decouple, setting DB_HOST=db here will no longer work. 
       - DB_HOST=db
     depends_on:
       - db
@@ -47,6 +43,6 @@ networks:
     name: cloudbuild
     external: true
     # external: false
-    # NOTE:  An issue with error around network label being incorrect - fixed by: "docker network create --label com.docker.compose.network=cloudbuild cloudbuild"
+# NOTE:  An issue with error around network label being incorrect - fixed by: "docker network create --label com.docker.compose.network=cloudbuild cloudbuild"
 
 

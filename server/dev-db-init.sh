@@ -5,8 +5,6 @@ set -o nounset
 
 # Get environment variables
 source $(dirname "${BASH_SOURCE[0]}")/.env.dev
-
-# Set default password
 POSTGRES_USER=postgres
 
 # Create DB user and database for dev and testing. 

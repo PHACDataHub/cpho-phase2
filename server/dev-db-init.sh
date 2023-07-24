@@ -6,7 +6,7 @@ set -o nounset
 # ----- Get environment variables  -----
 source $(dirname "${BASH_SOURCE[0]}")/.env.dev
 
-cat server/.env.dev
+cat .env.dev
 
 # Create "cpho_db_user" role if not exists
 if ! psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM pg_roles WHERE rolname='cpho_db_user'" | grep -q 1; then

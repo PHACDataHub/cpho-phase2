@@ -15,6 +15,6 @@ echo "Create $DB_USER role and $DB_NAME database"
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER"  <<-EOSQL
     CREATE ROLE $DB_USER WITH LOGIN;
 	ALTER ROLE $DB_USER CREATEDB;
-	createdb -U "$DB_USER" "$DB_NAME"
 EOSQL
 
+createdb -U "$DB_USER" "$DB_NAME"

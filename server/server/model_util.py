@@ -54,7 +54,8 @@ class ApprovableCustomVersionModelWithEditor(CustomVersionModelWithEditor):
     class Meta(CustomVersionModelWithEditor.Meta):
         abstract = True
 
-    approved = models.BooleanField(default=False)
+    is_program_submitted = models.BooleanField(default=False)
+    is_hso_submitted = models.BooleanField(default=False)
 
 
 def create_history_decorator(version_base_class):
@@ -88,6 +89,6 @@ track_versions = create_history_decorator(CustomVersionModel)
 track_versions_with_editor = create_history_decorator(
     CustomVersionModelWithEditor
 )
-track_versions_with_editor_and_approval = create_history_decorator(
+track_versions_with_editor_and_submission = create_history_decorator(
     ApprovableCustomVersionModelWithEditor
 )

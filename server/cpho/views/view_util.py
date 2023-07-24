@@ -24,6 +24,22 @@ class SinglePeriodMixin(View):
         }
 
 
+class DimensionTypeOrAllMixin(View):
+    """
+    Several views have a dimension_type_id kwarg that is NULL
+    when we want all dimensions covered
+    """
+
+    @cached_property
+    def dimension_type(self):
+        if "dimension_type_id" not in self.kwargs:
+            return None
+
+        return DimensionType.objects.prefetch_related("possible_values").get(
+            id=self.kwargs["dimension_type_id"]
+        )
+
+
 def upload_mapper():
     all_dimensions = DimensionType.objects.all()
     all_dimension_dict = {

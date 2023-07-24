@@ -35,6 +35,25 @@ h1 abbr {
     border-radius: 10px;
 }
 
+.approved-tag>i {
+    color: green;
+    font-size: 70%;
+}
+
+.approved-tag>span {
+    font-size: 70%;
+}
+
+.approved-tag {
+    display: inline-block;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 5px;
+    padding: 0rem 0.1rem;
+    border: 2px solid #0c3816;
+    margin: 1px;
+}
+
 td:has(>.error-display)>input {
     border: 2px solid #75070c;
 

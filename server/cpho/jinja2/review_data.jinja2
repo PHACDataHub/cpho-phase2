@@ -1,0 +1,91 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display, todo_block %}
+{% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions %}
+
+
+{% block content %}
+  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ view.indicator.name }} {{ view.period }}</div>
+  {% if view.dimension_type %}<div class="h5">{{ tdt("Stratifier: ") }} {{ view.dimension_type.name }}</div>{% endif %}
+
+  <div class="mt-4">
+    <div class="mt-5">
+      {% for dimension_type in view.dimension_types %}
+        <div>
+          <div class="h5">
+            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id] }}</sm>
+          </div>
+ 
+          <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="my-5">
+    {{ todo_block("TODO: changelog of changes since last submission") }}</center>
+  </div>
+
+  <div class="my-5">
+    <a type="button"
+       data-bs-toggle="modal"
+       data-bs-target="#confirmApproveModal"
+       class="btn btn-success float-end my-3">{{ tdt("Approve Data") }}</a>
+  </div>
+</div>
+
+<div class="modal fade"
+     id="confirmApproveModal"
+     tabindex="-1"
+     aria-labelledby="confirmApproveModalLabel"
+     aria-hidden="true">
+  <form class="modal-dialog"
+        {% if view.dimension_type %} action="{{ url('submit_indicator_data', args=[view.indicator.id, view.period.id, view.dimension_type.id]) }}" {% else %} action="{{ url('submit_indicator_data_all', args=[view.indicator.id, view.period.id]) }}" {% endif %}
+        method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmApproveModalLabel">{{ tdt("Confirm Data Approval") }}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ tdt("Placeholder Text: What happens when you submit data") }}</p>
+ 
+        <div class="border p-2 ps-0">
+          <div>TODO: this field will dissapear and be automatically inferred from user type</div>
+          <div>
+            <input type="radio"
+                   name="submission_type"
+                   id="submissionType1"
+                   value="program"
+                   checked>
+            <label for="html">Surveillance program submission</label>
+            <br>
+            <input type="radio" name="submission_type" id="submissionType1" value="hso">
+            <label for="html">HSO submission</label>
+            {{ csrf_input }}
+            <br>
+          </div>
+        </div>
+        <div class="form-check my-3">
+
+          <input class="form-check-input"
+                 type="checkbox"
+                 id="confirmCheckbox"
+                 required>
+          <label class="form-check-label" for="confirmCheckbox">
+            {{ tdt("Placeholder Text: I confirm data validity and agree to submit") }}
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ tdt("Close") }}</button>
+        <input type="submit"
+               id="confirmApproveBtn"
+               class="btn btn-primary float-end my-3"
+               value="{{ tdt("Confirm Approval") }}">
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

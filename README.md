@@ -12,7 +12,7 @@ Note: run all this in the repo's root directory
 4. create a virtual environment in repo root (python -m venv venv)
 5. activate virtual environment (source venv/Scripts/activate on windows, venv/bin/activate on *nix)
 6. install dependencies (`pip install -r server/requirements.txt -r server/requirements_dev.txt`)
-7. (if applicable) Start the db server: pg_ctl -D ~/pg/data/ -l logfile start
+7. (if applicable) Start the db server: `pg_ctl -D ~/pg/data/ -l logfile start`
 8. setting postgres:
     - ```bash
         psql -U postgres -c "CREATE ROLE cpho_db_user with login"

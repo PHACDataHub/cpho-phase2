@@ -4,9 +4,10 @@ from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
-    track_versions_with_editor_and_approval,
+    track_versions_with_editor_and_submission,
 )
 
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.text import tdt
 
 
@@ -62,9 +63,79 @@ class Indicator(models.Model):
         )
 
 
+class IndicatorDatumQueryset(models.QuerySet):
+    def with_last_version_date(self):
+        last_version_date = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-system_date")
+            .values("system_date")[:1]
+        )
+        return self.annotate(last_version_date=last_version_date)
+
+    def with_last_version_username(self, date_field="system_date"):
+        last_version_edited_by_username = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-system_date")
+            .values("edited_by__username")[:1]
+        )
+        return self.annotate(
+            last_version_edited_by_username=last_version_edited_by_username
+        )
+
+    def with_last_version_id(self):
+        last_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-system_date")
+            .values("id")[:1]
+        )
+        return self.annotate(last_version_id=last_version_id)
+
+    def with_last_program_submitted_version_id(self):
+        last_submitted_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk"),
+                is_program_submitted=True,
+            )
+            .order_by("-system_date")
+            .values("id")[:1]
+        )
+        return self.annotate(
+            last_program_submitted_version_id=last_submitted_version_id
+        )
+
+    def with_last_submitted_version_id(self):
+        last_submitted_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk"),
+                is_hso_submitted=True,
+                is_program_submitted=True,
+            )
+            .order_by("-system_date")
+            .values("id")[:1]
+        )
+        return self.annotate(
+            last_submitted_version_id=last_submitted_version_id
+        )
+
+    def with_submission_annotations(self):
+        return (
+            self.with_last_version_id()
+            .with_last_submitted_version_id()
+            .with_last_program_submitted_version_id()
+        )
+
+
 @add_to_admin
-@track_versions_with_editor_and_approval
+@track_versions_with_editor_and_submission
 class IndicatorDatum(models.Model):
+    objects = models.Manager.from_queryset(IndicatorDatumQueryset)()
+
     class Meta:
         unique_together = [
             ("indicator", "period", "dimension_type", "dimension_value"),
@@ -154,6 +225,26 @@ class IndicatorDatum(models.Model):
                 str(self.literal_dimension_val),
             ]
         )
+
+    @property
+    def submission_status(self):
+        try:
+            self.last_version_id
+            self.last_submitted_version_id
+            self.last_program_submitted_version_id
+        except AttributeError:
+            raise Exception("You must add the submission_annotations")
+
+        if not self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+
+        if self.last_version_id == self.last_submitted_version_id:
+            return SUBMISSION_STATUSES.SUBMITTED
+
+        if self.last_version_id == self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+
+        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
 
 
 # the following commented-out models don't really do anything yet,

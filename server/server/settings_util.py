@@ -1,7 +1,7 @@
 import os
 from collections import ChainMap
 
-from decouple import Config, RepositoryEnv, UndefinedValueError, undefined
+from decouple import Config, RepositoryEnv
 
 PROD_ENV_FILE_NAME = ".env.prod"
 DEV_SECRET_ENV_FILE_NAME = ".env.dev-secret"

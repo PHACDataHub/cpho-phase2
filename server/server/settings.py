@@ -21,6 +21,7 @@ from decouple import Csv
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,
+    configure_authentication_backends,
     configure_middleware,
 )
 
@@ -222,9 +223,11 @@ if IS_RUNNING_TESTS:
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-]
+AUTHENTICATION_BACKENDS = configure_authentication_backends(
+    [
+        "django.contrib.auth.backends.ModelBackend",
+    ]
+)
 AUTH_USER_MODEL = "cpho.User"
 
 AUTH_PASSWORD_VALIDATORS = [

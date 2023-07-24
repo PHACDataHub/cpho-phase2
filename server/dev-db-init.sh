@@ -9,9 +9,9 @@ source $(dirname "${BASH_SOURCE[0]}")/.env.dev
 # cat .env.dev
 
 # Create "cpho_db_user" role if not exists
-if ! psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM pg_roles WHERE rolname='cpho_db_user'" | grep -q 1; then
+if ! psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM pg_roles WHERE rolname='cpho_db_user'" | grep -q 1; then
     # Role does not exist - create it
-    psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" <<-EOSQL
+    psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" <<-EOSQL
         CREATE ROLE cpho_db_user WITH LOGIN PASSWORD '';
         ALTER ROLE cpho_db_user CREATEDB;
 EOSQL
@@ -21,9 +21,9 @@ else
 fi
 
 # Create "cpho_dev_db" if not exists
-if ! psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -lqt | cut -d \| -f 1 | grep -qw "cpho_dev_db"; then
+if ! psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" -lqt | cut -d \| -f 1 | grep -qw "cpho_dev_db"; then
     # Database does not exist, so create it
-    psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" <<-EOSQL
+    psql -h "$DB_HOST" -U "$POSTGRES_USER" -d "$DB_NAME" <<-EOSQL
         CREATE DATABASE cpho_dev_db WITH OWNER cpho_db_user;
 EOSQL
     echo "Created cpho_dev_db database."

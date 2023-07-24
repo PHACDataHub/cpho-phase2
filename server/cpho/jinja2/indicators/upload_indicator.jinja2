@@ -13,17 +13,26 @@
   <form action="{{ url('upload_indicator') }}"
         method="post"
         enctype="multipart/form-data"
+        onsubmit="openLoader()"
         class="form-horizontal mt-3">
  
     {{ csrf_input }}
     <div>
       {{ form.csv_file }}
       <div class="row">
-        <div class="form-group">
-          <button class="btn btn-primary mt-3 float-end">{{ tdt("Upload")}}</button>
+        <div id="submit-btn-div" class="form-group">
+          <input type="submit"
+                 id="submit-btn"
+                 class="btn btn-primary mt-3 float-end"
+                 value="{{ tdt('Upload')}}">
+        </div>
+        <div id="loadingModal" style="display: none;">
+          <button class="btn btn-primary mt-3 float-end" type="button" disabled>
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            {{ tdt("Uploading")}}
+          </button>
         </div>
       </div>
- 
     </div>
   </form>
 
@@ -380,5 +389,12 @@
       </div>
     </div>
   </div>
+  <script>
+    function openLoader() {
+      document.getElementById("submit-btn").disabled = true;
+      document.getElementById("submit-btn-div").style.display = "none";
+      document.getElementById("loadingModal").style.display = "block";
+      }
+  </script>
  
 {% endblock %}

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import logging.config
 import os
-import sys
 from pathlib import Path
 
 from django.urls import reverse_lazy
@@ -25,7 +24,7 @@ from phac_aspc.django.settings.utils import (
     configure_middleware,
 )
 
-from server.config_util import get_project_config
+from server.config_util import get_project_config, is_running_tests
 from server.logging_util import configure_logging
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -37,11 +36,7 @@ config = get_project_config()
 
 
 IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
-IS_RUNNING_TESTS = (
-    IS_LOCAL_DEV
-    and "test" in sys.argv
-    or any("pytest" in arg for arg in sys.argv)
-)
+IS_RUNNING_TESTS = is_running_tests()
 if IS_LOCAL_DEV:
     # For security, these test/dev settings should _never_ be used in production!
     DEBUG = config("DEBUG", default=False, cast=bool)

@@ -7,12 +7,17 @@ from opentelemetry.sdk.trace.export import (
     SimpleSpanProcessor,
 )
 
-from server.settings_util import get_project_config
+from server.config_util import get_project_config, is_running_tests
 
 
 def instrument_app():
     config = get_project_config()
     IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+
+    if is_running_tests():
+        # TODO: maybe still instrument, just want to silence the output when the
+        # test environment is detected
+        return
 
     if IS_LOCAL_DEV:
         span_exporter = ConsoleSpanExporter()

@@ -9,12 +9,10 @@ services:
     restart: always
     volumes: 
       - db:/var/lib/postgresql/data
-      - ./server/.env.dev:/docker-entrypoint-initdb.d/.env.dev
+      - ./server/.env.dev-public:/docker-entrypoint-initdb.d/.env.dev-public
       - ./server/dev-db-init.sh:/docker-entrypoint-initdb.d/dev-db-init.sh
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust  
-    env_file:
-      - ./server/.env.dev-public
 
   server:
     build: ./server

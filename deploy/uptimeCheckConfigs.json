@@ -1,3 +1,21 @@
+{
+  "displayName": "HoPiC Uptime Check",
+  "monitoredResource": {
+    "type": "servicedirectory_service",
+    "labels": {
+      "project_id": "$PROJECT_ID",
+      "service_name": "PRIVATE_SERVICE",
+      "namespace_name": "PRIVATE_NAMESPACE",
+      "location": "REGION"
+    }
+  },
+  "httpCheck": {
+    "requestMethod": "GET"
+  },
+  "period": "60s",
+  "timeout": "10s",
+  "checker_type": "VPC_CHECKERS"
+}
 
 {
     "name": "projects/phx-01h4rr1468rj3v5k60b1vserd3/uptimeCheckConfigs/hopic-uptime-check_id",

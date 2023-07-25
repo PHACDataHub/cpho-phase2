@@ -25,7 +25,7 @@ def test_get_project_config_uses_prod_exclusively_if_exists(tmp_path):
     write_env_file(tmp_path, DEV_PUBLIC_ENV_FILE_NAME)
     write_env_file(tmp_path, DEV_SECRET_ENV_FILE_NAME)
 
-    config = get_project_config(BASE_DIR=tmp_path)
+    config = get_project_config(env_dir=tmp_path)
 
     assert config("ENV_FILE_USED") == PROD_ENV_FILE_NAME
 
@@ -48,7 +48,7 @@ def test_get_project_config_uses_merged_dev_envs_with_priority_for_dev_secret(
     write_env_file(tmp_path, DEV_PUBLIC_ENV_FILE_NAME)
     write_env_file(tmp_path, DEV_SECRET_ENV_FILE_NAME)
 
-    config = get_project_config(BASE_DIR=tmp_path)
+    config = get_project_config(env_dir=tmp_path)
 
     # assert that priority is given to dev secrets
     assert config("ENV_FILE_USED") == DEV_SECRET_ENV_FILE_NAME

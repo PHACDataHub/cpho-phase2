@@ -33,7 +33,7 @@ from server.settings_util import get_project_config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-config = get_project_config(BASE_DIR)
+config = get_project_config()
 
 
 IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)

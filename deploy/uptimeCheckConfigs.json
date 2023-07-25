@@ -1,0 +1,47 @@
+
+{
+    "name": "projects/phx-01h4rr1468rj3v5k60b1vserd3/uptimeCheckConfigs/hopic-uptime-check_id",
+    "displayName": "HoPiC Uptime Check",
+    "period": "60s",
+    "timeout": "10s",
+    // "contentMatchers": [
+    //   {
+    //     object (ContentMatcher)
+    //   }
+    // ],
+    "checkerType": enum (CheckerType),
+    "selectedRegions": [
+      enum (REGION_UNSPECIFIED,)
+    ],
+    "isInternal": boolean,
+    "internalCheckers": [
+      {
+        object (InternalChecker)
+      }
+    ],
+    "userLabels": {
+      string: string,
+      ...
+    },
+  
+    // Union field resource can be only one of the following:
+    "monitoredResource": {
+      object (MonitoredResource)
+    },
+    "resourceGroup": {
+      object (ResourceGroup)
+    },
+    "syntheticMonitor": {
+      object (SyntheticMonitorTarget)
+    }
+    // End of list of possible types for union field resource.
+  
+    // Union field check_request_type can be only one of the following:
+    "httpCheck": {
+      object (HttpCheck)
+    },
+    "tcpCheck": {
+      object (TcpCheck)
+    }
+    // End of list of possible types for union field check_request_type.
+  }

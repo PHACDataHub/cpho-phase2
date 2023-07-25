@@ -14,11 +14,15 @@ Note: run all this in the repo's root directory
 6. install dependencies (`pip install -r server/requirements.txt -r server/requirements_dev.txt`)
 7. (if applicable) Start the db server: `pg_ctl -D ~/pg/data/ -l logfile start`
 8. setting postgres:
-    - ```bash
+
+    ```
+    ./server/dev-db-init.sh
+    ```
+    <!-- - ```bash
         psql -U postgres -c "CREATE ROLE cpho_db_user with login"
         psql -U postgres -c "ALTER ROLE cpho_db_user createdb"
         createdb -U cpho_db_user cpho_dev_db
-        ```
+        ``` -->
 9. seed the DB
     - ```bash
         python ./manage.py migrate

@@ -19,7 +19,26 @@ steps:
       echo "Write .env.cloud_build to disk, to provide consistent project configuration (no secrets) in subsequent steps"
       deploy/make_cloud_build_env_file.sh "${BRANCH_NAME}" "${COMMIT_SHA}"
 
-  - id: "Build image"
+  - id: "Run tests"
+    name: "gcr.io/cloud-builders/docker"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build
+
+      echo "Build images for testing, run tests and create report"
+      # TODO: Upload coverage report to somewhere like Google Cloud Storage, and determine how to more easily access results - currently we need to dig through the Cloud Build logs in order to view the report.  
+      docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
+      # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.
+      
+      echo "Tear down containers and volumes"
+      docker compose -f docker-compose.run-tests.yaml down -v
+
+  - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"
     script: |
       #!/usr/bin/env bash
@@ -30,8 +49,12 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
-      echo "Build a new application run time image"
-      docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+        echo "Build a new application run time image"
+        docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+       else
+        echo "pass"
+      fi
 
   - id: "Push image if main"
     name: "gcr.io/cloud-builders/docker"

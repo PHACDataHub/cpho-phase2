@@ -223,11 +223,13 @@ if IS_RUNNING_TESTS:
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
+
 AUTHENTICATION_BACKENDS = configure_authentication_backends(
     [
         "django.contrib.auth.backends.ModelBackend",
     ]
 )
+
 AUTH_USER_MODEL = "cpho.User"
 
 AUTH_PASSWORD_VALIDATORS = [

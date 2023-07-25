@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.forms.models import ModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -15,7 +16,9 @@ from django.views.generic import (
 )
 
 from cpho.models import DimensionType, Indicator, Period
+from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
+from cpho.util import group_by
 
 from .view_util import SinglePeriodMixin
 
@@ -103,10 +106,35 @@ class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
     model = Indicator
     template_name = "indicators/view_indicator_for_year.jinja2"
 
+    @cached_property
+    def indicator(self):
+        return self.object
+
+    @cached_property
+    def indicator_data(self):
+        return (
+            self.indicator.data.filter(period=self.period)
+            .select_related("dimension_value")
+            .prefetch_related("dimension_type")
+            .with_submission_annotations()
+            .with_last_version_date()
+            .order_by("dimension_value")
+        )
+
+    @cached_property
+    def indicator_data_by_dimension_type(self):
+        return group_by(
+            list(self.indicator_data), lambda d: d.dimension_type_id
+        )
+
     def get_context_data(self, *args, **kwargs):
         return {
             **super().get_context_data(*args, **kwargs),
             "dimension_types": DimensionType.objects.all(),
+            "submission_statuses": get_submission_statuses(
+                self.object, self.period
+            ),
+            "indicator_data_by_dimension_type": self.indicator_data_by_dimension_type,
         }
 
 

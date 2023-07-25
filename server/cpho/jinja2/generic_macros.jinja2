@@ -1,0 +1,14 @@
+{# Macros here would likely be copy/pasted in other projects #}
+
+{% macro date_display(date) %}
+  {{ date.astimezone(eastern_timezone).strftime('%Y-%m-%d %H:%M') }}
+{% endmacro %}
+
+
+{% macro todo_block(text) %}
+  <div class="card card-body bg-light">
+    <center class="fw-light fs-5 opacity-75">
+      {{ text }}
+    </center>
+  </div>
+{% endmacro %}

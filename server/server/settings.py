@@ -10,29 +10,30 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import logging.config
 import os
 import sys
 from pathlib import Path
 
 from django.urls import reverse_lazy
 
-from decouple import Config, Csv, RepositoryEnv
+from decouple import Csv
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,
+    configure_authentication_backends,
     configure_middleware,
 )
+
+from server.logging_util import configure_logging
+from server.settings_util import get_project_config
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Point decouple.Config to the appropriate .env file
-# Reminder: decouple config(...) looks in OS env vars first, configured .env file second
-try:
-    config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.prod")))
-except:
-    config = Config(RepositoryEnv(os.path.join(BASE_DIR, ".env.dev")))
+
+config = get_project_config(BASE_DIR)
 
 
 IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
@@ -153,6 +154,7 @@ MIDDLEWARE = configure_middleware(
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "versionator.middleware.WhodidMiddleware",
+        "django_structlog.middlewares.RequestMiddleware",
     ]
 )
 
@@ -221,10 +223,13 @@ if IS_RUNNING_TESTS:
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTHENTICATION_BACKENDS = [
-    # "axes.backends.AxesStandaloneBackend",
-    "django.contrib.auth.backends.ModelBackend",
-]
+
+AUTHENTICATION_BACKENDS = configure_authentication_backends(
+    [
+        "django.contrib.auth.backends.ModelBackend",
+    ]
+)
+
 AUTH_USER_MODEL = "cpho.User"
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -265,3 +270,27 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # BUSINESS LOGIC CONFIGURATION
 
 CURRENT_YEAR = 2021
+
+# Logging
+
+# LOGGING_CONFIG = None drops the Django default logging config rather than merging our rules with it.
+# I preffer this as having to consult the default rules and work out what is or isn't overwritten
+# by the merging just feels like gotcha city for future maintainers. This doesn't disable built-in loggers,
+# just let's us cleanly customize handlers and formatters
+LOGGING_CONFIG = None
+
+configure_logging(
+    lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
+    format_console_logs_as_json=config(
+        "FORMAT_CONSOLE_LOGS_AS_JSON", cast=bool, default=True
+    ),
+    slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
+    slack_webhook_fail_silent=config(
+        "SLACK_WEBHOOK_FAIL_SILENT",
+        # default to failing silent if webhook URL not set, failing loud otherwise
+        bool(config("SLACK_WEBHOOK_URL", None)),
+    ),
+    # Mute console logging output when running tests, because it conflicts with pytests own
+    # console output (which captures and reports errors after all tests have finished running)
+    mute_console=IS_RUNNING_TESTS,
+)

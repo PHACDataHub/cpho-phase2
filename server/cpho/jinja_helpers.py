@@ -8,6 +8,7 @@ import phac_aspc.django.helpers.templatetags as phac_aspc
 from jinja2 import Environment, pass_context
 
 from cpho import models
+from cpho.util import eastern_timezone
 
 from .text import tdt, tm
 
@@ -101,6 +102,7 @@ def environment(**options):
     env = Environment(**options)
     env.globals.update(
         {
+            "eastern_timezone": eastern_timezone,
             "getattr": getattr,
             "hasattr": hasattr,
             "len": len,

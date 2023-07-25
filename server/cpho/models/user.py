@@ -6,7 +6,7 @@ from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
-    track_versions_with_editor_and_approval,
+    track_versions_with_editor_and_submission,
 )
 
 

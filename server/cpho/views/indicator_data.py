@@ -3,20 +3,23 @@ from django.contrib import messages
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
-from django.forms.models import ModelForm, inlineformset_factory
+from django.forms.models import ModelForm
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     DimensionType,
     DimensionValue,
     Indicator,
     IndicatorDatum,
 )
+from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 
-from .view_util import SinglePeriodMixin
+from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
 
 
 class InstanceProvidingFormSet(BaseFormSet):
@@ -96,8 +99,97 @@ class IndicatorDatumForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        value = cleaned_data["value"]
+        value_unit = cleaned_data["value_unit"]
+        if value_unit == "%":
+            if value and (value > 100 or value < 0):
+                self.add_error(
+                    "value", tdt("Value must be a percentage between 0-100")
+                )
+        return cleaned_data
 
-class ManageIndicatorData(SinglePeriodMixin, TemplateView):
+    def clean_value(self):
+        value = self.cleaned_data["value"]
+        if value and value < 0:
+            print("invalid")
+            self.add_error("value", tdt("Value cannot be negative"))
+        return value
+
+    def clean_value_lower_bound(self):
+        value = self.cleaned_data["value"]
+        value_lower = self.cleaned_data["value_lower_bound"]
+        if (value and value_lower) and value < value_lower:
+            self.add_error(
+                "value_lower_bound",
+                tdt("Value lower bound must be lower than value"),
+            )
+        return value_lower
+
+    def clean_value_upper_bound(self):
+        value = self.cleaned_data["value"]
+        value_upper = self.cleaned_data["value_upper_bound"]
+        if (value and value_upper) and value > value_upper:
+            self.add_error(
+                "value_upper_bound",
+                tdt("Value upper bound must be greater than value"),
+            )
+        return value_upper
+
+    def clean_single_year_timeframe(self):
+        single_year = self.cleaned_data["single_year_timeframe"]
+
+        if single_year is None or single_year == "":
+            return None
+
+        if single_year:
+            try:
+                if not (int(single_year) >= 2000 and int(single_year) <= 2050):
+                    self.add_error(
+                        "single_year_timeframe",
+                        tdt(
+                            "Single Year Timeframe must be between the years 2000 and 2050"
+                        ),
+                    )
+            except ValueError:
+                self.add_error(
+                    "single_year_timeframe",
+                    tdt("Single Year Timeframe must be a valid number"),
+                )
+
+        return single_year
+
+    def clean_multi_year_timeframe(self):
+        multi_year = self.cleaned_data["multi_year_timeframe"]
+
+        if multi_year is None or multi_year == "":
+            return None
+
+        if multi_year:
+            try:
+                start_year, end_year = map(int, multi_year.split("-"))
+                if not (2000 <= start_year <= end_year <= 2050):
+                    self.add_error(
+                        "multi_year_timeframe",
+                        tdt(
+                            "Multi Year Timeframe must be between the years 2000 and 2050 and start year must be less than end year"
+                        ),
+                    )
+            except ValueError:
+                self.add_error(
+                    "multi_year_timeframe",
+                    tdt(
+                        "Multiyear timeframe must be in the form: 'YYYY-YYYY'"
+                    ),
+                )
+
+        return multi_year
+
+
+class ManageIndicatorData(
+    SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView
+):
     template_name = "indicator_data/manage_indicator_data.jinja2"
 
     @cached_property
@@ -105,21 +197,16 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
 
     @cached_property
-    def dimension_type(self):
-        if "dimension_type_id" not in self.kwargs:
-            return None
-
-        return DimensionType.objects.prefetch_related("possible_values").get(
-            id=self.kwargs["dimension_type_id"]
-        )
-
-    @cached_property
     def age_group_formset(self):
-        existing_data = IndicatorDatum.objects.filter(
-            indicator=self.indicator,
-            dimension_type__code="age",
-            period=self.period,
-        ).order_by("dimension_value__order")
+        existing_data = (
+            IndicatorDatum.objects.filter(
+                indicator=self.indicator,
+                dimension_type__code="age",
+                period=self.period,
+            )
+            .order_by("dimension_value__order")
+            .with_submission_annotations()
+        )
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
@@ -153,11 +240,15 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
         # TODO: filter by period
 
         # getting all indicator data for this indicator
-        existing_data = IndicatorDatum.objects.filter(
-            indicator=self.indicator,
-            dimension_type__is_literal=False,
-            period=self.period,
-        ).order_by("dimension_value__order")
+        existing_data = (
+            IndicatorDatum.objects.filter(
+                indicator=self.indicator,
+                dimension_type__is_literal=False,
+                period=self.period,
+            )
+            .order_by("dimension_value__order")
+            .with_submission_annotations()
+        )
 
         # value for all not selected only get data for stratifier selected
         if self.dimension_type is not None:
@@ -224,29 +315,50 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             .filter(is_literal=False)
         }
 
+    @cached_property
+    def has_age_group_forms(self):
+        return self.dimension_type is None or self.dimension_type.code == "age"
+
     def post(self, *args, **kwargs):
         predefined_valid = self.predefined_values_formset.is_valid()
-        age_group_valid = self.age_group_formset.is_valid()
+        age_group_valid = (
+            not self.has_age_group_forms or self.age_group_formset.is_valid()
+        )
         if predefined_valid and age_group_valid:
             with transaction.atomic():
                 for form in self.predefined_values_formset:
-                    form.save()
+                    if form.has_changed():
+                        form.save()
 
-                self.age_group_formset.save()
+                if self.has_age_group_forms:
+                    self.age_group_formset.save()
 
-                messages.success(
-                    self.request, tdt("Data saved."), messages.SUCCESS
-                )
+                messages.success(self.request, tdt("Data saved."))
                 return redirect(
-                    "view_indicator",
-                    pk=self.indicator.pk,
+                    reverse(
+                        "view_indicator_for_year",
+                        args=[self.indicator.pk, self.period.id],
+                    ),
                 )
         else:
             # get will just render the forms and their errors
-            import IPython
+            # import IPython
+            # IPython.embed()
 
-            IPython.embed()
             return self.get(*args, **kwargs)
+
+    @cached_property
+    def submission_statuses(self):
+        return get_submission_statuses(self.indicator, self.period)
+
+    @cached_property
+    def submission_status(self):
+        if self.dimension_type:
+            return self.submission_statuses[
+                "statuses_by_dimension_type_id"
+            ].get(self.dimension_type.id, SUBMISSION_STATUSES.NO_DATA)
+        else:
+            return self.submission_statuses["global_status"]
 
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:
@@ -266,6 +378,9 @@ class ManageIndicatorData(SinglePeriodMixin, TemplateView):
             "forms_by_dimension_value": self.forms_by_dimension_value,
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
             "age_group_formset": self.age_group_formset,
+            "show_age_group": self.has_age_group_forms,
+            "submission_statuses": self.submission_statuses,
+            "submission_status": self.submission_status,
         }
 
         return ctx

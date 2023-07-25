@@ -1,7 +1,7 @@
 import pytest
 from decouple import UndefinedValueError
 
-from server.settings_util import (
+from server.config_util import (
     DEV_PUBLIC_ENV_FILE_NAME,
     DEV_SECRET_ENV_FILE_NAME,
     PROD_ENV_FILE_NAME,

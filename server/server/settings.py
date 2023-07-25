@@ -25,8 +25,8 @@ from phac_aspc.django.settings.utils import (
     configure_middleware,
 )
 
+from server.config_util import get_project_config
 from server.logging_util import configure_logging
-from server.settings_util import get_project_config
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 

@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust  
     env_file:
-      - ./server/.env.dev
+      - ./server/.env.dev-public
 
   server:
     build: ./server
@@ -24,7 +24,7 @@ services:
       coverage run -m pytest &&
       coverage report --show-missing"
     env_file:
-      - ./server/.env.dev
+      - ./server/.env.dev-public
     environment:
     # NOTE: Given Compose environment variable precedence (https://docs.docker.com/compose/environment-variables/envvars-precedence/),
     #       the environment variable set here will ONLY override variables set in env_file because we're using decouple, and 

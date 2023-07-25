@@ -4,7 +4,7 @@ set -o pipefail
 set -o nounset
 
 # Get environment variables
-source $(dirname "${BASH_SOURCE[0]}")/.env.dev
+source $(dirname "${BASH_SOURCE[0]}")/.env.dev-public
 
 # Create DB user and database for dev and testing. 
 echo "Create $DB_USER role and $DB_NAME database"

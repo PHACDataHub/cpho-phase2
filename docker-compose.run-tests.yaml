@@ -18,7 +18,7 @@ services:
 
   server:
     build: ./server
-    image: ${IMAGE_NAME_FOR_RUN}
+    image: cpho-test-image
     command: >
       sh -c "
       coverage run -m pytest &&
@@ -41,8 +41,8 @@ volumes:
 networks:
   default:
     name: cloudbuild
-    external: true
-    # external: false
+    # external: true
+    external: false
 # NOTE:  An issue with error around network label being incorrect - fixed by: "docker network create --label com.docker.compose.network=cloudbuild cloudbuild"
 
 

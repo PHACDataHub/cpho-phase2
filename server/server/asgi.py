@@ -11,6 +11,10 @@ import os
 
 from django.core.asgi import get_asgi_application
 
+from server.open_telemetry_util import instrument_app
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
+
+instrument_app()
 
 application = get_asgi_application()

@@ -32,7 +32,7 @@ steps:
 
       echo "Build images for testing, run tests and create report"
       # TODO: Upload coverage report to somewhere like Google Cloud Storage, and determine how to more easily access results - currently we need to dig through the Cloud Build logs in order to view the report.  
-      docker compose -f docker-compose.run-tests.yaml build --no-cache
+      # docker compose -f docker-compose.run-tests.yaml build --no-cache
       docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.
       

@@ -1,4 +1,5 @@
 import requests
+import structlog
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
@@ -25,6 +26,8 @@ def instrument_app():
         return
 
     if IS_LOCAL_DEV:
+        project_id = "local-dev"
+
         span_exporter = ConsoleSpanExporter()
     else:
         project_id = requests.get(
@@ -36,8 +39,8 @@ def instrument_app():
             project_id=project_id,
         )
 
-        # Propagate (or set) the X-Cloud-Trace-Context header
-        set_global_textmap(CloudTraceFormatPropagator())
+    # Propagate (or set) the X-Cloud-Trace-Context header
+    set_global_textmap(CloudTraceFormatPropagator())
 
     # a BatchSpanProcessor is better for performance but uses a background process,
     # which would require tricky and careful management in Cloud Run. Even in the best case,
@@ -47,8 +50,16 @@ def instrument_app():
 
     tracer_provider = TracerProvider(active_span_processor=span_processor)
 
+    def associate_logs_to_traces_for_request(span, request):
+        # see https://cloud.google.com/trace/docs/trace-log-integration#associating
+        structlog.contextvars.bind_contextvars(
+            trace=f"projects/{project_id}/traces/{span.context.trace_id}",
+            spanId=span.context.span_id,
+        )
+
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
+        request_hook=associate_logs_to_traces_for_request,
         is_sql_commentor_enabled=True,
     )

@@ -3,6 +3,7 @@ from typing import Any
 
 from django import forms
 from django.contrib import messages
+from django.core.exceptions import SuspiciousOperation
 from django.forms.models import ModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -14,6 +15,8 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
+
+from server.rules_framework import test_rule
 
 from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import get_submission_statuses
@@ -78,6 +81,16 @@ class ViewIndicator(TemplateView):
     model = Indicator
     template_name = "indicators/view_indicator.jinja2"
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if not test_rule(
+            "can_edit_indicator", request.user, context["object"]
+        ):
+            raise SuspiciousOperation(
+                f"User {request.user} cannot edit this indicator"
+            )
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         indicator = Indicator.objects.get(pk=self.kwargs["pk"])
         relevant_periods = Period.relevant_years()
@@ -137,6 +150,15 @@ class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
             "indicator_data_by_dimension_type": self.indicator_data_by_dimension_type,
         }
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not test_rule("can_view_indicator_data", request.user, self.object):
+            raise SuspiciousOperation(
+                f"User {request.user} cannot view data for this indicator"
+            )
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
 
 class CreateIndicator(CreateView):
     model = Indicator
@@ -164,3 +186,11 @@ class EditIndicator(UpdateView):
         return {
             **super().get_context_data(**kwargs),
         }
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not test_rule("can_edit_indicator", request.user, self.object):
+            raise SuspiciousOperation(
+                f"User {request.user} cannot edit this indicator"
+            )
+        return super().post(request, *args, **kwargs)

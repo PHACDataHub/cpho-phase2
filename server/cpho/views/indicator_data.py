@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import messages
+from django.core.exceptions import SuspiciousOperation
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
@@ -8,6 +9,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
+
+from server.rules_framework import test_rule
 
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
@@ -232,6 +235,7 @@ class ManageIndicatorData(
         for form in fs:
             # new unsaved instances' save() crash when no dimension type is specified
             form.instance.dimension_type = age_dimension
+            form.instance.period = self.period
 
         return fs
 
@@ -319,7 +323,24 @@ class ManageIndicatorData(
     def has_age_group_forms(self):
         return self.dimension_type is None or self.dimension_type.code == "age"
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if not test_rule(
+            "can_edit_indicator_data", request.user, context["indicator"]
+        ):
+            raise SuspiciousOperation(
+                f"User {request.user} cannot edit data for this indicator"
+            )
+
+        return self.render_to_response(context)
+
     def post(self, *args, **kwargs):
+        if not test_rule(
+            "can_edit_indicator_data", self.request.user, self.indicator
+        ):
+            raise SuspiciousOperation(
+                f"User {self.request.user} cannot edit data for this indicator"
+            )
         predefined_valid = self.predefined_values_formset.is_valid()
         age_group_valid = (
             not self.has_age_group_forms or self.age_group_formset.is_valid()

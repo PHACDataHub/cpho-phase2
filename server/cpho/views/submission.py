@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import DetailView, TemplateView, View
+
+from server.rules_framework import test_rule
 
 from cpho.constants import (
     HSO_SUBMISSION_TYPE,
@@ -38,6 +40,25 @@ class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
         # TODO: modify once we have users figured out
         # alternatively might want to make this a url or post param
         # so admins can approve as programs?
+
+        if not (
+            test_rule("is_admin", self.request.user)
+            or (
+                test_rule("is_program", self.request.user)
+                and test_rule(
+                    "can_submit_as_program", self.request.user, self.indicator
+                )
+            )
+            or (
+                test_rule("is_hso", self.request.user)
+                and test_rule(
+                    "can_submit_as_hso", self.request.user, self.indicator
+                )
+            )
+        ):
+            raise SuspiciousOperation(
+                f"User {self.request.user} cannot review or submit this indicator"
+            )
 
         submission_type = self.request.POST["submission_type"]
 
@@ -113,3 +134,25 @@ class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
         return {
             **super().get_context_data(*args, **kwargs),
         }
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if not (
+            test_rule("is_admin", request.user)
+            or (
+                test_rule("is_program", request.user)
+                and test_rule(
+                    "can_submit_as_program", request.user, self.indicator
+                )
+            )
+            or (
+                test_rule("is_hso", request.user)
+                and test_rule(
+                    "can_submit_as_hso", request.user, self.indicator
+                )
+            )
+        ):
+            raise SuspiciousOperation(
+                f"User {request.user} cannot review or submit this indicator"
+            )
+        return self.render_to_response(context)

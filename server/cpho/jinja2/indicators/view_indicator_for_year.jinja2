@@ -15,10 +15,14 @@
  
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
           <div class="text-end">
-            <a class="btn btn-primary"
-               href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Edit") }}</a>
-            <a class="btn btn-success"
-               href="{{ url('review_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Review and submit") }}</a>
+            {% if respects_rule('can_edit_indicator_data', indicator) %}
+              <a class="btn btn-primary"
+                 href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Edit") }}</a>
+            {% endif %}
+            {% if respects_rule('can_submit_as_hso_or_program', indicator) %}
+              <a class="btn btn-success"
+                 href="{{ url('review_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Review and submit") }}</a>
+            {% endif %}
           </div>
         </div>
       {% endfor %}

@@ -2,32 +2,36 @@
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }}</div>
 
-  <div class="mt-4">
-    <a href="{{ url('edit_indicator', args=[object.id]) }}"
-       class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
-  </div>
+  {% if respects_rule('can_edit_indicator', object) %}
+    <div class="mt-4">
+      <a href="{{ url('edit_indicator', args=[object.id]) }}"
+         class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
+    </div>
+  {% endif %}
   <div class="mt-5">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>{{ tdt("Period") }}</th>
-          <th>{{ tdt("Data Count") }}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for period,data_count in data_counts_by_period.items() %}
-          <tr>
-            <th>{{ period }} {{ tdt("records") }}</th>
-            <td>{{ data_count }}</td>
-            <td>
-              <a href="{{ url('view_indicator_for_year', args=[object.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
-            </td>
-          </tr>
-        {% endfor %}
+    {% if respects_rule('can_view_indicator_data',object) %}
+      <table class="table">
  
-      </tbody>
-    </table>
+        <thead>
+          <tr>
+            <th>{{ tdt("Period") }}</th>
+            <th>{{ tdt("Data Count") }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for period,data_count in data_counts_by_period.items() %}
+            <tr>
+              <th>{{ period }} {{ tdt("records") }}</th>
+              <td>{{ data_count }}</td>
+              <td>
+                <a href="{{ url('view_indicator_for_year', args=[object.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
   </div>
  
 {% endblock %}

@@ -48,18 +48,27 @@
       </div>
       <div class="modal-body">
         <p>{{ tdt("Placeholder Text: What happens when you submit data") }}</p>
- 
-        <div class="border p-2 ps-0">
+        {% if respects_rule("is_admin") %}
+          {% set input_class = "border p-2 ps-0" %}
+        {% else %}
+          {% set input_class = "border p-2 ps-0 d-none" %}
+        {% endif %}
+
+        <div class="{{ input_class }}">
           <div>TODO: this field will dissapear and be automatically inferred from user type</div>
           <div>
             <input type="radio"
                    name="submission_type"
                    id="submissionType1"
                    value="program"
-                   checked>
+                   {% if respects_rule("is_program") or respects_rule("is_admin") %}checked{% endif %}>
             <label for="html">Surveillance program submission</label>
             <br>
-            <input type="radio" name="submission_type" id="submissionType1" value="hso">
+            <input type="radio"
+                   name="submission_type"
+                   id="submissionType1"
+                   value="hso"
+                   {% if respects_rule("is_hso") %}checked{% endif %}>
             <label for="html">HSO submission</label>
             {{ csrf_input }}
             <br>

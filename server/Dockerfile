@@ -68,11 +68,6 @@ RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
 # copy project
 COPY --chown=$USER:app . $APP_HOME
 
-# Create a directory for the coverage report
-RUN mkdir -p /cpho/web/coverage
-# Set the directory permissions to allow writing
-RUN chown -R $USER /cpho/web/coverage
-
 # change to the app user
 USER $USER
 

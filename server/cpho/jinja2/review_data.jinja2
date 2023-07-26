@@ -1,18 +1,16 @@
 {% extends 'base.jinja2' %}
 {% from 'generic_macros.jinja2' import date_display, todo_block %}
-{% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions %}
+{% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions, submission_status_badge %}
 
 
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ view.indicator.name }} {{ view.period }}</div>
-  {% if view.dimension_type %}<div class="h5">{{ tdt("Stratifier: ") }} {{ view.dimension_type.name }}</div>{% endif %}
-
   <div class="mt-4">
     <div class="mt-5">
       {% for dimension_type in view.dimension_types %}
         <div>
           <div class="h5">
-            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id] }}</sm>
+            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ submission_status_badge(view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id]) }}</sm>
           </div>
  
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>

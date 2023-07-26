@@ -20,18 +20,18 @@
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
-                    aria-label="{{ tm('close') }}"></button>
+                    aria-label="{{ tm("close") }}"></button>
           </div>
         {% endif %}
 
         <div class="card">
-          <div class="h2" class="card-header">{{ tm('log_in') }}</div>
+          <div class="h2" class="card-header">{{ tm("log_in") }}</div>
           <div class="card-body">
             <div class="form-floating mb-3">
               <input type="text"
                      name="{{ form.username.name }}"
                      maxlength="150"
-                     placeholder="{{ tm('username') }}"
+                     placeholder="{{ tm("username") }}"
                      required
                      class="textinput textInput form-control">
               <label for="{{ form.username.id_for_label }}">{{ form.username.label_tag() }}</label>
@@ -40,7 +40,7 @@
               <input type="password"
                      name="{{ form.password.name }}"
                      maxlength="128"
-                     placeholder="{{ tm('password') }}"
+                     placeholder="{{ tm("password") }}"
                      required
                      class="textinput textInput form-control">
               <label for="{{ form.password.id_for_label }}">{{ form.password.label_tag() }}</label>
@@ -50,7 +50,7 @@
               <div class="col-auto">
                 <input class='btn btn-primary white'
                        type="submit"
-                       value="{{ tm('log_in') }}"/>
+                       value="{{ tm("log_in") }}" />
               </div>
             </div>
           </div>

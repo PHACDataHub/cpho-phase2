@@ -4,22 +4,20 @@
           id="dropdown{{ loop_index }}"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-          onclick="last_clicked_button=this;">
-    {{ tdt('Actions') }}
-  </button>
+          onclick="last_clicked_button=this;">{{ tdt("Actions") }}</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown{{ loop_index }}">
     <li>
       <a class="dropdown-item"
          href="{{ url('view_indicator', args=[indicator.pk]) }}">
         <i class="bi bi-database-add"></i>
-        {{ tdt('Edit Stratifier Data') }}
+        {{ tdt("Edit Stratifier Data") }}
       </a>
     </li>
     <li>
       <a class="dropdown-item"
          href="{{ url('edit_indicator', args=[indicator.pk]) }}">
         <i class="bi bi-pen"></i>
-        {{ tdt('Edit Indicator Details') }}
+        {{ tdt("Edit Indicator Details") }}
       </a>
     </li>
   </ul>

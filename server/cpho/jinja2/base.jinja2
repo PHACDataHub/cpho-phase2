@@ -13,12 +13,11 @@
           rel="icon"
           type="image/x-icon"
           class="wb-init wb-favicon-inited">
-    <link rel="stylesheet"
-          href="{{ static('third_party/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ static("third_party/css/bootstrap.min.css") }}" />
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     {# <link rel="stylesheet" href="{{ static('site.css') }}"/> #}
-    <link rel="stylesheet" href="{{ static('cpho.css')}}">
+    <link rel="stylesheet" href="{{ static("cpho.css") }}">
     <script src="{{ static('third_party/js/jquery-3.2.1.min.js') }}"></script>
     <script src="{{ static('third_party/js/htmx.min.js') }}"></script>
     <script src="{{ static('third_party/js/idiomorph.min.js') }}"></script>
@@ -62,10 +61,10 @@
           {% block available_apps %}{% endblock %}
           {# <a class="nav-link text-white h1" href="{{ url('list_indicators') }}">{{ tdt("HoPiC")}}</a> #}
           <h1 class="nav-header">
-            <a href="{{ url('list_indicators') }}"
+            <a href="{{ url("list_indicators") }}"
                class="text-reset text-decoration-none">
               {% block nav_header_text %}
-                <abbr title="{{ tdt('Health of People In Canada') }}">{{ tdt("HoPiC") }}</abbr>
+                <abbr title="{{ tdt("Health of People In Canada") }}">{{ tdt("HoPiC") }}</abbr>
               {% endblock %}
             </a>
           </h1>
@@ -92,11 +91,9 @@
                      role="button"
                      data-bs-toggle="dropdown"
                      aria-haspopup="true"
-                     aria-expanded="false">
-                    {{ request.user }}
-                  </a>
+                     aria-expanded="false">{{ request.user }}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url('logout')}}">
+                    <a class="dropdown-item" href="{{ url("logout") }}">
                       <i class="fa fa-power-off"></i>
                       {{ tm("logout") }}
                     </a>
@@ -134,12 +131,7 @@
         <div class="row">
           <div class="col"></div>
           <div class="col-auto">
-            <object type="image/svg+xml"
-                    tabindex="-1"
-                    role="img"
-                    data="{{ static('third_party/img/wmms-blk.svg') }}"
-                    aria-label="Symbol of the Government of Canada"
-                    style="height: 2rem;"></object>
+            <object type="image/svg+xml" tabindex="-1" role="img" data="{{ static("third_party/img/wmms-blk.svg") }}" aria-label="Symbol of the Government of Canada" style="height: 2rem"></object>
           </div>
         </div>
       </div>

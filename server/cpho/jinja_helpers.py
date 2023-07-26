@@ -10,6 +10,7 @@ from jinja2 import Environment, pass_context
 from server.rules_framework import test_rule
 
 from cpho import models
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.util import eastern_timezone
 
 from .text import tdt, tm
@@ -108,6 +109,18 @@ def message_type(message):
         return f"{message.level_tag}"
 
 
+def submission_status_label(submission_status):
+    return {
+        SUBMISSION_STATUSES.NO_DATA: tdt("No data"),
+        SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tdt("Not yet submitted"),
+        SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tdt("Program submitted"),
+        SUBMISSION_STATUSES.SUBMITTED: tdt("Submitted by Program and HSO"),
+        SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tdt(
+            "Modified since last submission"
+        ),
+    }[submission_status]
+
+
 def environment(**options):
     env = Environment(**options)
     env.globals.update(
@@ -129,11 +142,12 @@ def environment(**options):
             "ipython": ipython,
             "tm": tm,
             "tdt": tdt,
-            "message_type": message_type,
             "print": print,
             "cpho_models": models,
             "test_rule": test_rule,
             "respects_rule": respects_rule,
+            "submission_status_label": submission_status_label,
+            "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "monosans.djlint",
+        "ms-python.isort",
+        "ms-python.python",
+        "ms-python.black",
+        "hongquan.dragon-jinja",
+        "garaioag.garaio-vscode-unwanted-recommendations"
+    ],
+    "unwantedRecommendations": [
+        "samuelcolvin.jinjahtml",
+        "mikoz.black-py"
+    ]
+}

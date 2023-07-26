@@ -42,8 +42,8 @@ volumes:
 networks:
   default:
     name: cloudbuild
-    # external: true
-    external: false
+    external: true
+    # external: false
 # NOTE:  An issue with error around network label being incorrect - fixed by: "docker network create --label com.docker.compose.network=cloudbuild cloudbuild"
 
 

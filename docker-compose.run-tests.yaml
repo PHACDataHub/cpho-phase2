@@ -20,7 +20,8 @@ services:
     command: >
       sh -c "
       coverage run -m pytest &&
-      coverage report --show-missing -o coverage.json --pretty-print"
+      coverage report --show-missing &&
+      coverage json --pretty-print"
     env_file:
       - ./server/.env.dev-public
     environment:
@@ -29,9 +30,6 @@ services:
     #       decouple.Config looks in OS env vars before .env files. 
     #       If the behaviour changes, or if this is run without using decouple, setting DB_HOST=db here will no longer work. 
       - DB_HOST=db
-    volumes: 
-    # host machine - workspace?
-      - /Users/lilakelland/Documents/code/cpho-phase2:/cpho/web
     depends_on:
       - db
 

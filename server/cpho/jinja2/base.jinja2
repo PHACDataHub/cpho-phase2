@@ -105,7 +105,7 @@
         </div>
       </nav>
     {% endblock %}
-    <main class="pt-3 pb-5">
+    <main class="pb-5">
       {% if messages %}
         {% for message in messages %}
           <div class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
@@ -113,6 +113,15 @@
       {% endif %}
       <div>
         <div id="content" class='container'>
+          {% block content_breadcrumbs_container %}
+            {# this is just here so templates can opt-out from breadcrumbs #}
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block content_breadcrumbs %}
+                {% endblock content_breadcrumbs %}
+              </ol>
+            </nav>
+          {% endblock  content_breadcrumbs_container %}
           {% block content %}{% endblock %}
         </div>
         <div id="content-fluid" class='container-fluid p-0'>

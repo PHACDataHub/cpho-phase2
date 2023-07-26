@@ -232,6 +232,7 @@ class ManageIndicatorData(
         for form in fs:
             # new unsaved instances' save() crash when no dimension type is specified
             form.instance.dimension_type = age_dimension
+            form.instance.period = self.period
 
         return fs
 
@@ -336,14 +337,12 @@ class ManageIndicatorData(
                 messages.success(self.request, tdt("Data saved."))
                 return redirect(
                     reverse(
-                        "view_indicator_for_year",
+                        "view_indicator_for_period",
                         args=[self.indicator.pk, self.period.id],
                     ),
                 )
         else:
             # get will just render the forms and their errors
-            # import IPython
-            # IPython.embed()
 
             return self.get(*args, **kwargs)
 

@@ -22,8 +22,8 @@ urlpatterns = [
     ),
     path(
         "indicators/<int:pk>/<int:period_pk>/",
-        views.ViewIndicatorForYear.as_view(),
-        name="view_indicator_for_year",
+        views.ViewIndicatorForPeriod.as_view(),
+        name="view_indicator_for_period",
     ),
     path(
         "indicators/<int:pk>/edit/",

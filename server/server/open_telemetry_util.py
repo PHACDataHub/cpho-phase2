@@ -20,10 +20,11 @@ def instrument_app():
         return
 
     if IS_LOCAL_DEV:
-        span_exporter = ConsoleSpanExporter()
+        span_exporter = ConsoleSpanExporter(service_name="local-dev")
     else:
         span_exporter = CloudTraceSpanExporter(
-            project_id="TODO",
+            # PROJECT_ID added to Cloud Run env vars at deploy time
+            project_id=config("PROJECT_ID"),
         )
 
     # a BatchSpanProcessor is better for performance but uses a background process,

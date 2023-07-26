@@ -98,6 +98,7 @@ steps:
           --region "${PROJECT_REGION}" \
           --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
           --vpc-connector "${VPC_CONNECTOR_NAME}" \
+          --set-env-vars PROJECT_ID=${PROJECT_ID}\
           --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:${prod_env_secret_version}" \
           --platform managed \
           --allow-unauthenticated

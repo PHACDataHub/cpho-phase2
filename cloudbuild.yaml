@@ -50,9 +50,10 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
-      # echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
+      echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
       # echo "deployment_test_coverage_report:$BRANCH:$COMMIT_SHA:$(date +%s)""
-      # cp test_coverage_report gs://hopic-test-coverage-reports/deployment_test_coverage_report:$BRANCH:$COMMIT_SHA:$(date +%s)
+      cp ./coverage.json gs://hopic-test-coverage-reports/deployment_test_coverage_report
+      #:$BRANCH:$COMMIT_SHA:$(date +%s)
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

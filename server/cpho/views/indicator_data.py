@@ -336,7 +336,7 @@ class ManageIndicatorData(
                 messages.success(self.request, tdt("Data saved."))
                 return redirect(
                     reverse(
-                        "view_indicator_for_year",
+                        "view_indicator_for_period",
                         args=[self.indicator.pk, self.period.id],
                     ),
                 )

@@ -1,5 +1,8 @@
 {% extends "base.jinja2" %}
 {% block title %}{{ tm("log_in") }}{% endblock %}
+{% block content_breadcrumbs_container %}
+  {# override to remove <nav> tag #}
+{% endblock content_breadcrumbs_container %}
 {% block content %}
   <div class="container p-0 d-flex justify-content-center"
        id="login-container">

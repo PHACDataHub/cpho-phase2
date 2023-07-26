@@ -1,9 +1,17 @@
 {% extends 'base.jinja2' %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(indicator,True) }}
+{% endblock %}
+
+
 {% block content %}
-  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }}</div>
+  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
 
   <div class="mt-4">
-    <a href="{{ url('edit_indicator', args=[object.id]) }}"
+    <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
        class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
   </div>
   <div class="mt-5">
@@ -21,7 +29,7 @@
             <th>{{ period }} {{ tdt("records") }}</th>
             <td>{{ data_count }}</td>
             <td>
-              <a href="{{ url('view_indicator_for_year', args=[object.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+              <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
             </td>
           </tr>
         {% endfor %}

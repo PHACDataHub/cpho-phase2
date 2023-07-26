@@ -96,15 +96,15 @@ class ViewIndicator(TemplateView):
 
         return {
             **super().get_context_data(**kwargs),
-            "object": indicator,
             "dimension_types": DimensionType.objects.all(),
             "data_counts_by_period": data_counts_by_period,
+            "indicator": indicator,
         }
 
 
-class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
+class ViewIndicatorForPeriod(SinglePeriodMixin, DetailView):
     model = Indicator
-    template_name = "indicators/view_indicator_for_year.jinja2"
+    template_name = "indicators/view_indicator_for_period.jinja2"
 
     @cached_property
     def indicator(self):
@@ -163,4 +163,5 @@ class EditIndicator(UpdateView):
     def get_context_data(self, **kwargs):
         return {
             **super().get_context_data(**kwargs),
+            "indicator": self.object,
         }

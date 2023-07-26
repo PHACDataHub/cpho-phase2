@@ -53,7 +53,7 @@ class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
         )
         return redirect(
             reverse(
-                "view_indicator_for_year",
+                "view_indicator_for_period",
                 args=[self.indicator.id, self.period.id],
             ),
         )

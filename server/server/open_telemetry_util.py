@@ -1,3 +1,4 @@
+import requests
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
@@ -28,7 +29,7 @@ def instrument_app():
         ).text
 
         span_exporter = CloudTraceSpanExporter(
-            project_id=project_id_response,
+            project_id=project_id,
         )
 
     # a BatchSpanProcessor is better for performance but uses a background process,

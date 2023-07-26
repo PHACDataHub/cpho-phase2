@@ -20,11 +20,15 @@ def instrument_app():
         return
 
     if IS_LOCAL_DEV:
-        span_exporter = ConsoleSpanExporter(service_name="local-dev")
+        span_exporter = ConsoleSpanExporter()
     else:
+        project_id = requests.get(
+            "http://metadata.google.internal/computeMetadata/v1/project/project-id",
+            headers={"Metadata-Flavor": "Google"},
+        ).text
+
         span_exporter = CloudTraceSpanExporter(
-            # PROJECT_ID added to Cloud Run env vars at deploy time
-            project_id=config("PROJECT_ID"),
+            project_id=project_id_response,
         )
 
     # a BatchSpanProcessor is better for performance but uses a background process,

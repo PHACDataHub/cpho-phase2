@@ -29,7 +29,16 @@
           </div>
         </div>
       {% endfor %}
+
+      <div class="my-3">
+        <div class="h5">{{ tdt("Or, manage all data at once") }}</div>
+        <a class="btn btn-primary btn-lg"
+           href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Edit all data") }}</a>
+        <a class="btn btn-success btn-lg"
+           href="{{ url('review_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Review and submit all data") }}</a>
+      </div>
     </div>
+
 
   </div>
 {% endblock %}

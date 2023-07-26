@@ -2,6 +2,10 @@ import requests
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
+from opentelemetry.propagate import set_global_textmap
+from opentelemetry.propagators.cloud_trace_propagator import (
+    CloudTraceFormatPropagator,
+)
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
@@ -31,6 +35,9 @@ def instrument_app():
         span_exporter = CloudTraceSpanExporter(
             project_id=project_id,
         )
+
+        # Propagate (or set) the X-Cloud-Trace-Context header
+        set_global_textmap(CloudTraceFormatPropagator())
 
     # a BatchSpanProcessor is better for performance but uses a background process,
     # which would require tricky and careful management in Cloud Run. Even in the best case,

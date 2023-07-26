@@ -51,10 +51,15 @@ def instrument_app():
     tracer_provider = TracerProvider(active_span_processor=span_processor)
 
     def associate_logs_to_traces_for_request(span, request):
-        # see https://cloud.google.com/trace/docs/trace-log-integration#associating
         structlog.contextvars.bind_contextvars(
-            trace=f"projects/{project_id}/traces/{trace.span.format_trace_id(span.context.trace_id)}",
-            spanId=trace.span.format_span_id(span.context.span_id),
+            **{
+                # see https://cloud.google.com/trace/docs/trace-log-integration#associating
+                # and https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
+                "logging.googleapis.com/trace": f"projects/{project_id}/traces/{trace.span.format_trace_id(span.context.trace_id)}",
+                "logging.googleapis.com/spanId": trace.span.format_span_id(
+                    span.context.span_id
+                ),
+            }
         )
 
     DjangoInstrumentor().instrument(

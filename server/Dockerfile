@@ -25,13 +25,13 @@ RUN pip install --upgrade pip
 
 # install dependencies
 COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt  
 
 # TODO: this is a workaround, to be replaced when working out a proper data migration approach, possibly
-# when using entrypoint.prod.sh to seed dat, need dev requirements installed. Otherwise, leave this commented out
-# COPY ./requirements_dev.txt .
-# COPY ./requirements_formatting.txt .
-# RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements_dev.txt
+# when using entrypoint.prod.sh to seed dat, need dev requirements installed. Also needed for testing.
+COPY ./requirements_dev.txt .
+COPY ./requirements_formatting.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements_dev.txt
 
 #########
 # FINAL #

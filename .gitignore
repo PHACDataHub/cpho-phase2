@@ -24,5 +24,9 @@ runserver.sh
 
 **/logfile
 
+**/.coverage
+
 server/logfile
+
 server/postgres.env
+

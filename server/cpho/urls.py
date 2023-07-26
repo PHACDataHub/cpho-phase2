@@ -50,4 +50,24 @@ urlpatterns = [
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data_all",
     ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/submit_data/<int:dimension_type_id>/",
+        views.SubmitIndicatorData.as_view(),
+        name="submit_indicator_data",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/submit_data/all/",
+        views.SubmitIndicatorData.as_view(),
+        name="submit_indicator_data_all",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/<int:dimension_type_id>/",
+        views.ReviewData.as_view(),
+        name="review_indicator_data",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/all/",
+        views.ReviewData.as_view(),
+        name="review_indicator_data_all",
+    ),
 ]

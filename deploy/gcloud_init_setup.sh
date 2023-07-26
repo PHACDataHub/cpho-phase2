@@ -86,7 +86,6 @@ if [[ "${build_skip}" != "S" ]]; then
 fi
 
 
-
 # ----- CLOUD STORAGE (optional) -----
 if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
   echo ""

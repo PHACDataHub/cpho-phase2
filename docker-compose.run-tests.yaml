@@ -16,11 +16,9 @@ services:
   server:
     build: ./server
     image: cpho-test-image
-    user: "${USER}:${USER}" 
+    user: "${UID}:${GID}"
     command: >
       sh -c "
-      mkdir -p /cpho/web/coverage &&
-      chown -R ${USER} /cpho/web/coverage && 
       coverage run -m pytest &&
       coverage report --show-missing &&
       coverage json -o /cpho/web/coverage/coverage.json --pretty-print"

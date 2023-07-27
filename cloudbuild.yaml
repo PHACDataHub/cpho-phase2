@@ -48,7 +48,7 @@ steps:
       set -o nounset
       
       echo "Get cloud build project configuration values"
-      source .env.cloud_build
+      source .env.cloud_build 
 
       echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
       gsutil cp ./coverage/coverage.json gs://hopic-test-coverage-reports/${BRANCH}/coverage:${COMMIT_SHA}.json

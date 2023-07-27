@@ -37,39 +37,38 @@ steps:
   - id: "Upload test coverage reports to Google Cloud Storage"
     name: 'gcr.io/cloud-builders/gsutil'
     entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        echo "Get cloud build project configuration values"
-        source .env.cloud_build
+  #   args:
+  #     - "-c"
+  #     - |
+  #       echo "Get cloud build project configuration values"
+  #       source .env.cloud_build
 
-        echo "Copy test coverage report from docker compose volume to Google Cloud Storage."
-        timestamp=$(date +%s)
-        gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
-    # script: |
-    #   #!/usr/bin/env bash
-    #   set -o errexit
-    #   set -o pipefail
-    #   set -o nounset
+  #       echo "Copy test coverage report from docker compose volume to Google Cloud Storage."
+  #       timestamp=$(date +%s)
+  #       gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
       
-    #   echo "Get cloud build project configuration values"
-    #   source .env.cloud_build 
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build 
 
-    #   timestamp=$(date +%s)
+      timestamp=$(date +%s)
 
-    #   echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
-    #   gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
+      echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
+      gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
 
-    # - id: "Tear down tests"
-    #   name: "gcr.io/cloud-builders/docker"
-    #   script: |
-    #     #!/usr/bin/env bash
-    #     set -o errexit
-    #     set -o pipefail
-    #     set -o nounset
-
-    #     # echo "Tear down containers and volumes"
-    #     docker compose -f docker-compose.run-tests.yaml down -v
+  - id: "Tear down tests"
+    name: "gcr.io/cloud-builders/docker"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

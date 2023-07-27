@@ -46,6 +46,9 @@ ENV APP_HOME=$HOME/web
 ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
 
+# create coverage directory and set permissions during build
+RUN mkdir -p /cpho/web/coverage && chown -R $USER /cpho/web/coverage
+
 RUN \
     addgroup -S app && adduser --shell /bin/sh -u $USER -S app -G app --home $HOME && \
     mkdir -p $APP_HOME && \

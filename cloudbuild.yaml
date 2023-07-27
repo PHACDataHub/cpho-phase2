@@ -34,7 +34,7 @@ steps:
       docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
       
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  
-      # Test reports are generated twice:
+      # Test coverage reports are generated twice:
         # 1 - to terminal to be printed in Cloud Build Logs
         # 2 - to coverage.json in mounted volume.
 

@@ -36,7 +36,7 @@ steps:
 
   - id: "Upload test coverage reports to Google Cloud Storage"
     name: 'gcr.io/cloud-builders/gsutil'
-    entrypoint: "bash"
+    # entrypoint: "bash"
   #   args:
   #     - "-c"
   #     - |
@@ -67,7 +67,7 @@ steps:
       set -o errexit
       set -o pipefail
       set -o nounset
-      
+
       docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Build image if main"

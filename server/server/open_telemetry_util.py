@@ -1,3 +1,6 @@
+import os
+import sys
+
 import requests
 import structlog
 from opentelemetry import trace
@@ -19,6 +22,9 @@ from server.config_util import get_project_config, is_running_tests
 def instrument_app():
     config = get_project_config()
     IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+    DEV_TELEMETRY_CONSOLE_OUTPUT = config(
+        "DEV_TELEMETRY_CONSOLE_OUTPUT", cast=bool, default=False
+    )
 
     if is_running_tests():
         # TODO: maybe still instrument, just want to silence the output when the
@@ -28,7 +34,13 @@ def instrument_app():
     if IS_LOCAL_DEV:
         project_id = "local-dev"
 
-        span_exporter = ConsoleSpanExporter()
+        span_exporter = ConsoleSpanExporter(
+            out=(
+                sys.stdout
+                if DEV_TELEMETRY_CONSOLE_OUTPUT
+                else open(os.devnull, "w")
+            )
+        )
     else:
         project_id = requests.get(
             "http://metadata.google.internal/computeMetadata/v1/project/project-id",

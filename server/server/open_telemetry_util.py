@@ -1,4 +1,3 @@
-import logging
 import os
 import sys
 
@@ -19,7 +18,7 @@ from opentelemetry.sdk.trace.export import (
 
 from server.config_util import get_project_config, is_running_tests
 
-logger = logging.getLogger(__name__)
+logger = structlog.getLogger(__name__)
 
 
 def instrument_app():
@@ -34,7 +33,7 @@ def instrument_app():
         # test environment is detected
         return
 
-    if IS_LOCAL_DEV:
+    if True:
         project_id = "local-dev"
 
         span_exporter = ConsoleSpanExporter(

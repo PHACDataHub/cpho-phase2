@@ -1,6 +1,15 @@
+import multiprocessing
 import os
 
 from server.open_telemetry_util import instrument_app
+
+PORT = os.getenv("PORT", "8080")
+
+bind = [f"0.0.0.0:{PORT}"]
+workers = 1
+threads = multiprocessing.cpu_count() * 2 + 1
+timeout = 0
+wsgi_app = "server.wsgi:application"
 
 
 def post_fork(server, worker):

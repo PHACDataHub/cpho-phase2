@@ -17,6 +17,7 @@ from opentelemetry.sdk.trace.export import (
 )
 
 from server.config_util import get_project_config, is_running_tests
+from server.logging_util import add_metadata_to_all_logs_for_current_request
 
 
 def instrument_app():
@@ -51,7 +52,7 @@ def instrument_app():
             project_id=project_id,
         )
 
-    # Propagate (or set) the X-Cloud-Trace-Context header
+    # Propagate the X-Cloud-Trace-Context header if present, otherwise add it
     set_global_textmap(CloudTraceFormatPropagator())
 
     # a BatchSpanProcessor is better for performance but uses a background process,
@@ -63,8 +64,8 @@ def instrument_app():
     tracer_provider = TracerProvider(active_span_processor=span_processor)
 
     def associate_request_logs_to_telemetry(span, request):
-        structlog.contextvars.bind_contextvars(
-            **{
+        add_metadata_to_all_logs_for_current_request(
+            {
                 # see https://cloud.google.com/trace/docs/trace-log-integration#associating
                 # and https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
                 "logging.googleapis.com/trace": f"projects/{project_id}/traces/{trace.span.format_trace_id(span.get_span_context().trace_id)}",

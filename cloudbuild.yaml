@@ -31,8 +31,7 @@ steps:
       source .env.cloud_build
 
       echo "Build images for testing, run tests and create report"
-      echo "UID=$(id -u) GID=$(id -g)"
-      UID=$(id -u) GID=$(id -g) docker compose -f docker-compose.run-tests.yaml up --exit-code-from server && chown -R $USER /cpho/web/coverage
+      docker compose -f docker-compose.run-tests.yaml up --exit-code-from server && chown -R $USER /cpho/web/coverage
       
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  
       # Test reports are generated twice:

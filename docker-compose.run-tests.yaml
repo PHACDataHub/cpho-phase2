@@ -16,7 +16,7 @@ services:
   server:
     build: ./server
     image: cpho-test-image
-    user: "${UID}:${GID}"
+    user: root
     command: >
       sh -c "
       coverage run -m pytest &&

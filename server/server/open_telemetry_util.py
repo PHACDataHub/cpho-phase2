@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 
@@ -17,6 +18,8 @@ from opentelemetry.sdk.trace.export import (
 )
 
 from server.config_util import get_project_config, is_running_tests
+
+logger = logging.getLogger(__name__)
 
 
 def instrument_app():
@@ -62,7 +65,14 @@ def instrument_app():
 
     tracer_provider = TracerProvider(active_span_processor=span_processor)
 
+    logger.info("outter-test-log")
+
     def associate_request_logs_to_telemetry(span, request):
+        logger.info("inner-test-log")
+        logger.info(
+            f"projects/{project_id}/traces/{trace.span.format_trace_id(span.get_span_context().trace_id)}",
+        )
+        logger.info(trace.span.format_span_id(span.get_span_context().span_id))
         structlog.contextvars.bind_contextvars(
             **{
                 # see https://cloud.google.com/trace/docs/trace-log-integration#associating

@@ -31,13 +31,8 @@ steps:
       source .env.cloud_build
 
       echo "Build images for testing, run tests and create report"
-      # TODO: Upload coverage report to somewhere like Google Cloud Storage, and determine how to more easily access results - currently we need to dig through the Cloud Build logs in order to view the report.  
-      # docker compose -f docker-compose.run-tests.yaml build --no-cache
       docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  
-      
-      # echo "Tear down containers and volumes"
-      # docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Upload test coverage reports to Google Cloud Storage"
     name: 'gcr.io/cloud-builders/gsutil'
@@ -51,22 +46,18 @@ steps:
       source .env.cloud_build 
 
       echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
-      gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/coverage-${COMMIT_SHA}.json"
-      #:$BRANCH:$COMMIT_SHA:$(date +%s)
+      gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$(date +%s)-${COMMIT_SHA}.json"
 
-    # - id: "Tear down tests"
-    # name: "gcr.io/cloud-builders/docker"
-    # script: |
-    #   #!/usr/bin/env bash
-    #   set -o errexit
-    #   set -o pipefail
-    #   set -o nounset
-      
-    #   # echo "Get cloud build project configuration values"
-    #   # source .env.cloud_build
+    - id: "Tear down tests"
+    name: "gcr.io/cloud-builders/docker"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
 
-    #   # echo "Tear down containers and volumes"
-    #   docker compose -f docker-compose.run-tests.yaml down -v
+      # echo "Tear down containers and volumes"
+      docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

@@ -51,8 +51,8 @@ steps:
       source .env.cloud_build
 
       echo "pwd is ${PWD}"
-      pwdfilenames=`ls .`
-      for eachfile in $pwdfilenames
+      cbfilenames=`ls ./coverage`
+      for eachfile in $cbfilenames
       do
         echo $eachfile
       done

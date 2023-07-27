@@ -21,7 +21,6 @@ steps:
 
   - id: "Run tests"
     name: "gcr.io/cloud-builders/docker"
-    name: 'gcr.io/cloud-builders/gsutil'
     script: |
       #!/usr/bin/env bash
       set -o errexit

@@ -36,31 +36,34 @@ steps:
       docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.
       
+      echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
+      cp .coverage/coverage.json gs://hopic-test-coverage-reports/deployment_test_coverage_report
+      
       echo "Tear down containers and volumes"
       docker compose -f docker-compose.run-tests.yaml down -v
 
-  - id: "Upload test coverage reports to Google Cloud Storage"
-    name: 'gcr.io/cloud-builders/gsutil'
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
+  # - id: "Upload test coverage reports to Google Cloud Storage"
+  #   name: 'gcr.io/cloud-builders/gsutil'
+  #   script: |
+  #     #!/usr/bin/env bash
+  #     set -o errexit
+  #     set -o pipefail
+  #     set -o nounset
       
-      echo "Get cloud build project configuration values"
-      source .env.cloud_build
+  #     echo "Get cloud build project configuration values"
+  #     source .env.cloud_build
 
-      echo "pwd is ${PWD}"
-      cbfilenames=`ls ./coverage`
-      for eachfile in $cbfilenames
-      do
-        echo $eachfile
-      done
+  #     echo "pwd is ${PWD}"
+  #     cbfilenames=`ls ./coverage`
+  #     for eachfile in $cbfilenames
+  #     do
+  #       echo $eachfile
+  #     done
 
-      echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
-      # echo "deployment_test_coverage_report:$BRANCH:$COMMIT_SHA:$(date +%s)""
-      cp .coverage/coverage.json gs://hopic-test-coverage-reports/deployment_test_coverage_report
-      #:$BRANCH:$COMMIT_SHA:$(date +%s)
+  #     echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
+  #     # echo "deployment_test_coverage_report:$BRANCH:$COMMIT_SHA:$(date +%s)""
+  #     cp .coverage/coverage.json gs://hopic-test-coverage-reports/deployment_test_coverage_report
+  #     #:$BRANCH:$COMMIT_SHA:$(date +%s)
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

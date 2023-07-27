@@ -38,7 +38,7 @@ steps:
       
       echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
       # cp ./coverage/coverage.json gs://hopic-test-coverage-reports/deployment_test_coverage_report
-      cp ./coverage/coverage.json gs://hopic-test-coverage-reports/coverage.json
+      gsutil cp ./coverage/coverage.json gs://hopic-test-coverage-reports/coverage.json
       
       echo "Tear down containers and volumes"
       docker compose -f docker-compose.run-tests.yaml down -v

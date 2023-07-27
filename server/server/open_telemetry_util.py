@@ -62,7 +62,7 @@ def instrument_app():
 
     tracer_provider = TracerProvider(active_span_processor=span_processor)
 
-    def associate_logs_to_traces_for_request(span, request):
+    def associate_request_logs_to_telemetry(span, request):
         structlog.contextvars.bind_contextvars(
             **{
                 # see https://cloud.google.com/trace/docs/trace-log-integration#associating
@@ -77,6 +77,6 @@ def instrument_app():
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
-        request_hook=associate_logs_to_traces_for_request,
+        request_hook=associate_request_logs_to_telemetry,
         is_sql_commentor_enabled=True,
     )

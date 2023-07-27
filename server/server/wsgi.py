@@ -7,14 +7,8 @@ For more information on this file, see
 https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
-import os
-
 from django.core.wsgi import get_wsgi_application
 
-from server.open_telemetry_util import instrument_app
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
-
-instrument_app()
+# setting DJANGO_SETTINGS_MODULE usually occurs here, but has been moved to gunicorn.conf.py's post_fork hook
 
 application = get_wsgi_application()

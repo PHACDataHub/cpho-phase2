@@ -61,15 +61,15 @@ steps:
     #   gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
 
     - id: "Tear down tests"
-    name: "gcr.io/cloud-builders/docker"
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
+      name: "gcr.io/cloud-builders/docker"
+      script: |
+        #!/usr/bin/env bash
+        set -o errexit
+        set -o pipefail
+        set -o nounset
 
-      # echo "Tear down containers and volumes"
-      docker compose -f docker-compose.run-tests.yaml down -v
+        # echo "Tear down containers and volumes"
+        docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

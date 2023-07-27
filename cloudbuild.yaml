@@ -51,22 +51,22 @@ steps:
       source .env.cloud_build 
 
       echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
-      gsutil cp ./coverage/coverage.json gs://hopic-test-coverage-reports/$BRANCH/coverage-${COMMIT_SHA}.json
+      gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH}/coverage-${COMMIT_SHA}.json"
       #:$BRANCH:$COMMIT_SHA:$(date +%s)
 
-    - id: "Tear down tests"
-    name: "gcr.io/cloud-builders/docker"
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
+    # - id: "Tear down tests"
+    # name: "gcr.io/cloud-builders/docker"
+    # script: |
+    #   #!/usr/bin/env bash
+    #   set -o errexit
+    #   set -o pipefail
+    #   set -o nounset
       
-      # echo "Get cloud build project configuration values"
-      # source .env.cloud_build
+    #   # echo "Get cloud build project configuration values"
+    #   # source .env.cloud_build
 
-      # echo "Tear down containers and volumes"
-      docker compose -f docker-compose.run-tests.yaml down -v
+    #   # echo "Tear down containers and volumes"
+    #   docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

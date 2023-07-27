@@ -16,7 +16,6 @@ services:
   server:
     build: ./server
     image: cpho-test-image
-    user: root
     command: >
       sh -c "
       coverage run -m pytest &&

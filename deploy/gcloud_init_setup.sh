@@ -41,7 +41,8 @@ if [[ "${build_skip}" != "S" ]]; then
   gcloud services enable \
     cloudbuild.googleapis.com \
     sourcerepo.googleapis.com \
-    cloudresourcemanager.googleapis.com
+    cloudresourcemanager.googleapis.com \
+    storage.googleapis.com
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
   # Note: relevant APIs must be enabled before a corresponding IAM role can be created, it seems
@@ -50,7 +51,7 @@ if [[ "${build_skip}" != "S" ]]; then
     sqladmin.googleapis.com 
    
    # Set necessary roles for Cloud Build service account, including custom 
-  cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
+  cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin" "roles/storage.objectAdmin")
   for role in "${cloud_build_roles[@]}"; do
      gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
        --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
@@ -83,8 +84,14 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
-fi
 
+  echo "Create a Google Cloud Storage bucket for test coverage reports"
+  if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
+      gsutil mb -l "${PROJECT_REGION}" "gs://${TEST_COVERAGE_BUCKET_NAME}"
+      echo "Bucket created."
+  else
+    echo "Bucket already exists."
+fi
 
 # ----- CLOUD STORAGE (optional) -----
 if [ ! $PROJECT_IS_USING_WHITENOISE ]; then

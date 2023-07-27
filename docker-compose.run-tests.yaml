@@ -16,6 +16,7 @@ services:
   server:
     build: ./server
     image: cpho-test-image
+    user: "${USER}:${USER}" 
     command: >
       sh -c "
       mkdir -p /cpho/web/coverage &&

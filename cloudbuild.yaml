@@ -59,10 +59,10 @@ steps:
       total_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
       
       if (( $(echo "$total_coverage < $TEST_COVERAGE_THRESHOLD" | bc -l) )); then
-        echo "Coverage ($total_coverage%) is below the threshold of (TEST_COVERAGE_THRESHOLD%) - please add more unit tests!"
+        echo "Coverage ($total_coverage%) is below the threshold of ($TEST_COVERAGE_THRESHOLD%) - please add more unit tests!"
         echo "See above test coverage report for more details. "
         # Fail build if main branch.""
-        if [["$BRANCH_NAME" == 'main']]; then  
+        if [[ "$BRANCH_NAME" == 'main' ]]; then  
           exit 1
         fi
       else

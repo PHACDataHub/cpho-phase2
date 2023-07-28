@@ -76,10 +76,12 @@ def instrument_app():
                 ),
                 # This one's awkward, see: https://www.w3.org/TR/trace-context/#sampled-flag
                 # Right now the only trace flag is the "sampled flag", so `trace_flags` is either 0 or 1;
-                # implied that `trace_flags` will change in future specs/implementations
-                "logging.googleapis.com/trace_sampled": (
-                    span.get_span_context().trace_flags == 1
-                ),
+                # the "correct" way to get `trace_sampled` would be `span.get_span_context().trace_flags == 1`,
+                # but that seems fragile and might not pick up on overrides, like sampler=sampling.ALWAYS_ON?
+                # `span.is_recording()` doesn't indicate that the _whole_ trace is sampled, but it should
+                # indicate that the current span within the trace is reporting/being sampled, which is what this
+                # log field is actually intended for
+                "logging.googleapis.com/trace_sampled": span.is_recording(),
             }
         )
 

@@ -78,7 +78,7 @@ steps:
         echo "This is the first coverage report for this branch."
       else
         echo "Previous coverage report: $previous_report"
-        gsutil mv previous_report ./coverage/previous_report.json
+        gsutil mv $previous_report ./coverage/previous_report.json
         echo "This report is ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}"
         total_coverage_previous_commit=$(jq '.totals.percent_covered' ./coverage/previous_report.json | awk '{printf "%.2f\n", $1}')
         echo "This commit coverage of $total_coverage% is > < last commit's test coverage of $total_coverage_previous_commit"

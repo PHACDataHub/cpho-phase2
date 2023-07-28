@@ -58,12 +58,14 @@ steps:
       #TODO add main branch if
       #TODO figure out how to write to GitHub as badge?
       #TODO compare to previous report?
-      apt-get update && apt-get install -y jq
+      apt-get update && apt-get install -y jq bc
       total_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
       if (( $(echo "$total_coverage < $TEST_COVERAGE_THRESHOLD" | bc -l) )); then
         echo "Coverage ($total_coverage%) is below the threshold of (TEST_COVERAGE_THRESHOLD%) - Please add more unit tests!"
         echo "See report above for more details. "
         exit 1
+      else
+        echo "Coverage ($total_coverage%) is above the threshold. Continuing..."
       fi
 
   - id: "Tear down tests"

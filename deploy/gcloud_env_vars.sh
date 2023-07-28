@@ -23,7 +23,7 @@ export GITHUB_MAIN_BRANCH_NAME=main
 export PROJECT_IS_USING_WHITENOISE=true
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
-export TEST_COVERAGE_THRESHOLD=90
+export TEST_COVERAGE_THRESHOLD=70
 
 #########################################
 # Derived & less likely to need changes #

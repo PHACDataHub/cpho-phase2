@@ -102,6 +102,17 @@ fi
 
 
 
+# ----- CLOUD TRACE -----
+echo ""
+echo "Enable the Cloud Trace API"
+read -n 1 -p "Type S to skip this step, anything else to continue: " trace_skip
+echo ""
+if [[ "${trace_skip}" != "S" ]]; then
+  gcloud services enable cloudtrace.googleapis.com
+fi
+
+
+
 # ----- VPC NETWORK -----
 echo ""
 echo "Create and configure the project's VPC Network"

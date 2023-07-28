@@ -79,7 +79,7 @@ steps:
       else
         echo "This report: ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
         echo "Previous coverage report: $previous_commit_report"
-        
+        echo "Retrieving previous coverage report."
         gsutil cp $previous_commit_report ./coverage/previous_commit_report.json
         previous_commit_coverage=$(jq '.totals.percent_covered' ./coverage/previous_commit_report.json | awk '{printf "%.2f\n", $1}')
         coverage_difference=$(echo "$total_coverage - $previous_commit_coverage" | bc)

@@ -79,6 +79,8 @@ steps:
       else
         echo "Previous coverage file: $previous_report"
         echo "This report is ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}"
+        total_coverage_previous_commit=$(jq '.totals.percent_covered' previous_report | awk '{printf "%.2f\n", $1}')
+        echo "This commit coverage of $total_coverage% is > < last commit's test coverage of $total_coverage_previous_commit"
       fi
 
   - id: "Tear down tests"

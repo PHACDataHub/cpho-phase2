@@ -100,6 +100,11 @@ def can_submit_as_hso(user, indicator):
 
 @auto_rule
 def can_submit_as_hso_or_program(user, indicator):
-    return can_submit_as_hso(user, indicator) or can_submit_as_program(
-        user, indicator
+    # return can_submit_as_hso(user, indicator) or can_submit_as_program(
+    #     user, indicator
+    # )
+    return (
+        is_admin(user)
+        or (is_hso(user) and can_submit_as_hso(user, indicator))
+        or (is_program(user) and can_submit_as_hso(user, indicator))
     )

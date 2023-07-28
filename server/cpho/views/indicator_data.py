@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import SuspiciousOperation
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
@@ -22,7 +21,11 @@ from cpho.models import (
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 
-from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
+from .view_util import (
+    DimensionTypeOrAllMixin,
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+)
 
 
 class InstanceProvidingFormSet(BaseFormSet):
@@ -191,7 +194,10 @@ class IndicatorDatumForm(ModelForm):
 
 
 class ManageIndicatorData(
-    SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+    DimensionTypeOrAllMixin,
+    TemplateView,
 ):
     template_name = "indicator_data/manage_indicator_data.jinja2"
 
@@ -323,24 +329,12 @@ class ManageIndicatorData(
     def has_age_group_forms(self):
         return self.dimension_type is None or self.dimension_type.code == "age"
 
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        if not test_rule(
-            "can_edit_indicator_data", request.user, context["indicator"]
-        ):
-            raise SuspiciousOperation(
-                f"User {request.user} cannot edit data for this indicator"
-            )
-
-        return self.render_to_response(context)
+    def check_rule(self):
+        return test_rule(
+            "can_edit_indicator_data", self.request.user, self.indicator
+        )
 
     def post(self, *args, **kwargs):
-        if not test_rule(
-            "can_edit_indicator_data", self.request.user, self.indicator
-        ):
-            raise SuspiciousOperation(
-                f"User {self.request.user} cannot edit data for this indicator"
-            )
         predefined_valid = self.predefined_values_formset.is_valid()
         age_group_valid = (
             not self.has_age_group_forms or self.age_group_formset.is_valid()

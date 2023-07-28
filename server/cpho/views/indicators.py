@@ -3,7 +3,6 @@ from typing import Any
 
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import SuspiciousOperation
 from django.forms.models import ModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -23,7 +22,7 @@ from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
 
-from .view_util import SinglePeriodMixin
+from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin
 
 
 class IndicatorForm(ModelForm):
@@ -77,19 +76,20 @@ class ListIndicators(ListView):
         }
 
 
-class ViewIndicator(TemplateView):
+class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
     model = Indicator
     template_name = "indicators/view_indicator.jinja2"
 
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        if not test_rule(
-            "can_edit_indicator", request.user, context["object"]
-        ):
-            raise SuspiciousOperation(
-                f"User {request.user} cannot edit this indicator"
-            )
-        return self.render_to_response(context)
+    def check_rule(self):
+        return test_rule(
+            "can_view_indicator_data",
+            self.request.user,
+            self.indicator,
+        )
+
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["pk"])
 
     def get_context_data(self, **kwargs):
         indicator = Indicator.objects.get(pk=self.kwargs["pk"])
@@ -115,13 +115,15 @@ class ViewIndicator(TemplateView):
         }
 
 
-class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
+class ViewIndicatorForYear(
+    MustPassAuthCheckMixin, SinglePeriodMixin, DetailView
+):
     model = Indicator
     template_name = "indicators/view_indicator_for_year.jinja2"
 
     @cached_property
     def indicator(self):
-        return self.object
+        return Indicator.objects.get(pk=self.kwargs["pk"])
 
     @cached_property
     def indicator_data(self):
@@ -145,19 +147,17 @@ class ViewIndicatorForYear(SinglePeriodMixin, DetailView):
             **super().get_context_data(*args, **kwargs),
             "dimension_types": DimensionType.objects.all(),
             "submission_statuses": get_submission_statuses(
-                self.object, self.period
+                self.indicator, self.period
             ),
             "indicator_data_by_dimension_type": self.indicator_data_by_dimension_type,
         }
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if not test_rule("can_view_indicator_data", request.user, self.object):
-            raise SuspiciousOperation(
-                f"User {request.user} cannot view data for this indicator"
-            )
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
+    def check_rule(self):
+        return test_rule(
+            "can_view_indicator_data",
+            self.request.user,
+            self.indicator,
+        )
 
 
 class CreateIndicator(CreateView):
@@ -174,7 +174,7 @@ class CreateIndicator(CreateView):
         }
 
 
-class EditIndicator(UpdateView):
+class EditIndicator(MustPassAuthCheckMixin, UpdateView):
     model = Indicator
     form_class = IndicatorForm
     template_name = "indicators/edit_indicator.jinja2"
@@ -187,10 +187,13 @@ class EditIndicator(UpdateView):
             **super().get_context_data(**kwargs),
         }
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if not test_rule("can_edit_indicator", request.user, self.object):
-            raise SuspiciousOperation(
-                f"User {request.user} cannot edit this indicator"
-            )
-        return super().post(request, *args, **kwargs)
+    def check_rule(self):
+        return test_rule(
+            "can_edit_indicator",
+            self.request.user,
+            self.indicator,
+        )
+
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["pk"])

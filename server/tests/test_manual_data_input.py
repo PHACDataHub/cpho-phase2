@@ -3,6 +3,8 @@ from django.urls import reverse
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
 from cpho.models import DimensionType, DimensionValue, IndicatorDatum, Period
 
+from .utils_for_tests import patch_rules
+
 
 def test_predefined_create_from_scratch(vanilla_user_client):
     period = Period.objects.first()
@@ -11,8 +13,13 @@ def test_predefined_create_from_scratch(vanilla_user_client):
     url = reverse(
         "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
     )
-    response = vanilla_user_client.get(url)
-    assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 403
 
     data = {
         "agegroup-TOTAL_FORMS": 0,
@@ -26,8 +33,14 @@ def test_predefined_create_from_scratch(vanilla_user_client):
         "predefined-0-value": 5,
         "predefined-1-value": 6,
     }
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
 
     male_val = sex_cat.possible_values.get(value="m")
     female_val = sex_cat.possible_values.get(value="f")
@@ -51,8 +64,13 @@ def test_predefined_existing_data(vanilla_user_client):
     url = reverse(
         "manage_indicator_data", args=[ind.id, period.id, sex_cat.pk]
     )
-    response = vanilla_user_client.get(url)
-    assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 403
 
     data = {
         "predefined-TOTAL_FORMS": 2,
@@ -66,8 +84,13 @@ def test_predefined_existing_data(vanilla_user_client):
         "predefined-0-value": 1.1,
         "predefined-1-value": 2.0,
     }
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
 
     male_val = sex_cat.possible_values.get(value="m")
     female_val = sex_cat.possible_values.get(value="f")
@@ -78,8 +101,13 @@ def test_predefined_existing_data(vanilla_user_client):
 
     # submit the same data and check no new versions are created
     assert male_record.versions.count() == 2
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
     assert male_record.versions.count() == 2
 
 
@@ -90,8 +118,13 @@ def test_create_agegroups_from_scratch(vanilla_user_client):
     url = reverse(
         "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
     )
-    response = vanilla_user_client.get(url)
-    assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 403
 
     data = {
         "predefined-TOTAL_FORMS": 0,
@@ -108,8 +141,13 @@ def test_create_agegroups_from_scratch(vanilla_user_client):
         "agegroup-1-value": 7.5,
     }
 
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
 
     created_data = IndicatorDatum.objects.filter(
         dimension_type=age_cat, indicator=ind
@@ -147,8 +185,12 @@ def test_agegroups_existing_data(vanilla_user_client):
     url = reverse(
         "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
     )
-    response = vanilla_user_client.get(url)
-    assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 403
 
     data = {
         "predefined-TOTAL_FORMS": 0,
@@ -175,8 +217,12 @@ def test_agegroups_existing_data(vanilla_user_client):
         "agegroup-4-literal_dimension_val": "120-150",
         "agegroup-4-DELETE": "on",
     }
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
     ind.refresh_from_db()
     assert ind.data.count() == 3
     assert ind.data.get(literal_dimension_val="0-25") == record0_25
@@ -192,8 +238,12 @@ def test_agegroups_existing_data(vanilla_user_client):
 
     # try submitting the same data and check that no new versions are created when data doesn't change,
     assert ind.data.get(literal_dimension_val="0-25").versions.count() == 2
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
     assert ind.data.get(literal_dimension_val="0-25").versions.count() == 2
 
 
@@ -226,8 +276,12 @@ def test_modify_all_dimensions(vanilla_user_client):
     )
 
     url = reverse("manage_indicator_data_all", args=[ind.id, period.id])
-    response = vanilla_user_client.get(url)
-    assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 403
 
     data = {
         "predefined-TOTAL_FORMS": 2,
@@ -246,8 +300,12 @@ def test_modify_all_dimensions(vanilla_user_client):
         "agegroup-1-literal_dimension_val": "25-50",
         "agegroup-1-value": 7.5,
     }
-    response = vanilla_user_client.post(url, data=data)
-    assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 302
+    with patch_rules(can_edit_indicator_data=False):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.status_code == 403
 
     ind.refresh_from_db()
     assert ind.data.count() == 4

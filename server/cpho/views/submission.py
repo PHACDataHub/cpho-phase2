@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import SuspiciousOperation, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
@@ -28,37 +28,31 @@ from cpho.services import SubmitIndicatorDataService
 from cpho.text import tdt, tm
 from cpho.util import group_by
 
-from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
+from .view_util import (
+    DimensionTypeOrAllMixin,
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+)
 
 
-class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
+class SubmitIndicatorData(
+    MustPassAuthCheckMixin, SinglePeriodMixin, DimensionTypeOrAllMixin, View
+):
     @cached_property
     def indicator(self):
         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    def check_rule(self):
+        return test_rule(
+            "can_submit_as_hso_or_program",
+            self.request.user,
+            self.indicator,
+        )
 
     def post(self, *args, **kwargs):
         # TODO: modify once we have users figured out
         # alternatively might want to make this a url or post param
         # so admins can approve as programs?
-
-        if not (
-            test_rule("is_admin", self.request.user)
-            or (
-                test_rule("is_program", self.request.user)
-                and test_rule(
-                    "can_submit_as_program", self.request.user, self.indicator
-                )
-            )
-            or (
-                test_rule("is_hso", self.request.user)
-                and test_rule(
-                    "can_submit_as_hso", self.request.user, self.indicator
-                )
-            )
-        ):
-            raise SuspiciousOperation(
-                f"User {self.request.user} cannot review or submit this indicator"
-            )
 
         submission_type = self.request.POST["submission_type"]
 
@@ -80,7 +74,12 @@ class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
         )
 
 
-class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
+class ReviewData(
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+    DimensionTypeOrAllMixin,
+    TemplateView,
+):
     model = Indicator
     template_name = "review_data.jinja2"
 
@@ -135,24 +134,9 @@ class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
             **super().get_context_data(*args, **kwargs),
         }
 
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        if not (
-            test_rule("is_admin", request.user)
-            or (
-                test_rule("is_program", request.user)
-                and test_rule(
-                    "can_submit_as_program", request.user, self.indicator
-                )
-            )
-            or (
-                test_rule("is_hso", request.user)
-                and test_rule(
-                    "can_submit_as_hso", request.user, self.indicator
-                )
-            )
-        ):
-            raise SuspiciousOperation(
-                f"User {request.user} cannot review or submit this indicator"
-            )
-        return self.render_to_response(context)
+    def check_rule(self):
+        return test_rule(
+            "can_submit_as_hso_or_program",
+            self.request.user,
+            self.indicator,
+        )

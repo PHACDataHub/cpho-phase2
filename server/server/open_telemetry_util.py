@@ -50,7 +50,11 @@ def instrument_app():
         ).text
 
         span_exporter = CloudTraceSpanExporter(
-            project_id=project_id, resource_regex=".*"
+            project_id=project_id,
+            # resource attributes aren't exported in GCP by default, as they aren't actually supported
+            # by Cloud Trace. This regex pattern is used to select resource attributes to covert and
+            # upload as regular attributes
+            resource_regex=".*",
         )
 
         # WARNING: you might see examples wrapping a list of resource detectors in

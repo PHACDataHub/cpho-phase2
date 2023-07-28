@@ -11,10 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-from server.open_telemetry_util import instrument_app
+from server.open_telemetry_util import instrument_app_for_open_telemetry
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
 
-instrument_app()
+instrument_app_for_open_telemetry()
 
 application = get_wsgi_application()

@@ -24,11 +24,11 @@ from server.config_util import get_project_config, is_running_tests
 from server.logging_util import add_metadata_to_all_logs_for_current_request
 
 
-def instrument_app():
+def instrument_app_for_open_telemetry():
     config = get_project_config()
     IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
-    DEV_TELEMETRY_CONSOLE_OUTPUT = config(
-        "DEV_TELEMETRY_CONSOLE_OUTPUT", cast=bool, default=False
+    OUTPUT_TELEMETRY_TO_CONSOLE = config(
+        "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
     )
 
     if IS_LOCAL_DEV:
@@ -37,7 +37,7 @@ def instrument_app():
         span_exporter = ConsoleSpanExporter(
             out=(
                 sys.stdout
-                if DEV_TELEMETRY_CONSOLE_OUTPUT and not is_running_tests()
+                if OUTPUT_TELEMETRY_TO_CONSOLE
                 else open(os.devnull, "w")
             )
         )

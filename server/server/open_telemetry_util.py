@@ -10,6 +10,13 @@ from opentelemetry.propagate import set_global_textmap
 from opentelemetry.propagators.cloud_trace_propagator import (
     CloudTraceFormatPropagator,
 )
+from opentelemetry.resourcedetector.gcp_resource_detector import (
+    GoogleCloudResourceDetector,
+)
+from opentelemetry.sdk.resources import (
+    ProcessResourceDetector,
+    get_aggregated_resources,
+)
 from opentelemetry.sdk.trace import TracerProvider, sampling
 from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
@@ -37,6 +44,8 @@ def instrument_app():
                 else open(os.devnull, "w")
             )
         )
+
+        resource_detector = ProcessResourceDetector(raise_on_error=True)
     else:
         project_id = requests.get(
             "http://metadata.google.internal/computeMetadata/v1/project/project-id",
@@ -47,6 +56,8 @@ def instrument_app():
             project_id=project_id,
         )
 
+        resource_detector = GoogleCloudResourceDetector(raise_on_error=True)
+
     # Propagate the X-Cloud-Trace-Context header if present. Adds it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
@@ -56,8 +67,11 @@ def instrument_app():
     # BatchSpanProcessor also requires extra configuration when combined with gunicorn's process forking
     span_processor = SimpleSpanProcessor(span_exporter)
 
+    resource = get_aggregated_resources([resource_detector])
+
     tracer_provider = TracerProvider(
         active_span_processor=span_processor,
+        resource=resource,
         # Always sample, even if propagating a trace that wasn't sampled in earlier stages (load balancer, etc).
         # This could be too noisy on a busier app, but should be fine for CPHO's expected usage
         sampler=sampling.ALWAYS_ON,

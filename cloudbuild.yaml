@@ -54,20 +54,31 @@ steps:
       echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
       gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
 
-      # Install jq and bc to compare total coverage to failure threshold.
+      # Install jq and bc 
       apt-get update && apt-get install -y jq bc
       total_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
       
+      # Compare total coverage to failure threshold.
       if (( $(echo "$total_coverage < $TEST_COVERAGE_THRESHOLD" | bc -l) )); then
         echo "Coverage ($total_coverage%) is below the threshold of ($TEST_COVERAGE_THRESHOLD%) - please add more unit tests!"
         echo "For more details, read the test coverage report logged in 'Run tests' Cloud Build step."
         # Fail build if main branch.
         if [[ "$BRANCH_NAME" == 'main' ]]; then  
-          echo "Failing build for for insufficent test coverage."  
+          echo "Failing build for insufficent test coverage."  
           exit 1
         fi
       else
         echo "Coverage ($total_coverage%) is above the threshold. Continuing..."
+      fi
+
+      # Compare this branch's build to last commit. 
+      # Retrieve logs from last build. 
+      previous_report=$(gsutil ls "gs://hopic-test-coverage-reports/${BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
+      if [ -z "$previous_report" ]; then
+        echo "This is the first coverage report for this branch."
+      else
+        echo "Previous coverage file: $previous_report"
+        echo "This report is ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}"
       fi
 
   - id: "Tear down tests"

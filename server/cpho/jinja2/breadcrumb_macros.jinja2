@@ -1,0 +1,24 @@
+{% macro item(label, href, active) %}
+  <li class="breadcrumb-item {% if active %}active{% endif %}"
+      {% if active %}aria-current="page"{% endif %}>
+    {% if href and not active %}
+      <a href="{{ href }}">{{ label }}</a>
+    {% else %}
+      {{ label }}
+    {% endif %}
+  </li>
+{% endmacro %}
+
+
+{% macro indicators_index(active) %}
+  {{ item(tdt("Indicators") , url('list_indicators'), active) }}
+{% endmacro %}
+
+{% macro indicator(indicator, active) %}
+  {{ item(indicator.name , url('view_indicator', args=[indicator.id]) , active) }}
+{% endmacro %}
+
+{% macro indicator_period(indicator, period, active) %}
+  {% set label = period ~ " " ~ tdt('data') %}
+  {{ item(label, url('view_indicator_for_period', args=[indicator.id, period.id]) , active) }}
+{% endmacro %}

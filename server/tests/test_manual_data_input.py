@@ -99,17 +99,6 @@ def test_predefined_existing_data(vanilla_user_client):
     assert male_record.value == 1.1
     assert ind.data.get(dimension_value=female_val).value == 2.0
 
-    # submit the same data and check no new versions are created
-    assert male_record.versions.count() == 2
-    with patch_rules(can_edit_indicator_data=True):
-        response = vanilla_user_client.post(url, data=data)
-        assert response.status_code == 302
-
-    with patch_rules(can_edit_indicator_data=False):
-        response = vanilla_user_client.post(url, data=data)
-        assert response.status_code == 403
-    assert male_record.versions.count() == 2
-
 
 def test_create_agegroups_from_scratch(vanilla_user_client):
     period = Period.objects.first()
@@ -150,7 +139,7 @@ def test_create_agegroups_from_scratch(vanilla_user_client):
         assert response.status_code == 403
 
     created_data = IndicatorDatum.objects.filter(
-        dimension_type=age_cat, indicator=ind
+        dimension_type=age_cat, indicator=ind, period=period
     )
     assert created_data.count() == 2
     assert created_data.get(literal_dimension_val="0-50").value == 5.0
@@ -197,7 +186,7 @@ def test_agegroups_existing_data(vanilla_user_client):
         "predefined-INITIAL_FORMS": 0,
         "predefined-MIN_NUM_FORMS": 0,
         "predefined-MAX_NUM_FORMS": 1000,
-        "agegroup-TOTAL_FORMS": 5,
+        "agegroup-TOTAL_FORMS": 6,
         "agegroup-INITIAL_FORMS": 3,
         "agegroup-MIN_NUM_FORMS": 0,
         "agegroup-MAX_NUM_FORMS": 1000,
@@ -216,6 +205,9 @@ def test_agegroups_existing_data(vanilla_user_client):
         # just to show nothing happens
         "agegroup-4-literal_dimension_val": "120-150",
         "agegroup-4-DELETE": "on",
+        # add a new record too, it shouldn't matter that it comes after 4?
+        "agegroup-5-literal_dimension_val": "75-120",
+        "agegroup-5-value": 20.1,
     }
     with patch_rules(can_edit_indicator_data=True):
         response = vanilla_user_client.post(url, data=data)
@@ -224,7 +216,7 @@ def test_agegroups_existing_data(vanilla_user_client):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 403
     ind.refresh_from_db()
-    assert ind.data.count() == 3
+    assert ind.data.filter(period=period).count() == 4
     assert ind.data.get(literal_dimension_val="0-25") == record0_25
     assert ind.data.get(literal_dimension_val="25-50") == record25_50
     record0_25.refresh_from_db()
@@ -236,15 +228,8 @@ def test_agegroups_existing_data(vanilla_user_client):
     # assert deleted
     assert not IndicatorDatum.objects.filter(id=record_51_75.id).exists()
 
-    # try submitting the same data and check that no new versions are created when data doesn't change,
-    assert ind.data.get(literal_dimension_val="0-25").versions.count() == 2
-    with patch_rules(can_edit_indicator_data=True):
-        response = vanilla_user_client.post(url, data=data)
-        assert response.status_code == 302
-    with patch_rules(can_edit_indicator_data=False):
-        response = vanilla_user_client.post(url, data=data)
-        assert response.status_code == 403
-    assert ind.data.get(literal_dimension_val="0-25").versions.count() == 2
+    new_record = ind.data.get(literal_dimension_val="75-120")
+    assert new_record.value == 20.1
 
 
 def test_modify_all_dimensions(vanilla_user_client):
@@ -337,3 +322,61 @@ def test_modify_all_dimensions(vanilla_user_client):
         ).value
         == 7.5
     )
+
+    # check periods correctly assigned on all records
+    assert not ind.data.exclude(period=period)
+
+
+def test_non_changes_dont_create_versions(vanilla_user_client):
+    period = Period.objects.first()
+    # delete other dimensions to make POST more manageable
+    DimensionValue.objects.exclude(
+        dimension_type__code__in=["age", "sex"]
+    ).delete()
+    DimensionType.objects.exclude(code__in=["age", "sex"]).delete()
+
+    ind = IndicatorFactory()
+    age_cat = DimensionType.objects.get(code="age")
+    sex_cat = DimensionType.objects.get(code="sex")
+
+    male_dimension_value = sex_cat.possible_values.get(value="m")
+
+    # one existing record in both dimensions
+    record0_25 = ind.data.create(
+        period=period,
+        dimension_type=age_cat,
+        literal_dimension_val="0-25",
+        value=5,
+    )
+    male_record = ind.data.create(
+        period=period,
+        dimension_type=sex_cat,
+        dimension_value=male_dimension_value,
+        value=6,
+    )
+
+    url = reverse("manage_indicator_data_all", args=[ind.id, period.id])
+
+    data = {
+        "predefined-TOTAL_FORMS": 2,
+        "predefined-INITIAL_FORMS": 2,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "predefined-0-value": 6,  # male record
+        "predefined-1-value": 2.0,
+        "agegroup-TOTAL_FORMS": 2,
+        "agegroup-INITIAL_FORMS": 1,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-id": record0_25.id,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5,
+        # add new datum:
+        "agegroup-1-literal_dimension_val": "25-50",
+        "agegroup-1-value": 7.5,
+    }
+    with patch_rules(can_edit_indicator_data=True):
+        response = vanilla_user_client.post(url, data=data)
+
+    assert male_record.versions.count() == 1
+    assert record0_25.versions.count() == 1

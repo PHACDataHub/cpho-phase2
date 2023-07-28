@@ -1,6 +1,13 @@
 {% extends 'base.jinja2' %}
 {% from 'generic_macros.jinja2' import date_display %}
 {% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions, submission_status_badge %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(view.indicator) }}
+  {{ bc.indicator_period(view.indicator, period, True) }}
+{% endblock %}
 
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }} {{ period }}</div>
@@ -26,7 +33,16 @@
           </div>
         </div>
       {% endfor %}
+
+      <div class="my-3">
+        <div class="h5">{{ tdt("Or, manage all data at once") }}</div>
+        <a class="btn btn-primary btn-lg"
+           href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Edit all data") }}</a>
+        <a class="btn btn-success btn-lg"
+           href="{{ url('review_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Review and submit all data") }}</a>
+      </div>
     </div>
+
 
   </div>
 {% endblock %}

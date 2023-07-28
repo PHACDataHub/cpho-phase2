@@ -1,6 +1,14 @@
 {% extends 'base.jinja2' %}
 {% from 'generic_macros.jinja2' import date_display, todo_block %}
 {% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions, submission_status_badge %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(view.indicator) }}
+  {{ bc.indicator_period(view.indicator, period) }}
+  {{ bc.item(tdt("Review for submission") , None, True) }}
+{% endblock %}
 
 
 {% block content %}

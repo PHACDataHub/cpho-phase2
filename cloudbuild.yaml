@@ -64,7 +64,6 @@ steps:
         # Fail build if main branch.""
         if [["$BRANCH_NAME" == 'main']]; then  
           exit 1
-        else
       else
         echo "Coverage ($total_coverage%) is above the threshold. Continuing..."
       fi

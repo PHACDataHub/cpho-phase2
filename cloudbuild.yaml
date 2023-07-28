@@ -60,10 +60,10 @@ steps:
       
       if (( $(echo "$total_coverage < $TEST_COVERAGE_THRESHOLD" | bc -l) )); then
         echo "Coverage ($total_coverage%) is below the threshold of ($TEST_COVERAGE_THRESHOLD%) - please add more unit tests!"
-        echo "See above test coverage report for more details. "
-        # Fail build if main branch.""
-        # if [[ "$BRANCH_NAME" == 'main' ]]; then  
-        if [[ "$BRANCH_NAME" == 'fail-build-below-coverage-threshold' ]]; then  
+        echo "For more details, read the test coverage report logged in 'Run tests' Cloud Build step."
+        # Fail build if main branch.
+        if [[ "$BRANCH_NAME" == 'main' ]]; then  
+          echo "Failing build for for insufficent test coverage."  
           exit 1
         fi
       else

@@ -28,6 +28,9 @@ if [[ "${artifact_skip}" != "S" ]]; then
   
   # Authorize local docker client to push/pull images to artifact registry
   gcloud auth configure-docker "${PROJECT_REGION}-docker.pkg.dev"
+
+  # Enable Artifact Registry vulnerability scanning 
+  gcloud services enable containerscanning.googleapis.com
 fi
 
 

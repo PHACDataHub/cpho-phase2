@@ -10,7 +10,7 @@ from opentelemetry.propagate import set_global_textmap
 from opentelemetry.propagators.cloud_trace_propagator import (
     CloudTraceFormatPropagator,
 )
-from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace import TracerProvider, sampling
 from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
     SimpleSpanProcessor,
@@ -50,13 +50,18 @@ def instrument_app():
     # Propagate the X-Cloud-Trace-Context header if present. Adds it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
-    # a BatchSpanProcessor is better for performance but uses a background process,
+    # A BatchSpanProcessor is better for performance but uses a background process,
     # which would require tricky and careful management in Cloud Run. Even in the best case,
     # I expect the necessary tricks would still result in the occasional dropped trace.
     # BatchSpanProcessor also requires extra configuration when combined with gunicorn's process forking
     span_processor = SimpleSpanProcessor(span_exporter)
 
-    tracer_provider = TracerProvider(active_span_processor=span_processor)
+    tracer_provider = TracerProvider(
+        active_span_processor=span_processor,
+        # Always sample, even if propagating a trace that wasn't sampled in earlier stages (load balancer, etc).
+        # This could be too noisy on a busier app, but should be fine for CPHO's expected usage
+        sampler=sampling.ALWAYS_ON,
+    )
 
     def associate_request_logs_to_telemetry(span, request):
         add_metadata_to_all_logs_for_current_request(
@@ -69,8 +74,8 @@ def instrument_app():
                 "logging.googleapis.com/spanId": (
                     trace.span.format_span_id(span.get_span_context().span_id)
                 ),
-                # this one's awkward, see: https://www.w3.org/TR/trace-context/#sampled-flag
-                # right now the only trace flag is the "sampled flag", so `trace_flags` is either 0 or 1;
+                # This one's awkward, see: https://www.w3.org/TR/trace-context/#sampled-flag
+                # Right now the only trace flag is the "sampled flag", so `trace_flags` is either 0 or 1;
                 # implied that `trace_flags` will change in future specs/implementations
                 "logging.googleapis.com/trace_sampled": (
                     span.get_span_context().trace_flags == 1

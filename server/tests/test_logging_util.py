@@ -4,7 +4,6 @@ import os
 from unittest.mock import patch
 
 from django.http import HttpResponse
-from django.test.utils import override_settings
 from django.urls import path, reverse
 from django.views import View
 
@@ -116,17 +115,8 @@ def test_json_logging_consistent_between_standard_logger_and_structlogger(
     )
 
 
-# in test_add_metadata_to_all_logs_for_current_request, the behaviour under testing needs
-# a real route with specific logging side effects. To get that, without weird coupling,
-# and to resolve some tricky scoping problems, the best solution I found was to override
-# the test's ROOT_URLCONF value to point to this `urlpatterns` placeholder, and then to
-# patch this placeholder's value from within the test
-urlpatterns = "Placeholder"
-
-
-@override_settings(ROOT_URLCONF=__name__)
 def test_add_metadata_to_all_logs_for_current_request(
-    logger_factory, vanilla_user_client
+    logger_factory, vanilla_user_client, settings
 ):
     capturingHandler = get_log_output_capturing_handler(JSONLogFormatter())
 
@@ -153,56 +143,56 @@ def test_add_metadata_to_all_logs_for_current_request(
 
             return HttpResponse("")
 
-    with patch(
-        f"{__name__}.urlpatterns",
-        [
-            path(
-                "test/",
-                ViewWithLoggingSideEffect.as_view(),
-                name="log_metadata_test_route",
-            ),
-        ],
-    ):
-        vanilla_user_client.get(reverse("log_metadata_test_route"))
+    # Using a RequestFactory to send a request directly to our test view bypasses the middle ware
+    # that the `add_metadata_to_all_logs_for_current_request` implementation relies on, need to
+    # send the testing request through the test client. To do this, needed a good way to patch `urlpatterns`.
+    # Solution: declare a module level `urlpatterns` variable, containing the view with our testing behaviour,
+    # then update the test-scopped django ROOT_URLCONF setting to resolve requests via this module's `urlpatterns`
+    global urlpatterns
+    urlpatterns = [
+        path(
+            "test/",
+            ViewWithLoggingSideEffect.as_view(),
+            name="log_metadata_test_route",
+        ),
+    ]
+    settings.ROOT_URLCONF = __name__
 
-        test_logger.info(event_with_no_metadata)
+    vanilla_user_client.get(reverse("log_metadata_test_route"))
 
-        captured_logs_as_dicts_by_event = {
-            json.loads(json_string)["event"]: json.loads(json_string)
-            for json_string in capturingHandler.captured_logs
-        }
+    test_logger.info(event_with_no_metadata)
 
-        for key_1, value_1 in metadata_1.items():
-            assert (
-                captured_logs_as_dicts_by_event[event_with_metadata_1][key_1]
-                == value_1
-            )
-            assert (
-                captured_logs_as_dicts_by_event[event_with_metadata_1_and_2][
-                    key_1
-                ]
-                == value_1
-            )
-            assert (
-                not key_1
-                in captured_logs_as_dicts_by_event[event_with_no_metadata]
-            )
+    captured_logs_as_dicts_by_event = {
+        json.loads(json_string)["event"]: json.loads(json_string)
+        for json_string in capturingHandler.captured_logs
+    }
 
-        for key_2, value_2 in metadata_2.items():
-            assert (
-                not key_2
-                in captured_logs_as_dicts_by_event[event_with_metadata_1]
-            )
-            assert (
-                captured_logs_as_dicts_by_event[event_with_metadata_1_and_2][
-                    key_2
-                ]
-                == value_2
-            )
-            assert (
-                not key_2
-                in captured_logs_as_dicts_by_event[event_with_no_metadata]
-            )
+    for key_1, value_1 in metadata_1.items():
+        assert (
+            captured_logs_as_dicts_by_event[event_with_metadata_1][key_1]
+            == value_1
+        )
+        assert (
+            captured_logs_as_dicts_by_event[event_with_metadata_1_and_2][key_1]
+            == value_1
+        )
+        assert (
+            not key_1
+            in captured_logs_as_dicts_by_event[event_with_no_metadata]
+        )
+
+    for key_2, value_2 in metadata_2.items():
+        assert (
+            not key_2 in captured_logs_as_dicts_by_event[event_with_metadata_1]
+        )
+        assert (
+            captured_logs_as_dicts_by_event[event_with_metadata_1_and_2][key_2]
+            == value_2
+        )
+        assert (
+            not key_2
+            in captured_logs_as_dicts_by_event[event_with_no_metadata]
+        )
 
 
 # using the responses library is annoyingly surfacing the implementation detail that we currently use the requests library

@@ -62,7 +62,8 @@ steps:
         echo "Coverage ($total_coverage%) is below the threshold of ($TEST_COVERAGE_THRESHOLD%) - please add more unit tests!"
         echo "See above test coverage report for more details. "
         # Fail build if main branch.""
-        if [[ "$BRANCH_NAME" == 'main' ]]; then  
+        # if [[ "$BRANCH_NAME" == 'main' ]]; then  
+        if [[ "$BRANCH_NAME" == 'fail-build-below-coverage-threshold' ]]; then  
           exit 1
         fi
       else

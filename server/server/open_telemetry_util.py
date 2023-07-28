@@ -27,18 +27,13 @@ def instrument_app():
         "DEV_TELEMETRY_CONSOLE_OUTPUT", cast=bool, default=False
     )
 
-    if is_running_tests():
-        # TODO: maybe still instrument, just want to silence the output when the
-        # test environment is detected
-        return
-
     if IS_LOCAL_DEV:
         project_id = "local-dev"
 
         span_exporter = ConsoleSpanExporter(
             out=(
                 sys.stdout
-                if DEV_TELEMETRY_CONSOLE_OUTPUT
+                if DEV_TELEMETRY_CONSOLE_OUTPUT and not is_running_tests()
                 else open(os.devnull, "w")
             )
         )

@@ -50,13 +50,13 @@ def instrument_app():
         ).text
 
         span_exporter = CloudTraceSpanExporter(
-            project_id=project_id,
+            project_id=project_id, resource_regex=".*"
         )
 
         # WARNING: you might see examples wrapping a list of resource detectors in
         # `opentelemetry.sdk.resources.get_aggregated_resources`. This calls detect() and
-        # merges the results for you BUT it uses thread pools and silently fails in the Cloud Run
-        # environment! Manually call detect and merge as needed instead
+        # merges the results for you BUT it uses thread pools and may not be Cloud Run safe.
+        # Manually call detect and merge as needed instead, not a big deal
         # Note for merge, the order matters with priority given to proceeding resource objects
         resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
         resource.merge(ProcessResourceDetector(raise_on_error=True).detect())

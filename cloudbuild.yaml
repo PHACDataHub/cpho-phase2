@@ -54,6 +54,17 @@ steps:
       echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
       gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
 
+      # Check thresholds (doing this after the upload to gsc so we still have the logs)
+      #TODO add main branch if
+      #TODO figure out how to write to GitHub as badge?
+      #TODO compare to previous report?
+      total_coverage=$(jq '.totals.percent_covered' coverage.json | awk '{printf "%.2f\n", $1}')
+      if (( $(echo "$total_coverage < $TEST_COVERAGE_THRESHOLD" | bc -l) )); then
+        echo "Coverage ($total_coverage%) is below the threshold of (TEST_COVERAGE_THRESHOLD%) - Please add more unit tests!"
+        echo "See report above for more details. "
+        exit 1
+      fi
+
   - id: "Tear down tests"
     name: "gcr.io/cloud-builders/docker"
     script: |

@@ -13,10 +13,7 @@ from opentelemetry.propagators.cloud_trace_propagator import (
 from opentelemetry.resourcedetector.gcp_resource_detector import (
     GoogleCloudResourceDetector,
 )
-from opentelemetry.sdk.resources import (
-    ProcessResourceDetector,
-    get_aggregated_resources,
-)
+from opentelemetry.sdk.resources import ProcessResourceDetector
 from opentelemetry.sdk.trace import TracerProvider, sampling
 from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
@@ -45,7 +42,7 @@ def instrument_app():
             )
         )
 
-        resource_detector = ProcessResourceDetector(raise_on_error=True)
+        resource = ProcessResourceDetector(raise_on_error=True).detect()
     else:
         project_id = requests.get(
             "http://metadata.google.internal/computeMetadata/v1/project/project-id",
@@ -56,9 +53,15 @@ def instrument_app():
             project_id=project_id,
         )
 
-        resource_detector = GoogleCloudResourceDetector(raise_on_error=True)
+        # WARNING: you might see examples wrapping a list of resource detectors in
+        # `opentelemetry.sdk.resources.get_aggregated_resources`. This calls detect() and
+        # merges the results for you BUT it uses thread pools and silently fails in the Cloud Run
+        # environment! Manually call detect and merge as needed instead
+        # Note for merge, the order matters with priority given to proceeding resource objects
+        resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
+        resource.merge(ProcessResourceDetector(raise_on_error=True).detect())
 
-    # Propagate the X-Cloud-Trace-Context header if present. Adds it otherwise
+    # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
     # A BatchSpanProcessor is better for performance but uses a background process,
@@ -66,8 +69,6 @@ def instrument_app():
     # I expect the necessary tricks would still result in the occasional dropped trace.
     # BatchSpanProcessor also requires extra configuration when combined with gunicorn's process forking
     span_processor = SimpleSpanProcessor(span_exporter)
-
-    resource = get_aggregated_resources([resource_detector])
 
     tracer_provider = TracerProvider(
         active_span_processor=span_processor,

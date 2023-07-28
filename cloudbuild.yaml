@@ -73,15 +73,20 @@ steps:
 
       # Compare this branch's build to last commit. 
       # Retrieve logs from last build. 
-      previous_report=$(gsutil ls "gs://hopic-test-coverage-reports/${BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
-      if [ -z "$previous_report" ]; then
+      previous_commit_report=$(gsutil ls "gs://hopic-test-coverage-reports/${BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
+      if [ -z "$previous_commit_report" ]; then
         echo "This is the first coverage report for this branch."
       else
-        echo "Previous coverage report: $previous_report"
-        gsutil mv $previous_report ./coverage/previous_report.json
-        echo "This report is ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}"
-        total_coverage_previous_commit=$(jq '.totals.percent_covered' ./coverage/previous_report.json | awk '{printf "%.2f\n", $1}')
-        echo "This commit coverage of $total_coverage% is > < last commit's test coverage of $total_coverage_previous_commit"
+        echo "This report: ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
+        echo "Previous coverage report: $previous_commit_report"
+        
+        gsutil cp $previous_commit_report ./coverage/previous_commit_report.json
+        previous_commit_coverage=$(jq '.totals.percent_covered' ./coverage/previous_commit_report.json | awk '{printf "%.2f\n", $1}')
+        coverage_difference=$(echo "$total_coverage - $previous_commit_coverage" | bc)
+        
+        echo "Current coverage: $total_coverage%"
+        echo "Previous coverage: $previous_commit_coverage%"
+        echo "Coverage difference: $coverage_difference%"
       fi
 
   - id: "Tear down tests"

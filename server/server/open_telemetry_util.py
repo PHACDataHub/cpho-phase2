@@ -47,7 +47,7 @@ def instrument_app():
             project_id=project_id,
         )
 
-    # Propagate the X-Cloud-Trace-Context header if present, otherwise add it
+    # Propagate the X-Cloud-Trace-Context header if present. Adds it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
     # a BatchSpanProcessor is better for performance but uses a background process,
@@ -63,9 +63,17 @@ def instrument_app():
             {
                 # see https://cloud.google.com/trace/docs/trace-log-integration#associating
                 # and https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
-                "logging.googleapis.com/trace": f"projects/{project_id}/traces/{trace.span.format_trace_id(span.get_span_context().trace_id)}",
-                "logging.googleapis.com/spanId": trace.span.format_span_id(
-                    span.get_span_context().span_id
+                "logging.googleapis.com/trace": (
+                    f"projects/{project_id}/traces/{trace.span.format_trace_id(span.get_span_context().trace_id)}"
+                ),
+                "logging.googleapis.com/spanId": (
+                    trace.span.format_span_id(span.get_span_context().span_id)
+                ),
+                # this one's awkward, see: https://www.w3.org/TR/trace-context/#sampled-flag
+                # right now the only trace flag is the "sampled flag", so `trace_flags` is either 0 or 1;
+                # implied that `trace_flags` will change in future specs/implementations
+                "logging.googleapis.com/trace_sampled": (
+                    span.get_span_context().trace_flags == 1
                 ),
             }
         )

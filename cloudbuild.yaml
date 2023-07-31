@@ -51,17 +51,17 @@ steps:
 
       timestamp=$(date +%s)
 
-      echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
+      echo "Copy test coverage report from docker volume to google cloud storage bucket."
       gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
 
       # Install jq and bc 
       apt-get update && apt-get install -y jq bc
-      total_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
       
       # Compare total coverage to failure threshold.
+      total_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
       if (( $(echo "$total_coverage < $TEST_COVERAGE_THRESHOLD" | bc -l) )); then
         echo "Coverage ($total_coverage%) is below the threshold of ($TEST_COVERAGE_THRESHOLD%) - please add more unit tests!"
-        echo "For more details, read the test coverage report logged in 'Run tests' Cloud Build step."
+        echo "For more details, read the test coverage report logged in 'Run tests' cloud build step."
         # Fail build if main branch.
         if [[ "$BRANCH_NAME" == 'main' ]]; then  
           echo "Failing build for insufficent test coverage."  
@@ -71,21 +71,23 @@ steps:
         echo "Coverage ($total_coverage%) is above the threshold. Continuing..."
       fi
 
-      # Compare this branch's build to last commit. 
-      # Retrieve logs from last build. 
+      # Find coverage delta between this and last commit.
+      echo "Retrieve logs from last build."" 
       previous_commit_report=$(gsutil ls "gs://hopic-test-coverage-reports/${BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
       if [ -z "$previous_commit_report" ]; then
         echo "This is the first coverage report for this branch."
       else
         echo "This report: ${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
-        echo "Previous coverage report: $previous_commit_report"
-        echo "Retrieving previous coverage report."
+        echo "Previous report: $previous_commit_report"
+        
+        echo "Calculating previous commit's test coverage."
         gsutil cp $previous_commit_report ./coverage/previous_commit_report.json
         previous_commit_coverage=$(jq '.totals.percent_covered' ./coverage/previous_commit_report.json | awk '{printf "%.2f\n", $1}')
-        coverage_difference=$(echo "$total_coverage - $previous_commit_coverage" | bc)
         
         echo "Current coverage: $total_coverage%"
         echo "Previous coverage: $previous_commit_coverage%"
+
+        coverage_difference=$(echo "$total_coverage - $previous_commit_coverage" | bc)
         echo "Coverage difference: $coverage_difference%"
       fi
 

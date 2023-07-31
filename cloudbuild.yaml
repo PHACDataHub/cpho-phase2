@@ -32,6 +32,7 @@ steps:
 
       echo "Build images for testing, run tests and create report"
       docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
+      docker compose -f docker-compose.run-tests.yaml down -v
       
       # NOTE: Tests are run within a docker compose. When "--exit-code-from" is used, if the build or a command fails then the cloud build step will fail.  
       # Test coverage reports are generated twice:
@@ -89,16 +90,6 @@ steps:
         coverage_difference=$(echo "${total_coverage} - ${previous_commit_coverage}" | bc)
         echo "Coverage difference: ${coverage_difference}%"
       fi
-
-  - id: "Tear down tests"
-    name: "gcr.io/cloud-builders/docker"
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
-
-      docker compose -f docker-compose.run-tests.yaml down -v
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"

@@ -28,6 +28,9 @@ if [[ "${artifact_skip}" != "S" ]]; then
   
   # Authorize local docker client to push/pull images to artifact registry
   gcloud auth configure-docker "${PROJECT_REGION}-docker.pkg.dev"
+
+  # Enable Artifact Registry vulnerability scanning 
+  gcloud services enable containerscanning.googleapis.com
 fi
 
 
@@ -95,6 +98,17 @@ if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
   if [[ "${bucket_skip}" != "S" ]]; then
     gsutil mb -l "${PROJECT_REGION}" "gs://${MEDIA_BUCKET_NAME}"
   fi
+fi
+
+
+
+# ----- CLOUD TRACE -----
+echo ""
+echo "Enable the Cloud Trace API"
+read -n 1 -p "Type S to skip this step, anything else to continue: " trace_skip
+echo ""
+if [[ "${trace_skip}" != "S" ]]; then
+  gcloud services enable cloudtrace.googleapis.com
 fi
 
 

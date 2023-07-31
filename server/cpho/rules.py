@@ -42,6 +42,11 @@ def indicator_of_users_branch(user, indicator):
 
 
 @auto_rule
+def can_create_indicator(user, indicator):
+    return True
+
+
+@auto_rule
 def can_edit_indicator(user, indicator):
     return (
         is_admin(user)

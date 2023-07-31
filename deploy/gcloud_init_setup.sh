@@ -41,8 +41,7 @@ if [[ "${build_skip}" != "S" ]]; then
   gcloud services enable \
     cloudbuild.googleapis.com \
     sourcerepo.googleapis.com \
-    cloudresourcemanager.googleapis.com \
-    storage.googleapis.com
+    cloudresourcemanager.googleapis.com 
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
   # Note: relevant APIs must be enabled before a corresponding IAM role can be created, it seems
@@ -52,7 +51,7 @@ if [[ "${build_skip}" != "S" ]]; then
     cloudresourcemanager.googleapis.com 
    
    # Set necessary roles for Cloud Build service account, including custom 
-   #TODO - modify permissions &roles (i.e roles/run) to be "least-privileged"
+   #TODO - modify permissions & roles (i.e roles/run) to be "least-privileged"
   cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
   for role in "${cloud_build_roles[@]}"; do
      gcloud projects add-iam-policy-binding "${PROJECT_ID}" \

@@ -48,10 +48,11 @@ if [[ "${build_skip}" != "S" ]]; then
   # Note: relevant APIs must be enabled before a corresponding IAM role can be created, it seems
   gcloud services enable \
     sql-component.googleapis.com \
-    sqladmin.googleapis.com 
+    sqladmin.googleapis.com \
+    cloudresourcemanager.googleapis.com 
    
    # Set necessary roles for Cloud Build service account, including custom 
-   #TODO - change run roles (and all) to be "least-privileged"
+   #TODO - modify permissions &roles (i.e roles/run) to be "least-privileged"
   cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
   for role in "${cloud_build_roles[@]}"; do
      gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
@@ -113,7 +114,7 @@ if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
 else
   echo "Bucket already exists."
 
-echo "Give cloud build minimum permissions to read & write test coverage reports to cloud storage."
+echo "Allow cloud build read & write permissons for ${TEST_COVERAGE_BUCKET_NAME} bucket."
 gsutil iam ch "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com:objectCreator,legacyBucketReader" "gs://${TEST_COVERAGE_BUCKET_NAME}"
 
 

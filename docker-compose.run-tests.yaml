@@ -1,5 +1,4 @@
 # Docker compose file for running tests.
-# Note: If testing locally, change the network to external: false.
 
 version: '3.8'
 
@@ -17,10 +16,12 @@ services:
   server:
     build: ./server
     image: cpho-test-image
+    user: root
     command: >
       sh -c "
       coverage run -m pytest &&
-      coverage report --show-missing"
+      coverage report --show-missing &&
+      coverage json -o /cpho/web/coverage/coverage.json --pretty-print"
     env_file:
       - ./server/.env.dev-public
     environment:
@@ -29,6 +30,8 @@ services:
     #       decouple.Config looks in OS env vars before .env files. 
     #       If the behaviour changes, or if this is run without using decouple, setting DB_HOST=db here will no longer work. 
       - DB_HOST=db
+    volumes:
+      - ./coverage:/cpho/web/coverage 
     depends_on:
       - db
 
@@ -40,7 +43,6 @@ networks:
   default:
     name: cloudbuild
     external: true
-    # external: false
 # NOTE:  An issue with error around network label being incorrect - fixed by: "docker network create --label com.docker.compose.network=cloudbuild cloudbuild"
 
 

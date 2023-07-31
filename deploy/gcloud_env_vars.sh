@@ -22,6 +22,8 @@ export GITHUB_MAIN_BRANCH_NAME=main
 # NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
 export PROJECT_IS_USING_WHITENOISE=true
 
+export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
+
 #########################################
 # Derived & less likely to need changes #
 #########################################

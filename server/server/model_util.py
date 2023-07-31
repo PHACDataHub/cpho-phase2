@@ -15,21 +15,17 @@ def add_to_admin(cls):
 class CustomVersionModel(VersionModel):
     class Meta:
         abstract = True
-        ordering = ["business_date"]
-        get_latest_by = "business_date"
-
-    # for legacy reasons (changelog support) we need 2 identical columns called system_date and business_date
-    system_date = models.DateTimeField(default=timezone.now)
-    business_date = models.DateTimeField(default=timezone.now)
+        ordering = ["timestamp"]
+        get_latest_by = "timestamp"
 
     @property
     def previous_version(self):
         return (
             self.__class__.objects.filter(
                 eternal_id=self.eternal_id,
-                business_date__lt=self.business_date,
+                timestamp__lt=self.timestamp,
             )
-            .order_by("business_date")
+            .order_by("timestamp")
             .last()
         )
 

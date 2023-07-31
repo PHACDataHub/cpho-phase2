@@ -1,0 +1,76 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display %}
+
+{% block content %}
+ 
+  <h1>{{ tdt("Global Changelog") }}</h1>
+  <style>{% include 'changelog/_changelog_styles.css' %}</style>
+ 
+  <table style="width:100%" cellspacing="15" class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>{{ tdt("date") }}</th>
+        <th>{{ tdt("author") }}</th>
+        <th>{{ tdt("action") }}</th>
+        <th>{{ tdt("object_type") }}</th>
+        <th>{{ tdt("name") }}</th>
+        <th>{{ tdt("field") }}</th>
+        <th>{{ tdt("previous_change") }}</th>
+        <th>{{ tdt("this_change") }}</th>
+        {% block extra_column_headers %}{% endblock %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for edit_entry in edit_entries %}
+        {% if not edit_entry.diffs %}
+          <tr>
+            {% block non_diff_entry_tr %}
+              <td>{{ date_display(edit_entry.version.instance.timestamp) }}</td>
+              <td>
+                {% if edit_entry.version.edited_by %}
+                  {{ edit_entry.version.edited_by.username }}
+                {% else %}
+                  {{ tdt("N/A") }}
+                {% endif %}
+              </td>
+              <td class='font-weight-bold'>{{ tdt("saved") }}</td>
+              <td>{{ edit_entry.model_name }}</td>
+              <td>{{ edit_entry.live_name }}</td>
+              <td colspan="3">{{ tdt("no_change_detected_compared_to_previous_version") }}</td>
+            {% endblock %}
+          </tr>
+        {% endif %}
+        {% for diff in edit_entry.diffs %}
+          <tr>
+            <td>{{ date_display(edit_entry.version.instance.timestamp) }}</td>
+            <td>
+              {% if edit_entry.version.edited_by %}
+                {{ edit_entry.version.edited_by.username }}
+              {% else %}
+                {{ tdt("N/A") }}
+              {% endif %}
+            </td>
+            <td class='font-weight-bold'>{{ diff.action }}</td>
+            <td>{{ edit_entry.model_name }}</td>
+            <td>{{ edit_entry.live_name }}</td>
+            <td>
+              {% if diff.field %}{{ diff.field.verbose_name }}{% endif %}
+            </td>
+            {###############autoescape content is escaped ######################}
+            {% autoescape false %}
+              <td>{{ diff.diffed_before }}</td>
+            {% endautoescape %}
+            {% autoescape false %}
+              <td>{{ diff.diffed_after }}</td>
+            {% endautoescape %}
+            {% block extra_columns %}{% endblock %}
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "changelog/_changelog_pagination.jinja2" %}
+
+
+
+{% endblock %}

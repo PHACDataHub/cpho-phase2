@@ -70,4 +70,14 @@ urlpatterns = [
         views.ReviewData.as_view(),
         name="review_indicator_data_all",
     ),
+    path(
+        "global-changelog/",
+        views.GlobalChangelog.as_view(),
+        name="global_changelog",
+    ),
+    path(
+        "global-changelog/<int:page_num>/",
+        views.GlobalChangelog.as_view(),
+        name="global_changelog",
+    ),
 ]

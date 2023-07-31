@@ -126,6 +126,7 @@ INSTALLED_APPS = configure_apps(
         "graphene_django",
         "django_extensions",
         *(["debug_toolbar"] if ENABLE_DEBUG_TOOLBAR else []),
+        "rules.apps.AutodiscoverRulesConfig",
     ]
 )
 

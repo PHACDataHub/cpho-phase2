@@ -10,6 +10,8 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import DetailView, TemplateView, View
 
+from server.rules_framework import test_rule
+
 from cpho.constants import (
     HSO_SUBMISSION_TYPE,
     PROGRAM_SUBMISSION_TYPE,
@@ -26,13 +28,26 @@ from cpho.services import SubmitIndicatorDataService
 from cpho.text import tdt, tm
 from cpho.util import group_by
 
-from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
+from .view_util import (
+    DimensionTypeOrAllMixin,
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+)
 
 
-class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
+class SubmitIndicatorData(
+    MustPassAuthCheckMixin, SinglePeriodMixin, DimensionTypeOrAllMixin, View
+):
     @cached_property
     def indicator(self):
         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    def check_rule(self):
+        return test_rule(
+            "can_submit_as_hso_or_program",
+            self.request.user,
+            self.indicator,
+        )
 
     def post(self, *args, **kwargs):
         # TODO: modify once we have users figured out
@@ -59,7 +74,12 @@ class SubmitIndicatorData(SinglePeriodMixin, DimensionTypeOrAllMixin, View):
         )
 
 
-class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
+class ReviewData(
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+    DimensionTypeOrAllMixin,
+    TemplateView,
+):
     model = Indicator
     template_name = "review_data.jinja2"
 
@@ -113,3 +133,10 @@ class ReviewData(SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView):
         return {
             **super().get_context_data(*args, **kwargs),
         }
+
+    def check_rule(self):
+        return test_rule(
+            "can_submit_as_hso_or_program",
+            self.request.user,
+            self.indicator,
+        )

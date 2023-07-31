@@ -7,6 +7,8 @@ from django.utils.translation import activate, get_language
 import phac_aspc.django.helpers.templatetags as phac_aspc
 from jinja2 import Environment, pass_context
 
+from server.rules_framework import test_rule
+
 from cpho import models
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.util import eastern_timezone
@@ -91,6 +93,14 @@ def ipython(context):
     return ""
 
 
+@pass_context
+def respects_rule(context, rule, obj=None):
+    user = context["request"].user
+    if not user.is_authenticated:
+        return False
+    return test_rule(rule, user, obj)
+
+
 def message_type(message):
     # remaps the message level tag to the bootstrap alert type
     if message.level_tag == "error":
@@ -132,9 +142,10 @@ def environment(**options):
             "ipython": ipython,
             "tm": tm,
             "tdt": tdt,
-            "message_type": message_type,
             "print": print,
             "cpho_models": models,
+            "test_rule": test_rule,
+            "respects_rule": respects_rule,
             "submission_status_label": submission_status_label,
             "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
         }

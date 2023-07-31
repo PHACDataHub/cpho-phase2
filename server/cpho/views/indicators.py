@@ -15,12 +15,14 @@ from django.views.generic import (
     UpdateView,
 )
 
+from server.rules_framework import test_rule
+
 from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
 
-from .view_util import SinglePeriodMixin
+from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin
 
 
 class IndicatorForm(ModelForm):
@@ -74,9 +76,20 @@ class ListIndicators(ListView):
         }
 
 
-class ViewIndicator(TemplateView):
+class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
     model = Indicator
     template_name = "indicators/view_indicator.jinja2"
+
+    def check_rule(self):
+        return test_rule(
+            "can_view_indicator_data",
+            self.request.user,
+            self.indicator,
+        )
+
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["pk"])
 
     def get_context_data(self, **kwargs):
         indicator = Indicator.objects.get(pk=self.kwargs["pk"])
@@ -102,13 +115,15 @@ class ViewIndicator(TemplateView):
         }
 
 
-class ViewIndicatorForPeriod(SinglePeriodMixin, DetailView):
+class ViewIndicatorForPeriod(
+    MustPassAuthCheckMixin, SinglePeriodMixin, DetailView
+):
     model = Indicator
     template_name = "indicators/view_indicator_for_period.jinja2"
 
     @cached_property
     def indicator(self):
-        return self.object
+        return Indicator.objects.get(pk=self.kwargs["pk"])
 
     @cached_property
     def indicator_data(self):
@@ -132,10 +147,17 @@ class ViewIndicatorForPeriod(SinglePeriodMixin, DetailView):
             **super().get_context_data(*args, **kwargs),
             "dimension_types": DimensionType.objects.all(),
             "submission_statuses": get_submission_statuses(
-                self.object, self.period
+                self.indicator, self.period
             ),
             "indicator_data_by_dimension_type": self.indicator_data_by_dimension_type,
         }
+
+    def check_rule(self):
+        return test_rule(
+            "can_view_indicator_data",
+            self.request.user,
+            self.indicator,
+        )
 
 
 class CreateIndicator(CreateView):
@@ -152,7 +174,7 @@ class CreateIndicator(CreateView):
         }
 
 
-class EditIndicator(UpdateView):
+class EditIndicator(MustPassAuthCheckMixin, UpdateView):
     model = Indicator
     form_class = IndicatorForm
     template_name = "indicators/edit_indicator.jinja2"
@@ -165,3 +187,14 @@ class EditIndicator(UpdateView):
             **super().get_context_data(**kwargs),
             "indicator": self.object,
         }
+
+    def check_rule(self):
+        return test_rule(
+            "can_edit_indicator",
+            self.request.user,
+            self.indicator,
+        )
+
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["pk"])

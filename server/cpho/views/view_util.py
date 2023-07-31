@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
@@ -38,6 +39,16 @@ class DimensionTypeOrAllMixin(View):
         return DimensionType.objects.prefetch_related("possible_values").get(
             id=self.kwargs["dimension_type_id"]
         )
+
+
+class MustPassAuthCheckMixin(View):
+    def check_rule(self):
+        raise NotImplementedError("must override check_rule")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.check_rule():
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
 
 
 def upload_mapper():

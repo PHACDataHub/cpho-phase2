@@ -72,7 +72,7 @@ steps:
       fi
 
       # Find coverage delta between this and last commit.
-      echo "Retrieve logs from last build."" 
+      echo "Retrieve logs from last build." 
       previous_commit_report=$(gsutil ls "gs://hopic-test-coverage-reports/${BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
       if [ -z "$previous_commit_report" ]; then
         echo "This is the first coverage report for this branch."

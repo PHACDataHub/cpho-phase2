@@ -109,6 +109,8 @@ def instrument_app_for_open_telemetry():
         tracer_provider=tracer_provider,
         enable_commenter=True,
         commenter_options={},
+        # This instrumentor expects the `psycopg2` package. This repo uses the `psycopg2-binary` package.
+        # Compatible with both, but need to disable the instrumentor's dependency checking
         skip_dep_check=True,
     )
 

@@ -19,3 +19,6 @@ def group_by(iterable, key):
     for item in iterable:
         groups[key(item)].append(item)
     return groups
+
+
+flatten = lambda l: [item for sublist in l for item in sublist]

@@ -121,6 +121,33 @@ def submission_status_label(submission_status):
     }[submission_status]
 
 
+@pass_context
+def with_new_url_kwargs(context, **new_kwargs):
+    """
+    Uses kwargs from current context and merges new kwargs over them to return a new URL
+    """
+    request = context["request"]
+    new_kwargs = {**request.resolver_match.kwargs, **new_kwargs}
+    return reverse(request.resolver_match.url_name, kwargs=new_kwargs)
+
+
+@pass_context
+def with_same_params(context, url):
+    """
+    Uses GET params from current context and returns a new URL with them
+
+    input url must not have any GET params, or else output will be invalid
+
+    useful for non-querystring-based pagination of a querystring-filtered view
+    """
+
+    if not context["request"].GET:
+        # dont append a useless '?' if unecessary
+        return url
+
+    return f"{url}?{context['request'].GET.urlencode()}"
+
+
 def environment(**options):
     env = Environment(**options)
     env.globals.update(
@@ -148,6 +175,8 @@ def environment(**options):
             "respects_rule": respects_rule,
             "submission_status_label": submission_status_label,
             "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
+            "with_new_url_kwargs": with_new_url_kwargs,
+            "with_same_params": with_same_params,
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

@@ -1,4 +1,7 @@
+from django.apps import apps
 from django.db import models
+
+from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
 from server.model_util import (
@@ -69,17 +72,17 @@ class IndicatorDatumQueryset(models.QuerySet):
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk")
             )
-            .order_by("-system_date")
-            .values("system_date")[:1]
+            .order_by("-timestamp")
+            .values("timestamp")[:1]
         )
         return self.annotate(last_version_date=last_version_date)
 
-    def with_last_version_username(self, date_field="system_date"):
+    def with_last_version_username(self, date_field="timestamp"):
         last_version_edited_by_username = models.Subquery(
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk")
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("edited_by__username")[:1]
         )
         return self.annotate(
@@ -91,7 +94,7 @@ class IndicatorDatumQueryset(models.QuerySet):
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk")
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("id")[:1]
         )
         return self.annotate(last_version_id=last_version_id)
@@ -102,7 +105,7 @@ class IndicatorDatumQueryset(models.QuerySet):
                 eternal_id=models.OuterRef("pk"),
                 is_program_submitted=True,
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("id")[:1]
         )
         return self.annotate(
@@ -116,7 +119,7 @@ class IndicatorDatumQueryset(models.QuerySet):
                 is_hso_submitted=True,
                 is_program_submitted=True,
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("id")[:1]
         )
         return self.annotate(
@@ -131,10 +134,31 @@ class IndicatorDatumQueryset(models.QuerySet):
         )
 
 
+class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
+    @staticmethod
+    def get_name(datum):
+        if datum.dimension_type.is_literal:
+            return f"{datum.indicator} ({datum.period}) {datum.dimension_type}: {datum.literal_dimension_val}"
+
+        return f"{datum.indicator} ({datum.period}) {datum.dimension_type}: {datum.dimension_value}"
+
+    def batch_load(self, datum_ids):
+        IndicatorDatum = apps.get_model("cpho", "IndicatorDatum")
+
+        data = IndicatorDatum.objects.filter(
+            id__in=datum_ids
+        ).prefetch_related(
+            "indicator", "dimension_value", "dimension_type", "period"
+        )
+        by_id = {datum.id: datum for datum in data}
+        return [self.get_name(by_id[x]) for x in datum_ids]
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
 class IndicatorDatum(models.Model):
     objects = models.Manager.from_queryset(IndicatorDatumQueryset)()
+    changelog_live_name_loader_class = IndicatorDatumChangelogNameLoader
 
     class Meta:
         unique_together = [
@@ -271,4 +295,5 @@ class IndicatorDatum(models.Model):
 #     line_of_best_fit_point = fields.FloatField()
 #
 #     def __str__(self):
+#         return self.detailed_indicator
 #         return self.detailed_indicator

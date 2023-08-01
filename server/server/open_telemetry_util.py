@@ -6,6 +6,7 @@ import structlog
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
+from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
 from opentelemetry.propagate import set_global_textmap
 from opentelemetry.propagators.cloud_trace_propagator import (
     CloudTraceFormatPropagator,
@@ -104,9 +105,18 @@ def instrument_app_for_open_telemetry():
             }
         )
 
+    Psycopg2Instrumentor().instrument(
+        tracer_provider=tracer_provider,
+        enable_commenter=True,
+        commenter_options={},
+        skip_dep_check=True,
+    )
+
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
         request_hook=associate_request_logs_to_telemetry,
-        is_sql_commentor_enabled=True,
+        # confusingly named (typo included), this actually adds a sqlcommenter middleware, and is
+        # redundant to the preferable Psycopg2Instrumentor commenter
+        is_sql_commentor_enabled=False,
     )

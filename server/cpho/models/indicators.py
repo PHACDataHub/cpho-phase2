@@ -72,17 +72,17 @@ class IndicatorDatumQueryset(models.QuerySet):
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk")
             )
-            .order_by("-system_date")
-            .values("system_date")[:1]
+            .order_by("-timestamp")
+            .values("timestamp")[:1]
         )
         return self.annotate(last_version_date=last_version_date)
 
-    def with_last_version_username(self, date_field="system_date"):
+    def with_last_version_username(self, date_field="timestamp"):
         last_version_edited_by_username = models.Subquery(
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk")
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("edited_by__username")[:1]
         )
         return self.annotate(
@@ -94,7 +94,7 @@ class IndicatorDatumQueryset(models.QuerySet):
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk")
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("id")[:1]
         )
         return self.annotate(last_version_id=last_version_id)
@@ -105,7 +105,7 @@ class IndicatorDatumQueryset(models.QuerySet):
                 eternal_id=models.OuterRef("pk"),
                 is_program_submitted=True,
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("id")[:1]
         )
         return self.annotate(
@@ -119,7 +119,7 @@ class IndicatorDatumQueryset(models.QuerySet):
                 is_hso_submitted=True,
                 is_program_submitted=True,
             )
-            .order_by("-system_date")
+            .order_by("-timestamp")
             .values("id")[:1]
         )
         return self.annotate(

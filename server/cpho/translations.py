@@ -50,6 +50,28 @@ translation_entries = {
         "translated_using": "No",
         "fr_auto": "Non",
     },
-
-
+    "date": {
+        "en": "Date",
+    },
+    "author": {
+        "en": "Author",
+    },
+    "action": {
+        "en": "Action",
+    },
+    "object_type": {
+        "en": "Object type",
+    },
+    "name": {
+        "en": "Name",
+    },
+    "field": {
+        "en": "Field",
+    },
+    "previous_change": {
+        "en": "Previous change",
+    },
+    "this_change": {
+        "en": "This change",
+    },
 }

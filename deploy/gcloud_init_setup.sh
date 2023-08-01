@@ -215,6 +215,7 @@ if [[ "${sql_skip}" != "S" ]]; then
     # configuration for pgaudit
     "cloudsql.enable_pgaudit=on" # remember to re-include this, or it will be referted to its default
     "pgaudit.log=all,-misc"
+    "pgaudit.log_relation=on"
 
     # keep statement logging (DDL, queries) off, already captured better by pgaudit
     "log_statement=none" 
@@ -232,9 +233,9 @@ if [[ "${sql_skip}" != "S" ]]; then
   alt_delimiter=":"
   database_flags_arg_string="^${alt_delimiter}^$(printf "%s${alt_delimiter}" "${database_flags_array[@]}" | sed 's/.$//')" 
   gcloud sql instances patch "${DB_INSTANCE_NAME}" --database-flags "${database_flags_arg_string}"
-      
+
   # TODO it's recommended to configure and enable automatic storage increase limit for Cloud SQL, especially with pgaudit on. Look in to that
-  
+
   # TODO it's recommended to enforce TLS connections in Cloud SQL. Look in to that
 
   # Enable and configure GCP Query Insights https://cloud.google.com/sql/docs/postgres/using-query-insights#enable-insights

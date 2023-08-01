@@ -19,7 +19,7 @@ class GlobalChangelog(TemplateView):
     template_name = "changelog/global_changelog.jinja2"
 
     def get_page_size(self):
-        return 50
+        return 25
 
     def get_context_data(self, **kwargs):
         page_num = self.kwargs.get("page_num", 1)
@@ -62,7 +62,7 @@ class IndicatorScopedChangelog(TemplateView):
     template_name = "changelog/indicator_scoped_changelog.jinja2"
 
     def get_page_size(self):
-        return 2
+        return 25
 
     def get_context_data(self, **kwargs):
         page_num = self.kwargs.get("page_num", 1)

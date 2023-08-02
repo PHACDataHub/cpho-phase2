@@ -14,6 +14,15 @@
       "justMyCode": true
     },
     {
+      "name": "gunicorn",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/venv/bin/gunicorn",
+      "cwd": "${workspaceFolder}/server",
+      "django": true,
+      "justMyCode": true
+    },
+    {
       "name": "test",
       "type": "python",
       "request": "launch",

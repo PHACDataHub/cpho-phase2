@@ -9,6 +9,8 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
+from server.rules_framework import test_rule
+
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     DimensionType,
@@ -19,7 +21,11 @@ from cpho.models import (
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 
-from .view_util import DimensionTypeOrAllMixin, SinglePeriodMixin
+from .view_util import (
+    DimensionTypeOrAllMixin,
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+)
 
 
 class InstanceProvidingFormSet(BaseFormSet):
@@ -188,7 +194,10 @@ class IndicatorDatumForm(ModelForm):
 
 
 class ManageIndicatorData(
-    SinglePeriodMixin, DimensionTypeOrAllMixin, TemplateView
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+    DimensionTypeOrAllMixin,
+    TemplateView,
 ):
     template_name = "indicator_data/manage_indicator_data.jinja2"
 
@@ -232,6 +241,7 @@ class ManageIndicatorData(
         for form in fs:
             # new unsaved instances' save() crash when no dimension type is specified
             form.instance.dimension_type = age_dimension
+            form.instance.period = self.period
 
         return fs
 
@@ -319,6 +329,11 @@ class ManageIndicatorData(
     def has_age_group_forms(self):
         return self.dimension_type is None or self.dimension_type.code == "age"
 
+    def check_rule(self):
+        return test_rule(
+            "can_edit_indicator_data", self.request.user, self.indicator
+        )
+
     def post(self, *args, **kwargs):
         predefined_valid = self.predefined_values_formset.is_valid()
         age_group_valid = (
@@ -336,14 +351,12 @@ class ManageIndicatorData(
                 messages.success(self.request, tdt("Data saved."))
                 return redirect(
                     reverse(
-                        "view_indicator_for_year",
+                        "view_indicator_for_period",
                         args=[self.indicator.pk, self.period.id],
                     ),
                 )
         else:
             # get will just render the forms and their errors
-            # import IPython
-            # IPython.embed()
 
             return self.get(*args, **kwargs)
 

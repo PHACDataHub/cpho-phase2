@@ -31,14 +31,14 @@ steps:
       source .env.cloud_build
 
       echo "Build images for testing, run tests and create report"
-      docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
+      docker compose -f docker-compose.run-tests.yaml up --exit-code-from server    
+      # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  
+      # Test coverage reports are generated twice:
+        # 1 - to terminal to be printed in Cloud Build Logs
+        # 2 - to coverage.json in mounted volume.
+      echo "Tear down tests"
       docker compose -f docker-compose.run-tests.yaml down -v
       
-      # NOTE: Tests are run within a docker compose. When "--exit-code-from" is used, if the build or a command fails then the cloud build step will fail.  
-      # Test coverage reports are generated twice:
-        # 1 - to terminal to be included in Cloud Build Logs
-        # 2 - to coverage.json in mounted volume.
-
   - id: "Upload test coverage reports to Google Cloud Storage"
     name: 'gcr.io/cloud-builders/gsutil'
     script: |
@@ -142,7 +142,7 @@ steps:
       # IMPORTANT: don't just use latest. The secrets are mounted at container start, not deploy time,
       # so instances deployed with "latest" may end up using incompatable secret versions as new secret
       # versions are pushed, but before the coresponding images are pushed
-      prod_env_secret_version=6
+      prod_env_secret_version=7
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Deploy new image to Cloud Run"

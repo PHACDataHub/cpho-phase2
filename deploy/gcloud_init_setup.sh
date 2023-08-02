@@ -28,6 +28,9 @@ if [[ "${artifact_skip}" != "S" ]]; then
   
   # Authorize local docker client to push/pull images to artifact registry
   gcloud auth configure-docker "${PROJECT_REGION}-docker.pkg.dev"
+
+  # Enable Artifact Registry vulnerability scanning 
+  gcloud services enable containerscanning.googleapis.com
 fi
 
 
@@ -53,6 +56,7 @@ if [[ "${build_skip}" != "S" ]]; then
    # Set necessary roles for Cloud Build service account, including custom 
    #TODO - modify permissions & roles (i.e roles/run) to be "least-privileged"
   cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
+
   for role in "${cloud_build_roles[@]}"; do
      gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
        --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
@@ -85,8 +89,14 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
-fi
 
+  echo "Create a Google Cloud Storage bucket for test coverage reports"
+  if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
+      gsutil mb -l "${PROJECT_REGION}" "gs://${TEST_COVERAGE_BUCKET_NAME}"
+      echo "Bucket created."
+  else
+    echo "Bucket already exists."
+fi
 
 
 # ----- CLOUD STORAGE -----
@@ -115,6 +125,17 @@ else
 
 echo "Allow cloud build read & write permissons for ${TEST_COVERAGE_BUCKET_NAME} bucket."
 gsutil iam ch "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com:objectCreator,legacyBucketReader" "gs://${TEST_COVERAGE_BUCKET_NAME}"
+
+
+
+# ----- CLOUD TRACE -----
+echo ""
+echo "Enable the Cloud Trace API"
+read -n 1 -p "Type S to skip this step, anything else to continue: " trace_skip
+echo ""
+if [[ "${trace_skip}" != "S" ]]; then
+  gcloud services enable cloudtrace.googleapis.com
+fi
 
 
 

@@ -1,0 +1,48 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display %}
+{% from 'cpho_macros.jinja2' import indicator_data_table_w_submissions, submission_status_badge %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(view.indicator) }}
+  {{ bc.indicator_period(view.indicator, period, True) }}
+{% endblock %}
+
+{% block content %}
+  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }} {{ period }}</div>
+
+  <div class="mt-4">
+    <div class="mt-5">
+      {% for dimension_type in dimension_types %}
+        <div>
+          <div class="h5">
+            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['statuses_by_dimension_type_id'][dimension_type.id]) }}</sm>
+          </div>
+ 
+          <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
+          <div class="text-end">
+            {% if respects_rule('can_edit_indicator_data', indicator) %}
+              <a class="btn btn-primary"
+                 href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Edit") }}</a>
+            {% endif %}
+            {% if respects_rule('can_submit_as_hso_or_program', indicator) %}
+              <a class="btn btn-success"
+                 href="{{ url('review_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tdt("Review and submit") }}</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="my-3">
+        <div class="h5">{{ tdt("Or, manage all data at once") }}</div>
+        <a class="btn btn-primary btn-lg"
+           href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Edit all data") }}</a>
+        <a class="btn btn-success btn-lg"
+           href="{{ url('review_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Review and submit all data") }}</a>
+      </div>
+    </div>
+
+
+  </div>
+{% endblock %}

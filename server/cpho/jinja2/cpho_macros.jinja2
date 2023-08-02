@@ -23,9 +23,23 @@
           </th>
           <td>{{ datum.value }}</td>
           <td>{{ date_display(datum.last_version_date) }}</td>
-          <td>{{ datum.submission_status }}</td>
+          <td>{{ submission_status_label(datum.submission_status) }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+{% endmacro %}
+
+
+{% macro submission_status_badge(submission_status) %}
+  {% if submission_status == SUBMISSION_STATUSES.SUBMITTED %}
+    {% set badge_type = "success" %}
+  {% elif submission_status == SUBMISSION_STATUSES.NO_DATA %}
+    {% set badge_type = "secondary" %}
+  {% elif submission_status == SUBMISSION_STATUSES.PROGRAM_SUBMITTED %}
+    {% set badge_type = "info" %}
+  {% else %}
+    {% set badge_type = "warning" %}
+  {% endif %}
+  <span class="badge bg-{{ badge_type }}">{{ submission_status_label(submission_status) }}</span>
 {% endmacro %}

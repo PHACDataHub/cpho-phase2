@@ -75,4 +75,5 @@ EXPOSE 8080
 
 # Entrypoint script to run on-start steps (confirm migrations, etc)
 ENTRYPOINT ["sh", "./entrypoint.prod.sh"]
-CMD exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 server.wsgi:application
+# gunicorn configuration found in gunicorn.conf.py
+CMD exec gunicorn

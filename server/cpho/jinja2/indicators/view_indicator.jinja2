@@ -1,33 +1,65 @@
 {% extends 'base.jinja2' %}
-{% block content %}
-  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }}</div>
+{% import 'breadcrumb_macros.jinja2' as bc %}
 
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(indicator,True) }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
   <div class="mt-4">
-    <a href="{{ url('edit_indicator', args=[object.id]) }}"
-       class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
+    {% if respects_rule('can_edit_indicator', object) %}
+      <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
+         class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
+    {% endif %}
+    {% if respects_rule('can_view_indicator_data', object) %}
+      <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
+         class="btn btn-success">{{ tdt("View changelog for this indicator's data") }}</a>
+    {% endif %}
   </div>
-  <div class="mt-5">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>{{ tdt("Period") }}</th>
-          <th>{{ tdt("Data Count") }}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for period,data_count in data_counts_by_period.items() %}
+  {% if respects_rule('can_view_indicator_data', object) %}
+    <div class="mt-5">
+      <div class="h3">{{ tdt("Periods with data") }}</div>
+      <table class="table">
+        <thead>
           <tr>
-            <th>{{ period }} {{ tdt("records") }}</th>
-            <td>{{ data_count }}</td>
-            <td>
-              <a href="{{ url('view_indicator_for_year', args=[object.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
-            </td>
+            <th>{{ tdt("Period") }}</th>
+            <th>{{ tdt("Data Count") }}</th>
+            <th></th>
           </tr>
-        {% endfor %}
- 
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {% for period,data_count in data_counts_by_period.items() %}
+            {% if data_count > 0 %}
+              <tr>
+                <th>{{ period }}</th>
+                <td>{{ data_count }}</td>
+                <td>
+                  <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-5">
+      <div class="h3">{{ tdt("Add data for new periods") }}</div>
+      <div>
+        <ul>
+          {% for period,data_count in data_counts_by_period.items() %}
+            {% if data_count == 0 %}
+              <li>
+                <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("Add data for ") }} {{ period }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+
  
 {% endblock %}

@@ -22,8 +22,8 @@ urlpatterns = [
     ),
     path(
         "indicators/<int:pk>/<int:period_pk>/",
-        views.ViewIndicatorForYear.as_view(),
-        name="view_indicator_for_year",
+        views.ViewIndicatorForPeriod.as_view(),
+        name="view_indicator_for_period",
     ),
     path(
         "indicators/<int:pk>/edit/",
@@ -69,5 +69,25 @@ urlpatterns = [
         "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/all/",
         views.ReviewData.as_view(),
         name="review_indicator_data_all",
+    ),
+    path(
+        "indicators/<int:indicator_id>/changelog/",
+        views.IndicatorScopedChangelog.as_view(),
+        name="indicator_scoped_changelog",
+    ),
+    path(
+        "indicators/<int:indicator_id>/changelog/<int:page_num>/",
+        views.IndicatorScopedChangelog.as_view(),
+        name="indicator_scoped_changelog",
+    ),
+    path(
+        "global-changelog/",
+        views.GlobalChangelog.as_view(),
+        name="global_changelog",
+    ),
+    path(
+        "global-changelog/<int:page_num>/",
+        views.GlobalChangelog.as_view(),
+        name="global_changelog",
     ),
 ]

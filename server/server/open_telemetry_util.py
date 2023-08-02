@@ -17,8 +17,8 @@ from opentelemetry.resourcedetector.gcp_resource_detector import (
 from opentelemetry.sdk.resources import ProcessResourceDetector
 from opentelemetry.sdk.trace import TracerProvider, sampling
 from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
     ConsoleSpanExporter,
-    SimpleSpanProcessor,
 )
 
 from server.config_util import get_project_config, is_running_tests
@@ -73,7 +73,7 @@ def instrument_app_for_open_telemetry():
     # which would require tricky and careful management in Cloud Run. Even in the best case,
     # I expect the necessary tricks would still result in the occasional dropped trace.
     # BatchSpanProcessor also requires extra configuration when combined with gunicorn's process forking
-    span_processor = SimpleSpanProcessor(span_exporter)
+    span_processor = BatchSpanProcessor(span_exporter)
 
     tracer_provider = TracerProvider(
         active_span_processor=span_processor,

@@ -68,10 +68,18 @@ def instrument_app_for_open_telemetry():
     # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
-    # A BatchSpanProcessor is better for performance but uses a background process,
-    # which would require tricky and careful management in Cloud Run. Even in the best case,
-    # I expect the necessary tricks would still result in the occasional dropped trace.
-    # BatchSpanProcessor also requires extra configuration when combined with gunicorn's process forking
+    # A BatchSpanProcessor is signiicantly better for performance, but has some caveats:
+    #   1) gunicorn caveat: it uses a worker thread, which means instrumentation calls must happen post-gunicorn
+    #   worker fork, or else multiple gunicron app worker threads will attempt to share one BatchSpanProcessor
+    #   worker (and trip over eachother's process locks)
+    #   2) Cloud Run caveat: GCP docs say NOT to use BatchSpanProcessor in Cloud Run, as Cloud Run "does not
+    #   support background processes". That is a simplification though, what they really mean is that a Cloud Run
+    #   container will lose it's CPU when not actively processing a request, so background processes not tied to
+    #   request handling may not have a chance to immediately finish all their work without interuption. They can
+    #   still resume in the background when the container next receives a request. In the case that a container is
+    #   terminated before receiving a new request, the container receives a SIGTERM signal and 10 seconds of grace time
+    #   with a CPU to wrap things up (https://cloud.google.com/run/docs/container-contract#lifecycle-services); see
+    #   `flush_telemetry_callback` and its use in gunicorn.conf.py for how we take advantage of that
     span_processor = BatchSpanProcessor(span_exporter)
 
     tracer_provider = TracerProvider(

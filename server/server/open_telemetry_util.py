@@ -2,7 +2,6 @@ import os
 import sys
 
 import requests
-import structlog
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
@@ -122,3 +121,8 @@ def instrument_app_for_open_telemetry():
         # redundant to the preferable Psycopg2Instrumentor commenter
         is_sql_commentor_enabled=False,
     )
+
+    def flush_telemetry_callback():
+        tracer_provider.shutdown()
+
+    return flush_telemetry_callback

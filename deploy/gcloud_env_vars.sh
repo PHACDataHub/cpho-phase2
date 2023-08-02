@@ -17,7 +17,7 @@ export PROJECT_REGION=northamerica-northeast1
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
-export GITHUB_MAIN_BRANCH_NAME=database-observability-configuration # main TODO revert this before merging
+export GITHUB_MAIN_BRANCH_NAME=main
 
 # NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
 export PROJECT_IS_USING_WHITENOISE=true

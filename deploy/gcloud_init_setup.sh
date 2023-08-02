@@ -213,7 +213,7 @@ if [[ "${sql_skip}" != "S" ]]; then
   #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
   database_flags_array=(
     # configuration for pgaudit
-    "cloudsql.enable_pgaudit=on" # remember to re-include this, or it will be referted to its default
+    "cloudsql.enable_pgaudit=on"
     "pgaudit.log=all,-misc"
     "pgaudit.log_relation=on"
 

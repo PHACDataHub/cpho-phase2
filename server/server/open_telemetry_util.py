@@ -68,7 +68,7 @@ def instrument_app_for_open_telemetry():
     # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
-    # A BatchSpanProcessor is signiicantly better for performance, but has some caveats:
+    # A BatchSpanProcessor is significantly better for performance, but has some caveats:
     #   1) gunicorn caveat: it uses a worker thread, which means instrumentation calls must happen post-gunicorn
     #   worker fork, or else multiple gunicron app worker threads will attempt to share one BatchSpanProcessor
     #   worker (and trip over eachother's process locks)

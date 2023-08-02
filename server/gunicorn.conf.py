@@ -30,7 +30,9 @@ def post_fork(server, worker):
 
 
 def worker_exit(server, worker):
-    worker.log.info("Flushing telemetry for exiting gunicorn worker...")
+    worker.log.info(
+        f"Flushing telemetry for exiting worker (pid: {worker.pid})"
+    )
     worker.flush_telemetry_callback()
 
 

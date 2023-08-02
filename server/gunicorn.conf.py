@@ -30,12 +30,8 @@ def post_fork(server, worker):
 
 
 def worker_exit(server, worker):
-    try:
-        worker.flush_telemetry_callback()
-    except AttributeError:
-        worker.log.error(
-            "Worker does not have expected flush_telemetry_callback function"
-        )
+    worker.log.info("Flushing telemetry for exiting gunicorn worker...")
+    worker.flush_telemetry_callback()
 
 
 wsgi_app = "server.wsgi:application"

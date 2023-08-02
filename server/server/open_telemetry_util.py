@@ -123,6 +123,7 @@ def instrument_app_for_open_telemetry():
     )
 
     def flush_telemetry_callback():
+        tracer_provider.force_flush()
         tracer_provider.shutdown()
 
     return flush_telemetry_callback

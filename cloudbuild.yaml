@@ -92,22 +92,21 @@ steps:
       fi
       
       echo "------------------------------------------"
-      echo "Coverage threshold: ${TEST_COVERAGE_THRESHOLD}%"
+      echo "Total coverage threshold: ${TEST_COVERAGE_THRESHOLD}%"
+      echo "Delta threshold: ${TEST_DELTA_THRESHOLD}%"
       echo ""
       echo "This commit: ${this_commit_coverage}%"
       echo "Last main or master commit: ${last_github_deployment_branch_coverage}%"
       echo "------------------------------------------"
       echo "Delta between commits: ${coverage_difference}%"
       echo ""
-      echo "Delta threshold: ${TEST_DELTA_THRESHOLD}%"
-
 
       # Compare delta 
       if (( $(echo "${coverage_difference} < ${TEST_DELTA_THRESHOLD}" | bc -l) )); then
-        echo "Test coverage dropped (${coverage_difference}%) which is more than the delta threshold of ${TEST_DELTA_THRESHOLD}%"
+        echo "Test coverage dropped to (${coverage_difference}%) which is more than the delta threshold of ${TEST_DELTA_THRESHOLD}%"
         echo "Please increase the number of unit tests."
 
-        failure_reasons+=(" - the test coverage dropped greater than the allowed delta from the main deployment branch ")
+        failure_reasons+=(" - the test coverage dropped more than the allowed delta from the main deployment branch ")
       else
         echo "Test coverage delta is within range."
       fi

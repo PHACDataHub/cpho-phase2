@@ -81,9 +81,9 @@ steps:
         echo "Test coverage threshold: ${TEST_COVERAGE_THRESHOLD}"
         echo ""
         echo "This commit's total test coverage: ${this_commit_coverage}%"
-        echo "Last master or main branch commit's coverage: ${previous_commit_coverage}%"
+        echo "Last master or main branch commit's coverage: ${last_github_deployment_branch_coverage}%"
         echo ""
-        coverage_difference=$(echo "${total_coverage} - ${previous_commit_coverage}" | bc)
+        coverage_difference=$(echo "${total_coverage} - ${last_github_deployment_branch_coverage}" | bc)
       fi
 
       echo "Coverage difference: ${coverage_difference}%"

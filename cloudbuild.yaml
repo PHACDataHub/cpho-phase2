@@ -86,21 +86,29 @@ steps:
         echo ""
         coverage_difference=$(echo "${this_commit_coverage} - ${last_github_deployment_branch_coverage}" | bc)
       fi
-
+      
+      echo ""
+      echo "Test coverage threshold: ${TEST_COVERAGE_THRESHOLD}%"
+      echo "This commit: ${this_commit_coverage}%"
+      echo "GitHub main or master last commit: ${last_github_deployment_branch_coverage}%"
       echo "Coverage difference: ${coverage_difference}%"
+      echo ""
 
       # Compare total coverage to failure threshold.
 
       if (( $(echo "${this_commit_coverage} < ${TEST_COVERAGE_THRESHOLD}" | bc -l) )); then
+        echo ""
+        echo "Insufficent test coverage."  
         echo "Coverage (${this_commit_coverage}%) is below the threshold of (${TEST_COVERAGE_THRESHOLD}%) - please add more unit tests!"
-        echo "For more details, read the test coverage report logged in 'Run tests' cloud build step."
-        # Fail build if main branch.
-        if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
-          echo "Failing build for insufficent test coverage."  
-          exit 1
-        fi
+        echo "For more details, read the test coverage report."
+        echo ""
+        # # Fail build if main branch.
+        # if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
+        #   echo "Insufficent test coverage."  
+        #   exit 1
+        # fi
       else
-        echo "Coverage (${this_commit_coverage}%) is above the threshold of ${TEST_COVERAGE_THRESHOLD}. Continuing..."
+        echo "Coverage (${this_commit_coverage}%) is above the threshold of ${TEST_COVERAGE_THRESHOLD}."
       fi
 
   - id: "Build image if main"

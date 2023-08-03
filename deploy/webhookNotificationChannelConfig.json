@@ -1,0 +1,8 @@
+{
+    "type": "webhook_tokenauth",
+    "displayName": "Slack Webhook Alert Channel",
+    "description": "Webhook notification channel for Cloud Run Outages",
+    "labels": {
+        "url": "https://hooks.slack.com/services/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"
+    }
+}

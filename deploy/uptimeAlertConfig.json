@@ -1,0 +1,18 @@
+{
+    "displayName": "Uptime Alert for HoPiC",
+    "userLabels": {
+        "payload": "{\"text\": \"HoPiC Outage (test)!\"}"
+    },
+    "conditions": [
+        {
+          "conditionAbsent": {
+            "filter": "monitoring.googleapis.com/uptime_check/check_passed = true",
+            "duration": "60s"
+          }
+        }
+      ],
+    "notificationChannels": [
+        "projects/phx-01h4rr1468rj3v5k60b1vserd3/notificationChannels/3638703202031272277"
+    ],
+    "combiner": "AND"
+}

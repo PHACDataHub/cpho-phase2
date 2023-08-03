@@ -2,79 +2,68 @@
 # https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.uptimeCheckConfigs#UptimeCheckConfig
 # May need to check uptime_url to also detect potential issues outside cloud run? VPC connector?
 
+# Steps (all have configuration files in the config folder)
+#   * Create uptime check
+#   * 
+
 #!/bin/bash
 set -o errexit
 set -o pipefail
 set -o nounset
 
-PROJECT_ID = phx-01h4rr1468rj3v5k60b1vserd3
+PROJECT_ID=phx-01h4rr1468rj3v5k60b1vserd3
+parent=projects/${PROJECT_ID}
+ACCESS_TOKEN=$(gcloud auth print-access-token)
 
-# Create config file https://levelup.gitconnected.com/injecting-environment-variables-into-static-files-ea21c2d4bdbd#:~:text=The%20goal%20is%20to%20easily,the%20variables%20during%20build%20time.
 # ----- MONITORING - UPTIME CHECKS ----
-# echo ""
-# echo "Enable Monitoring, Cloud Run Uptime Checks"
-# read -n 1 -p "Type S to skip this step, anything else to continue: " uptime_checks_skip
-# echo ""
-# if [[ "${uptime_checks_skip}" != "S" ]]; then
-
-# API User role need the following roles:
-# roles/monitoring.uptimeCheckConfigEditor
-# roles/monitoring.alertPolicyEditor
-# roles/monitoring.notificationChannelEditor
+# NOTE: API User role need the following roles:
+#   roles/monitoring.uptimeCheckConfigEditor
+#   roles/monitoring.alertPolicyEditor
+#   roles/monitoring.notificationChannelEditor
+# (and secret accessor if storing Slack webhook url in Secret Manager)
 
 
-
-# Enable monitoring API
+# Enable Monitoring API
 gcloud services enable monitoring --project=$PROJECT_ID
-  
-# Create uptime check (curl config) (NOTE: Can be a delay of 5 min before able to view on monitor dashbaord - https://cloud.google.com/monitoring/uptime-checks/private-checks#api:-scoping-project:~:text=delay%20of%20up%20to%205%20minutes)
+
+
+# Create uptime check (config files )
+# NOTE: There can be a delay of 5 min before able to view on monitor dashbaord - https://cloud.google.com/monitoring/uptime-checks/private-checks#api:-scoping-project:~:text=delay%20of%20up%20to%205%20minutes)
 # REGION_UNSPECIFIED (global)
 
-curl https://monitoring.googleapis.com/v3/projects/${PROJECT_ID}/uptimeCheckConfigs \
--H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
---request POST --data '{
-"displayName": "private-check-demo",
-"monitoredResource": {
-  "type": "servicedirectory_service",
-  "labels": {
-    "project_id": "'"$PROJECT_ID"'",
-    "service_name": "PRIVATE_SERVICE",
-    "namespace_name": "PRIVATE_NAMESPACE",
-    "location": "REGION"
-  }
-},
-"httpCheck": {
-  "requestMethod": "GET"
-},
-"period": "60s",
-"timeout": "10s",
-"checker_type": "VPC_CHECKERS"
-}'
+curl -X POST "https://monitoring.googleapis.com/v3/${parent}/uptimeCheckConfigs" \
+     -H "Authorization: Bearer $ACCESS_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d @deploy/uptimeCheckConfig.json
 
-# Create alert for uptime check
-{
-  "requestMethod": "GET",
-  "useSsl": true,
-  "path": "/",
-  # "port": integer,
-  # "authInfo": {
-  #   object (BasicAuthentication)
-  # },
-  "maskHeaders": true,
-  "headers": {
-    string: string,
-    ...
-  },
-  "contentType": enum (ContentType),
-  "customContentType": string,
-  "validateSsl": boolean,
-  "body": string,
-  # "acceptedResponseStatusCodes": [
-  #   {
-  #     object (ResponseStatusCode)
-  #   }
-  ],
-  "pingConfig": {
-    object (PingConfig)
-  }
-}
+
+# Create a notification channel (using email - via google cloud app, but idealy would have slack channel/ webhook for slack channel)
+# https://cloud.google.com/blog/products/devops-sre/use-slack-and-webhooks-for-notifications
+# test with curl -X POST -H 'Content-type: application/json' --data '{"text": "testing!"}' ${SLACK_WEBHOOK_URL}
+# ** This is a manual step - 
+#   * Save URL in secret manager
+
+# curl -X POST "https://monitoring.googleapis.com/v3/projects/${PROJECT_ID}/notificationChannels" \
+#      -H "Authorization: Bearer $ACCESS_TOKEN" \
+#      -H "Content-Type: application/json" \
+#      -d @deploy/webhookNotificationChannelConfig.json
+
+gcloud beta monitoring channels create --channel-content-from-file="deploy/webhookNotificationChannelConfig.json"
+
+# Read back notification channel to use in alert policy: (gcloud beta monitoring channels list)
+gcloud beta monitoring channels list --format json >> notification_channel_config.json
+notification_channel_content=$(cat notification_channel_config.json)
+
+# Extract the "name" field
+name=$(echo "$notification_channel_config" | jq -r '.[0].name')
+
+# Replace notificationChannels field with name in uptimeAlertConfig
+config_content=$(cat deploy/uptimeAlertConfig.json)
+config_content_modified=$(echo "$config_content" | jq --arg name "$name" '.notificationChannels[0] = $name')
+echo "$config_content_modified" > deploy/uptimeAlertConfig.json
+
+# Note can replace fields if created --fields=[field,…]  
+
+# Create an alert policy
+# https://cloud.google.com/monitoring/alerts/types-of-conditions
+gcloud alpha monitoring policies create --policy-from-file="deploy/uptimeAlertConfig.json"

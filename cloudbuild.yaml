@@ -45,7 +45,7 @@ steps:
       #!/usr/bin/env bash
       set -o errexit
       set -o pipefail
-      set -o nounset
+      set -o nounset 
     
       echo "Get cloud build project configuration values"
       source .env.cloud_build 
@@ -74,6 +74,7 @@ steps:
         # Find coverage delta between this commit and last commit to main GitHub deployment branch.
         echo "Report name for last commit to the main GitHub deployment branch: ${last_github_deployment_branch_coverage_report}"
         echo "Calculating test coverage for the last commit to the main GitHub deployment branch."
+        
         gsutil cp ${last_github_deployment_branch_coverage_report} ./coverage/last_github_deployment_branch_coverage_report.json
         last_github_deployment_branch_coverage=$(jq '.totals.percent_covered' ./coverage/last_github_deployment_branch_coverage_report.json | awk '{printf "%.2f\n", $1}')
         echo "Last master or main branch commit's coverage: ${last_github_deployment_branch_coverage}%"
@@ -83,7 +84,7 @@ steps:
         # echo "This commit's total test coverage: ${this_commit_coverage}%"
 
         echo ""
-        coverage_difference=$(echo "${total_coverage} - ${last_github_deployment_branch_coverage}" | bc)
+        coverage_difference=$(echo "${this_commit_coverage} - ${last_github_deployment_branch_coverage}" | bc)
       fi
 
       echo "Coverage difference: ${coverage_difference}%"
@@ -99,7 +100,7 @@ steps:
           exit 1
         fi
       else
-        echo "Coverage (${total_coverage}%) is above the threshold. Continuing..."
+        echo "Coverage (${this_commit_coverage}%) is above the threshold. Continuing..."
       fi
 
   - id: "Build image if main"

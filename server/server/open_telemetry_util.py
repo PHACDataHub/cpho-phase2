@@ -2,10 +2,10 @@ import os
 import sys
 
 import requests
-import structlog
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
+from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
 from opentelemetry.propagate import set_global_textmap
 from opentelemetry.propagators.cloud_trace_propagator import (
     CloudTraceFormatPropagator,
@@ -16,8 +16,8 @@ from opentelemetry.resourcedetector.gcp_resource_detector import (
 from opentelemetry.sdk.resources import ProcessResourceDetector
 from opentelemetry.sdk.trace import TracerProvider, sampling
 from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
     ConsoleSpanExporter,
-    SimpleSpanProcessor,
 )
 
 from server.config_util import get_project_config, is_running_tests
@@ -68,11 +68,19 @@ def instrument_app_for_open_telemetry():
     # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())
 
-    # A BatchSpanProcessor is better for performance but uses a background process,
-    # which would require tricky and careful management in Cloud Run. Even in the best case,
-    # I expect the necessary tricks would still result in the occasional dropped trace.
-    # BatchSpanProcessor also requires extra configuration when combined with gunicorn's process forking
-    span_processor = SimpleSpanProcessor(span_exporter)
+    # A BatchSpanProcessor is significantly better for performance, but has some caveats:
+    #   1) gunicorn caveat: it uses a worker thread, which means instrumentation calls must happen post-gunicorn
+    #   worker fork, or else multiple gunicron app worker threads will attempt to share one BatchSpanProcessor
+    #   worker (and trip over eachother's process locks)
+    #   2) Cloud Run caveat: GCP docs say NOT to use BatchSpanProcessor in Cloud Run, as Cloud Run "does not
+    #   support background processes". That is a simplification though, what they really mean is that a Cloud Run
+    #   container will lose it's CPU when not actively processing a request, so background processes not tied to
+    #   request handling may not have a chance to immediately finish all their work without interuption. They can
+    #   still resume in the background when the container next receives a request. In the case that a container is
+    #   terminated before receiving a new request, the container receives a SIGTERM signal and 10 seconds of grace time
+    #   with a CPU to wrap things up (https://cloud.google.com/run/docs/container-contract#lifecycle-services); see
+    #   `flush_telemetry_callback` and its use in gunicorn.conf.py for how we take advantage of that
+    span_processor = BatchSpanProcessor(span_exporter)
 
     tracer_provider = TracerProvider(
         active_span_processor=span_processor,
@@ -104,9 +112,26 @@ def instrument_app_for_open_telemetry():
             }
         )
 
+    Psycopg2Instrumentor().instrument(
+        tracer_provider=tracer_provider,
+        enable_commenter=True,
+        commenter_options={},
+        # This instrumentor expects the `psycopg2` package. This repo uses the `psycopg2-binary` package.
+        # Compatible with both, but need to disable the instrumentor's dependency checking
+        skip_dep_check=True,
+    )
+
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
         request_hook=associate_request_logs_to_telemetry,
-        is_sql_commentor_enabled=True,
+        # confusingly named (typo included), this actually adds a sqlcommenter middleware, and is
+        # redundant to the preferable Psycopg2Instrumentor commenter
+        is_sql_commentor_enabled=False,
     )
+
+    def flush_telemetry_callback():
+        tracer_provider.force_flush()
+        tracer_provider.shutdown()
+
+    return flush_telemetry_callback

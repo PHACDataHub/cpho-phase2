@@ -94,7 +94,10 @@ if [[ "${build_skip}" != "S" ]]; then
       echo "Bucket created."
   else
     echo "Bucket already exists."
+  fi
 fi
+
+
 
 # ----- CLOUD STORAGE (optional) -----
 if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
@@ -188,7 +191,61 @@ if [[ "${sql_skip}" != "S" ]]; then
     --no-assign-ip \
     --allocated-ip-range-name "${VPC_SERVICE_CONNECTION_NAME}" \
     --enable-google-private-path
-  
+
+  # To properly enable and configure pgaudit, we can't set all the database flags at once. Need to:
+  #   1) set the database flag `cloudsql.enable_pgaudit=on`
+  #     - pre-requisite for enabling the pgaudit extension
+  #   2) run `CREATE EXTENSION pgaudit;` on the instance
+  #     - pre-requisite for setting any other pgaudit configuration flags
+  #   3) set final flags, both pgaudit and non-pgaudit flags
+  #     - doing this last because the gcloud method for setting flags always reverts unspecified flags
+  #      to their defaults, meaning all final flags must be set in a single go
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" --database-flags cloudsql.enable_pgaudit=on
+
+  # TODO run `CREATE EXTENSION pgaudit;` on the instance
+
+  # PostgreSQL database flags for logging configuration and best-practice. Written in a bash array for legibility,
+  # cast to string for use. Some of the references consulted:
+  #  - https://cloud.google.com/sql/docs/postgres/flags#list-flags-postgres
+  #  - https://www.trendmicro.com/cloudoneconformity-staging/knowledge-base/gcp/CloudSQL/
+  #    - many of the suggested settings are already the Cloud SQL default, won't duplicate those here
+  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
+  database_flags_array=(
+    # configuration for pgaudit
+    "cloudsql.enable_pgaudit=on"
+    "pgaudit.log=all,-misc"
+    "pgaudit.log_relation=on"
+
+    # keep statement logging (DDL, queries) off, already captured better by pgaudit
+    "log_statement=none" 
+    # enable other misc logging
+    "log_min_messages=error"
+    "log_checkpoints=on"
+    "log_lock_waits=on"
+    "log_temp_files=0"
+    "log_connections=on"
+    "log_disconnections=on"
+    "log_hostname=on" # modifier for log_connections
+  )
+  # See `gcloud topic escaping`; an alternate delimeter, declared between two ^'s, is needed when flag values themselves might contain commas
+  # Note that using printf to joing the array to a string leaves a trailing delimiter that needs to be trimmed (using sed here)
+  alt_delimiter=":"
+  database_flags_arg_string="^${alt_delimiter}^$(printf "%s${alt_delimiter}" "${database_flags_array[@]}" | sed 's/.$//')" 
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" --database-flags "${database_flags_arg_string}"
+
+  # TODO it's recommended to configure and enable automatic storage increase limit for Cloud SQL, especially with pgaudit on. Look in to that
+
+  # TODO it's recommended to enforce TLS connections in Cloud SQL. Look in to that
+
+  # Enable and configure GCP Query Insights https://cloud.google.com/sql/docs/postgres/using-query-insights#enable-insights
+  # Query insights + tags must be enabled for Cloud SQL to automatically pull out OpenTelemetry sqlcommenter comments and
+  # add them to our traces. Note: query insights only processes a maximum of 20 queries per minute, so DB tracing will always be spotty
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" \
+    --insights-config-query-insights-enabled \
+    --insights-config-record-application-tags \
+    --insights-config-query-plans-per-minute 20 
+
   # Create Database
   gcloud sql databases create "${DB_NAME}" \
     --instance "${DB_INSTANCE_NAME}"

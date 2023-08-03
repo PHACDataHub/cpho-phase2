@@ -100,7 +100,7 @@ steps:
           exit 1
         fi
       else
-        echo "Coverage (${this_commit_coverage}%) is above the threshold of ${TEST_COVERAGE_THRESHOLD}". Continuing..."
+        echo "Coverage (${this_commit_coverage}%) is above the threshold of ${TEST_COVERAGE_THRESHOLD}. Continuing..."
       fi
 
   - id: "Build image if main"

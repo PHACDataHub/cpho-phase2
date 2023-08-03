@@ -58,30 +58,30 @@ steps:
       apt-get update && apt-get install -y jq bc
       
       this_commit_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
-      echo "This commit's test coverage: ${this_commit_coverage}"
+      echo ""
+      echo "Coverage report name for this commit: ${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
+      echo "This commit's test coverage: ${this_commit_coverage}%"
+      echo ""
 
-      echo "Retrieve logs from last commit to the main GitHub deployment branch." 
+      echo "Retrieving coverage report for the last commit to the main GitHub deployment branch." 
       last_github_deployment_branch_coverage_report=$(gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}/${GITHUB_MAIN_BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
       
       if [ -z "${last_github_deployment_branch_coverage_report}" ]; then
         echo "No coverage reports for the main GitHub deployment branch found."
         coverage_difference=${this_commit_coverage}
-
       else
-        echo "Report name for this commit: ${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
-        echo "Report name for last commit to the main GitHub deployment branch: ${last_github_deployment_branch_coverage_report}"
 
         # Find coverage delta between this commit and last commit to main GitHub deployment branch.
-        
+        echo "Report name for last commit to the main GitHub deployment branch: ${last_github_deployment_branch_coverage_report}"
         echo "Calculating test coverage for the last commit to the main GitHub deployment branch."
         gsutil cp ${last_github_deployment_branch_coverage_report} ./coverage/last_github_deployment_branch_coverage_report.json
         last_github_deployment_branch_coverage=$(jq '.totals.percent_covered' ./coverage/last_github_deployment_branch_coverage_report.json | awk '{printf "%.2f\n", $1}')
-        
-        echo ""
-        echo "Test coverage threshold: ${TEST_COVERAGE_THRESHOLD}"
-        echo ""
-        echo "This commit's total test coverage: ${this_commit_coverage}%"
         echo "Last master or main branch commit's coverage: ${last_github_deployment_branch_coverage}%"
+        echo ""
+        # echo "Test coverage threshold: ${TEST_COVERAGE_THRESHOLD}"
+        # echo ""
+        # echo "This commit's total test coverage: ${this_commit_coverage}%"
+
         echo ""
         coverage_difference=$(echo "${total_coverage} - ${last_github_deployment_branch_coverage}" | bc)
       fi

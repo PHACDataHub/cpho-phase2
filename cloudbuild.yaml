@@ -46,7 +46,7 @@ steps:
       set -o errexit
       set -o pipefail
       set -o nounset
-      
+          
       echo "Get cloud build project configuration values"
       source .env.cloud_build 
 

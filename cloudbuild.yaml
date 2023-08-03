@@ -99,7 +99,8 @@ steps:
       echo "------------------------------------------"
       echo "Delta between commits: ${coverage_difference}%"
       echo ""
-      echo "Delta threshold: ${TEST_DELTA_THRESHOLD}"
+      echo "Delta threshold: ${TEST_DELTA_THRESHOLD}%"
+
 
       # Compare delta 
       if (( $(echo "${coverage_difference} < ${TEST_DELTA_THRESHOLD}" | bc -l) )); then
@@ -111,12 +112,11 @@ steps:
         echo "Test coverage delta is within range."
       fi
       
-      # Compare total coverage to failure threshold.
+      # Compare total coverage 
       if (( $(echo "${this_commit_coverage} < ${TEST_COVERAGE_THRESHOLD}" | bc -l) )); then
         echo ""
-        echo "Coverage (${this_commit_coverage}%) dropped below the threshold of (${TEST_COVERAGE_THRESHOLD}%)"
-        echo "Please add more unit tests."
-        echo "For more details, read the test coverage report."
+        echo "Coverage (${this_commit_coverage}%) is below the threshold of (${TEST_COVERAGE_THRESHOLD}%)"
+        echo "Please add more unit tests. See the test coverage report for more details."
         echo ""
 
         failure_reasons+=(" - total coverage is below threshold")
@@ -128,7 +128,7 @@ steps:
       if [ ${#failure_reasons[@]} -eq 0 ]; then
         echo "Test coverage is suficient  - continuing..."
       else
-        echo "Failed test coverage step for: "
+        echo "Step would have failed for the following reasons: "
         for reason in "${failure_reasons[@]}"; do
           echo "$reason"
         done

@@ -24,7 +24,7 @@ export PROJECT_IS_USING_WHITENOISE=true
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
 export TEST_COVERAGE_THRESHOLD=80
-export TEST_DELTA_THRESHOLD=-15  #current commit test coverage minus last commit on main's coverage
+export TEST_DELTA_THRESHOLD=1  #current commit test coverage minus last commit on main's coverage
 
 #########################################
 # Derived & less likely to need changes #

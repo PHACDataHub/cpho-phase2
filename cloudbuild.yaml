@@ -69,7 +69,7 @@ steps:
 
       else
         echo "Report name for this commit: ${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
-        echo "Report name for last commit to the main GitHub deployment branch: ${last_github_deployment_branch_coverage}"
+        echo "Report name for last commit to the main GitHub deployment branch: ${last_github_deployment_branch_coverage_report}"
 
         # Find coverage delta between this commit and last commit to main GitHub deployment branch.
         

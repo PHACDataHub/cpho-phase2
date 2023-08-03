@@ -62,7 +62,7 @@ steps:
       
       this_commit_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
       echo ""
-      echo "Report for this commit: gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
+      echo "This commit's report: gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
       echo "This commit's test coverage: ${this_commit_coverage}%"
       echo ""
 
@@ -75,12 +75,13 @@ steps:
       else
 
         # Find coverage delta between this commit and last commit to main GitHub deployment branch.
-        echo "Coverage report for last commit to the main GitHub deployment branch: ${last_github_deployment_branch_coverage_report}"
-        echo "Calculating test coverage for the last commit to the main GitHub deployment branch."
+        echo "Last commit to the main GitHub deployment branch's report: ${last_github_deployment_branch_coverage_report}"
+        echo ""
+        echo "Calculating last commit to the main GitHub deployment branch's test coverage."
         
         gsutil cp ${last_github_deployment_branch_coverage_report} ./coverage/last_github_deployment_branch_coverage_report.json
         last_github_deployment_branch_coverage=$(jq '.totals.percent_covered' ./coverage/last_github_deployment_branch_coverage_report.json | awk '{printf "%.2f\n", $1}')
-        echo "Master or main branch last commit's total coverage: ${last_github_deployment_branch_coverage}%"
+        echo "Last commit to the main GitHub deployment branch's test coverage: ${last_github_deployment_branch_coverage}%"
         echo ""
         # echo "Test coverage threshold: ${TEST_COVERAGE_THRESHOLD}"
         # echo ""
@@ -90,14 +91,15 @@ steps:
         coverage_difference=$(echo "${this_commit_coverage} - ${last_github_deployment_branch_coverage}" | bc)
       fi
       
-      echo ""
-      echo "threshold: ${TEST_COVERAGE_THRESHOLD}%"
-      echo ""
-      echo "this commit: ${this_commit_coverage}%"
-      echo "last main or master commit: ${last_github_deployment_branch_coverage}%"
       echo "------------------------------------------"
-      echo "difference between this commit and last on main or master: ${coverage_difference}%"
+      echo "Coverage threshold: ${TEST_COVERAGE_THRESHOLD}%"
       echo ""
+      echo "This commit: ${this_commit_coverage}%"
+      echo "Last main or master commit: ${last_github_deployment_branch_coverage}%"
+      echo "------------------------------------------"
+      echo "Delta between commits: ${coverage_difference}%"
+      echo ""
+      echo "Delta threshold: ${TEST_DELTA_THRESHOLD}""
 
       # Compare delta 
       if (( $(echo "${coverage_difference} < ${TEST_DELTA_THRESHOLD}" | bc -l) )); then
@@ -112,8 +114,8 @@ steps:
       # Compare total coverage to failure threshold.
       if (( $(echo "${this_commit_coverage} < ${TEST_COVERAGE_THRESHOLD}" | bc -l) )); then
         echo ""
-        echo "Insufficent test coverage."  
-        echo "Coverage (${this_commit_coverage}%) dropped below the threshold of (${TEST_COVERAGE_THRESHOLD}%) - please add more unit tests!"
+        echo "Coverage (${this_commit_coverage}%) dropped below the threshold of (${TEST_COVERAGE_THRESHOLD}%)"
+        echo "Please add more unit tests."
         echo "For more details, read the test coverage report."
         echo ""
 

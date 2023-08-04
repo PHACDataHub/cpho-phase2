@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import include, path, re_path
 
 from cpho.urls import (
@@ -22,6 +23,7 @@ urlpatterns = i18n_patterns(
     path("", include(cpho_urls)),
     prefix_default_language=False,
 ) + [
+    path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),
     re_path("^$", RootView.as_view(), name="root"),
     *dev_routes,
 ]

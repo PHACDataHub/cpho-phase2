@@ -20,12 +20,11 @@ echo ""
 if [[ "${dns_skip}" != "S" ]]; then
   gcloud services enable dns.googleapis.com
 
-  # TODO enable DNS sec?
-  # TODO also maybe enable DNS logging?
   gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} \
     --project "${PROJECT_ID}" \
     --description "${PROJECT_SERVICE_NAME} zone, for PHAC alpha-dns" \
     --dns-name "${DNS_PROJECT_DOMAIN}." \
+    --log-dns-queries \
     --visibility public
 
   IFS=',' read -r -a dns_name_servers <<< \

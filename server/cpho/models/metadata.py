@@ -28,3 +28,13 @@ class IndicatorDataSubmission(models.Model):
             (PROGRAM_SUBMISSION_TYPE, tdt("Surveillance Program")),
         ],
     )
+
+
+@add_to_admin
+class PhacOrgRole(models.Model):
+    user = fields.ForeignKey(
+        "cpho.User", on_delete=models.CASCADE, related_name="phac_org_roles"
+    )
+    phac_org = fields.ForeignKey(
+        "cpho.PHACOrg", on_delete=models.CASCADE, related_name="phac_org_roles"
+    )

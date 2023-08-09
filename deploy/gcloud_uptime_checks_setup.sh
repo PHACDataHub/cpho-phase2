@@ -50,8 +50,9 @@ curl -X POST "https://monitoring.googleapis.com/v3/${parent}/uptimeCheckConfigs"
 # To access secret
 gcloud secrets versions access 2 --secret="slack_webhook_url"
 
-# Sub in slack webhook url in config
+# Sub in slack webhook url in config (NOTE: change version (2) to correct version number)
 slack_webhook_url=$(gcloud secrets versions access 2 --secret="slack_webhook_url")
+
 config_content=$(cat deploy/webhookNotificationChannelConfig.json)
 config_content_modified=$(echo "$config_content" | jq --arg url "$slack_webhook_url" '.labels.url = $url')
 echo "$config_content_modified" > deploy/ackwebhookNotificationChannelConfig.json
@@ -65,7 +66,7 @@ gcloud beta monitoring channels create --channel-content-from-file="deploy/webho
 gcloud beta monitoring channels list --format json >> notification_channel_config.json
 notification_channel_content=$(cat notification_channel_config.json)
 
-# Extract the "name" field
+# Extract the "name" field value
 name=$(echo "$notification_channel_config" | jq -r '.[0].name')
 
 # Replace notificationChannels field with name in uptimeAlertConfig
@@ -78,3 +79,5 @@ echo "$config_content_modified" > deploy/uptimeAlertConfig.json
 # Create an alert policy
 # https://cloud.google.com/monitoring/alerts/types-of-conditions
 gcloud alpha monitoring policies create --policy-from-file="deploy/uptimeAlertConfig.json"
+
+gcloud alpha monitoring policies list --format json

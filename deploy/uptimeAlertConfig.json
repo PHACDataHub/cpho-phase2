@@ -1,18 +1,38 @@
 {
     "displayName": "Uptime Alert for HoPiC",
     "userLabels": {
-        "payload": "{\"text\": \"HoPiC Outage (test)!\"}"
+        "payload": "{\"text\": \"HoPiC Outage!\"}"
     },
     "conditions": [
-        {
-          "conditionAbsent": {
-            "filter": "monitoring.googleapis.com/uptime_check/check_passed = true",
-            "duration": "60s"
+      {
+        "conditionThreshold": {
+          "aggregations": [
+            {
+              "alignmentPeriod": "900s",
+              "crossSeriesReducer": "REDUCE_COUNT_FALSE",
+              "groupByFields": [
+                "resource.label.project_id",
+                "resource.label.service_name",
+                "resource.label.revision_name",
+                "resource.label.location",
+                "resource.label.configuration_name"
+              ],
+              "perSeriesAligner": "ALIGN_NEXT_OLDER"
+            }
+          ],
+          "comparison": "COMPARISON_GT",
+          "duration": "0s",
+          "filter": "resource.type = \"cloud_run_revision\" AND metric.type = \"monitoring.googleapis.com/uptime_check/check_passed\" AND metric.labels.check_id = \"hopic-cloud-run-uptime-check-O7JBhGevnck\"",
+          "thresholdValue": 0.5,
+          "trigger": {
+            "count": 1
           }
-        }
-      ],
+        },
+        "displayName": "Cloud Run Revision - Check passed"
+      }
+    ],
     "notificationChannels": [
         "projects/phx-01h4rr1468rj3v5k60b1vserd3/notificationChannels/3638703202031272277"
     ],
-    "combiner": "AND"
+    "combiner": "OR"
 }

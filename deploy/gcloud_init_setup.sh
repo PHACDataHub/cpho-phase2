@@ -20,27 +20,27 @@ echo ""
 if [[ "${dns_skip}" != "S" ]]; then
   gcloud services enable dns.googleapis.com
 
-  gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} \
+  gcloud dns managed-zones create "${DNS_MANAGED_ZONE_NAME}" \
     --project "${PROJECT_ID}" \
     --description "${PROJECT_SERVICE_NAME} zone, for PHAC alpha-dns" \
-    --dns-name "${DNS_PROJECT_DOMAIN}." \
+    --dns-name "${DNS_DNS_NAME}" \
     --log-dns-queries \
     --visibility public
 
   IFS=',' read -r -a dns_name_servers <<< \
-    $(gcloud dns record-sets describe "${DNS_PROJECT_DOMAIN}." --zone ${PROJECT_SERVICE_NAME} --type NS --format "value[separator=\",\"](DATA)")
+    $(gcloud dns record-sets describe "${DNS_DNS_NAME}" --zone "${DNS_MANAGED_ZONE_NAME}" --type NS --format "value[separator=\",\"](DATA)")
 
-  dns_config_file=$(dirname "${BASH_SOURCE[0]}")/"${DNS_PROJECT_DOMAIN}.yaml"
+  dns_config_file=$(dirname "${BASH_SOURCE[0]}")/"${DNS_DOMAIN}.yaml"
   rm -rf "${dns_config_file}"
 
   cat <<EOT >> "${dns_config_file}"
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSRecordSet
 metadata:
-  name: "${DNS_PROJECT_NS_NAME}"
+  name: "${DNS_NS_NAME}"
   namespace: "${DNS_PHAC_ALPHA_NS_NAME}"
 spec:
-  name: "${DNS_PROJECT_DOMAIN}."
+  name: "${DNS_DNS_NAME}"
   type: "NS"
   ttl: 300
   managedZoneRef:
@@ -51,21 +51,73 @@ spec:
     - "${dns_name_servers[2]}"
     - "${dns_name_servers[3]}"
 EOT
-# TODO determine if the block below will be needed in the alpha DNS config yaml
-# Won't be if we use a setup like https://github.com/PHACDataHub/phac-epi-garden/tree/main/deploy#readme
-#---
-#apiVersion: dns.cnrm.cloud.google.com/v1beta1
-#kind: DNSManagedZone
-#metadata:
-#  name: "${DNS_PROJECT_ZONE_NAME}"
-#spec:
-#  dnsName: "${DNS_PROJECT_DOMAIN}."
 
   echo "PHAC alpha DNS configuration output to ${dns_config_file}"
   read -n 1 -p "MANUAL STEP: open a PR adding this yaml file to the PHAC alpha DNS repo. You can do this now or later, but it needs to be merged for your new subdomain to work. Press any key to continue: " _
 
 fi
 
+
+
+# ----- FRONT DOOR NETWORKING -----
+echo ""
+echo "Create and configure the \"front door\" networking path"
+read -n 1 -p "Type S to skip this step, anything else to continue: " network_skip
+echo ""
+if [[ "${network_skip}" != "S" ]]; then
+  gcloud services enable \
+    dns.googleapis.com \
+    compute.googleapis.com
+
+  # See https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless#creating_the_load_balancer
+  # and Dan's EPI work https://github.com/PHACDataHub/phac-epi-garden/tree/9cd96e92072ce732da7bcde8ffc5b18ca768d185/deploy
+
+  gcloud compute ssl-certificates create "${NETWORK_SSL_CERT_NAME}" \
+    --domains "${DNS_DOMAIN}"
+
+  gcloud compute network-endpoint-groups create "${NETWORK_NEG_NAME}" \
+    --region "${PROJECT_REGION}" \
+    --network-endpoint-type "serverless" \
+    --cloud-run-service "${PROJECT_SERVICE_NAME}"
+
+  gcloud compute backend-services create "${NETWORK_BACKEND_SERVICE_NAME}" \
+    --port-name "http" \
+    --protocol "HTTP" \
+    --connection-draining-timeout "300" \
+    --load-balancing-scheme "EXTERNAL_MANAGED" \
+    --global
+
+  gcloud compute backend-services add-backend "${NETWORK_BACKEND_SERVICE_NAME}" \
+    --network-endpoint-group "${NETWORK_NEG_NAME}" \
+    --network-endpoint-group-region "${PROJECT_REGION}" \
+    --global
+
+  gcloud compute url-maps create "${NETWORK_URL_MAP_NAME}" \
+    --default-service "${NETWORK_BACKEND_SERVICE_NAME}"
+
+  gcloud compute target-https-proxies create "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
+    --ssl-certificates "${NETWORK_SSL_CERT_NAME}" \
+    --url-map "${NETWORK_URL_MAP_NAME}"
+
+  gcloud compute forwarding-rules create "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" \
+    --target-https-proxy "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
+    --load-balancing-scheme "EXTERNAL_MANAGED" \
+    --network-tier "PREMIUM" \
+    --ports "443" \
+    --global
+   
+  # See https://cloud.google.com/dns/docs/records#add_a_record
+  forwarding_rule_ip=$(gcloud compute forwarding-rules describe "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" --global --format "value(IPAddress)")
+  gcloud dns record-sets transaction start --zone "${DNS_MANAGED_ZONE_NAME}"
+  gcloud dns record-sets transaction add "${forwarding_rule_ip}" \
+   --zone "${DNS_MANAGED_ZONE_NAME}" \
+   --name "${DNS_DNS_NAME}" \
+   --ttl "300" \
+   --type "A"
+  gcloud dns record-sets transaction execute --zone "${DNS_MANAGED_ZONE_NAME}"
+
+  # TODO Cloud Armor
+fi
 
 
 # ----- ARTIFACT REGISTRY -----
@@ -359,7 +411,7 @@ if [[ "${secrets_skip}" != "S" ]]; then
   bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_prod_env}"
   
   # TODO add new version of existing secret to use this domain name, before this branch (dns-setup) is merged
-  bash_escape "ALLOWED_HOSTS=${DNS_PROJECT_DOMAIN}" >> "${tmp_prod_env}"
+  bash_escape "ALLOWED_HOSTS=${DNS_DOMAIN}" >> "${tmp_prod_env}"
   
   if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
     bash_escape "MEDIA_BUCKET_NAME=${MEDIA_BUCKET_NAME}" >> "${tmp_prod_env}"

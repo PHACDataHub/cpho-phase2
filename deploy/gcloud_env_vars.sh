@@ -38,15 +38,25 @@ gcloud config set compute/region "${PROJECT_REGION}"
 # ----- PROJECT -----
 export PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")
 
-# ----- Cloud DNS -----
+# ----- CLOUD DNS  -----
 # phac-alpha DNS vars
 export DNS_PHAC_ALPHA_DOMAIN="phac-aspc.alpha.canada.ca"
 export DNS_PHAC_ALPHA_NAME="phac-aspc-alpha-canada-ca"
 export DNS_PHAC_ALPHA_NS_NAME="alpha-dns"
 # project DNS vars
-export DNS_PROJECT_DOMAIN="${PROJECT_ALPHA_SUB_DOMAIN}.${DNS_PHAC_ALPHA_DOMAIN}"
-export DNS_PROJECT_ZONE_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-zone"
-export DNS_PROJECT_NS_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-ns"
+export DNS_MANAGED_ZONE_NAME="${PROJECT_SERVICE_NAME}-manaaged-dns-zone"
+export DNS_DOMAIN="${PROJECT_ALPHA_SUB_DOMAIN}.${DNS_PHAC_ALPHA_DOMAIN}"
+export DNS_DNS_NAME="${DNS_DOMAIN}."
+export DNS_ZONE_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-zone"
+export DNS_NS_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-ns"
+
+# ----- FRONT DOOR NETWORKING -----
+export NETWORK_SSL_CERT_NAME="${PROJECT_SERVICE_NAME}-cert"
+export NETWORK_NEG_NAME="${PROJECT_SERVICE_NAME}-network-endpoint-group"
+export NETWORK_BACKEND_SERVICE_NAME="${PROJECT_SERVICE_NAME}-network-backend-service"
+export NETWORK_URL_MAP_NAME="${PROJECT_SERVICE_NAME}-url-map"
+export NETWORK_TARGET_HTTPS_PROXY_NAME="${PROJECT_SERVICE_NAME}-https-proxy"
+export NETWORK_HTTPS_FORWARDING_RULE_NAME="${PROJECT_SERVICE_NAME}-https-forwarding-rule"
 
 # ----- ARTIFACT REGISTRY -----
 export ARTIFACT_REGISTRY_REPO="${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run"

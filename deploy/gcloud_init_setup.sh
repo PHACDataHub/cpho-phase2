@@ -102,15 +102,21 @@ if [[ "${network_skip}" != "S" ]]; then
     --url-map "${NETWORK_URL_MAP_NAME}" \
     --global
 
+  gcloud compute addresses create "${NETWORK_FORWARDING_IP_NAME}" \
+    --network-tier PREMIUM \
+    --ip-version IPV4 \
+    --global
+  forwarding_rule_ip=$(gcloud compute addresses describe ${NETWORK_FORWARDING_IP_NAME} --format="get(address)" --global)
+
   gcloud compute forwarding-rules create "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" \
     --target-https-proxy "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
-    --load-balancing-scheme "EXTERNAL_MANAGED" \
-    --network-tier "PREMIUM" \
-    --ports "443" \
+    --load-balancing-scheme EXTERNAL_MANAGED \
+    --network-tier PREMIUM \
+    --address "${forwarding_rule_ip}"
+    --ports 443 \
     --global
 
   # See https://cloud.google.com/dns/docs/records#add_a_record
-  forwarding_rule_ip=$(gcloud compute forwarding-rules describe "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" --global --format "value(IPAddress)")
   gcloud dns record-sets transaction start --zone "${DNS_MANAGED_ZONE_NAME}"
   gcloud dns record-sets transaction add "${forwarding_rule_ip}" \
    --zone "${DNS_MANAGED_ZONE_NAME}" \

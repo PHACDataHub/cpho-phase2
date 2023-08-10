@@ -68,7 +68,7 @@ if [[ "${network_skip}" != "S" ]]; then
   gcloud services enable \
     dns.googleapis.com \
     compute.googleapis.com
-
+  
   # See https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless#creating_the_load_balancer
   # and Dan's EPI work https://github.com/PHACDataHub/phac-epi-garden/tree/9cd96e92072ce732da7bcde8ffc5b18ca768d185/deploy
 
@@ -87,6 +87,45 @@ if [[ "${network_skip}" != "S" ]]; then
   gcloud compute backend-services add-backend "${NETWORK_BACKEND_SERVICE_NAME}" \
     --network-endpoint-group "${NETWORK_NEG_NAME}" \
     --network-endpoint-group-region "${PROJECT_REGION}" \
+    --global
+
+  # Create a Cloud Armor security policy bucket, to be populated with a bunch of sensible defaults for a web app ingress load balancer
+  gcloud compute security-policies create "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" \
+    --description "Secuirty policy with sensible baseline configuration for an external loab balancer" \
+    --global
+  
+  # TODO do our GCP org level policies already apply anything to our load balancers?
+  # TODO do we subscribe to "Google Cloud Armor Managed Protection Plus"? If so, additional features/managed security policies we can enable
+  # TODO most of these preconfigured rule packages can be applied with variabl severity, highest by default but might require tuning if too restrictive on app traffic
+  preconfigured_waf_rules=(
+    "sqli-v33-stable" 
+    "sxss-v33-stable" 
+    "lfi-v33-stable" 
+    "rfi-v33-stable" 
+    "rce-v33-stable" 
+    "methodenforcement-v33-stable" 
+    "scannerdetection-v33-stable" 
+    "protocolattack-v33-stable" 
+    #"php-v33-stable" 
+    "sessionfixation-v33-stable" 
+    #"java-v33-stable" 
+    #"nodejs-v33-stable" 
+  )
+  declare -i level_incrementor=9000
+  for rule in "${preconfigured_waf_rules[@]}"; do
+    gcloud compute security-policies rules create "${level_incrementor}" \
+      --security-policy "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" \
+      --expression "evaluatePreconfiguredExpr('${rule}')" \
+      --action deny-403
+    
+    level_incrementor+=1
+  done
+
+  # TODO additional custom policies we could set up?
+
+  # Apply policy bucket to the ingress load balancer
+  gcloud compute backend-services update "${NETWORK_BACKEND_SERVICE_NAME}"\
+    --security-policy "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" \
     --global
 
   gcloud compute url-maps create "${NETWORK_URL_MAP_NAME}" \
@@ -112,7 +151,7 @@ if [[ "${network_skip}" != "S" ]]; then
     --target-https-proxy "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
     --load-balancing-scheme EXTERNAL_MANAGED \
     --network-tier PREMIUM \
-    --address "${forwarding_rule_ip}"
+    --address "${forwarding_rule_ip}" \
     --ports 443 \
     --global
 

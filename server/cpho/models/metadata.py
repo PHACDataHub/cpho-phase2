@@ -38,3 +38,4 @@ class PhacOrgRole(models.Model):
     phac_org = fields.ForeignKey(
         "cpho.PHACOrg", on_delete=models.CASCADE, related_name="phac_org_roles"
     )
+    is_phac_org_lead = models.BooleanField(default=False)

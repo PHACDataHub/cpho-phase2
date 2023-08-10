@@ -52,7 +52,7 @@ class PHACOrg(models.Model):
     name_fr = fields.CharField(max_length=200, default="")
     acronym_en = fields.CharField(max_length=20, default="")
     acronym_fr = fields.CharField(max_length=20, default="")
-    is_branch_lead = models.BooleanField(default=False)
+    is_branch = models.BooleanField(default=False)
     parent = fields.ForeignKey(
         "PHACOrg",
         related_name="children",

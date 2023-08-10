@@ -15,6 +15,17 @@ allow_cleanup=false
 if "${allow_cleanup}"; then
   # NOTE: using `|| :`, where : is effectively a bash no-op, to prevent errors in certain lines from exiting the script
 
+  # ----- FRONT DOOR NETWORKING -----
+  gcloud compute forwarding-rules delete "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" -global || :
+  gcloud compute target-https-proxies delete "${NETWORK_TARGET_HTTPS_PROXY_NAME}" --global || :
+  gcloud compute ssl-certificates delete "${NETWORK_SSL_CERT_NAME}" --global || :
+  gcloud compute url-maps delete "${NETWORK_URL_MAP_NAME}" --global || :
+  gcloud compute backend-services delete "${NETWORK_BACKEND_SERVICE_NAME}" --global || :
+  gcloud compute network-endpoint-groups delete "${NETWORK_NEG_NAME}" --region "${PROJECT_REGION}" || :
+
+  # ----- Cloud DNS -----
+  gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} || :
+
   # ----- ARTIFACT REGISTRY -----
   gcloud artifacts repositories delete "${ARTIFACT_REGISTRY_REPO}" --location "${PROJECT_REGION}" || :
   
@@ -23,9 +34,6 @@ if "${allow_cleanup}"; then
   
   # ----- CLOUD SQL -----
   gcloud sql instances delete "${DB_INSTANCE_NAME}" || :
-  
-  # ----- Cloud DNS -----
-  gcloud dns managed-zones create ${PROJECT_SERVICE_NAME} || :
 
   # ----- VPC NETWORK -----
   if [[ $VPC_NAME != "default" ]]; then

@@ -72,9 +72,6 @@ if [[ "${network_skip}" != "S" ]]; then
   # See https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless#creating_the_load_balancer
   # and Dan's EPI work https://github.com/PHACDataHub/phac-epi-garden/tree/9cd96e92072ce732da7bcde8ffc5b18ca768d185/deploy
 
-  gcloud compute ssl-certificates create "${NETWORK_SSL_CERT_NAME}" \
-    --domains "${DNS_DOMAIN}"
-
   gcloud compute network-endpoint-groups create "${NETWORK_NEG_NAME}" \
     --region "${PROJECT_REGION}" \
     --network-endpoint-type "serverless" \
@@ -93,11 +90,17 @@ if [[ "${network_skip}" != "S" ]]; then
     --global
 
   gcloud compute url-maps create "${NETWORK_URL_MAP_NAME}" \
-    --default-service "${NETWORK_BACKEND_SERVICE_NAME}"
+    --default-service "${NETWORK_BACKEND_SERVICE_NAME}" \
+    --global
+
+  gcloud compute ssl-certificates create "${NETWORK_SSL_CERT_NAME}" \
+    --domains "${DNS_DOMAIN}" \
+    --global
 
   gcloud compute target-https-proxies create "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
     --ssl-certificates "${NETWORK_SSL_CERT_NAME}" \
-    --url-map "${NETWORK_URL_MAP_NAME}"
+    --url-map "${NETWORK_URL_MAP_NAME}" \
+    --global
 
   gcloud compute forwarding-rules create "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" \
     --target-https-proxy "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
@@ -105,7 +108,7 @@ if [[ "${network_skip}" != "S" ]]; then
     --network-tier "PREMIUM" \
     --ports "443" \
     --global
-   
+
   # See https://cloud.google.com/dns/docs/records#add_a_record
   forwarding_rule_ip=$(gcloud compute forwarding-rules describe "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" --global --format "value(IPAddress)")
   gcloud dns record-sets transaction start --zone "${DNS_MANAGED_ZONE_NAME}"

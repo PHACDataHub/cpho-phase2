@@ -82,6 +82,7 @@ if [[ "${network_skip}" != "S" ]]; then
     --protocol "HTTP" \
     --connection-draining-timeout "300" \
     --load-balancing-scheme "EXTERNAL_MANAGED" \
+    --enable-logging \
     --global
 
   gcloud compute backend-services add-backend "${NETWORK_BACKEND_SERVICE_NAME}" \

@@ -192,7 +192,7 @@ steps:
       # IMPORTANT: don't just use latest. The secrets are mounted at container start, not deploy time,
       # so instances deployed with "latest" may end up using incompatable secret versions as new secret
       # versions are pushed, but before the coresponding images are pushed
-      prod_env_secret_version=9
+      prod_env_secret_version=10
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Deploy new image to Cloud Run"

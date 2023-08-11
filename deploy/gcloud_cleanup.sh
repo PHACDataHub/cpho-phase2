@@ -15,8 +15,11 @@ allow_cleanup=false
 if "${allow_cleanup}"; then
   # NOTE: using `|| :`, where : is effectively a bash no-op, to prevent errors in certain lines from exiting the script
 
-  # ----- FRONT DOOR NETWORKING -----
-  forwarding_rule_ip=$(gcloud compute addresses describe ${NETWORK_FORWARDING_IP_NAME} --format="get(address)" --global) || :
+  # ----- Cloud DNS -----
+  gcloud dns managed-zones delete ${PROJECT_SERVICE_NAME} || :
+
+  # ----- INGRESS NETWORKING -----
+  forwarding_rule_ip=$(gcloud compute addresses describe ${INGRESS_FORWARDING_IP_NAME} --global --format="get(address)" ) || :
   gcloud dns record-sets transaction start --zone "${DNS_MANAGED_ZONE_NAME}" || :
   gcloud dns record-sets transaction remove "${forwarding_rule_ip}" \
    --zone "${DNS_MANAGED_ZONE_NAME}" \
@@ -24,17 +27,14 @@ if "${allow_cleanup}"; then
    --ttl "300" \
    --type "A" || :
   gcloud dns record-sets transaction execute --zone "${DNS_MANAGED_ZONE_NAME}" || :
-  gcloud compute forwarding-rules delete "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" --global || :
-  gcloud compute forwarding-rules delete "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" --global || :
-  gcloud compute target-https-proxies delete "${NETWORK_TARGET_HTTPS_PROXY_NAME}" --global || :
-  gcloud compute ssl-certificates delete "${NETWORK_SSL_CERT_NAME}" --global || :
-  gcloud compute url-maps delete "${NETWORK_URL_MAP_NAME}" --global || :
-  gcloud compute backend-services delete "${NETWORK_BACKEND_SERVICE_NAME}" --global || :
-  gcloud compute security-policies delete "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" --gloabl || :
-  gcloud compute network-endpoint-groups delete "${NETWORK_NEG_NAME}" --region "${PROJECT_REGION}" || :
-
-  # ----- Cloud DNS -----
-  gcloud dns managed-zones delete ${PROJECT_SERVICE_NAME} || :
+  gcloud compute forwarding-rules delete "${INGRESS_HTTPS_FORWARDING_RULE_NAME}" --global || :
+  gcloud compute addresses delete "${INGRESS_FORWARDING_IP_NAME}" --global || :
+  gcloud compute target-https-proxies delete "${INGRESS_TARGET_HTTPS_PROXY_NAME}" --global || :
+  gcloud compute ssl-certificates delete "${INGRESS_SSL_CERT_NAME}" --global || :
+  gcloud compute url-maps delete "${INGRESS_URL_MAP_NAME}" --global || :
+  gcloud compute backend-services delete "${INGRESS_BACKEND_SERVICE_NAME}" --global || :
+  gcloud compute security-policies delete "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" --gloabl || :
+  gcloud compute network-endpoint-groups delete "${INGRESS_NEG_NAME}" --region "${PROJECT_REGION}" || :
 
   # ----- ARTIFACT REGISTRY -----
   gcloud artifacts repositories delete "${ARTIFACT_REGISTRY_REPO}" --location "${PROJECT_REGION}" || :

@@ -59,9 +59,9 @@ fi
 
 
 
-# ----- FRONT DOOR NETWORKING -----
+# ----- INGRESS NETWORKING -----
 echo ""
-echo "Create and configure the \"front door\" networking path"
+echo "Create and configure the ingress networking path"
 read -n 1 -p "Type S to skip this step, anything else to continue: " network_skip
 echo ""
 if [[ "${network_skip}" != "S" ]]; then
@@ -72,12 +72,12 @@ if [[ "${network_skip}" != "S" ]]; then
   # See https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless#creating_the_load_balancer
   # and Dan's EPI work https://github.com/PHACDataHub/phac-epi-garden/tree/9cd96e92072ce732da7bcde8ffc5b18ca768d185/deploy
 
-  gcloud compute network-endpoint-groups create "${NETWORK_NEG_NAME}" \
+  gcloud compute network-endpoint-groups create "${INGRESS_NEG_NAME}" \
     --region "${PROJECT_REGION}" \
     --network-endpoint-type "serverless" \
     --cloud-run-service "${PROJECT_SERVICE_NAME}"
 
-  gcloud compute backend-services create "${NETWORK_BACKEND_SERVICE_NAME}" \
+  gcloud compute backend-services create "${INGRESS_BACKEND_SERVICE_NAME}" \
     --port-name "http" \
     --protocol "HTTP" \
     --connection-draining-timeout "300" \
@@ -85,19 +85,19 @@ if [[ "${network_skip}" != "S" ]]; then
     --enable-logging \
     --global
 
-  gcloud compute backend-services add-backend "${NETWORK_BACKEND_SERVICE_NAME}" \
-    --network-endpoint-group "${NETWORK_NEG_NAME}" \
+  gcloud compute backend-services add-backend "${INGRESS_BACKEND_SERVICE_NAME}" \
+    --network-endpoint-group "${INGRESS_NEG_NAME}" \
     --network-endpoint-group-region "${PROJECT_REGION}" \
     --global
 
   # Create a Cloud Armor security policy bucket, to be populated with a bunch of sensible defaults for a web app ingress load balancer
-  gcloud compute security-policies create "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" \
-    --description "Secuirty policy with sensible baseline configuration for an external loab balancer" \
-    --global
-  
   # TODO do our GCP org level policies already apply anything to our load balancers?
   # TODO do we subscribe to "Google Cloud Armor Managed Protection Plus"? If so, additional features/managed security policies we can enable
   # TODO most of these preconfigured rule packages can be applied with variabl severity, highest by default but might require tuning if too restrictive on app traffic
+  # TODO additional custom policies we could set up?
+  gcloud compute security-policies create "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
+    --description "Secuirty policy with sensible baseline configuration for an external load balancer" \
+    --global
   preconfigured_waf_rules=(
     "sqli-v33-stable" 
     "xss-v33-stable" 
@@ -115,41 +115,37 @@ if [[ "${network_skip}" != "S" ]]; then
   declare -i level_incrementor=9000
   for rule in "${preconfigured_waf_rules[@]}"; do
     gcloud compute security-policies rules create "${level_incrementor}" \
-      --security-policy "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" \
+      --security-policy "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
       --expression "evaluatePreconfiguredExpr('${rule}')" \
       --action deny-403
     
     level_incrementor+=1
   done
-
-  # TODO additional custom policies we could set up?
-
-  # Apply policy bucket to the ingress load balancer
-  gcloud compute backend-services update "${NETWORK_BACKEND_SERVICE_NAME}"\
-    --security-policy "${NETWORK_BASELINE_SECURITY_POLICY_NAME}" \
+  gcloud compute backend-services update "${INGRESS_BACKEND_SERVICE_NAME}"\
+    --security-policy "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
     --global
 
-  gcloud compute url-maps create "${NETWORK_URL_MAP_NAME}" \
-    --default-service "${NETWORK_BACKEND_SERVICE_NAME}" \
+  gcloud compute url-maps create "${INGRESS_URL_MAP_NAME}" \
+    --default-service "${INGRESS_BACKEND_SERVICE_NAME}" \
     --global
 
-  gcloud compute ssl-certificates create "${NETWORK_SSL_CERT_NAME}" \
+  gcloud compute ssl-certificates create "${INGRESS_SSL_CERT_NAME}" \
     --domains "${DNS_DOMAIN}" \
     --global
 
-  gcloud compute target-https-proxies create "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
-    --ssl-certificates "${NETWORK_SSL_CERT_NAME}" \
-    --url-map "${NETWORK_URL_MAP_NAME}" \
+  gcloud compute target-https-proxies create "${INGRESS_TARGET_HTTPS_PROXY_NAME}" \
+    --ssl-certificates "${INGRESS_SSL_CERT_NAME}" \
+    --url-map "${INGRESS_URL_MAP_NAME}" \
     --global
 
-  gcloud compute addresses create "${NETWORK_FORWARDING_IP_NAME}" \
+  gcloud compute addresses create "${INGRESS_FORWARDING_IP_NAME}" \
     --network-tier PREMIUM \
     --ip-version IPV4 \
     --global
-  forwarding_rule_ip=$(gcloud compute addresses describe ${NETWORK_FORWARDING_IP_NAME} --format="get(address)" --global)
+  forwarding_rule_ip=$(gcloud compute addresses describe ${INGRESS_FORWARDING_IP_NAME} --format="get(address)" --global)
 
-  gcloud compute forwarding-rules create "${NETWORK_HTTPS_FORWARDING_RULE_NAME}" \
-    --target-https-proxy "${NETWORK_TARGET_HTTPS_PROXY_NAME}" \
+  gcloud compute forwarding-rules create "${INGRESS_HTTPS_FORWARDING_RULE_NAME}" \
+    --target-https-proxy "${INGRESS_TARGET_HTTPS_PROXY_NAME}" \
     --load-balancing-scheme EXTERNAL_MANAGED \
     --network-tier PREMIUM \
     --address "${forwarding_rule_ip}" \
@@ -164,6 +160,7 @@ if [[ "${network_skip}" != "S" ]]; then
    --ttl "300" \
    --type "A"
   gcloud dns record-sets transaction execute --zone "${DNS_MANAGED_ZONE_NAME}"
+  
 fi
 
 

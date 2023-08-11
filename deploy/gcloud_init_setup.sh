@@ -99,7 +99,7 @@ if [[ "${network_skip}" != "S" ]]; then
   # TODO most of these preconfigured rule packages can be applied with variabl severity, highest by default but might require tuning if too restrictive on app traffic
   preconfigured_waf_rules=(
     "sqli-v33-stable" 
-    "sxss-v33-stable" 
+    "xss-v33-stable" 
     "lfi-v33-stable" 
     "rfi-v33-stable" 
     "rce-v33-stable" 
@@ -163,8 +163,6 @@ if [[ "${network_skip}" != "S" ]]; then
    --ttl "300" \
    --type "A"
   gcloud dns record-sets transaction execute --zone "${DNS_MANAGED_ZONE_NAME}"
-
-  # TODO Cloud Armor
 fi
 
 

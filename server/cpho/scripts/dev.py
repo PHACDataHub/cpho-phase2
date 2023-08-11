@@ -3,6 +3,8 @@ from pathlib import Path
 
 from django.db import transaction
 
+from server.rules_framework import test_rule
+
 from cpho.model_factories import (
     Indicator,
     IndicatorDatum,
@@ -28,9 +30,12 @@ def run():
 
 
 def create_phacorgs(mode="reset"):
+    IndicatorDatum.objects.all().delete()
+    Indicator.objects.all().delete()
     if mode == "reset":
         PhacOrgRole.objects.all().delete()
         PHACOrg.objects.all().delete()
+
     updated_count = 0
     inserted_count = 0
     skipped_count = 0
@@ -133,11 +138,25 @@ def create_users():
 
 
 def create_data():
-    IndicatorDatum.objects.all().delete()
-    Indicator.objects.all().delete()
+    # IndicatorDatum.objects.all().delete()
+    # Indicator.objects.all().delete()
 
     p2021 = Period.objects.get(year=2021, quarter=None, year_type="calendar")
-    indicators = IndicatorFactory.create_batch(10)
+    # indicators = IndicatorFactory.create_batch(10)
+    indicators = []
+    users = User.objects.all()
+    for user in users:
+        if test_rule("is_branch_lead", user):
+            for phac_org_role in user.phac_org_roles.all():
+                phac_org = phac_org_role.phac_org
+                for indicator in IndicatorFactory.create_batch(3):
+                    indicator.PHACOrg = phac_org
+                    indicator.name = (
+                        phac_org.acronym_en + " : " + indicator.name
+                    )
+                    indicator.save()
+                    indicators.append(indicator)
+
     for dimension in DimensionType.objects.all():
         if not dimension.is_literal:
             for dimension_value in dimension.possible_values.all():

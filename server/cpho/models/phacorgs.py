@@ -75,3 +75,7 @@ class PHACOrg(models.Model):
     @property
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
+
+    @classmethod
+    def branches(self):
+        return PHACOrg.objects.filter(is_branch=True)

@@ -61,6 +61,10 @@ def test_submit_all_dimensions(vanilla_user, vanilla_user_client):
 
     assert IndicatorDataSubmission.objects.count() == 1
     assert female_record.versions.last().is_program_submitted
+    # if female_record.versions.first().is_program_submitted:
+    # import IPython
+
+    # IPython.embed()
     assert not female_record.versions.first().is_program_submitted
     assert male_record.versions.last().is_program_submitted
     assert canada_record.versions.last().is_program_submitted

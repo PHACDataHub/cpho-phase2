@@ -1,6 +1,3 @@
-from csv import DictReader
-from pathlib import Path
-
 from django.db import transaction
 
 from server.rules_framework import test_rule
@@ -20,8 +17,6 @@ from cpho.models import (
     User,
 )
 
-BASE_DIR = Path(__file__).resolve().parent
-
 
 @transaction.atomic
 def run():
@@ -29,68 +24,9 @@ def run():
     create_data()
 
 
-def create_phacorgs(mode="reset"):
-    IndicatorDatum.objects.all().delete()
-    Indicator.objects.all().delete()
-    if mode == "reset":
-        PhacOrgRole.objects.all().delete()
-        PHACOrg.objects.all().delete()
-
-    updated_count = 0
-    inserted_count = 0
-    skipped_count = 0
-    with open(BASE_DIR / "phac_orgs.csv", encoding="utf-8") as f:
-        reader = DictReader(f)
-        for data in reader:
-            data["pk"] = data["pk"] if data["pk"] != "" else None
-            data["parent_pk"] = (
-                data["parent_pk"] if data["parent_pk"] != "000000" else None
-            )
-
-            is_branch = int(data["pk"]) % 10000 == 0
-            if mode in ["insert_ignore", "upsert"]:
-                try:
-                    phac_org = PHACOrg.objects.get(id=data["pk"])
-                except PHACOrg.DoesNotExist:
-                    phac_org = None
-
-                if phac_org:
-                    if mode == "upsert":
-                        # Update existing PHACOrg
-                        phac_org.name_en = data["name_en"]
-                        phac_org.name_fr = data["name_fr"]
-                        phac_org.acronym_fr = data["acronym_fr"]
-                        phac_org.acronym_en = data["acronym_en"]
-                        phac_org.is_branch = is_branch
-                        phac_org.parent_id = data["parent_pk"]
-                        phac_org.save()
-                        updated_count += 1
-                    else:
-                        skipped_count += 1
-                    continue
-
-            PHACOrg.objects.create(
-                id=data["pk"],
-                name_en=data["name_en"],
-                name_fr=data["name_fr"],
-                acronym_fr=data["acronym_fr"],
-                acronym_en=data["acronym_en"],
-                is_branch=is_branch,
-                parent_id=data["parent_pk"] or None,
-            )
-            inserted_count += 1
-
-    if inserted_count > 0:
-        print(f"PHAC orgs inserted: {inserted_count}")
-    if updated_count > 0:
-        print(f"PHAC orgs updated: {updated_count}")
-    if skipped_count > 0:
-        print(f"PHAC orgs skipped: {skipped_count}")
-
-
 def create_users():
-    PhacOrgRole.objects.all().delete()
-    create_phacorgs()
+    # PhacOrgRole.objects.all().delete()
+    # # create_phacorgs()
     User.objects.filter(username="admin").delete()
     User.objects.create_superuser(
         username="admin",

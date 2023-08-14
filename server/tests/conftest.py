@@ -6,6 +6,7 @@ import pytest
 from jinja2 import Template as Jinja2Template
 from phac_aspc.django.settings.utils import configure_settings_for_tests
 
+from cpho.management.commands.seed_programs import seed_programs
 from cpho.models import User
 
 # Modify django settings to skip axes authentication backend
@@ -38,6 +39,7 @@ def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
 def seed_core_data(globally_scoped_fixture_helper):
     call_command("loaddata", "cpho/fixtures/periods.yaml")
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
+    seed_programs(mode="reset")
 
 
 @pytest.fixture

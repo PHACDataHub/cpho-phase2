@@ -93,30 +93,31 @@ if [[ "${network_skip}" != "S" ]]; then
   # Create a Cloud Armor security policy bucket, to be populated with a bunch of sensible defaults for a web app ingress load balancer
   # TODO do our GCP org level policies already apply anything to our load balancers?
   # TODO do we subscribe to "Google Cloud Armor Managed Protection Plus"? If so, additional features/managed security policies we can enable
-  # TODO most of these preconfigured rule packages can be applied with variabl severity, highest by default but might require tuning if too restrictive on app traffic
   # TODO additional custom policies we could set up?
   gcloud compute security-policies create "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
     --description "Secuirty policy with sensible baseline configuration for an external load balancer" \
     --global
   preconfigured_waf_rules=(
-    "sqli-v33-stable" 
-    "xss-v33-stable" 
-    "lfi-v33-stable" 
-    "rfi-v33-stable" 
-    "rce-v33-stable" 
-    "methodenforcement-v33-stable" 
-    "scannerdetection-v33-stable" 
-    "protocolattack-v33-stable" 
-    #"php-v33-stable" 
-    "sessionfixation-v33-stable" 
-    #"java-v33-stable" 
-    #"nodejs-v33-stable" 
+    # opt out of rules for special character limits in cookies (942420, 942421), lots of false positives from those
+    "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli']}"
+    "'xss-v33-stable'"
+    "'lfi-v33-stable'"
+    "'rfi-v33-stable'"
+    "'rce-v33-stable'"
+    "'methodenforcement-v33-stable'"
+    "'scannerdetection-v33-stable'"
+    "'protocolattack-v33-stable'"
+    "'sessionfixation-v33-stable'"
+    # TODO these do not apply, but is there any latency cost to still scanning for them? Maybe enable them anyway
+    #"'php-v33-stable'" 
+    #"'java-v33-stable'" 
+    #"'nodejs-v33-stable'" 
   )
   declare -i level_incrementor=9000
   for rule in "${preconfigured_waf_rules[@]}"; do
     gcloud compute security-policies rules create "${level_incrementor}" \
       --security-policy "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
-      --expression "evaluatePreconfiguredExpr('${rule}')" \
+      --expression "evaluatePreconfiguredWaf(${rule})" \
       --action deny-403
     
     level_incrementor+=1

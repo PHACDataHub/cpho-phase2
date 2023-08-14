@@ -34,6 +34,7 @@ if "${allow_cleanup}"; then
   gcloud compute url-maps delete "${INGRESS_URL_MAP_NAME}" --global || :
   gcloud compute backend-services delete "${INGRESS_BACKEND_SERVICE_NAME}" --global || :
   gcloud compute security-policies delete "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" --gloabl || :
+  # TODO deleting the security policy bucket doesn't delete the rules inside of it, those also need cleanup
   gcloud compute network-endpoint-groups delete "${INGRESS_NEG_NAME}" --region "${PROJECT_REGION}" || :
 
   # ----- ARTIFACT REGISTRY -----

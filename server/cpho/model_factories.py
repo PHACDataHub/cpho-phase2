@@ -8,6 +8,7 @@ from cpho.models import (
     Indicator,
     IndicatorDatum,
     Period,
+    PHACOrg,
 )
 
 
@@ -42,6 +43,7 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
         lambda: random.choice([p[0] for p in Indicator.SUB_CATEGORY_CHOICES])
     )
     detailed_indicator = factory.Faker("bs")
+    PHACOrg = factory.Iterator(PHACOrg.objects.all())
     sub_indicator_measurement = factory.Faker("bs")
 
 

@@ -74,22 +74,26 @@ def create_users():
 
 
 def create_data():
-    # IndicatorDatum.objects.all().delete()
-    # Indicator.objects.all().delete()
+    IndicatorDatum.objects.all().delete()
+    Indicator.objects.all().delete()
 
     p2021 = Period.objects.get(year=2021, quarter=None, year_type="calendar")
-    # indicators = IndicatorFactory.create_batch(10)
     indicators = []
     users = User.objects.all()
     for user in users:
         if test_rule("is_branch_lead", user):
             for phac_org_role in user.phac_org_roles.all():
                 phac_org = phac_org_role.phac_org
-                for indicator in IndicatorFactory.create_batch(3):
-                    indicator.PHACOrg = phac_org
-                    indicator.name = (
-                        phac_org.acronym_en + " : " + indicator.name
+                for i in range(3):
+                    indicator = IndicatorFactory(
+                        PHACOrg=phac_org,
                     )
+                    new_name = phac_org.acronym_en + " : " + indicator.name
+                    if len(new_name) > 50:
+                        new_name = new_name[:50]
+                        new_name = new_name.rsplit(" ", maxsplit=1)[0]
+
+                    indicator.name = new_name
                     indicator.save()
                     indicators.append(indicator)
 

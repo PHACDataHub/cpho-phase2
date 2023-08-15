@@ -190,9 +190,6 @@ class CreateIndicator(MustPassAuthCheckMixin, CreateView):
             self.request.user,
         )
 
-    # def get_initial(self):
-    #     return super().get_initial().update(PHACOrg=self.request.user.phac_org)
-
 
 class EditIndicator(MustPassAuthCheckMixin, UpdateView):
     model = Indicator

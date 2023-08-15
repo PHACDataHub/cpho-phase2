@@ -1,5 +1,7 @@
 from django.urls import reverse
 
+from freezegun import freeze_time
+
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.model_factories import IndicatorFactory
 from cpho.models import (
@@ -52,6 +54,7 @@ def test_submit_all_dimensions(vanilla_user, vanilla_user_client):
         canada_record.versions.last().pk,
     }
     url = reverse("submit_indicator_data_all", args=[ind.id, period.id])
+
     with patch_rules(can_submit_as_hso_or_program=True):
         resp = vanilla_user_client.post(url, {"submission_type": "program"})
         assert resp.status_code == 302
@@ -60,6 +63,7 @@ def test_submit_all_dimensions(vanilla_user, vanilla_user_client):
         assert resp.status_code == 403
 
     assert IndicatorDataSubmission.objects.count() == 1
+
     assert female_record.versions.last().is_program_submitted
     # if female_record.versions.first().is_program_submitted:
     # import IPython

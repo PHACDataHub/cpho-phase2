@@ -193,8 +193,8 @@ devs <-> github
 devs -> gcp.regional.project_vpc.cloud_sql: TBD: DB data\nmaintenance access
 devs -> gcp.regional.secret_manager: Write access
 gcp.regional.cloud_run_vpc.cloud_run -> slack: Error log\nalerts
-gcp.regional.cloud_run_vpc.cloud_run <-> gcp.uptime_checks: Health check
-gcp.uptime_checks -> slack: Outage alerts
+gcp.uptime_checks <-> gcp.load_balancer.forwarding_rule: Health check
+gcp.uptime_checks -> slack: Outage\nalerts
 slack -> devs
 
 # CI/CD path

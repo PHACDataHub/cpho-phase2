@@ -19,7 +19,7 @@ gcp: Google Cloud {
     fill: "#f1f3f4"
   }
 
-  load_balancer: External Load Balancer {
+  load_balancer: Global External Load Balancer {
     style: {
       stroke: "#000000"
       stroke-dash: 3
@@ -58,15 +58,7 @@ gcp: Google Cloud {
       }
     }
 
-    backend_service: Backend Service {
-      icon: ./icons/network_topology.svg
-      style: {
-        stroke: "#000000"
-        fill: "#ffffff"
-      }
-    }
-
-    cloud_armor: Cloud Armor\nWAF Rules {
+    backend_service_and_waf: Backend Service with\nCloud Armor WAF Rules {
       icon: ./icons/cloud_armor.svg
       style: {
         stroke: "#000000"
@@ -199,9 +191,8 @@ internet <-> gcp.load_balancer.forwarding_rule: HTTPS
 gcp.load_balancer.forwarding_rule <-> gcp.load_balancer.https_proxy: HTTPS
 gcp.load_balancer.ssl_cert -> gcp.load_balancer.https_proxy
 gcp.load_balancer.https_proxy <-> gcp.load_balancer.url_map: HTTP
-gcp.load_balancer.url_map <-> gcp.load_balancer.backend_service: HTTP
-gcp.load_balancer.cloud_armor -> gcp.load_balancer.backend_service
-gcp.load_balancer.backend_service <-> gcp.regional.network_endpoint_group: HTTP
+gcp.load_balancer.url_map <-> gcp.load_balancer.backend_service_and_waf: HTTP
+gcp.load_balancer.backend_service_and_waf <-> gcp.regional.network_endpoint_group: HTTP
 gcp.regional.network_endpoint_group <-> gcp.regional.cloud_run_vpc.cloud_run: HTTP
 
 # App path
@@ -215,4 +206,4 @@ gcp.regional.cloud_run_vpc.cloud_run -> gcp.regional.log_bucket: App logs
 gcp.regional.network_endpoint_group -> gcp.cloud_trace: Load Balancer\ntelemetry
 gcp.regional.cloud_run_vpc.cloud_run -> gcp.cloud_trace: App telemetry
 gcp.regional.log_bucket -> gcp.query_insights: DB logs
-gcp.query_insights -> gcp.cloud_trace: DB telemetry
+gcp.query_insights -> gcp.cloud_trace: Log-derived\nDB telemetry

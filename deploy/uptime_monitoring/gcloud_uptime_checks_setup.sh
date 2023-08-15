@@ -19,7 +19,7 @@ parent="projects/${PROJECT_ID}"
 
 
 # ----- Enable Monitoring API
-gcloud services enable monitoring --project=$PROJECT_ID
+gcloud services enable monitoring --project "${PROJECT_ID}"
 
 
 # ----- Create Uptime Check (config files)
@@ -27,9 +27,9 @@ gcloud services enable monitoring --project=$PROJECT_ID
 # REGION_UNSPECIFIED (global)
 
 curl -X POST "https://monitoring.googleapis.com/v3/${parent}/uptimeCheckConfigs" \
-     -H "Authorization: Bearer $ACCESS_TOKEN" \
+     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
      -H "Content-Type: application/json" \
-     -d @deploy/uptimeCheckConfig.json
+     -d "@${script_dir}/uptimeCheckConfig.json"
 
 
 # ----- Create a Notification Channel
@@ -49,17 +49,17 @@ curl -X POST "https://monitoring.googleapis.com/v3/${parent}/uptimeCheckConfigs"
 #    $ rm -rf .env
 
 # To access secret
-gcloud secrets versions access 2 --secret="slack_webhook_url"
+gcloud secrets versions access 2 --secret "slack_webhook_url"
 
 # Sub in slack webhook url in config (NOTE: change version (2) to correct version number)
-slack_webhook_url=$(gcloud secrets versions access 2 --secret="slack_webhook_url")
+slack_webhook_url=$(gcloud secrets versions access 2 --secret "slack_webhook_url")
 
 config_content=$(cat "${script_dir}/webhookNotificationChannelConfig.json")
-config_content_modified=$(echo "$config_content" | jq --arg url "$slack_webhook_url" '.labels.url = $url')
-echo "$config_content_modified" > "${script_dir}/sackwebhookNotificationChannelConfig.json"
+config_content_modified=$(echo "${config_content}" | jq --arg url "${slack_webhook_url}" '.labels.url = $url')
+echo "${config_content_modified}" > "${script_dir}/sackwebhookNotificationChannelConfig.json"
 
 # Create the notification channel
-gcloud beta monitoring channels create --channel-content-from-file="${script_dir}/webhookNotificationChannelConfig.json"
+gcloud beta monitoring channels create --channel-content-from-file "${script_dir}/webhookNotificationChannelConfig.json"
 
 
 #----- Alert Policy
@@ -68,17 +68,17 @@ gcloud beta monitoring channels list --format json >> "${script_dir}/notificatio
 notification_channel_content=$(cat "${script_dir}/notification_channel_config.json")
 
 # Extract the "name" field value
-name=$(echo "$notification_channel_config" | jq -r '.[0].name')
+name=$(echo "${notification_channel_config}" | jq -r '.[0].name')
 
 # Replace notificationChannels field with name in uptimeAlertConfig
 config_content=$(cat "${script_dir}/uptimeAlertConfig.json")
-config_content_modified=$(echo "$config_content" | jq --arg name "$name" '.notificationChannels[0] = $name')
-echo "$config_content_modified" > "${script_dir}/uptimeAlertConfig.json"
+config_content_modified=$(echo "${config_content}" | jq --arg name "${name}" '.notificationChannels[0] = $name')
+echo "${config_content_modified}" > "${script_dir}/uptimeAlertConfig.json"
 
 # Note can also replace fields if already created --fields=[field,…]  
 
 # Create an alert policy
 # https://cloud.google.com/monitoring/alerts/types-of-conditions
-gcloud alpha monitoring policies create --policy-from-file="${script_dir}/uptimeAlertConfig.json"
+gcloud alpha monitoring policies create --policy-from-file "${script_dir}/uptimeAlertConfig.json"
 
 gcloud alpha monitoring policies list --format json

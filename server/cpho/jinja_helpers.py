@@ -7,7 +7,11 @@ from django.utils.translation import activate, get_language
 import phac_aspc.django.helpers.templatetags as phac_aspc
 from jinja2 import Environment, pass_context
 
+from server.rules_framework import test_rule
+
 from cpho import models
+from cpho.constants import SUBMISSION_STATUSES
+from cpho.util import eastern_timezone
 
 from .text import tdt, tm
 
@@ -89,6 +93,14 @@ def ipython(context):
     return ""
 
 
+@pass_context
+def respects_rule(context, rule, obj=None):
+    user = context["request"].user
+    if not user.is_authenticated:
+        return False
+    return test_rule(rule, user, obj)
+
+
 def message_type(message):
     # remaps the message level tag to the bootstrap alert type
     if message.level_tag == "error":
@@ -97,10 +109,50 @@ def message_type(message):
         return f"{message.level_tag}"
 
 
+def submission_status_label(submission_status):
+    return {
+        SUBMISSION_STATUSES.NO_DATA: tdt("No data"),
+        SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tdt("Not yet submitted"),
+        SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tdt("Program submitted"),
+        SUBMISSION_STATUSES.SUBMITTED: tdt("Submitted by Program and HSO"),
+        SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tdt(
+            "Modified since last submission"
+        ),
+    }[submission_status]
+
+
+@pass_context
+def with_new_url_kwargs(context, **new_kwargs):
+    """
+    Uses kwargs from current context and merges new kwargs over them to return a new URL
+    """
+    request = context["request"]
+    new_kwargs = {**request.resolver_match.kwargs, **new_kwargs}
+    return reverse(request.resolver_match.url_name, kwargs=new_kwargs)
+
+
+@pass_context
+def with_same_params(context, url):
+    """
+    Uses GET params from current context and returns a new URL with them
+
+    input url must not have any GET params, or else output will be invalid
+
+    useful for non-querystring-based pagination of a querystring-filtered view
+    """
+
+    if not context["request"].GET:
+        # dont append a useless '?' if unecessary
+        return url
+
+    return f"{url}?{context['request'].GET.urlencode()}"
+
+
 def environment(**options):
     env = Environment(**options)
     env.globals.update(
         {
+            "eastern_timezone": eastern_timezone,
             "getattr": getattr,
             "hasattr": hasattr,
             "len": len,
@@ -117,9 +169,14 @@ def environment(**options):
             "ipython": ipython,
             "tm": tm,
             "tdt": tdt,
-            "message_type": message_type,
             "print": print,
             "cpho_models": models,
+            "test_rule": test_rule,
+            "respects_rule": respects_rule,
+            "submission_status_label": submission_status_label,
+            "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
+            "with_new_url_kwargs": with_new_url_kwargs,
+            "with_same_params": with_same_params,
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

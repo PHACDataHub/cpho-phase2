@@ -1,12 +1,16 @@
+from django.apps import apps
 from django.db import models
+
+from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
-    track_versions_with_editor_and_approval,
+    track_versions_with_editor_and_submission,
 )
 
+from cpho.constants import SUBMISSION_STATUSES
 from cpho.text import tdt
 
 
@@ -62,9 +66,100 @@ class Indicator(models.Model):
         )
 
 
+class IndicatorDatumQueryset(models.QuerySet):
+    def with_last_version_date(self):
+        last_version_date = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-timestamp")
+            .values("timestamp")[:1]
+        )
+        return self.annotate(last_version_date=last_version_date)
+
+    def with_last_version_username(self, date_field="timestamp"):
+        last_version_edited_by_username = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-timestamp")
+            .values("edited_by__username")[:1]
+        )
+        return self.annotate(
+            last_version_edited_by_username=last_version_edited_by_username
+        )
+
+    def with_last_version_id(self):
+        last_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk")
+            )
+            .order_by("-timestamp")
+            .values("id")[:1]
+        )
+        return self.annotate(last_version_id=last_version_id)
+
+    def with_last_program_submitted_version_id(self):
+        last_submitted_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk"),
+                is_program_submitted=True,
+            )
+            .order_by("-timestamp")
+            .values("id")[:1]
+        )
+        return self.annotate(
+            last_program_submitted_version_id=last_submitted_version_id
+        )
+
+    def with_last_submitted_version_id(self):
+        last_submitted_version_id = models.Subquery(
+            self.model._history_class.objects.filter(
+                eternal_id=models.OuterRef("pk"),
+                is_hso_submitted=True,
+                is_program_submitted=True,
+            )
+            .order_by("-timestamp")
+            .values("id")[:1]
+        )
+        return self.annotate(
+            last_submitted_version_id=last_submitted_version_id
+        )
+
+    def with_submission_annotations(self):
+        return (
+            self.with_last_version_id()
+            .with_last_submitted_version_id()
+            .with_last_program_submitted_version_id()
+        )
+
+
+class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
+    @staticmethod
+    def get_name(datum):
+        if datum.dimension_type.is_literal:
+            return f"{datum.indicator} ({datum.period}) {datum.dimension_type}: {datum.literal_dimension_val}"
+
+        return f"{datum.indicator} ({datum.period}) {datum.dimension_type}: {datum.dimension_value}"
+
+    def batch_load(self, datum_ids):
+        IndicatorDatum = apps.get_model("cpho", "IndicatorDatum")
+
+        data = IndicatorDatum.objects.filter(
+            id__in=datum_ids
+        ).prefetch_related(
+            "indicator", "dimension_value", "dimension_type", "period"
+        )
+        by_id = {datum.id: datum for datum in data}
+        return [self.get_name(by_id[x]) for x in datum_ids]
+
+
 @add_to_admin
-@track_versions_with_editor_and_approval
+@track_versions_with_editor_and_submission
 class IndicatorDatum(models.Model):
+    objects = models.Manager.from_queryset(IndicatorDatumQueryset)()
+    changelog_live_name_loader_class = IndicatorDatumChangelogNameLoader
+
     class Meta:
         unique_together = [
             ("indicator", "period", "dimension_type", "dimension_value"),
@@ -155,6 +250,26 @@ class IndicatorDatum(models.Model):
             ]
         )
 
+    @property
+    def submission_status(self):
+        try:
+            self.last_version_id
+            self.last_submitted_version_id
+            self.last_program_submitted_version_id
+        except AttributeError:
+            raise Exception("You must add the submission_annotations")
+
+        if not self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+
+        if self.last_version_id == self.last_submitted_version_id:
+            return SUBMISSION_STATUSES.SUBMITTED
+
+        if self.last_version_id == self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+
+        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+
 
 # the following commented-out models don't really do anything yet,
 
@@ -180,4 +295,5 @@ class IndicatorDatum(models.Model):
 #     line_of_best_fit_point = fields.FloatField()
 #
 #     def __str__(self):
+#         return self.detailed_indicator
 #         return self.detailed_indicator

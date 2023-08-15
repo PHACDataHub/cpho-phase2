@@ -12,6 +12,159 @@ source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
 
 
+# ----- Cloud DNS -----
+echo ""
+echo "Enable the Cloud DNS API, create a managed zone for the project, and output the project's DNS yaml"
+read -n 1 -p "Type S to skip this step, anything else to continue: " dns_skip
+echo ""
+if [[ "${dns_skip}" != "S" ]]; then
+  gcloud services enable dns.googleapis.com
+
+  gcloud dns managed-zones create "${DNS_MANAGED_ZONE_NAME}" \
+    --project "${PROJECT_ID}" \
+    --description "${PROJECT_SERVICE_NAME} zone, for PHAC alpha-dns" \
+    --dns-name "${DNS_DNS_NAME}" \
+    --log-dns-queries \
+    --visibility public
+
+  IFS=',' read -r -a dns_name_servers <<< \
+    $(gcloud dns record-sets describe "${DNS_DNS_NAME}" --zone "${DNS_MANAGED_ZONE_NAME}" --type NS --format "value[separator=\",\"](DATA)")
+
+  dns_config_file=$(dirname "${BASH_SOURCE[0]}")/"${DNS_DOMAIN}.yaml"
+  rm -rf "${dns_config_file}"
+
+  cat <<EOT >> "${dns_config_file}"
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: "${DNS_NS_NAME}"
+  namespace: "${DNS_PHAC_ALPHA_NS_NAME}"
+spec:
+  name: "${DNS_DNS_NAME}"
+  type: "NS"
+  ttl: 300
+  managedZoneRef:
+    external: "${DNS_PHAC_ALPHA_NAME}"
+  rrdatas:
+    - "${dns_name_servers[0]}"
+    - "${dns_name_servers[1]}"
+    - "${dns_name_servers[2]}"
+    - "${dns_name_servers[3]}"
+EOT
+
+  echo "PHAC alpha DNS configuration output to ${dns_config_file}"
+  read -n 1 -p "MANUAL STEP: open a PR adding this yaml file to the PHAC alpha DNS repo. You can do this now or later, but it needs to be merged for your new subdomain to work. Press any key to continue: " _
+
+fi
+
+
+
+# ----- INGRESS NETWORKING -----
+echo ""
+echo "Create and configure the ingress networking path"
+read -n 1 -p "Type S to skip this step, anything else to continue: " network_skip
+echo ""
+if [[ "${network_skip}" != "S" ]]; then
+  gcloud services enable \
+    dns.googleapis.com \
+    compute.googleapis.com
+  
+  # See https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless#creating_the_load_balancer
+  # and Dan's EPI work https://github.com/PHACDataHub/phac-epi-garden/tree/9cd96e92072ce732da7bcde8ffc5b18ca768d185/deploy
+
+  gcloud compute network-endpoint-groups create "${INGRESS_NEG_NAME}" \
+    --region "${PROJECT_REGION}" \
+    --network-endpoint-type "serverless" \
+    --cloud-run-service "${PROJECT_SERVICE_NAME}"
+
+  gcloud compute backend-services create "${INGRESS_BACKEND_SERVICE_NAME}" \
+    --port-name "http" \
+    --protocol "HTTP" \
+    --connection-draining-timeout "300" \
+    --load-balancing-scheme "EXTERNAL_MANAGED" \
+    --enable-logging \
+    --global
+
+  gcloud compute backend-services add-backend "${INGRESS_BACKEND_SERVICE_NAME}" \
+    --network-endpoint-group "${INGRESS_NEG_NAME}" \
+    --network-endpoint-group-region "${PROJECT_REGION}" \
+    --global
+
+  # Create a Cloud Armor security policy bucket, to be populated with a bunch of sensible defaults for a web app ingress load balancer
+  # TODO do our GCP org level policies already apply anything to our load balancers?
+  # TODO do we subscribe to "Google Cloud Armor Managed Protection Plus"? If so, additional features/managed security policies we can enable
+  # TODO additional custom policies we could set up?
+  gcloud compute security-policies create "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
+    --description "Secuirty policy with sensible baseline configuration for an external load balancer" \
+    --global
+  preconfigured_waf_rules=(
+    # opt out of rules for special character limits in cookies (942420, 942421), lots of false positives from those
+    "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli']}"
+    "'xss-v33-stable'"
+    "'lfi-v33-stable'"
+    "'rfi-v33-stable'"
+    "'rce-v33-stable'"
+    "'methodenforcement-v33-stable'"
+    "'scannerdetection-v33-stable'"
+    "'protocolattack-v33-stable'"
+    "'sessionfixation-v33-stable'"
+    # TODO these do not apply, but is there any latency cost to still scanning for them? Maybe enable them anyway
+    #"'php-v33-stable'" 
+    #"'java-v33-stable'" 
+    #"'nodejs-v33-stable'" 
+  )
+  declare -i level_incrementor=9000
+  for rule in "${preconfigured_waf_rules[@]}"; do
+    gcloud compute security-policies rules create "${level_incrementor}" \
+      --security-policy "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
+      --expression "evaluatePreconfiguredWaf(${rule})" \
+      --action deny-403
+    
+    level_incrementor+=1
+  done
+  gcloud compute backend-services update "${INGRESS_BACKEND_SERVICE_NAME}"\
+    --security-policy "${INGRESS_BASELINE_SECURITY_POLICY_NAME}" \
+    --global
+
+  gcloud compute url-maps create "${INGRESS_URL_MAP_NAME}" \
+    --default-service "${INGRESS_BACKEND_SERVICE_NAME}" \
+    --global
+
+  gcloud compute ssl-certificates create "${INGRESS_SSL_CERT_NAME}" \
+    --domains "${DNS_DOMAIN}" \
+    --global
+
+  gcloud compute target-https-proxies create "${INGRESS_TARGET_HTTPS_PROXY_NAME}" \
+    --ssl-certificates "${INGRESS_SSL_CERT_NAME}" \
+    --url-map "${INGRESS_URL_MAP_NAME}" \
+    --global
+
+  gcloud compute addresses create "${INGRESS_FORWARDING_IP_NAME}" \
+    --network-tier PREMIUM \
+    --ip-version IPV4 \
+    --global
+  forwarding_rule_ip=$(gcloud compute addresses describe ${INGRESS_FORWARDING_IP_NAME} --format="get(address)" --global)
+
+  gcloud compute forwarding-rules create "${INGRESS_HTTPS_FORWARDING_RULE_NAME}" \
+    --target-https-proxy "${INGRESS_TARGET_HTTPS_PROXY_NAME}" \
+    --load-balancing-scheme EXTERNAL_MANAGED \
+    --network-tier PREMIUM \
+    --address "${forwarding_rule_ip}" \
+    --ports 443 \
+    --global
+
+  # See https://cloud.google.com/dns/docs/records#add_a_record
+  gcloud dns record-sets transaction start --zone "${DNS_MANAGED_ZONE_NAME}"
+  gcloud dns record-sets transaction add "${forwarding_rule_ip}" \
+   --zone "${DNS_MANAGED_ZONE_NAME}" \
+   --name "${DNS_DNS_NAME}" \
+   --ttl "300" \
+   --type "A"
+  gcloud dns record-sets transaction execute --zone "${DNS_MANAGED_ZONE_NAME}"
+  
+fi
+
+
 # ----- ARTIFACT REGISTRY -----
 echo ""
 echo "Enable Artifact Registry to store container images for Cloud Run to use"
@@ -28,6 +181,9 @@ if [[ "${artifact_skip}" != "S" ]]; then
   
   # Authorize local docker client to push/pull images to artifact registry
   gcloud auth configure-docker "${PROJECT_REGION}-docker.pkg.dev"
+
+  # Enable Artifact Registry vulnerability scanning 
+  gcloud services enable containerscanning.googleapis.com
 fi
 
 
@@ -41,16 +197,19 @@ if [[ "${build_skip}" != "S" ]]; then
   gcloud services enable \
     cloudbuild.googleapis.com \
     sourcerepo.googleapis.com \
-    cloudresourcemanager.googleapis.com
+    cloudresourcemanager.googleapis.com 
 
   # Custom role allowing use of `gcloud sql instances list`, necessary for the build workflow to use ./make_prod_env_file.sh
   # Note: relevant APIs must be enabled before a corresponding IAM role can be created, it seems
   gcloud services enable \
     sql-component.googleapis.com \
-    sqladmin.googleapis.com 
+    sqladmin.googleapis.com \
+    cloudresourcemanager.googleapis.com 
    
    # Set necessary roles for Cloud Build service account, including custom 
+   #TODO - modify permissions & roles (i.e roles/run) to be "least-privileged"
   cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
+
   for role in "${cloud_build_roles[@]}"; do
      gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
        --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
@@ -83,11 +242,24 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
+
+  echo "Create a Google Cloud Storage bucket for test coverage reports"
+  if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
+      gsutil mb -l "${PROJECT_REGION}" "gs://${TEST_COVERAGE_BUCKET_NAME}"
+      echo "Bucket created."
+  else
+    echo "Bucket already exists."
+  fi
 fi
 
 
-
-# ----- CLOUD STORAGE (optional) -----
+# ----- CLOUD STORAGE -----
+echo ""
+echo "Enable Cloud Storage API"
+echo ""
+gcloud services enable \
+    storage.googleapis.com
+    
 if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
   echo ""
   echo "Create a media bucket"
@@ -96,6 +268,27 @@ if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
   if [[ "${bucket_skip}" != "S" ]]; then
     gsutil mb -l "${PROJECT_REGION}" "gs://${MEDIA_BUCKET_NAME}"
   fi
+fi
+
+echo "Create a Google Cloud Storage bucket for test coverage reports"
+if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
+    gsutil mb -l "${PROJECT_REGION}" "gs://${TEST_COVERAGE_BUCKET_NAME}"
+    echo "Bucket created."
+else
+  echo "Bucket already exists."
+
+echo "Allow cloud build read & write permissons for ${TEST_COVERAGE_BUCKET_NAME} bucket."
+gsutil iam ch "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com:objectCreator,legacyBucketReader" "gs://${TEST_COVERAGE_BUCKET_NAME}"
+
+
+
+# ----- CLOUD TRACE -----
+echo ""
+echo "Enable the Cloud Trace API"
+read -n 1 -p "Type S to skip this step, anything else to continue: " trace_skip
+echo ""
+if [[ "${trace_skip}" != "S" ]]; then
+  gcloud services enable cloudtrace.googleapis.com
 fi
 
 
@@ -168,7 +361,61 @@ if [[ "${sql_skip}" != "S" ]]; then
     --no-assign-ip \
     --allocated-ip-range-name "${VPC_SERVICE_CONNECTION_NAME}" \
     --enable-google-private-path
-  
+
+  # To properly enable and configure pgaudit, we can't set all the database flags at once. Need to:
+  #   1) set the database flag `cloudsql.enable_pgaudit=on`
+  #     - pre-requisite for enabling the pgaudit extension
+  #   2) run `CREATE EXTENSION pgaudit;` on the instance
+  #     - pre-requisite for setting any other pgaudit configuration flags
+  #   3) set final flags, both pgaudit and non-pgaudit flags
+  #     - doing this last because the gcloud method for setting flags always reverts unspecified flags
+  #      to their defaults, meaning all final flags must be set in a single go
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" --database-flags cloudsql.enable_pgaudit=on
+
+  # TODO run `CREATE EXTENSION pgaudit;` on the instance
+
+  # PostgreSQL database flags for logging configuration and best-practice. Written in a bash array for legibility,
+  # cast to string for use. Some of the references consulted:
+  #  - https://cloud.google.com/sql/docs/postgres/flags#list-flags-postgres
+  #  - https://www.trendmicro.com/cloudoneconformity-staging/knowledge-base/gcp/CloudSQL/
+  #    - many of the suggested settings are already the Cloud SQL default, won't duplicate those here
+  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
+  database_flags_array=(
+    # configuration for pgaudit
+    "cloudsql.enable_pgaudit=on"
+    "pgaudit.log=all,-misc"
+    "pgaudit.log_relation=on"
+
+    # keep statement logging (DDL, queries) off, already captured better by pgaudit
+    "log_statement=none" 
+    # enable other misc logging
+    "log_min_messages=error"
+    "log_checkpoints=on"
+    "log_lock_waits=on"
+    "log_temp_files=0"
+    "log_connections=on"
+    "log_disconnections=on"
+    "log_hostname=on" # modifier for log_connections
+  )
+  # See `gcloud topic escaping`; an alternate delimeter, declared between two ^'s, is needed when flag values themselves might contain commas
+  # Note that using printf to joing the array to a string leaves a trailing delimiter that needs to be trimmed (using sed here)
+  alt_delimiter=":"
+  database_flags_arg_string="^${alt_delimiter}^$(printf "%s${alt_delimiter}" "${database_flags_array[@]}" | sed 's/.$//')" 
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" --database-flags "${database_flags_arg_string}"
+
+  # TODO it's recommended to configure and enable automatic storage increase limit for Cloud SQL, especially with pgaudit on. Look in to that
+
+  # TODO it's recommended to enforce TLS connections in Cloud SQL. Look in to that
+
+  # Enable and configure GCP Query Insights https://cloud.google.com/sql/docs/postgres/using-query-insights#enable-insights
+  # Query insights + tags must be enabled for Cloud SQL to automatically pull out OpenTelemetry sqlcommenter comments and
+  # add them to our traces. Note: query insights only processes a maximum of 20 queries per minute, so DB tracing will always be spotty
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" \
+    --insights-config-query-insights-enabled \
+    --insights-config-record-application-tags \
+    --insights-config-query-plans-per-minute 20 
+
   # Create Database
   gcloud sql databases create "${DB_NAME}" \
     --instance "${DB_INSTANCE_NAME}"
@@ -183,10 +430,6 @@ if [[ "${sql_skip}" != "S" ]]; then
     --password $(get_secret "${SKEY_DB_USER_PASSWORD}")
 fi
 
-
-
-# ----- DNS -----
-# TODO
 
 
 # ----- SECRET MANAGER -----
@@ -212,16 +455,7 @@ if [[ "${secrets_skip}" != "S" ]]; then
   
   bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_prod_env}"
   
-  # TODO: the ALLOWED_HOSTS configuration will be simpler once the DNS step is in place
-  service_url=$(gcloud run services describe "${PROJECT_SERVICE_NAME}" --platform managed --region "${PROJECT_REGION}" --format "value(status.url)" || echo "")
-  if [[ ! -z $service_url ]]; then
-    # Need to strip the https:// from the URL, just want the host portion
-    ALLOWED_HOSTS=$(echo "${service_url}" | sed 's/^https:\/\///')
-  else
-    echo "Prior to the first cloud run deploy, the service doesn't exist yet and it's URL is unknown, but a valid config is needed to get the service deployed that first time. A placeholder is used in the initial .env.prod secret, so you'll have to update the Secret Manager value once you know the actual URL."
-    ALLOWED_HOSTS="placeholder.not-a-tld"
-  fi
-  bash_escape "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> "${tmp_prod_env}"
+  bash_escape "ALLOWED_HOSTS=${DNS_DOMAIN}" >> "${tmp_prod_env}"
   
   if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
     bash_escape "MEDIA_BUCKET_NAME=${MEDIA_BUCKET_NAME}" >> "${tmp_prod_env}"
@@ -244,7 +478,7 @@ fi
 
 # ----- CLOUD RUN -----
 echo ""
-echo "Enable the Cloud Run API"
+echo "Enable the Cloud Run API, grant access to .env.prod secret"
 read -n 1 -p "Type S to skip this step, anything else to continue: " run_skip
 echo ""
 if [[ "${run_skip}" != "S" ]]; then

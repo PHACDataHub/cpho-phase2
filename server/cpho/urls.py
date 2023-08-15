@@ -22,8 +22,8 @@ urlpatterns = [
     ),
     path(
         "indicators/<int:pk>/<int:period_pk>/",
-        views.ViewIndicatorForYear.as_view(),
-        name="view_indicator_for_year",
+        views.ViewIndicatorForPeriod.as_view(),
+        name="view_indicator_for_period",
     ),
     path(
         "indicators/<int:pk>/edit/",
@@ -49,5 +49,45 @@ urlpatterns = [
         "indicators/<int:indicator_id>/period/<int:period_pk>/manage_data/all/",
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data_all",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/submit_data/<int:dimension_type_id>/",
+        views.SubmitIndicatorData.as_view(),
+        name="submit_indicator_data",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/submit_data/all/",
+        views.SubmitIndicatorData.as_view(),
+        name="submit_indicator_data_all",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/<int:dimension_type_id>/",
+        views.ReviewData.as_view(),
+        name="review_indicator_data",
+    ),
+    path(
+        "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/all/",
+        views.ReviewData.as_view(),
+        name="review_indicator_data_all",
+    ),
+    path(
+        "indicators/<int:indicator_id>/changelog/",
+        views.IndicatorScopedChangelog.as_view(),
+        name="indicator_scoped_changelog",
+    ),
+    path(
+        "indicators/<int:indicator_id>/changelog/<int:page_num>/",
+        views.IndicatorScopedChangelog.as_view(),
+        name="indicator_scoped_changelog",
+    ),
+    path(
+        "global-changelog/",
+        views.GlobalChangelog.as_view(),
+        name="global_changelog",
+    ),
+    path(
+        "global-changelog/<int:page_num>/",
+        views.GlobalChangelog.as_view(),
+        name="global_changelog",
     ),
 ]

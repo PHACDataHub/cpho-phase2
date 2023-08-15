@@ -1,0 +1,22 @@
+{% extends 'base.jinja2' %}
+{% from 'changelog/changelog_macros.jinja2' import changelog_table %}
+
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(indicator) }}
+  {{ bc.item(tdt('Changelog') ,None, True) }}
+{% endblock %}
+
+{% block content %}
+ 
+  <h1>{{ tdt("Changelog for indicator :") }} {{ indicator }}</h1>
+  <style>{% include 'changelog/_changelog_styles.css' %}</style>
+
+  {{ changelog_table(edit_entries,False) }}
+  {% include "changelog/_changelog_pagination.jinja2" %}
+
+
+
+{% endblock %}

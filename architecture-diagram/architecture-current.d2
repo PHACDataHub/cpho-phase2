@@ -1,33 +1,70 @@
-devs: Developers {
-  icon: ./icons/Developer_(94088)_-_The_Noun_Project.svg
-  shape: image
-}
-
-gitHub: GitHub {
-  icon: ./icons/octicons-mark-github.svg
-  shape: image
-}
-
 internet: Internet {
   icon: ./icons/my_cloud.svg
   shape: image
 }
 
-Google Cloud: {
+devs: Developers {
+  icon: ./icons/Developer_(94088)_-_The_Noun_Project.svg
+  shape: image
+}
+
+github: github {
+  icon: ./icons/octicons-mark-github.svg
+  shape: image
+}
+
+slack: Slack alerting\nwebhook {
+  icon: ./icons/Slack_icon_2019.svg
+  shape: image
+}
+
+gcp: Google Cloud {
   style: {
     stroke: "#000000"
     fill: "#f1f3f4"
   }
 
-  gcpvpc: Google managed Serverless VPC {
+  load_balancer: Global External Load Balancer {
     style: {
-      stroke: blue
-      font-color: blue
+      stroke: "#000000"
       stroke-dash: 3
       fill: transparent
     }
-    cloudRun: Cloud Run (application code) {
-      icon: ./icons/cloud_run.svg
+
+    forwarding_rule: Forwarding Rule {
+      icon: ./icons/network_topology.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    https_proxy: Target HTTPS Proxy {
+      icon: ./icons/network_topology.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    ssl_cert: Managed SSL Cert {
+      icon: ./icons/certificate_manager.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    url_map: URL Map {
+      icon: ./icons/network_topology.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    backend_service_and_waf: Backend Service with\nCloud Armor WAF Rules {
+      icon: ./icons/cloud_armor.svg
       style: {
         stroke: "#000000"
         fill: "#ffffff"
@@ -35,58 +72,80 @@ Google Cloud: {
     }
   }
 
-  CICD: CI/CD from \"main\" branch {
-    style: {
-      stroke: "#ffffff"
-      fill: "#e1f6fe"
-    }
-    cloudBuild: Cloud Build {
-      icon: ./icons/cloud_build.svg
-      style: {
-        stroke: "#000000"
-        fill: "#ffffff"
-      }
-    }
-
-    artifactRegistry: Artifact Registry {
-      icon: ./icons/artifact_registry.svg
-      style: {
-        stroke: "#000000"
-        fill: "#ffffff"
-      }
-    }
-  }
-
-  secretManager: Secret Manager {
-    icon: ./icons/secret_manager.svg
+  regional: Regional Resources (northamerica-northeast1) {
     style: {
       stroke: "#000000"
-      fill: "#ffffff"
-    }
-  }
-
-  Project: {
-    style: {
-      stroke: "#ffffff"
       fill: "#e1f6fe"
     }
 
-    connector: Serverless VPC Connector {
-      icon: ./icons/serverless_vpc_connector.svg
+    network_endpoint_group: Serverless Network Endpoint Group {
+      icon: ./icons/network_topology.svg
       style: {
         stroke: "#000000"
         fill: "#ffffff"
       }
     }
 
-    vpc: User managed VPC (default network) {
+    ci_cd: CI/CD {
       style: {
-        stroke: blue
-        font-color: blue
+        stroke: "#000000"
         stroke-dash: 3
         fill: transparent
       }
-      clod_sql: Cloud SQL (PostgreSQL with Internal IP) {
+
+      cloud_build: Cloud Build {
+        icon: ./icons/cloud_build.svg
+        style: {
+          stroke: "#000000"
+          fill: "#ffffff"
+        }
+      }
+
+      artifact_registry: Artifact Registry {
+        icon: ./icons/artifact_registry.svg
+        style: {
+          stroke: "#000000"
+          fill: "#ffffff"
+        }
+      }
+    }
+
+    cloud_run_vpc: Google managed Serverless VPC {
+      style: {
+        stroke: "#000000"
+        fill: "#f1f3f4"
+      }
+      cloud_run: Cloud Run (Django app) {
+        icon: ./icons/cloud_run.svg
+        style: {
+          stroke: "#000000"
+          fill: "#ffffff"
+        }
+      }
+    }
+
+    secret_manager: Secret Manager {
+      icon: ./icons/secret_manager.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+
+    project_vpc: Project VPC {
+      style: {
+        stroke: "#000000"
+        fill: "#f1f3f4"
+      }
+
+      connector: Serverless VPC Connector {
+        icon: ./icons/serverless_vpc_connector.svg
+        style: {
+          stroke: "#000000"
+          fill: "#ffffff"
+        }
+      }
+      cloud_sql: Cloud SQL (PostgreSQL 14) {
         icon: ./icons/cloud_sql.svg
         style: {
           stroke: "#000000"
@@ -94,21 +153,74 @@ Google Cloud: {
         }
       }
     }
+
+    log_bucket: Log Storage {
+      icon: ./icons/cloud_logging.svg
+      style: {
+        stroke: "#000000"
+        fill: "#ffffff"
+      }
+    }
+  }
+
+  query_insights: Cloud SQL Query Insights {
+    icon: ./icons/cloud_sql.svg
+    style: {
+      stroke: "#000000"
+      fill: "#ffffff"
+    }
+  }
+
+  cloud_trace: Cloud Trace {
+    icon: ./icons/trace.svg
+    style: {
+      stroke: "#000000"
+      fill: "#ffffff"
+    }
+  }
+
+  uptime_checks: Uptime Monitoring {
+    icon: ./icons/cloud_monitoring.svg
+    style: {
+      stroke: "#000000"
+      fill: "#ffffff"
+    }
   }
 }
 
 # Dev path
-devs <-> gitHub
-gitHub -> Google Cloud.CICD.cloudBuild: Cloud Build pull trigger
-devs -> Google Cloud.Project.vpc.clod_sql: TBD: access to DB \nfor maintenance of data\n(need balance between DevEx,\n incident response time,\nand security/GitOps model)
-devs -> Google Cloud.secretManager: Write access
+devs <-> github
+devs -> gcp.regional.project_vpc.cloud_sql: TBD: DB data\nmaintenance access
+devs -> gcp.regional.secret_manager: Write access
+gcp.regional.cloud_run_vpc.cloud_run -> slack: Error log\nalerts
+gcp.uptime_checks <-> gcp.load_balancer.forwarding_rule: Health check
+gcp.uptime_checks -> slack: Outage\nalerts
+slack -> devs
 
 # CI/CD path
-Google Cloud.CICD.cloudBuild -> Google Cloud.CICD.artifactRegistry
-Google Cloud.CICD -> Google Cloud.gcpvpc.cloudRun: deploy
-Google Cloud.secretManager -> Google Cloud.gcpvpc.cloudRun: .env.prod
+github -> gcp.regional.ci_cd.cloud_build: Cloud Build trigger\non "main" branch
+gcp.regional.ci_cd.cloud_build -> gcp.regional.ci_cd.artifact_registry
+gcp.regional.ci_cd -> gcp.regional.cloud_run_vpc.cloud_run: Deploy
+gcp.regional.secret_manager -> gcp.regional.cloud_run_vpc.cloud_run: Mount prod\nsecrets
 
 # User path
-internet <-> Google Cloud.gcpvpc.cloudRun: https
-Google Cloud.gcpvpc.cloudRun <-> Google Cloud.Project.connector
-Google Cloud.Project.connector <-> Google Cloud.Project.vpc.clod_sql
+internet <-> gcp.load_balancer.forwarding_rule: HTTPS
+gcp.load_balancer.forwarding_rule <-> gcp.load_balancer.https_proxy: HTTPS
+gcp.load_balancer.ssl_cert -> gcp.load_balancer.https_proxy
+gcp.load_balancer.https_proxy <-> gcp.load_balancer.url_map: HTTP
+gcp.load_balancer.url_map <-> gcp.load_balancer.backend_service_and_waf: HTTP
+gcp.load_balancer.backend_service_and_waf <-> gcp.regional.network_endpoint_group: HTTP
+gcp.regional.network_endpoint_group <-> gcp.regional.cloud_run_vpc.cloud_run: HTTP
+
+# App path
+gcp.regional.cloud_run_vpc.cloud_run <-> gcp.regional.project_vpc.connector
+gcp.regional.project_vpc.connector <-> gcp.regional.project_vpc.cloud_sql
+
+# Logging and telemetry
+gcp.regional.network_endpoint_group -> gcp.regional.log_bucket: Load Balancer &\nCloud Armor logs
+gcp.regional.project_vpc.cloud_sql -> gcp.regional.log_bucket: DB logs
+gcp.regional.cloud_run_vpc.cloud_run -> gcp.regional.log_bucket: App logs
+gcp.regional.network_endpoint_group -> gcp.cloud_trace: Load Balancer\ntelemetry
+gcp.regional.cloud_run_vpc.cloud_run -> gcp.cloud_trace: App telemetry
+gcp.regional.log_bucket -> gcp.query_insights: DB logs
+gcp.query_insights -> gcp.cloud_trace: Log-derived\nDB telemetry

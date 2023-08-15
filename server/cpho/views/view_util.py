@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
@@ -22,6 +23,32 @@ class SinglePeriodMixin(View):
             **super().get_context_data(*args, **kwargs),
             "period": self.period,
         }
+
+
+class DimensionTypeOrAllMixin(View):
+    """
+    Several views have a dimension_type_id kwarg that is NULL
+    when we want all dimensions covered
+    """
+
+    @cached_property
+    def dimension_type(self):
+        if "dimension_type_id" not in self.kwargs:
+            return None
+
+        return DimensionType.objects.prefetch_related("possible_values").get(
+            id=self.kwargs["dimension_type_id"]
+        )
+
+
+class MustPassAuthCheckMixin(View):
+    def check_rule(self):
+        raise NotImplementedError("must override check_rule")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.check_rule():
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
 
 
 def upload_mapper():

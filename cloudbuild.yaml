@@ -203,8 +203,8 @@ steps:
           --vpc-connector "${VPC_CONNECTOR_NAME}" \
           --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:${prod_env_secret_version}" \
           --platform managed \
-          --ingress internal \
-          --no-allow-unauthenticated
+          --allow-unauthenticated \
+          --ingress internal-and-cloud-load-balancing
       else
         echo "pass"
         exit 0

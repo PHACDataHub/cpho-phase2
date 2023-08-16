@@ -98,8 +98,9 @@ if [[ "${network_skip}" != "S" ]]; then
     --description "Secuirty policy with sensible baseline configuration for an external load balancer" \
     --global
   preconfigured_waf_rules=(
-    # opt out of rules for special character limits in cookies (942420, 942421), lots of false positives from those
-    "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli']}"
+    # opt out of rules for special character limits in cookies (942420, 942421); lots of false positives from these
+    # opt out of rules for SQL injection probing (942330, 942370, 942490); lots of false positives from these
+    "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli', 'owasp-crs-v030301-id942330-sqli', 'owasp-crs-v030301-id942370-sqli', 'owasp-crs-v030301-id942490-sqli']}"
     "'xss-v33-stable'"
     "'lfi-v33-stable'"
     "'rfi-v33-stable'"

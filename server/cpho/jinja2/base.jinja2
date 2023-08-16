@@ -94,11 +94,17 @@
                      aria-expanded="false">{{ request.user }}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ url("logout") }}">
-                      <i class="fa fa-power-off"></i>
+                      <i class="bi bi-power"></i>
                       {{ tm("logout") }}
                     </a>
+                    {% if respects_rule('can_manage_users') %}
+                      <a class="dropdown-item" href="{{ url("manage_users") }}">
+                        <i class="bi bi-people"></i>
+                        {{ tdt("Manage Users") }}
+                      </a>
+                    {% endif %}
                     <a class="dropdown-item" href="{{ url("global_changelog") }}">
-                      <i class="fa-solid fa-plus-minus"></i>
+                      <i class="bi bi-file-diff"></i>
                       {{ tdt("changelog") }}
                     </a>
                   </div>

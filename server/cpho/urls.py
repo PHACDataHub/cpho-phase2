@@ -12,6 +12,7 @@ urlpatterns = [
         "graphql",
         csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)),
     ),
+    path("manage_users/", views.ManageUsers.as_view(), name="manage_users"),
     path(
         "indicators/", views.ListIndicators.as_view(), name="list_indicators"
     ),

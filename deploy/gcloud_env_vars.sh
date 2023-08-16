@@ -21,6 +21,8 @@ export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
 export GITHUB_MAIN_BRANCH_NAME=main
 
+export APP_HEALTHCHECK_ROUTE=/healthcheck
+
 # NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
 export PROJECT_IS_USING_WHITENOISE=true
 

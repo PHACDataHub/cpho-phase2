@@ -35,5 +35,9 @@
       "editor.defaultFormatter": "ms-python.black-formatter",
       "editor.tabSize": 4
     },
+    "typescript.format.enable": false,
+    "[typescript]": {
+      "editor.tabSize": 2
+    },
   }
   

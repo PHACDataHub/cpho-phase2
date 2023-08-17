@@ -1,0 +1,44 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display %}
+
+{% block content %}
+  <h1>{{ tdt("Hopic User Management") }}</h1>
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+        <th>{{ tdt("Username") }}</th>
+        <th>{{ tdt("Last login") }}</th>
+        <th>
+          <div class="row">
+            <div class='col-8'>{{ tdt("PHAC Organisation") }}</div>
+            <div class='col-4'>{{ tdt("Branch Role") }}</div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in user_metadata %}
+        <tr>
+          <td>{{ user }}</td>
+          <td>
+            {% if user.last_login %}{{ date_display(user.last_login) }}{% endif %}
+          </td>
+          <td>
+            {% for role in user_metadata[user] %}
+              <div class="row">
+                <div class='col-8'>{{ role.phac_org_name }}</div>
+                <div class='col-4'>
+                  {% if role.is_lead %}
+                    {{ tdt("Branch lead") }}
+                  {% else %}
+                    {{ tdt("Branch user") }}
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

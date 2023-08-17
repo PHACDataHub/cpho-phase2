@@ -130,6 +130,86 @@ def upload_mapper():
         },
     }
 
+def export_mapper():
+    all_dimensions = DimensionType.objects.all()
+    all_dimension_dict = {
+        dimension.code: dimension for dimension in all_dimensions
+    }
+    all_dimension_vals = DimensionValue.objects.all()
+    all_dimension_val_dict = {
+        dimension_val.value: dimension_val
+        for dimension_val in all_dimension_vals
+    }
+    return {
+        "category_mapper": {
+            "": "",
+            "factors_influencing_health": "FACTORS INFLUENCING HEALTH",
+            "general_health_status": "GENERAL HEALTH STATUS",
+            "health_outcomes": "HEALTH OUTCOMES",
+        },
+        "subcategory_mapper": {
+            "": "",
+            "social_factors": "SOCIAL FACTORS",
+            "health_statusHEALTH STATUS": "HEALTH STATUS",
+            "communicable_diseases": "COMMUNICABLE DISEASES",
+            "substance_use": "SUBSTANCE USE",
+            "childhood_and_family_risk_and_protective_factors": "CHILDHOOD AND FAMILY FACTORS",
+            "childhood_and_family_risk_and_protective_factors": "CHILDHOOD AND FAMILY RISK FACTORS",
+            "chronic_diseases_and_mental_health": "CHRONIC DISEASES AND MENTAL HEALTH",
+        },
+        "data_quality_mapper": {
+            "": "",
+            "caution": "CAUTION",
+            "good": "GOOD",
+            "acceptable": "ACCEPTABLE",
+            "suppressed": "SUPPRESSED",
+            "excellent": "VERY GOOD",
+        },
+        "value_unit_mapper": {
+            "": "",
+            "%": "%",
+            "per_100k": "PER 100,000",
+            "YEARS": "years",
+            "per_100k_census": "PER 1,000 CENSUS INHABITANTS",
+            "per_100k_patient_days": "PER 10,000 PATIENT DAYS",
+            "per_100k_live_births": "PER 100,000 LIVE BIRTHS",
+        },
+            "dimension_type_mapper": {
+            all_dimension_dict["province"]:"Province",
+            all_dimension_dict["age"]:"Age Group",
+            all_dimension_dict["sex"]:"Sex",
+            all_dimension_dict["canada"]:"Canada",
+            all_dimension_dict["region"]:"Region",
+            all_dimension_dict["gender"]:"Gender",
+        },
+        "non_literal_dimension_value_mapper": {
+            all_dimension_val_dict["on"]:"ON",
+            all_dimension_val_dict["ab"]:"AB",
+            all_dimension_val_dict["sk"]:"SK",
+            all_dimension_val_dict["mb"]:"MB",
+            all_dimension_val_dict["bc"]:"BC",
+            all_dimension_val_dict["qc"]:"QC",
+            all_dimension_val_dict["nb"]:"NB",
+            all_dimension_val_dict["ns"]:"NS",
+            all_dimension_val_dict["nl"]:"NL",
+            all_dimension_val_dict["pe"]:"PE",
+            all_dimension_val_dict["nu"]:"NU",
+            all_dimension_val_dict["nt"]:"NT",
+            all_dimension_val_dict["yt"]:"YT",
+            all_dimension_val_dict["atlantic"]:"ATLANTIC",
+            all_dimension_val_dict["prairies"]:"PRAIRIE",
+            all_dimension_val_dict["territories"]:"TERRITORIES",
+            all_dimension_val_dict["men"]:"MEN",
+            all_dimension_val_dict["women"]:"WOMEN",
+            all_dimension_val_dict["boys"]:"BOYS",
+            all_dimension_val_dict["girls"]:"GIRLS",
+            all_dimension_val_dict["m"]:"MALES",
+            all_dimension_val_dict["f"]:"FEMALES",
+            all_dimension_val_dict["canada"]:"CANADA",
+        },
+
+    }
+
 
 # def deduce_dimension_type(record, csv_line_number):
 #     dimension_deduced_bool = False

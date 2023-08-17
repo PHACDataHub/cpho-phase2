@@ -11,8 +11,10 @@
 #####################
 
 export PROJECT_ID=phx-01h4rr1468rj3v5k60b1vserd3
-export PROJECT_SERVICE_NAME=cpho-phase2
 export PROJECT_REGION=northamerica-northeast1
+
+export PROJECT_SERVICE_NAME=cpho-phase2
+export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
 
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
@@ -23,6 +25,8 @@ export GITHUB_MAIN_BRANCH_NAME=main
 export PROJECT_IS_USING_WHITENOISE=true
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
+export TEST_COVERAGE_THRESHOLD=80
+export TEST_DELTA_THRESHOLD=-5  #current commit test coverage minus last commit on main's coverage
 
 #########################################
 # Derived & less likely to need changes #
@@ -33,6 +37,28 @@ gcloud config set compute/region "${PROJECT_REGION}"
 
 # ----- PROJECT -----
 export PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")
+
+# ----- CLOUD DNS  -----
+# phac-alpha DNS vars
+export DNS_PHAC_ALPHA_DOMAIN="phac-aspc.alpha.canada.ca"
+export DNS_PHAC_ALPHA_NAME="phac-aspc-alpha-canada-ca"
+export DNS_PHAC_ALPHA_NS_NAME="alpha-dns"
+# project DNS vars
+export DNS_MANAGED_ZONE_NAME="${PROJECT_SERVICE_NAME}-managed-dns-zone"
+export DNS_DOMAIN="${PROJECT_ALPHA_SUB_DOMAIN}.${DNS_PHAC_ALPHA_DOMAIN}"
+export DNS_DNS_NAME="${DNS_DOMAIN}."
+export DNS_ZONE_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-zone"
+export DNS_NS_NAME="${PROJECT_ALPHA_SUB_DOMAIN}-${DNS_PHAC_ALPHA_NAME}-ns"
+
+# ----- INGRESS NETWORKING -----
+export INGRESS_NEG_NAME="${PROJECT_SERVICE_NAME}-network-endpoint-group"
+export INGRESS_BACKEND_SERVICE_NAME="${PROJECT_SERVICE_NAME}-network-backend-service"
+export INGRESS_BASELINE_SECURITY_POLICY_NAME="${PROJECT_SERVICE_NAME}-baseline-security-policies-for-load-balancer"
+export INGRESS_URL_MAP_NAME="${PROJECT_SERVICE_NAME}-url-map"
+export INGRESS_SSL_CERT_NAME="${PROJECT_SERVICE_NAME}-cert"
+export INGRESS_TARGET_HTTPS_PROXY_NAME="${PROJECT_SERVICE_NAME}-https-proxy"
+export INGRESS_FORWARDING_IP_NAME="${PROJECT_SERVICE_NAME}-forwarding-rule-ip"
+export INGRESS_HTTPS_FORWARDING_RULE_NAME="${PROJECT_SERVICE_NAME}-https-forwarding-rule"
 
 # ----- ARTIFACT REGISTRY -----
 export ARTIFACT_REGISTRY_REPO="${PROJECT_SERVICE_NAME}-artifact-registry-for-cloud-run"

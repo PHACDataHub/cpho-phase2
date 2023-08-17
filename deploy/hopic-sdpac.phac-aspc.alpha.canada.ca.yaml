@@ -1,0 +1,16 @@
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: "hopic-sdpac-phac-aspc-alpha-canada-ca-ns"
+  namespace: "alpha-dns"
+spec:
+  name: "hopic-sdpac.phac-aspc.alpha.canada.ca."
+  type: "NS"
+  ttl: 300
+  managedZoneRef:
+    external: "phac-aspc-alpha-canada-ca"
+  rrdatas:
+    - "ns-cloud-d1.googledomains.com."
+    - "ns-cloud-d2.googledomains.com."
+    - "ns-cloud-d3.googledomains.com."
+    - "ns-cloud-d4.googledomains.com."

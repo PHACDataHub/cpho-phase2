@@ -31,38 +31,115 @@ steps:
       source .env.cloud_build
 
       echo "Build images for testing, run tests and create report"
-      docker compose -f docker-compose.run-tests.yaml up --exit-code-from server
-      
+      docker compose -f docker-compose.run-tests.yaml up --exit-code-from server    
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  
       # Test coverage reports are generated twice:
         # 1 - to terminal to be printed in Cloud Build Logs
         # 2 - to coverage.json in mounted volume.
-
+      echo "Tear down tests"
+      docker compose -f docker-compose.run-tests.yaml down -v
+      
   - id: "Upload test coverage reports to Google Cloud Storage"
     name: 'gcr.io/cloud-builders/gsutil'
     script: |
       #!/usr/bin/env bash
       set -o errexit
       set -o pipefail
-      set -o nounset
-      
+      set -o nounset 
+    
       echo "Get cloud build project configuration values"
       source .env.cloud_build 
 
+      # Instantiate a failure reasons array
+      failure_reasons=()
+
+      echo "Copy test coverage report from docker volume to a google cloud storage bucket."
       timestamp=$(date +%s)
+      gsutil cp ./coverage/coverage.json "gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
 
-      echo "Copy test coverage report from docker compose volume to Google Gloud Storage."
-      gsutil cp ./coverage/coverage.json "gs://hopic-test-coverage-reports/${BRANCH_NAME}/$timestamp-${COMMIT_SHA}.json"
+      # Install jq and bc 
+      apt-get update && apt-get install -y jq bc
+      
+      this_commit_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
+      echo ""
+      echo "This commit's report: gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
+      echo "This commit's test coverage: ${this_commit_coverage}%"
+      echo ""
 
-  - id: "Tear down tests"
-    name: "gcr.io/cloud-builders/docker"
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
+      echo "Retrieving coverage report for the last commit to the main GitHub deployment branch." 
+      last_github_deployment_branch_coverage_report=$(gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}/${GITHUB_MAIN_BRANCH_NAME}" | sort | tail -n 2 | head -n 1)
+      
+      if [ -z "${last_github_deployment_branch_coverage_report}" ]; then
+        echo "No coverage reports for the main GitHub deployment branch found."
+        coverage_difference=${this_commit_coverage}
+      else
 
-      docker compose -f docker-compose.run-tests.yaml down -v
+        # Find coverage delta between this commit and last commit to main GitHub deployment branch.
+        echo "Last commit to the main GitHub deployment branch's report: ${last_github_deployment_branch_coverage_report}"
+        echo ""
+        echo "Calculating last commit to the main GitHub deployment branch's test coverage."
+        
+        gsutil cp ${last_github_deployment_branch_coverage_report} ./coverage/last_github_deployment_branch_coverage_report.json
+        last_github_deployment_branch_coverage=$(jq '.totals.percent_covered' ./coverage/last_github_deployment_branch_coverage_report.json | awk '{printf "%.2f\n", $1}')
+        echo "Last commit to the main GitHub deployment branch's test coverage: ${last_github_deployment_branch_coverage}%"
+        echo ""
+        # echo "Test coverage threshold: ${TEST_COVERAGE_THRESHOLD}"
+        # echo ""
+        # echo "This commit's total test coverage: ${this_commit_coverage}%"
+
+        echo ""
+        coverage_difference=$(echo "${this_commit_coverage} - ${last_github_deployment_branch_coverage}" | bc)
+      fi
+      
+      echo "------------------------------------------"
+      echo "Total coverage threshold: ${TEST_COVERAGE_THRESHOLD}%"
+      echo "Delta threshold: ${TEST_DELTA_THRESHOLD}%"
+      echo ""
+      echo "This commit: ${this_commit_coverage}%"
+      echo "Last main or master commit: ${last_github_deployment_branch_coverage}%"
+      echo "------------------------------------------"
+      echo "Delta between commits: ${coverage_difference}%"
+      echo ""
+
+      # Compare delta 
+      if (( $(echo "${coverage_difference} < ${TEST_DELTA_THRESHOLD}" | bc -l) )); then
+        echo "Test coverage dropped to (${coverage_difference}%) which is more than the delta threshold of ${TEST_DELTA_THRESHOLD}%"
+        echo "Please increase the number of unit tests."
+
+        failure_reasons+=(" - the test coverage dropped more than the allowed delta from the main deployment branch ")
+      else
+        echo "Test coverage delta is within range."
+      fi
+      
+      # Compare total coverage 
+      if (( $(echo "${this_commit_coverage} < ${TEST_COVERAGE_THRESHOLD}" | bc -l) )); then
+        echo ""
+        echo "Coverage (${this_commit_coverage}%) is below the threshold of (${TEST_COVERAGE_THRESHOLD}%)"
+        echo "Please add more unit tests. See the test coverage report for more details."
+        echo ""
+
+        failure_reasons+=(" - total coverage is below threshold")
+
+      else
+        echo "Coverage (${this_commit_coverage}%) is above the threshold of ${TEST_COVERAGE_THRESHOLD}."
+      fi
+
+      if [ ${#failure_reasons[@]} -eq 0 ]; then
+        echo "Test coverage is suficient  - continuing..."
+      else
+        echo "Step would have failed for the following reasons: "
+        for reason in "${failure_reasons[@]}"; do
+          echo "$reason"
+        done
+
+        # Fail build if not main (or master) deployment branch.
+        # if [[ "${BRANCH_NAME}" != "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
+        #   echo "Insufficent test coverage - build failed."  
+        #   exit 1
+        # fi
+      fi
+
+
 
   - id: "Build image if main"
     name: "gcr.io/cloud-builders/docker"
@@ -115,7 +192,7 @@ steps:
       # IMPORTANT: don't just use latest. The secrets are mounted at container start, not deploy time,
       # so instances deployed with "latest" may end up using incompatable secret versions as new secret
       # versions are pushed, but before the coresponding images are pushed
-      prod_env_secret_version=7
+      prod_env_secret_version=11
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Deploy new image to Cloud Run"
@@ -126,7 +203,8 @@ steps:
           --vpc-connector "${VPC_CONNECTOR_NAME}" \
           --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:${prod_env_secret_version}" \
           --platform managed \
-          --allow-unauthenticated
+          --allow-unauthenticated \
+          --ingress internal-and-cloud-load-balancing
       else
         echo "pass"
         exit 0

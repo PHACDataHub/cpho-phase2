@@ -1,3 +1,0 @@
-name: cpho-deploy
-runtime: nodejs
-description: Pulumi steps for deployment of the CPHO project

@@ -6,5 +6,11 @@
   "dependencies": {
     "@pulumi/gcp": "^6.58.0",
     "@pulumi/pulumi": "^3.0.0"
+  },
+  "scripts": {
+    "precreate-uptime-monitoring": "npm ci && gcloud auth application-default login",
+    "create-uptime-monitoring": "cd ./uptime_monitoring && (pulumi stack init uptime-monitoring || :) && (source ../../gcloud_env_vars.sh && pulumi up --stack uptime-monitoring)",
+    "predestroy-uptime-monitoring": "npm ci && gcloud auth application-default login",
+    "destroy-uptime-monitoring": "cd ./uptime_monitoring && pulumi destroy --stack uptime-monitoring && pulumi stack rm uptime-monitoring"
   }
 }

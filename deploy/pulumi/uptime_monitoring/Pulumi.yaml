@@ -1,0 +1,4 @@
+name: cpho-uptime-monitoring
+runtime: nodejs
+description: Pulumi IaC for the CPHO uptime monitoring resources 
+main: ./uptime_monitoring.ts

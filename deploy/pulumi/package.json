@@ -1,11 +1,14 @@
 {
   "name": "cpho-deploy",
+  "type": "module",
   "devDependencies": {
     "@types/node": "^18"
   },
   "dependencies": {
     "@pulumi/gcp": "^6.58.0",
-    "@pulumi/pulumi": "^3.0.0"
+    "@pulumi/pulumi": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   },
   "scripts": {
     "precreate-uptime-monitoring": "npm ci && gcloud auth application-default login",

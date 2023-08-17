@@ -33,7 +33,7 @@ def _get_phacorg_acronym(self, lang="en"):
 class PHACOrg(models.Model):
     def __str__(self):
         s = _get_phacorg_acronym(self, get_lang_code())
-        s += tdt("colon") + " "
+        s += tdt(" :") + " "
         s += _get_phacorg_str(self, get_lang_code())
         return s
 
@@ -52,7 +52,7 @@ class PHACOrg(models.Model):
     name_fr = fields.CharField(max_length=200, default="")
     acronym_en = fields.CharField(max_length=20, default="")
     acronym_fr = fields.CharField(max_length=20, default="")
-    is_branch = models.BooleanField(default=False)
+    # is_branch = models.BooleanField(default=False)
     parent = fields.ForeignKey(
         "PHACOrg",
         related_name="children",
@@ -76,6 +76,10 @@ class PHACOrg(models.Model):
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
 
+    @property
+    def is_branch(self):
+        return self.id.endswith("0000")
+
     @classmethod
     def branches(self):
-        return PHACOrg.objects.filter(is_branch=True)
+        return PHACOrg.objects.filter(id__endswith="0000")

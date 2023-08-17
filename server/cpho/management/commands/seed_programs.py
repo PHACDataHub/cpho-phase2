@@ -89,7 +89,6 @@ def create_phacorgs(mode="reset"):
                 data["parent_pk"] if data["parent_pk"] != "000000" else None
             )
 
-            is_branch = int(data["pk"]) % 10000 == 0
             if mode in ["insert_ignore", "upsert"]:
                 try:
                     phac_org = PHACOrg.objects.get(id=data["pk"])
@@ -103,7 +102,6 @@ def create_phacorgs(mode="reset"):
                         phac_org.name_fr = data["name_fr"]
                         phac_org.acronym_fr = data["acronym_fr"]
                         phac_org.acronym_en = data["acronym_en"]
-                        phac_org.is_branch = is_branch
                         phac_org.parent_id = data["parent_pk"]
                         phac_org.save()
                         updated_count += 1
@@ -117,7 +115,6 @@ def create_phacorgs(mode="reset"):
                 name_fr=data["name_fr"],
                 acronym_fr=data["acronym_fr"],
                 acronym_en=data["acronym_en"],
-                is_branch=is_branch,
                 parent_id=data["parent_pk"] or None,
             )
             inserted_count += 1

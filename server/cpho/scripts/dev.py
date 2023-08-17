@@ -42,7 +42,7 @@ def create_users():
         username="hso",
         password="hso",
     )
-    branches = PHACOrg.objects.filter(is_branch=True)
+    branches = PHACOrg.branches()
     for branch in branches:
         branch_name = branch.acronym_en.lower().replace(" ", "")
         branch_lead = branch_name + "_lead"

@@ -10,16 +10,17 @@
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
   <div class="mt-4">
-    {% if respects_rule('can_edit_indicator', object) %}
+
+    {% if respects_rule('can_edit_indicator', indicator) %}
       <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
          class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
     {% endif %}
-    {% if respects_rule('can_view_indicator_data', object) %}
+    {% if respects_rule('can_view_indicator_data', indicator) %}
       <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
          class="btn btn-success">{{ tdt("View changelog for this indicator's data") }}</a>
     {% endif %}
   </div>
-  {% if respects_rule('can_view_indicator_data', object) %}
+  {% if respects_rule('can_view_indicator_data', indicator) %}
     <div class="mt-5">
       <div class="h3">{{ tdt("Periods with data") }}</div>
       <table class="table">

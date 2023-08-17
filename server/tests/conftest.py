@@ -6,7 +6,9 @@ import pytest
 from jinja2 import Template as Jinja2Template
 from phac_aspc.django.settings.utils import configure_settings_for_tests
 
-from cpho.models import User
+from cpho.management.commands.seed_programs import seed_programs
+from cpho.models import PHACOrg, User
+from cpho.scripts.dev import create_users
 
 # Modify django settings to skip axes authentication backend
 configure_settings_for_tests()
@@ -38,6 +40,8 @@ def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
 def seed_core_data(globally_scoped_fixture_helper):
     call_command("loaddata", "cpho/fixtures/periods.yaml")
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
+    seed_programs(mode="reset")
+    create_users()
 
 
 @pytest.fixture
@@ -49,4 +53,57 @@ def vanilla_user():
 def vanilla_user_client(vanilla_user):
     client = Client()
     client.force_login(vanilla_user)
+    return client
+
+
+@pytest.fixture
+def cdsb_user():
+    return User.objects.get(username="cdsb_user")
+
+
+@pytest.fixture
+def cdsb_lead():
+    return User.objects.get(username="cdsb_lead")
+
+
+@pytest.fixture
+def oae_lead():
+    return User.objects.get(username="oae_lead")
+
+
+@pytest.fixture
+def hso_user():
+    return User.objects.get(username="hso")
+
+
+@pytest.fixture
+def cdsb_org():
+    return PHACOrg.objects.get(acronym_en="CDSB")
+
+
+@pytest.fixture
+def cdsb_lead_client(cdsb_lead):
+    client = Client()
+    client.force_login(cdsb_lead)
+    return client
+
+
+@pytest.fixture
+def cdsb_user_client(cdsb_user):
+    client = Client()
+    client.force_login(cdsb_user)
+    return client
+
+
+@pytest.fixture
+def hso_client(hso_user):
+    client = Client()
+    client.force_login(hso_user)
+    return client
+
+
+@pytest.fixture
+def oae_lead_client(oae_lead):
+    client = Client()
+    client.force_login(oae_lead)
     return client

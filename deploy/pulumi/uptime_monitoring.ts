@@ -1,4 +1,5 @@
 import * as gcp from "@pulumi/gcp";
+import { execSync } from "child_process";
 
 const env = (env_name: string) => {
   const env_var = process.env[env_name];
@@ -12,10 +13,18 @@ const env = (env_name: string) => {
   return env_var;
 };
 
-const gcpConfig = new gcp.Provider(env("PROJECT_SERVICE_NAME"), {
+new gcp.Provider(env("PROJECT_SERVICE_NAME"), {
   project: env("PROJECT_ID"),
   region: env("PROJECT_REGION"),
 });
+
+// asserting SKEY_SLACK_MONITOR_ALERTING_WEBHOOK exists as an env var via `env()`, but not interpolating the value in to the exec()
+// command string directly. Potentially safer to let the exec child process shell handle that via the bash best-practice "${...}" pattern
+env("SKEY_UPTIME_ALERT_SLACK_WEBHOOK");
+const slack_alerting_webhook = execSync(
+  'gcloud secrets versions access latest --secret "${SKEY_UPTIME_ALERT_SLACK_WEBHOOK}"',
+  { shell: "/bin/bash", encoding: "utf8" }
+);
 
 const healthcheckRouteUptimeCheck = new gcp.monitoring.UptimeCheckConfig(
   `${env("PROJECT_SERVICE_NAME")}-https-uptime-check`,
@@ -52,12 +61,12 @@ const slackNotificationChannel = new gcp.monitoring.NotificationChannel(
     displayName: `${env("PROJECT_SERVICE_NAME")} Webhook Alert Channel`,
     description: "Webhook notification channel for Cloud Run Outages",
     labels: {
-      url: TODO,
+      url: slack_alerting_webhook,
     },
   }
 );
 
-const uptimeAlertPolicy = new gcp.monitoring.AlertPolicy(
+new gcp.monitoring.AlertPolicy(
   `${env("PROJECT_SERVICE_NAME")}-uptime-alert-policy`,
   {
     displayName: `${env("PROJECT_SERVICE_NAME")} Uptime Alerting Policy`,

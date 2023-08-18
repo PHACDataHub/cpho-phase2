@@ -83,7 +83,8 @@ new gcp.monitoring.AlertPolicy(
     )} Healthcheck Route Uptime Alerting Policy`,
     conditions: [
       {
-        displayName: "Uptime check monitoring",
+        displayName:
+          "Alert: 50% or more of uptime check regions are unhealthy!",
         conditionThreshold: {
           filter: pulumi.interpolate`resource.type = "uptime_url" AND metric.type = "monitoring.googleapis.com/uptime_check/check_passed" AND metric.labels.check_id = "${healthcheckRouteUptimeCheck.uptimeCheckId}"`,
           // Each region in our uptime monitor produces separate metric data (as a time series). Aggregation is required before comparison
@@ -98,16 +99,14 @@ new gcp.monitoring.AlertPolicy(
               crossSeriesReducer: "REDUCE_FRACTION_TRUE",
             },
           ],
+          // Comperator between aggregate result and `thresholdValue`
           comparison: "COMPARISON_LT",
-          // thresholdValue interpreted as a percentage of uptime check regions passing given aggregator context
+          // `thresholdValue` is interpreted relative to your aggregate, so here it is a percentage of healthy uptime check regions
           thresholdValue: 0.5,
-          // Require two subseqeunt triggers before alerting
-          trigger: {
-            count: 2,
-          },
-          // Amount of time the trigger has to be true for an alert to send; required but effectively redundant to our time based aggregation and
-          // comparison approach. Using 0s to keep this from complicating the logic further
-          duration: `0s`,
+          // Amount of time the trigger has to stay violated for an alert to be sent (requiring two subseqent failing uptime checks right now)
+          duration: pulumi.interpolate`${uptime_check_period * 2}s`,
+          // Treat missing data as a triggering event
+          evaluationMissingData: "EVALUATION_MISSING_DATA_ACTIVE",
         },
       },
     ],

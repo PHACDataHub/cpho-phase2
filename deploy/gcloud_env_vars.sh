@@ -19,7 +19,7 @@ export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
-export GITHUB_MAIN_BRANCH_NAME=uptime-checks
+export GITHUB_MAIN_BRANCH_NAME=main
 
 export APP_HEALTHCHECK_ROUTE=/healthcheck
 

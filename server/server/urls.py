@@ -23,7 +23,11 @@ urlpatterns = i18n_patterns(
     path("", include(cpho_urls)),
     prefix_default_language=False,
 ) + [
-    path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),
+    path(
+        "healthcheck/",
+        lambda r: HttpResponse(status=404),
+        name="simple_healthcheck",
+    ),
     re_path("^$", RootView.as_view(), name="root"),
     *dev_routes,
 ]

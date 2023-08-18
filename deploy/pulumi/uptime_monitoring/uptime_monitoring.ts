@@ -85,7 +85,7 @@ new gcp.monitoring.AlertPolicy(
       {
         displayName: "Uptime check monitoring",
         conditionThreshold: {
-          filter: pulumi.interpolate`resource.type = "uptime_url" AND metric.labels.check_id = "${healthcheckRouteUptimeCheck.id}" AND metric.type = "monitoring.googleapis.com/uptime_check/check_passed"`,
+          filter: pulumi.interpolate`resource.type = "uptime_url" AND metric.type = "monitoring.googleapis.com/uptime_check/check_passed" AND metric.labels.check_id = "${healthcheckRouteUptimeCheck.uptimeCheckId}"`,
           // Each region in our uptime monitor produces separate metric data (as a time series). Aggregation is required before comparison
           aggregations: [
             {
@@ -95,16 +95,13 @@ new gcp.monitoring.AlertPolicy(
               // Only aggregate as often as the uptime check may have new data
               alignmentPeriod: pulumi.interpolate`${uptime_check_period}s`,
               // Reduce to a count of check_passed === false cases in the aligned period
-              crossSeriesReducer: "REDUCE_COUNT_FALSE",
+              crossSeriesReducer: "REDUCE_FRACTION_TRUE",
             },
           ],
-          // Using > 2 as our condition against our reduced count, as each failing uptime check region will contribute one to the reduced count,
-          // and the minimum number of regions is three. Requiring at least two to be reporting outages, even if there's only three total, is a
-          // reasonable trade off between false-positives and false-negatives (false-negatives should only be temporary, we'd catch a true sustained
-          // outage within a few uptime check periods)
-          comparison: "COMPARISON_GT",
-          thresholdValue: 2,
-          // Only trigger alert if two subsequent aggregations meet the condition
+          comparison: "COMPARISON_LT",
+          // thresholdValue interpreted as a percentage of uptime check regions passing given aggregator context
+          thresholdValue: 0.5,
+          // Require two subseqeunt triggers before alerting
           trigger: {
             count: 2,
           },

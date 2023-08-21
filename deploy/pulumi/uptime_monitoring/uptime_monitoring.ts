@@ -34,7 +34,7 @@ const healthcheckRouteUptimeCheck = new gcp.monitoring.UptimeCheckConfig(
     project: env("PROJECT_ID"),
     displayName: `Uptime check over https against the ${env(
       "PROJECT_SERVICE_NAME"
-    )} app's /healthcheck route`,
+    )} app's healthcheck route`,
     monitoredResource: {
       labels: {
         host: env("DNS_DOMAIN"),

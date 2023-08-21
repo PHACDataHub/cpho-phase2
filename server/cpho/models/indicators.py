@@ -24,11 +24,11 @@ class Indicator(models.Model):
         ("health_outcomes", tdt("Health Outcomes")),
     ]
 
-    SUB_CATEGORY_CHOICES = [
+    TOPIC_CHOICES = [
         ("", "--"),
         (
-            "childhood_and_family_risk_and_protective_factors",
-            tdt("Childhood and Family Risk and Protective Factors"),
+            "childhood_and_family_factors",
+            tdt("Childhood and Family Factors"),
         ),
         ("social_factors", tdt("Social Factors")),
         ("substance_use", tdt("Substance Use")),
@@ -48,10 +48,10 @@ class Indicator(models.Model):
         verbose_name=tdt("Category"),
     )
 
-    sub_category = fields.CharField(
+    topic = fields.CharField(
         max_length=50,
-        choices=SUB_CATEGORY_CHOICES,
-        verbose_name=tdt("Sub Category"),
+        choices=TOPIC_CHOICES,
+        verbose_name=tdt("Topic"),
     )
 
     detailed_indicator = fields.CharField(max_length=300)
@@ -170,6 +170,99 @@ class IndicatorDatum(models.Model):
         Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
     )
 
+    literal_dimension_val = fields.CharField(
+        max_length=50, null=True, blank=True, default=None
+    )
+
+    period = fields.ForeignKey(
+        # TODO: figure out if this should be null, default to current period or null w/out default
+        "cpho.Period",
+        null=True,
+        blank=True,
+        on_delete=models.RESTRICT,
+    )
+
+    LIVING_ARRANGMENT_CHOICES = [
+        ("", "--"),
+        ("all_living", tdt("All Living Arrangements")),
+        ("couple_no_child", tdt("Couple no children")),
+        (
+            "couple_with_child",
+            tdt("Couple with child(ren) less than 18 years old"),
+        ),
+        ("female_alone", tdt("Female living alone")),
+        (
+            "female_with_child",
+            tdt("Female lone parent with child(ren) less than 18 years old"),
+        ),
+        ("male_alone", tdt("Male living alone")),
+        (
+            "male_with_child",
+            tdt("Male lone parent with child(ren) less than 18 years old"),
+        ),
+        ("other_living", tdt("Other livng arrangments")),
+    ]
+
+    living_arrangement = pt_data_availability = fields.CharField(
+        max_length=75, choices=LIVING_ARRANGMENT_CHOICES, null=True
+    )
+
+    DATA_QUALITY_CHOICES = [
+        ("", "--"),
+        ("caution", tdt("Caution")),
+        ("acceptable", tdt("Acceptable")),
+        ("good", tdt("Good")),
+        ("suppressed", tdt("Suppressed")),
+        ("excellent", tdt("Excellent")),
+    ]
+
+    data_quality = fields.CharField(
+        max_length=50,
+        choices=DATA_QUALITY_CHOICES,
+        verbose_name=tdt("Data Quality"),
+        null=True,
+    )
+
+    PT_DATA_AVAILABILITY_CHOICES = [
+        ("", "--"),
+        ("available", tdt("Available")),
+        ("suppressed", tdt("Suppressed")),
+        ("not_available", tdt("Not available")),
+    ]
+
+    pt_data_availability = fields.CharField(
+        max_length=75, choices=PT_DATA_AVAILABILITY_CHOICES, null=True
+    )
+
+    value = fields.FloatField(null=True)
+
+    value_lower_bound = fields.FloatField(null=True)
+
+    value_upper_bound = fields.FloatField(null=True)
+
+    VALUE_UNIT_CHOICES = [
+        ("", tdt("--")),
+        ("%", tdt("%")),
+        ("per_100k", tdt("Per 100K")),
+        ("years", tdt("Years")),
+        ("per_100k_census", tdt("Per 100K census inhabitants")),
+        ("per_100k_patient_days", tdt("Per 100K patient days")),
+        ("per_100k_live_births", tdt("Per 100K live births")),
+        ("other", tdt("Other")),
+    ]
+
+    value_unit = fields.CharField(
+        max_length=50,
+        choices=VALUE_UNIT_CHOICES,
+        verbose_name=tdt("Value Unit"),
+    )
+
+    value_displayed = fields.CharField(max_length=50, null=True)
+
+    single_year_timeframe = fields.CharField(max_length=50, null=True)
+
+    multi_year_timeframe = fields.CharField(max_length=50, null=True)
+
     dimension_type = fields.ForeignKey(
         "cpho.DimensionType",
         null=False,
@@ -183,58 +276,6 @@ class IndicatorDatum(models.Model):
         blank=True,
         on_delete=models.RESTRICT,
     )
-
-    literal_dimension_val = fields.CharField(
-        max_length=50, null=True, blank=True, default=None
-    )
-
-    period = fields.ForeignKey(
-        # TODO: figure out if this should be null, default to current period or null w/out default
-        "cpho.Period",
-        null=True,
-        blank=True,
-        on_delete=models.RESTRICT,
-    )
-    DATA_QUALITY_CHOICES = [
-        ("", "--"),
-        ("caution", tdt("Caution")),
-        ("acceptable", tdt("Acceptable")),
-        ("good", tdt("Good")),
-        ("suppressed", tdt("Suppressed")),
-        ("excellent", tdt("Excellent")),
-    ]
-    VALUE_UNIT_CHOICES = [
-        ("", tdt("--")),
-        ("%", tdt("%")),
-        ("per_100k", tdt("Per 100K")),
-        ("years", tdt("Years")),
-        ("per_100k_census", tdt("Per 100K census inhabitants")),
-        ("per_100k_patient_days", tdt("Per 100K patient days")),
-        ("per_100k_live_births", tdt("Per 100K live births")),
-        ("other", tdt("Other")),
-    ]
-
-    data_quality = fields.CharField(
-        max_length=50,
-        choices=DATA_QUALITY_CHOICES,
-        verbose_name=tdt("Data Quality"),
-    )
-
-    value = fields.FloatField(null=True)
-
-    value_lower_bound = fields.FloatField(null=True)
-
-    value_upper_bound = fields.FloatField(null=True)
-
-    value_unit = fields.CharField(
-        max_length=50,
-        choices=VALUE_UNIT_CHOICES,
-        verbose_name=tdt("Value Unit"),
-    )
-
-    single_year_timeframe = fields.CharField(max_length=50, null=True)
-
-    multi_year_timeframe = fields.CharField(max_length=50, null=True)
 
     def __str__(self):
         return " ".join(

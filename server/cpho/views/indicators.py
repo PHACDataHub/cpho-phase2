@@ -15,12 +15,11 @@ from django.views.generic import (
     UpdateView,
 )
 
-from server.rules_framework import test_rule
-
 from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
+from server.rules_framework import test_rule
 
 from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin
 
@@ -51,7 +50,7 @@ class IndicatorForm(ModelForm):
 
     sub_category = forms.ChoiceField(
         required=False,
-        choices=Indicator.SUB_CATEGORY_CHOICES,
+        choices=Indicator.TOPIC_CHOICES,
         widget=forms.Select(
             attrs={
                 "class": "form-select",

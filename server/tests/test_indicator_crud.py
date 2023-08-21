@@ -14,7 +14,7 @@ def test_create_indicator(vanilla_user_client):
         data={
             "name": "Test Indicator",
             "category": Indicator.CATEGORY_CHOICES[-1][0],
-            "sub_category": Indicator.SUB_CATEGORY_CHOICES[-1][0],
+            "sub_category": Indicator.TOPIC_CHOICES[-1][0],
             "detailed_indicator": "Test Detailed Indicator",
             "sub_indicator_measurement": "Test Sub Indicator Measurement",
         },

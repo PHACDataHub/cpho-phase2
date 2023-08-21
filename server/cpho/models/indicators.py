@@ -242,22 +242,41 @@ class IndicatorDatum(models.Model):
 
     VALUE_UNIT_CHOICES = [
         ("", tdt("--")),
-        ("%", tdt("%")),
-        ("per_100k", tdt("Per 100K")),
+        ("age_rate", tdt("Age-Standardized Rate")),
+        ("crude_rate", tdt("Crude Rate")),
+        ("daily_dose_per_1k_census", tdt("Defined Daily Dose/1,000 Census")),
+        ("percentage", tdt("Percentage")),
+        ("percentage_crude_rate", tdt("Percentage (Crude Rate)")),
+        ("rate_per_10k_parient", tdt("Rate per 10,000 Patient Days")),
+        ("rate_per_100k", tdt("Rate per 100,000")),
+        ("rate_per_100k_crude", tdt("Rate per 100,000 (Crude Rate)")),
+        ("rate_per_100k_live_births", tdt("Rate per 100,000 Live Births")),
         ("years", tdt("Years")),
-        ("per_100k_census", tdt("Per 100K census inhabitants")),
-        ("per_100k_patient_days", tdt("Per 100K patient days")),
-        ("per_100k_live_births", tdt("Per 100K live births")),
         ("other", tdt("Other")),
     ]
 
     value_unit = fields.CharField(
-        max_length=50,
+        max_length=75,
         choices=VALUE_UNIT_CHOICES,
         verbose_name=tdt("Value Unit"),
     )
 
-    value_displayed = fields.CharField(max_length=50, null=True)
+    VALUE_DISPLAYED_CHOICES = [
+        ("", tdt("--")),
+        ("%", tdt("%")),
+        ("per_1k_census", tdt("Per 1,000 census inhabitants")),
+        ("per_10k_parient", tdt("Per 10,000 patient days")),
+        ("per_100k", tdt("Per 100,000")),
+        ("per_100k_live_births", tdt("Per 100,000 live births")),
+        ("years", tdt("Years")),
+        ("other", tdt("Other")),
+    ]
+
+    value_displayed = fields.CharField(
+        max_length=75,
+        choices=VALUE_DISPLAYED_CHOICES,
+        null=True,
+    )
 
     single_year_timeframe = fields.CharField(max_length=50, null=True)
 

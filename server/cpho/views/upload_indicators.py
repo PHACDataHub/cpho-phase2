@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.generic import FormView
 
+from server.rules_framework import test_rule
+
 from cpho.models import (
     DimensionType,
     DimensionValue,
@@ -17,10 +19,14 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
-from .view_util import upload_mapper
+from .view_util import MustPassAuthCheckMixin, upload_mapper
 
 
 class UploadForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super(UploadForm, self).__init__(*args, **kwargs)
+
     csv_file = forms.FileField(
         required=True,
         widget=forms.FileInput(
@@ -30,48 +36,93 @@ class UploadForm(forms.Form):
         ),
     )
 
-    def save(self):
-        data = self.cleaned_data["csv_file"]
-        # TODO: Update Periods
-        preiod_val = Period.objects.get(
-            year=2021, quarter=None, year_type="calendar"
-        )
+    def handle_indicators(self, datum):
         mapper = upload_mapper()
-        for datum in data:
-            # For the future: Indicators should not be created; just queried
+        # try to find if indicator with same exact attributes exists first
+        indicator_obj = Indicator.objects.filter(
+            name=datum["Indicator"],
+            category=mapper["category_mapper"][datum["Category"]],
+            sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+            detailed_indicator=datum["Detailed Indicator"],
+            sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
+        )
 
-            # try to find if indicator with same exact attributes exists first
-            indicator_obj = Indicator.objects.filter(
+        if len(indicator_obj) == 0 and test_rule(
+            "can_create_indicator", self.user
+        ):
+            indicator_obj = Indicator.objects.create(
                 name=datum["Indicator"],
                 category=mapper["category_mapper"][datum["Category"]],
                 sub_category=mapper["subcategory_mapper"][datum["Topic"]],
                 detailed_indicator=datum["Detailed Indicator"],
                 sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
             )
-            # if it exists, use it(saves extra queries to db); otherwise create it
-            if len(indicator_obj) == 0:
-                indicator_obj, created = Indicator.objects.get_or_create(
-                    name=datum["Indicator"],
-                    category=mapper["category_mapper"][datum["Category"]],
-                    sub_category=mapper["subcategory_mapper"][datum["Topic"]],
-                )
-                indicator_obj.detailed_indicator = datum["Detailed Indicator"]
-                indicator_obj.sub_indicator_measurement = datum[
-                    "Sub_Indicator_Measurement"
-                ]
-                indicator_obj.save()
-            else:
-                indicator_obj = indicator_obj[0]
+        elif len(indicator_obj) == 0 and not test_rule(
+            "can_create_indicator", self.user
+        ):
+            self.add_error(
+                None,
+                tdt(
+                    f"Indicator: {datum['Indicator']} does not exist and you do not have permission to create it"
+                ),
+            )
+            indicator_obj = None
+        else:
+            indicator_obj = indicator_obj[0]
 
-            dim_val = None
-            lit_dim_val = None
-            if datum["Dimension_Type"] != "Age Group":
-                dim_val = mapper["non_literal_dimension_value_mapper"][
-                    (datum["Dimension_Type"], datum["Dimension_Value"])
-                ]
-            else:
-                lit_dim_val = datum["Dimension_Value"]
+        return indicator_obj
 
+    def handle_indicator_data(self, indicator_obj, datum):
+        mapper = upload_mapper()
+        preiod_val = Period.objects.get(
+            year=2021, quarter=None, year_type="calendar"
+        )
+
+        if not test_rule("can_edit_indicator_data", self.user, indicator_obj):
+            self.add_error(
+                None,
+                tdt(
+                    f"You do not have permission to edit data for Indicator: {indicator_obj.name}"
+                ),
+            )
+            return None
+
+        dim_val = None
+        lit_dim_val = None
+        if datum["Dimension_Type"] != "Age Group":
+            dim_val = mapper["non_literal_dimension_value_mapper"][
+                (datum["Dimension_Type"], datum["Dimension_Value"])
+            ]
+        else:
+            lit_dim_val = datum["Dimension_Value"]
+
+        indData_obj = IndicatorDatum.objects.filter(
+            indicator=indicator_obj,
+            dimension_type=mapper["dimension_type_mapper"][
+                datum["Dimension_Type"]
+            ],
+            dimension_value=dim_val,
+            literal_dimension_val=lit_dim_val,
+            period=preiod_val,
+            data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
+            value=(float(datum["Value"]) if datum["Value"] != "" else None),
+            value_lower_bound=(
+                float(datum["Value_LowerCI"])
+                if datum["Value_LowerCI"] != ""
+                else None
+            ),
+            value_upper_bound=(
+                float(datum["Value_UpperCI"])
+                if datum["Value_UpperCI"] != ""
+                else None
+            ),
+            value_unit=mapper["value_unit_mapper"][datum["Value_Displayed"]],
+            single_year_timeframe=datum["SingleYear_TimeFrame"],
+            multi_year_timeframe=datum["MultiYear_TimeFrame"],
+        )
+
+        if len(indData_obj) == 0:
+            print("Editing Indicator Data")
             indData_obj, created = IndicatorDatum.objects.get_or_create(
                 indicator=indicator_obj,
                 dimension_type=mapper["dimension_type_mapper"][
@@ -103,6 +154,19 @@ class UploadForm(forms.Form):
             indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
             indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
             indData_obj.save()
+
+        else:
+            print("Indicator data already exists")
+
+    def save(self):
+        data = self.cleaned_data["csv_file"]
+        for datum in data:
+            indicator_obj = self.handle_indicators(datum)
+
+            if indicator_obj is None:
+                continue
+
+            self.handle_indicator_data(indicator_obj, datum)
 
     def clean_csv_file(self):
         start_time = time.time()
@@ -213,9 +277,20 @@ class UploadForm(forms.Form):
         return data_dict
 
 
-class UploadIndicator(FormView):
+class UploadIndicator(MustPassAuthCheckMixin, FormView):
     template_name = "indicators/upload_indicator.jinja2"
     form_class = UploadForm
+
+    def check_rule(self):
+        return test_rule(
+            "can_upload_indicator",
+            self.request.user,
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         return reverse("list_indicators")

@@ -1,0 +1,8 @@
+name: cpho-uptime-monitoring
+description: Pulumi IaC for the CPHO uptime monitoring resources 
+main: ./uptime_monitoring.ts
+runtime:
+  name: nodejs
+  options:
+    # See https://github.com/TypeStrong/ts-node/issues/1007
+    nodeargs: "--loader ts-node/esm --no-warnings"

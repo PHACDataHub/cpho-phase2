@@ -21,16 +21,15 @@ export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
 export GITHUB_MAIN_BRANCH_NAME=main
 
-export APP_HEALTHCHECK_ROUTE=/healthcheck
-
 # NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
 export PROJECT_IS_USING_WHITENOISE=true
-
-export SLACK_ALERTING_CHANNEL_NAME="#cpho-hopic-prod-alerts"
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
 export TEST_COVERAGE_THRESHOLD=80
 export TEST_DELTA_THRESHOLD=-5  #current commit test coverage minus last commit on main's coverage
+
+export APP_HEALTHCHECK_ROUTE=/healthcheck
+export SLACK_ALERTING_CHANNEL_NAME="#cpho-hopic-prod-alerts"
 
 #########################################
 # Derived & less likely to need changes #

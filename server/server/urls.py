@@ -24,6 +24,13 @@ urlpatterns = i18n_patterns(
     prefix_default_language=False,
 ) + [
     path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),
+    path(
+        "robots.txt",
+        lambda r: HttpResponse(
+            "User-Agent: *\nDisallow: /", content_type="text/plain"
+        ),
+        name="robots",
+    ),
     re_path("^$", RootView.as_view(), name="root"),
     *dev_routes,
 ]

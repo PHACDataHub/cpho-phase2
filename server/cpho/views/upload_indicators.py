@@ -47,26 +47,19 @@ class UploadForm(forms.Form):
             sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
         )
 
-        if len(indicator_obj) == 0 and test_rule(
-            "can_create_indicator", self.user
-        ):
-            indicator_obj = Indicator.objects.create(
-                name=datum["Indicator"],
-                category=mapper["category_mapper"][datum["Category"]],
-                sub_category=mapper["subcategory_mapper"][datum["Topic"]],
-                detailed_indicator=datum["Detailed Indicator"],
-                sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
-            )
-        elif len(indicator_obj) == 0 and not test_rule(
-            "can_create_indicator", self.user
-        ):
-            self.add_error(
-                None,
-                tdt(
-                    f"Indicator: {datum['Indicator']} does not exist and you do not have permission to create it"
-                ),
-            )
-            indicator_obj = None
+        if len(indicator_obj) == 0:
+            if test_rule("can_create_indicator", self.user):
+                indicator_obj = Indicator.objects.create(
+                    name=datum["Indicator"],
+                    category=mapper["category_mapper"][datum["Category"]],
+                    sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                    detailed_indicator=datum["Detailed Indicator"],
+                    sub_indicator_measurement=datum[
+                        "Sub_Indicator_Measurement"
+                    ],
+                )
+            else:
+                indicator_obj = None
         else:
             indicator_obj = indicator_obj[0]
 
@@ -79,12 +72,6 @@ class UploadForm(forms.Form):
         )
 
         if not test_rule("can_edit_indicator_data", self.user, indicator_obj):
-            self.add_error(
-                None,
-                tdt(
-                    f"You do not have permission to edit data for Indicator: {indicator_obj.name}"
-                ),
-            )
             return None
 
         dim_val = None
@@ -267,6 +254,36 @@ class UploadForm(forms.Form):
 
             # data_dimension = deduce_dimension_type(data_row, idx)
             # print(data_dimension)
+
+            # checking if indicator already exists
+            indicator_obj = Indicator.objects.filter(
+                name=data_row["Indicator"],
+                category=mapper["category_mapper"][data_row["Category"]],
+                sub_category=mapper["subcategory_mapper"][data_row["Topic"]],
+                detailed_indicator=data_row["Detailed Indicator"],
+                sub_indicator_measurement=data_row[
+                    "Sub_Indicator_Measurement"
+                ],
+            )
+            if len(indicator_obj) == 0 and not test_rule(
+                "can_create_indicator", self.user
+            ):
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Indicator: {data_row['Indicator']} does not exist and you do not have permission to create it"
+                    )
+                )
+
+            indicator_obj = indicator_obj[0]
+            if not test_rule(
+                "can_edit_indicator_data", self.user, indicator_obj
+            ):
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} You do not have permission to edit data for Indicator: {indicator_obj.name}"
+                    )
+                )
+
             data_dict.append(data_row)
 
         if errorlist:

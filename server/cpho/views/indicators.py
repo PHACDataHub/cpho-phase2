@@ -1,5 +1,5 @@
 import csv
-from typing import Any
+from typing import Any, Dict
 
 from django import forms
 from django.contrib import messages
@@ -15,7 +15,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from cpho.models import DimensionType, Indicator, Period
+from cpho.models import DimensionType, Indicator, Period, PHACOrg
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
@@ -33,6 +33,7 @@ class IndicatorForm(ModelForm):
             "sub_category",
             "detailed_indicator",
             "sub_indicator_measurement",
+            "PHACOrg",
         ]
 
     name = forms.CharField(
@@ -62,6 +63,16 @@ class IndicatorForm(ModelForm):
     )
     sub_indicator_measurement = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    PHACOrg = forms.ModelChoiceField(
+        required=False,
+        queryset=PHACOrg.branches(),
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
     )
 
 
@@ -159,7 +170,7 @@ class ViewIndicatorForPeriod(
         )
 
 
-class CreateIndicator(CreateView):
+class CreateIndicator(MustPassAuthCheckMixin, CreateView):
     model = Indicator
     form_class = IndicatorForm
     template_name = "indicators/create_indicator.jinja2"
@@ -171,6 +182,12 @@ class CreateIndicator(CreateView):
         return {
             **super().get_context_data(**kwargs),
         }
+
+    def check_rule(self):
+        return test_rule(
+            "can_create_indicator",
+            self.request.user,
+        )
 
 
 class EditIndicator(MustPassAuthCheckMixin, UpdateView):

@@ -1,13 +1,15 @@
-from django.urls import reverse
-
 from cpho.model_factories import IndicatorFactory
 from cpho.models import Indicator
+from django.urls import reverse
+
+from .utils_for_tests import patch_rules
 
 
 def test_create_indicator(vanilla_user_client):
     url = reverse("create_indicator")
-    response = vanilla_user_client.get(url)
-    assert response.status_code == 200
+    with patch_rules(can_create_indicator=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
 
     response = vanilla_user_client.post(
         url,

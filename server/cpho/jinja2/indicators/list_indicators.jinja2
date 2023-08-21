@@ -2,7 +2,9 @@
 
 {% block content %}
   <div class="my-4">
-    <a href='{{ url("create_indicator") }}' class="btn btn-primary">{{ tdt("Create new indicator") }}</a>
+    {% if respects_rule('can_create_indicator') %}
+      <a href='{{ url("create_indicator") }}' class="btn btn-primary">{{ tdt("Create new indicator") }}</a>
+    {% endif %}
     <a href='{{ url("upload_indicator") }}' class="btn btn-primary">{{ tdt("Upload Indicator") }}</a>
   </div>
   <div>

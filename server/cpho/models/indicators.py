@@ -58,6 +58,13 @@ class Indicator(models.Model):
 
     sub_indicator_measurement = fields.CharField(max_length=150)
 
+    PHACOrg = fields.ForeignKey(
+        "cpho.PHACOrg",
+        null=True,
+        blank=True,
+        on_delete=models.RESTRICT,
+    )
+
     def __str__(self):
         return " ".join(
             [

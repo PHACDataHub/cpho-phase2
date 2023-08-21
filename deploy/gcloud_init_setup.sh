@@ -492,3 +492,17 @@ if [[ "${run_skip}" != "S" ]]; then
     --member "serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --role roles/secretmanager.secretAccessor
 fi
+
+
+
+# ----- UPTIME MONITORING -----
+echo ""
+echo "Create uptime monitoring and outage alerting"
+read -n 1 -p "Type S to skip this step, anything else to continue: " uptime_skip
+echo ""
+if [[ "${uptime_skip}" != "S" ]]; then
+  read -n 1 -p "MANUAL STEP: requires a slack app with the chat:write scope for alerting. MANUALLY store the slack app bot user's oauth token in the project Secret Manager with the key \"${SKEY_PROD_SLACK_ALERTING_APP_TOKEN}\". Press any key to continue: " _
+  echo ""
+
+  (cd pulumi && npm run create-uptime-monitoring)
+fi

@@ -30,6 +30,9 @@ def instrument_app_for_open_telemetry():
     OUTPUT_TELEMETRY_TO_CONSOLE = config(
         "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
     )
+    EXCLUDED_URLS = config(
+        "OTEL_PYTHON_DJANGO_EXCLUDED_URLS", default="healthcheck"
+    )
 
     if IS_LOCAL_DEV:
         project_id = "local-dev"
@@ -121,20 +124,11 @@ def instrument_app_for_open_telemetry():
         skip_dep_check=True,
     )
 
-    # Setting this env var is currently the only way to exclude URLs from tracing. It only read in
-    # during OpenTelemetry's initialization, which happens before the django app is installed,
-    # so we can't add to it dynamically or evenuse `django.urls.reverse` while constructing it,
-    # have to settle for hardcoding it in the .env (or setting a sensible default)
-    excluded_url_env_var_name = "OTEL_PYTHON_DJANGO_EXCLUDED_URLS"
-    excluded_urls = config(excluded_url_env_var_name, default="healthcheck")
-    # if this was set in an env file rather than an env var, need to lift it in to env vars
-    if not excluded_url_env_var_name in os.environ:
-        os.environ[excluded_url_env_var_name] = excluded_urls
-
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
         request_hook=associate_request_logs_to_telemetry,
+        excluded_urls=EXCLUDED_URLS,
         # confusingly named (typo included), this actually adds a sqlcommenter middleware, and is
         # redundant to the preferable Psycopg2Instrumentor commenter
         is_sql_commentor_enabled=False,

@@ -1,7 +1,3 @@
-from django.urls import reverse
-
-from server.rules_framework import test_rule as tr
-
 from cpho.model_factories import IndicatorDatumFactory
 from cpho.models import (
     DimensionType,
@@ -10,6 +6,9 @@ from cpho.models import (
     Period,
     PHACOrg,
 )
+from django.urls import reverse
+
+from server.rules_framework import test_rule as tr
 
 
 def test_permissions(
@@ -35,7 +34,7 @@ def test_permissions(
         data={
             "name": "Test Indicator",
             "category": Indicator.CATEGORY_CHOICES[-1][0],
-            "sub_category": Indicator.SUB_CATEGORY_CHOICES[-1][0],
+            "topic": Indicator.TOPIC_CHOICES[-1][0],
             "detailed_indicator": "Test Detailed Indicator",
             "sub_indicator_measurement": "Test Sub Indicator Measurement",
             "PHACOrg": cdsb_phacOrg,
@@ -53,7 +52,7 @@ def test_permissions(
         data={
             "name": "Test Indicator",
             "category": Indicator.CATEGORY_CHOICES[-1][0],
-            "sub_category": Indicator.SUB_CATEGORY_CHOICES[-1][0],
+            "topic": Indicator.TOPIC_CHOICES[-1][0],
             "detailed_indicator": "Test Detailed Indicator",
             "sub_indicator_measurement": "Test Sub Indicator Measurement",
             "PHACOrg": cdsb_phacOrg,
@@ -71,7 +70,7 @@ def test_permissions(
         data={
             "name": "Test Indicator",
             "category": Indicator.CATEGORY_CHOICES[-1][0],
-            "sub_category": Indicator.SUB_CATEGORY_CHOICES[-1][0],
+            "topic": Indicator.TOPIC_CHOICES[-1][0],
             "detailed_indicator": "Test Detailed Indicator",
             "sub_indicator_measurement": "Test Sub Indicator Measurement",
             "PHACOrg": cdsb_phacOrg,

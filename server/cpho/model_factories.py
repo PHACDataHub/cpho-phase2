@@ -39,7 +39,7 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
     category = factory.LazyFunction(
         lambda: random.choice([p[0] for p in Indicator.CATEGORY_CHOICES])
     )
-    sub_category = factory.LazyFunction(
+    topic = factory.LazyFunction(
         lambda: random.choice([p[0] for p in Indicator.TOPIC_CHOICES])
     )
     detailed_indicator = factory.Faker("bs")

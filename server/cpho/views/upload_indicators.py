@@ -44,7 +44,7 @@ class UploadForm(forms.Form):
             indicator_obj = Indicator.objects.filter(
                 name=datum["Indicator"],
                 category=mapper["category_mapper"][datum["Category"]],
-                sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                topic=mapper["subcategory_mapper"][datum["Topic"]],
                 detailed_indicator=datum["Detailed Indicator"],
                 sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
             )
@@ -53,7 +53,7 @@ class UploadForm(forms.Form):
                 indicator_obj, created = Indicator.objects.get_or_create(
                     name=datum["Indicator"],
                     category=mapper["category_mapper"][datum["Category"]],
-                    sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                    topic=mapper["subcategory_mapper"][datum["Topic"]],
                 )
                 indicator_obj.detailed_indicator = datum["Detailed Indicator"]
                 indicator_obj.sub_indicator_measurement = datum[

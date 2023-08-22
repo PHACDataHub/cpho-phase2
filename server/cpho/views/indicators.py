@@ -30,7 +30,7 @@ class IndicatorForm(ModelForm):
         fields = [
             "name",
             "category",
-            "sub_category",
+            "topic",
             "detailed_indicator",
             "sub_indicator_measurement",
             "PHACOrg",
@@ -49,7 +49,7 @@ class IndicatorForm(ModelForm):
         ),
     )
 
-    sub_category = forms.ChoiceField(
+    topic = forms.ChoiceField(
         required=False,
         choices=Indicator.TOPIC_CHOICES,
         widget=forms.Select(

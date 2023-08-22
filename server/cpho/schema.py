@@ -100,7 +100,7 @@ class Query(graphene.ObjectType):
 class CreateIndicator(graphene.Mutation):
     class Arguments:
         category = graphene.String(required=True)
-        sub_category = graphene.String(required=True)
+        topic = graphene.String(required=True)
         name = graphene.String(required=True)
         detailed_indicator = graphene.String(required=True)
         sub_indicator_measurement = graphene.String()
@@ -143,7 +143,7 @@ class ModifyIndicator(graphene.Mutation):
         points = kwargs.pop("dataPoints")
         id = kwargs.pop("id")
         category = kwargs.pop("category")
-        subCategory = kwargs.pop("subCategory")
+        topic = kwargs.pop("topic")
         indicatorName = kwargs.pop("name")
         detailedIndicator = kwargs.pop("detailedIndicator")
         subIndicatorMeasurement = kwargs.pop("subIndicatorMeasurement")
@@ -151,7 +151,7 @@ class ModifyIndicator(graphene.Mutation):
         try:
             indicatorObj = Indicator.objects.get(id=id)
             indicatorObj.category = category
-            indicatorObj.sub_category = subCategory
+            indicatorObj.topic = topic
             indicatorObj.name = indicatorName
             indicatorObj.detailed_indicator = detailedIndicator
             indicatorObj.sub_indicator_measurement = subIndicatorMeasurement

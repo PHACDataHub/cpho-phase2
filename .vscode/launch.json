@@ -1,5 +1,5 @@
 {
-"version": "0.2.0",
+  "version": "0.2.0",
   "configurations": [
     {
       "name": "runserver",
@@ -11,7 +11,7 @@
         "runserver"
       ],
       "django": true,
-      "justMyCode": true
+      "justMyCode": false
     },
     {
       "name": "gunicorn",
@@ -20,7 +20,7 @@
       "program": "${workspaceFolder}/venv/bin/gunicorn",
       "cwd": "${workspaceFolder}/server",
       "django": true,
-      "justMyCode": true
+      "justMyCode": false
     },
     {
       "name": "test",
@@ -32,7 +32,7 @@
         "test"
       ],
       "django": true,
-      "justMyCode": true
+      "justMyCode": false
     }
   ]
 }

@@ -1,0 +1,3 @@
+# CPHO Pulumi Components
+
+As the project is in a transitional state, with most of the deployment managed in bash scripts, I'm taking a slightly unconventional approach to organizing our Pulumi code. Instead of having one Pulumi "project" (and associated Pulumi.yaml, etc) for the whole architecture, I'm putting the more discrete components of our architecture in sub-directories with their own isolated Pulumi projects. For now, to keep the bash scripts and IaC integrated, information sharing between will still all happen indirectly via `deploy/gcloud_env_vars.sh` and each Pulumi component will be called as a separate step within `deploy/gcloud_init_setup.sh` 

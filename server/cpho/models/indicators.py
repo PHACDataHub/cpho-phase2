@@ -1,15 +1,17 @@
 from django.apps import apps
 from django.db import models
+
 from pleasant_promises.dataloader import SingletonDataLoader
 
-from cpho.constants import SUBMISSION_STATUSES
-from cpho.text import tdt
 from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
     track_versions_with_editor_and_submission,
 )
+
+from cpho.constants import SUBMISSION_STATUSES
+from cpho.text import tdt
 
 
 @add_to_admin
@@ -185,31 +187,6 @@ class IndicatorDatum(models.Model):
         null=True,
         blank=True,
         on_delete=models.RESTRICT,
-    )
-
-    LIVING_ARRANGMENT_CHOICES = [
-        ("", "--"),
-        ("all_living", tdt("All Living Arrangements")),
-        ("couple_no_child", tdt("Couple no children")),
-        (
-            "couple_with_child",
-            tdt("Couple with child(ren) less than 18 years old"),
-        ),
-        ("female_alone", tdt("Female living alone")),
-        (
-            "female_with_child",
-            tdt("Female lone parent with child(ren) less than 18 years old"),
-        ),
-        ("male_alone", tdt("Male living alone")),
-        (
-            "male_with_child",
-            tdt("Male lone parent with child(ren) less than 18 years old"),
-        ),
-        ("other_living", tdt("Other livng arrangments")),
-    ]
-
-    living_arrangement = pt_data_availability = fields.CharField(
-        max_length=75, choices=LIVING_ARRANGMENT_CHOICES, null=True
     )
 
     AGE_GROUP_TYPE_CHOICES = [

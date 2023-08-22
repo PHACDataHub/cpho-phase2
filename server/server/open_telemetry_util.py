@@ -27,15 +27,13 @@ from server.logging_util import add_metadata_to_all_logs_for_current_request
 def instrument_app_for_open_telemetry():
     config = get_project_config()
     IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
-    OUTPUT_TELEMETRY_TO_CONSOLE = config(
-        "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
-    )
-    EXCLUDED_URLS = config(
-        "OTEL_PYTHON_DJANGO_EXCLUDED_URLS", default="healthcheck"
-    )
 
     if IS_LOCAL_DEV:
         project_id = "local-dev"
+
+        OUTPUT_TELEMETRY_TO_CONSOLE = config(
+            "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
+        )
 
         span_exporter = ConsoleSpanExporter(
             out=(
@@ -64,7 +62,7 @@ def instrument_app_for_open_telemetry():
         # `opentelemetry.sdk.resources.get_aggregated_resources`. This calls detect() and
         # merges the results for you BUT it uses thread pools and may not be Cloud Run safe.
         # Manually call detect and merge as needed instead, not a big deal
-        # Note for merge, the order matters with priority given to proceeding resource objects
+        # Note for merge, the order matters with priority given to preceding resource objects
         resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
         resource.merge(ProcessResourceDetector(raise_on_error=True).detect())
 
@@ -128,7 +126,13 @@ def instrument_app_for_open_telemetry():
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
         request_hook=associate_request_logs_to_telemetry,
-        excluded_urls=EXCLUDED_URLS,
+        # GOTCHA: in Cloud Run, if we disable our own instrumentation, I believe it just falls back to using
+        # the default tracing Google has on Cloud Run instance... so you'll still get generic spans for excluded routes.
+        # The default tracing is much lighter weight, so disabling does server _some_ purpose. This will also work as
+        # expected in non-Cloud Run deployments
+        excluded_urls=config(
+            "OTEL_PYTHON_DJANGO_EXCLUDED_URLS", default="healthcheck"
+        ),
         # confusingly named (typo included), this actually adds a sqlcommenter middleware, and is
         # redundant to the preferable Psycopg2Instrumentor commenter
         is_sql_commentor_enabled=False,

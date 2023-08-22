@@ -274,15 +274,17 @@ class UploadForm(forms.Form):
                     )
                 )
 
-            indicator_obj = indicator_obj[0]
-            if not test_rule(
-                "can_edit_indicator_data", self.user, indicator_obj
-            ):
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} You do not have permission to edit data for Indicator: {indicator_obj.name}"
+            if len(indicator_obj) != 0:
+                indicator_obj = indicator_obj[0]
+
+                if not test_rule(
+                    "can_edit_indicator_data", self.user, indicator_obj
+                ):
+                    errorlist.append(
+                        tdt(
+                            f"row: {idx} You do not have permission to edit data for Indicator: {indicator_obj.name}"
+                        )
                     )
-                )
 
             data_dict.append(data_row)
 

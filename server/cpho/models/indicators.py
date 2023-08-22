@@ -1,17 +1,15 @@
 from django.apps import apps
 from django.db import models
-
 from pleasant_promises.dataloader import SingletonDataLoader
 
+from cpho.constants import SUBMISSION_STATUSES
+from cpho.text import tdt
 from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
     track_versions_with_editor_and_submission,
 )
-
-from cpho.constants import SUBMISSION_STATUSES
-from cpho.text import tdt
 
 
 @add_to_admin
@@ -214,13 +212,27 @@ class IndicatorDatum(models.Model):
         max_length=75, choices=LIVING_ARRANGMENT_CHOICES, null=True
     )
 
+    AGE_GROUP_TYPE_CHOICES = [
+        ("", "--"),
+        ("five_year", tdt("5 Year")),
+        ("grade", tdt("Grade")),
+        ("life_course", tdt("Life Course")),
+        ("setting", tdt("Setting")),
+    ]
+
+    age_group_type = fields.CharField(
+        max_length=50,
+        choices=AGE_GROUP_TYPE_CHOICES,
+        null=True,
+    )
+
     DATA_QUALITY_CHOICES = [
         ("", "--"),
         ("caution", tdt("Caution")),
         ("acceptable", tdt("Acceptable")),
         ("good", tdt("Good")),
         ("suppressed", tdt("Suppressed")),
-        ("excellent", tdt("Excellent")),
+        ("very_good", tdt("Very Good")),
     ]
 
     data_quality = fields.CharField(

@@ -84,7 +84,7 @@ def upload_mapper():
             "GOOD": "good",
             "ACCEPTABLE": "acceptable",
             "SUPPRESSED": "suppressed",
-            "VERY GOOD": "excellent",
+            "VERY GOOD": "very good",
         },
         "value_unit_mapper": {
             "": "",

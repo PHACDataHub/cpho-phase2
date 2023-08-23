@@ -44,7 +44,7 @@ class UploadForm(forms.Form):
             indicator_obj = Indicator.objects.filter(
                 name=datum["Indicator"],
                 category=mapper["category_mapper"][datum["Category"]],
-                topic=mapper["subcategory_mapper"][datum["Topic"]],
+                topic=mapper["topic_mapper"][datum["Topic"]],
                 detailed_indicator=datum["Detailed Indicator"],
                 sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
             )
@@ -53,7 +53,7 @@ class UploadForm(forms.Form):
                 indicator_obj, created = Indicator.objects.get_or_create(
                     name=datum["Indicator"],
                     category=mapper["category_mapper"][datum["Category"]],
-                    topic=mapper["subcategory_mapper"][datum["Topic"]],
+                    topic=mapper["topic_mapper"][datum["Topic"]],
                 )
                 indicator_obj.detailed_indicator = datum["Detailed Indicator"]
                 indicator_obj.sub_indicator_measurement = datum[
@@ -163,11 +163,9 @@ class UploadForm(forms.Form):
                         f"row: {idx} Category: {data_row['Category']} is not valid"
                     )
                 )
-            if data_row["Topic"] not in mapper["subcategory_mapper"]:
+            if data_row["Topic"] not in mapper["topic_mapper"]:
                 errorlist.append(
-                    tdt(
-                        f"row: {idx} Sub category: {data_row['Topic']} is not valid"
-                    )
+                    tdt(f"row: {idx} Topic: {data_row['Topic']} is not valid")
                 )
             if data_row["Data_Quality"] not in mapper["data_quality_mapper"]:
                 errorlist.append(

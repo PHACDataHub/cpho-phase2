@@ -68,7 +68,7 @@ def upload_mapper():
             "GENERAL HEALTH STATUS": "general_health_status",
             "HEALTH OUTCOMES": "health_outcomes",
         },
-        "subcategory_mapper": {
+        "topic_mapper": {
             "": "",
             "SOCIAL FACTORS": "social_factors",
             "HEALTH STATUS": "health_status",

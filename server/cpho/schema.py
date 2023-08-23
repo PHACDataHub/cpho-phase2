@@ -128,7 +128,7 @@ class ModifyIndicator(graphene.Mutation):
     class Arguments:
         id = graphene.Int(required=True)
         category = graphene.String(required=True)
-        subCategory = graphene.String(required=True)
+        topic = graphene.String(required=True)
         name = graphene.String(required=True)
         detailedIndicator = graphene.String(required=True)
         subIndicatorMeasurement = graphene.String()

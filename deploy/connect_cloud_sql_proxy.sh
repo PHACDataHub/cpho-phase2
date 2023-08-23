@@ -6,8 +6,6 @@ set -o nounset
 # ----- Get configuration variables + secrets helpers -----
 source $(dirname "${BASH_SOURCE[0]}")/gcloud_env_vars.sh
 
-local_port=6543
-
 echo ""
 echo "Checking path for cloud-sql-proxy dependency"
 if ! which cloud-sql-proxy; then
@@ -43,6 +41,6 @@ external_ip=$(curl https://ipinfo.io/ip)
 gcloud sql instances patch "${DB_INSTANCE_NAME}" --authorized-networks "${external_ip}"
 
 echo ""
-echo "Connecting via cloud-sql-proxy. The database will be available via localhost at port ${local_port}"
+echo "Connecting via cloud-sql-proxy. The database will be available via localhost at port ${LOCAL_ACCESS_DB_PORT}"
 cloud_sql_connection_name=$(gcloud sql instances describe "${DB_INSTANCE_NAME}" --format 'value(connectionName)')
-cloud-sql-proxy "${cloud_sql_connection_name}" --address 127.0.0.1 --port "${local_port}"
+cloud-sql-proxy "${cloud_sql_connection_name}" --address 127.0.0.1 --port "${LOCAL_ACCESS_DB_PORT}"

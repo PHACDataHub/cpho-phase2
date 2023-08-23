@@ -25,7 +25,7 @@ from .view_util import MustPassAuthCheckMixin, upload_mapper
 class UploadForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
-        super(UploadForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     csv_file = forms.FileField(
         required=True,
@@ -45,9 +45,9 @@ class UploadForm(forms.Form):
             sub_category=mapper["subcategory_mapper"][datum["Topic"]],
             detailed_indicator=datum["Detailed Indicator"],
             sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
-        )
+        ).first()
 
-        if len(indicator_obj) == 0:
+        if indicator_obj is None:
             if test_rule("can_create_indicator", self.user):
                 indicator_obj = Indicator.objects.create(
                     name=datum["Indicator"],
@@ -58,10 +58,6 @@ class UploadForm(forms.Form):
                         "Sub_Indicator_Measurement"
                     ],
                 )
-            else:
-                indicator_obj = None
-        else:
-            indicator_obj = indicator_obj[0]
 
         return indicator_obj
 
@@ -106,10 +102,9 @@ class UploadForm(forms.Form):
             value_unit=mapper["value_unit_mapper"][datum["Value_Displayed"]],
             single_year_timeframe=datum["SingleYear_TimeFrame"],
             multi_year_timeframe=datum["MultiYear_TimeFrame"],
-        )
+        ).first()
 
-        if len(indData_obj) == 0:
-            print("Editing Indicator Data")
+        if indData_obj is None:
             indData_obj, created = IndicatorDatum.objects.get_or_create(
                 indicator=indicator_obj,
                 dimension_type=mapper["dimension_type_mapper"][
@@ -118,6 +113,7 @@ class UploadForm(forms.Form):
                 dimension_value=dim_val,
                 literal_dimension_val=lit_dim_val,
             )
+
             indData_obj.period = preiod_val
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
@@ -141,9 +137,6 @@ class UploadForm(forms.Form):
             indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
             indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
             indData_obj.save()
-
-        else:
-            print("Indicator data already exists")
 
     def save(self):
         data = self.cleaned_data["csv_file"]
@@ -183,13 +176,7 @@ class UploadForm(forms.Form):
             "MultiYear_TimeFrame",
             "Dimension_Type",
             "Dimension_Value",
-            # "COUNTRY",
-            # "Geography",
-            # "Sex",
-            # "Gender",
-            # "Age_Group",
             # "Age_Group_Type",
-            # "Living_Arrangement",
             # "PT_Data_Availability",
             # "Value_Units",
         ]
@@ -264,8 +251,8 @@ class UploadForm(forms.Form):
                 sub_indicator_measurement=data_row[
                     "Sub_Indicator_Measurement"
                 ],
-            )
-            if len(indicator_obj) == 0 and not test_rule(
+            ).first()
+            if indicator_obj is None and not test_rule(
                 "can_create_indicator", self.user
             ):
                 errorlist.append(
@@ -274,9 +261,7 @@ class UploadForm(forms.Form):
                     )
                 )
 
-            if len(indicator_obj) != 0:
-                indicator_obj = indicator_obj[0]
-
+            if indicator_obj is not None:
                 if not test_rule(
                     "can_edit_indicator_data", self.user, indicator_obj
                 ):

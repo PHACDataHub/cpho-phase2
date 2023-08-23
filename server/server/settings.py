@@ -35,9 +35,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = get_project_config()
 
 
-IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
+IS_DEV = config("IS_DEV", cast=bool, default=False)
 IS_RUNNING_TESTS = is_running_tests()
-if IS_LOCAL_DEV:
+if IS_LOCAL and IS_DEV:
     # For security, these test/dev settings should _never_ be used in production!
     DEBUG = config("DEBUG", default=False, cast=bool)
     ENABLE_DEBUG_TOOLBAR = DEBUG and config(
@@ -73,7 +74,7 @@ CORS_ALLOWED_ORIGINS = []
 CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
 
 # Prod only security settings
-if not IS_LOCAL_DEV:
+if not IS_DEV:
     # TODO these might be good to set, may be why an empty CSRF_TRUSTED_ORIGINS doesn't work, assuming
     # the cloud run load balancer/proxy might be downgrading our connection internally? Something to look in to,
     # likely requires corresponding changes to the load balancer's configuration though
@@ -99,7 +100,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # whitenoise configuration
 if config(
-    "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL_DEV)
+    "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL)
 ):
     # requires staticfiles dir, run `./manage.py collectstatic --noinput` as needed!
     WHITENOISE_USE_FINDERS = False

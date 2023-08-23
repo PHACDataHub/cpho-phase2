@@ -26,10 +26,10 @@ from server.logging_util import add_metadata_to_all_logs_for_current_request
 
 def instrument_app_for_open_telemetry():
     config = get_project_config()
-    IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+    IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
 
-    if IS_LOCAL_DEV:
-        project_id = "local-dev"
+    if IS_LOCAL:
+        project_id = "local"
 
         OUTPUT_TELEMETRY_TO_CONSOLE = config(
             "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
@@ -52,9 +52,9 @@ def instrument_app_for_open_telemetry():
 
         span_exporter = CloudTraceSpanExporter(
             project_id=project_id,
-            # resource attributes aren't exported in GCP by default, as they aren't actually supported
-            # by Cloud Trace. This regex pattern is used to select resource attributes to covert and
-            # upload as regular attributes
+            # resource labels aren't exported in GCP by default, as the labels aren't actually supported
+            # by Cloud Trace. This regex pattern is used to select resource labels to pick out and convert
+            # to span attributes
             resource_regex=".*",
         )
 

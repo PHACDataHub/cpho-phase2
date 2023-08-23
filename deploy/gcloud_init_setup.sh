@@ -490,8 +490,9 @@ if [[ "${secrets_skip}" != "S" ]]; then
   }
   trap cleanup EXIT
 
-  bash_escape "IS_LOCAL_TO_PROD_DB_ACCESS_MODE=True" >> "${tmp_local_access_prod_env}"
-
+  echo "# this is NOT the production application env file BUT it does contain credentials for the production database. Handle appropriately"
+  bash_escape "IS_LOCAL=True" >> "${tmp_local_access_prod_env}"
+  
   bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_local_access_prod_env}"
   echo "# this is NOT the same DB user/password as the live app" >> "${tmp_local_access_prod_env}"
   bash_escape "DB_APP_USER=${DB_LOCAL_ACCESS_USER}" >> "${tmp_local_access_prod_env}"

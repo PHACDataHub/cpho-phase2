@@ -45,4 +45,3 @@ Resetting test db (useful when migrations get in the way of running tests)
 ```bash
 dropdb -U cpho_db_user cpho_test_db
 ```
-

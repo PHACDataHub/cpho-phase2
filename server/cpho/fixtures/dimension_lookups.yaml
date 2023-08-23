@@ -220,23 +220,23 @@
     value: atlantic
     order: 0.0
 
-- model: cpho.dimensionvalue
-  pk: 18
-  fields:
-    dimension_type: 3
-    name_en: Quebec
-    name_fr: Québec
-    value: quebec
-    order: 1.0
+# - model: cpho.dimensionvalue
+#   pk: 18
+#   fields:
+#     dimension_type: 3
+#     name_en: Quebec
+#     name_fr: Québec
+#     value: quebec
+#     order: 1.0
 
-- model: cpho.dimensionvalue
-  pk: 19
-  fields:
-    dimension_type: 3
-    name_en: Ontario
-    name_fr: Ontario
-    value: ontario
-    order: 2.0
+# - model: cpho.dimensionvalue
+#   pk: 19
+#   fields:
+#     dimension_type: 3
+#     name_en: Ontario
+#     name_fr: Ontario
+#     value: ontario
+#     order: 2.0
 
 - model: cpho.dimensionvalue
   pk: 20
@@ -247,14 +247,14 @@
     value: prairies
     order: 3.0
 
-- model: cpho.dimensionvalue
-  pk: 21
-  fields:
-    dimension_type: 3
-    name_en: British Columbia
-    name_fr: Colombie-Britannique
-    value: british_columbia
-    order: 4.0
+# - model: cpho.dimensionvalue
+#   pk: 21
+#   fields:
+#     dimension_type: 3
+#     name_en: British Columbia
+#     name_fr: Colombie-Britannique
+#     value: british_columbia
+#     order: 4.0
 
 - model: cpho.dimensionvalue
   pk: 22

@@ -8,6 +8,8 @@
           data-bs-toggle="modal"
           data-bs-target="#expectedColumnModal">{{ tdt("View expected column names") }}</button>
  
+  <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tdt("Download a file template") }}</a>
+ 
   <form action="{{ url("upload_indicator") }}"
         method="post"
         enctype="multipart/form-data"
@@ -154,6 +156,7 @@
                     <li>{{ tdt("PER 1,000 CENSUS INHABITANTS") }}</li>
                     <li>{{ tdt("PER 10,000 PATIENT DAYS") }}</li>
                     <li>{{ tdt("PER 100,000 LIVE BIRTHS") }}</li>
+                    <li>{{ tdt("OTHER") }}</li>
                   </ul>
                 </td>
               </tr>

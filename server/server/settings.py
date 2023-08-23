@@ -34,10 +34,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = get_project_config()
 
-
 IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
 IS_DEV = config("IS_DEV", cast=bool, default=False)
 IS_RUNNING_TESTS = is_running_tests()
+
+if IS_LOCAL and not IS_DEV:
+    answer = input(
+        "WARNING: the current .env file is meant for connecting a LOCAL app to the PRODUCITON DB. Are you sure you want to target the production DB? [y/n]: "
+    )
+    if not answer or answer[0].lower() != "y":
+        exit(1)
+
 if IS_LOCAL and IS_DEV:
     # For security, these test/dev settings should _never_ be used in production!
     DEBUG = config("DEBUG", default=False, cast=bool)
@@ -53,7 +60,6 @@ if IS_LOCAL and IS_DEV:
         from . import monkey_patch_for_testing
 
         TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
-
 else:
     DEBUG = False
     ENABLE_DEBUG_TOOLBAR = False

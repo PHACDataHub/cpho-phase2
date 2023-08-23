@@ -15,16 +15,16 @@ fi
 
 function cleanup {
   echo ""
-  echo "Deleting temorary app env file"
+  echo "Deleting temporary app env file"
   rm -f "${local_access_env_path}"
 
   echo ""
   echo "Revoking temporary credentials used for cloud-sql-proxy"
-  gcloud auth application-default revoke
+  gcloud auth application-default revoke --quiet
   
   echo ""
   echo "Clearing authorized public IPs and disabling the DB's public IP"
-  gcloud sql instances patch "${DB_INSTANCE_NAME}" --clear-authorized-networks --no-assign-ip
+  gcloud sql instances patch "${DB_INSTANCE_NAME}" --clear-authorized-networks --no-assign-ip --quiet
 }
 trap cleanup EXIT
 
@@ -43,7 +43,7 @@ gcloud sql instances patch "${DB_INSTANCE_NAME}" --authorized-networks "${extern
 local_access_env_path=$(dirname "${BASH_SOURCE[0]}")/../server/.env.prod
 echo ""
 echo "Getting a temporary env file that configures the local dev app for prod DB access, written to ${local_access_env_path}"
-get_secret "${SKEY_LOCAL_ACCESS_PROD_ENV_FILE}" > "${local_access_env_path}"
+gcloud secrets versions access latest --secret "${SKEY_LOCAL_ACCESS_PROD_ENV_FILE}" --out-file "${local_access_env_path}"
 
 echo ""
 echo "Getting temporary credentials for cloud-sql-proxy (oauth step)"

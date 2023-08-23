@@ -59,6 +59,11 @@ def can_create_indicator(user):
 
 
 @auto_rule
+def can_upload_indicator(user):
+    return is_admin_or_hso(user) or is_branch_lead(user)
+
+
+@auto_rule
 def can_edit_indicator(user, indicator):
     # return (
     #     is_admin(user)

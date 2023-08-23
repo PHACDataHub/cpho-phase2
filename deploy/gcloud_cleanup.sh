@@ -53,6 +53,9 @@ if "${allow_cleanup}"; then
   gcloud compute networks vpc-access connectors delete "${VPC_CONNECTOR_NAME}" --region "${PROJECT_REGION}" || :
   gcloud compute addresses delete "${VPC_SERVICE_CONNECTION_NAME}" || :
   
+  # ----- UPTIME MONITORING -----
+  (cd pulumi && npm run destroy-uptime-monitoring)
+
   # ----- SECRET MANAGER -----
   skey_env_var_names=$(env -0 | cut -z -f1 -d= | tr '\0' '\n' | grep "^SKEY_")
   for env_var_name in ${skey_env_var_names}; do

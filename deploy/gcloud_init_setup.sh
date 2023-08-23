@@ -451,7 +451,7 @@ if [[ "${secrets_skip}" != "S" ]]; then
   trap cleanup EXIT
 
   bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_prod_env}"
-  bash_escape "DB_APP_USER=${DB_APP_USER}" >> "${tmp_prod_env}"
+  bash_escape "DB_USER=${DB_APP_USER}" >> "${tmp_prod_env}"
   bash_escape "DB_PASSWORD=$(get_secret "${SKEY_DB_APP_USER_PASSWORD_TEMP}")" >> "${tmp_prod_env}"
   bash_escape "DB_HOST=$(gcloud sql instances list --filter name:"${DB_INSTANCE_NAME}" --format "value(PRIVATE_ADDRESS)")" >> "${tmp_prod_env}"
   bash_escape "DB_PORT=5432" >> "${tmp_prod_env}"
@@ -492,10 +492,10 @@ if [[ "${secrets_skip}" != "S" ]]; then
 
   echo "# this is NOT the production application env file BUT it does contain credentials for the production database. Handle appropriately"
   bash_escape "IS_LOCAL=True" >> "${tmp_local_access_prod_env}"
-  
+
   bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_local_access_prod_env}"
   echo "# this is NOT the same DB user/password as the live app" >> "${tmp_local_access_prod_env}"
-  bash_escape "DB_APP_USER=${DB_LOCAL_ACCESS_USER}" >> "${tmp_local_access_prod_env}"
+  bash_escape "DB_USER=${DB_LOCAL_ACCESS_USER}" >> "${tmp_local_access_prod_env}"
   bash_escape "DB_PASSWORD=$(get_secret "${SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP}")" >> "${tmp_local_access_prod_env}"
   echo "# assumes cloud-sql-proxy is proxying the prod DB locally over the configured port" >> "${tmp_local_access_prod_env}"
   bash_escape "DB_HOST=localhost" >> "${tmp_local_access_prod_env}"

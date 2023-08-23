@@ -1,10 +1,6 @@
-import csv
-from typing import Any, Dict
-
 from django import forms
 from django.contrib import messages
 from django.forms.models import ModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import (
@@ -13,18 +9,11 @@ from django.views.generic import (
     ListView,
     TemplateView,
     UpdateView,
-    View,
 )
 
 from server.rules_framework import test_rule
 
-from cpho.models import (
-    DimensionType,
-    Indicator,
-    IndicatorDataSubmission,
-    IndicatorDatum,
-    Period, PHACOrg,
-)
+from cpho.models import DimensionType, Indicator, Period, PHACOrg
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
@@ -218,59 +207,83 @@ class EditIndicator(MustPassAuthCheckMixin, UpdateView):
             self.request.user,
             self.indicator,
         )
-    
+
     @cached_property
     def indicator(self):
         return Indicator.objects.get(pk=self.kwargs["pk"])
 
-class ExportIndicator(View):
-    
-    @cached_property
-    def indicator(self):
-        return Indicator.objects.get(pk=self.kwargs["pk"])
-    
-    def get(self,request, *args, **kwargs):
-        indicator = self.indicator
 
-    #     print("Queried Indicator Data:")
-    #     #for data in 
-    #     relevant_records=IndicatorDatum.objects.filter(indicator=self.indicator)
-    #    #print(relevant_records)
+# class ExportIndicator(View):
+#     @cached_property
+#     def indicator(self):
+#         if "pk" in self.kwargs:
+#             return Indicator.objects.get(pk=self.kwargs["pk"])
+#         else:
+#             return None
 
-    #     for record in relevant_records:
-    #         print(indicator.name)
+#     def get(self, request, *args, **kwargs):
+#         indicator = self.indicator
 
+#         response = HttpResponse(
+#             content_type="text/csv",
+#             headers={
+#                 "Content-Disposition": 'attachment; filename="indicator_data.csv"'
+#             },
+#         )
 
-        response = HttpResponse(
-        content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="indicator_data.csv"'},
-        )
+#         writer = csv.writer(response)
+#         header_row = [
+#             "Indicator",
+#             "Detailed Indicator",
+#             "Sub_Indicator_Measurement",
+#             "Category",
+#             "Topic",
+#             "Data_Quality",
+#             "Value",
+#             "Value_LowerCI",
+#             "Value_UpperCI",
+#             "SingleYear_TimeFrame",
+#             "MultiYear_TimeFrame",
+#             "Value_Displayed",
+#             "Dimension_Type",
+#             "Dimension_Value",
+#         ]
+#         writer.writerow(header_row)
 
-        writer = csv.writer(response)
-        header_row=["Indicator", "Detailed Indicator", "Sub_Indicator_Measurement", "Category", "Topic", "Data_Quality","Value", "Value_LowerCI", "Value_UpperCI", "SingleYear_TimeFrame","MultiYear_TimeFrame", "Value_Units", "Dimension_Type", "Dimension_Value"]
-        writer.writerow(header_row)
+#         if self.indicator:
+#             mapper = export_mapper()
+#             for record in IndicatorDatum.objects.filter(
+#                 indicator=self.indicator
+#             ):
+#                 if record.dimension_type.is_literal:
+#                     deduced_dimension_value = record.literal_dimension_val
+#                 else:
+#                     deduced_dimension_value = mapper[
+#                         "non_literal_dimension_value_mapper"
+#                     ].get(record.dimension_value, "")
+#                 writer.writerow(
+#                     [
+#                         indicator.name,
+#                         indicator.detailed_indicator,
+#                         indicator.sub_indicator_measurement,
+#                         mapper["category_mapper"].get(indicator.category, ""),
+#                         mapper["subcategory_mapper"].get(
+#                             indicator.sub_category, ""
+#                         ),
+#                         mapper["data_quality_mapper"].get(
+#                             record.data_quality, ""
+#                         ),
+#                         record.value,
+#                         record.value_lower_bound,
+#                         record.value_upper_bound,
+#                         record.single_year_timeframe,
+#                         record.multi_year_timeframe,
+#                         mapper["value_unit_mapper"].get(record.value_unit),
+#                         mapper["dimension_type_mapper"].get(
+#                             record.dimension_type, ""
+#                         ),
+#                         deduced_dimension_value,
+#                     ]
+#                 )
 
-        mapper = export_mapper()
-
-        for record in IndicatorDatum.objects.filter(indicator=self.indicator):               
-
-                writer.writerow([
-                    indicator.name,
-                    indicator.detailed_indicator,
-                    indicator.sub_indicator_measurement,
-                    mapper["category_mapper"].get(indicator.category, ""),
-                    mapper["subcategory_mapper"].get(indicator.sub_category, ""),
-                    mapper["data_quality_mapper"].get(record.data_quality, ""),
-                    record.value,
-                    record.value_lower_bound,
-                    record.value_upper_bound,
-                    record.single_year_timeframe,
-                    record.multi_year_timeframe,
-                    mapper["value_unit_mapper"].get(record.value_unit),
-                    mapper["dimension_type_mapper"].get(record.dimension_type, ""),
-                    mapper["non_literal_dimension_value_mapper"].get(record.dimension_value, "")
-                ])
-
-        return response
-    
-
+#         return response

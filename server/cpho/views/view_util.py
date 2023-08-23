@@ -94,6 +94,7 @@ def upload_mapper():
             "PER 1,000 CENSUS INHABITANTS": "per_100k_census",
             "PER 10,000 PATIENT DAYS": "per_100k_patient_days",
             "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
+            "OTHER": "other",
         },
         "dimension_type_mapper": {
             "Province": all_dimension_dict["province"],
@@ -130,6 +131,7 @@ def upload_mapper():
         },
     }
 
+
 def export_mapper():
     all_dimension_vals = DimensionValue.objects.all()
     all_dimension_val_dict = {
@@ -140,11 +142,21 @@ def export_mapper():
     upload_mapping = upload_mapper()
 
     export_mapping = {
-        "category_mapper": {v: k for k, v in upload_mapping["category_mapper"].items()},
-        "subcategory_mapper": {v: k for k, v in upload_mapping["subcategory_mapper"].items()},
-        "data_quality_mapper": {v: k for k, v in upload_mapping["data_quality_mapper"].items()},
-        "value_unit_mapper": {v: k for k, v in upload_mapping["value_unit_mapper"].items()},
-        "dimension_type_mapper": {v: k for k, v in upload_mapping["dimension_type_mapper"].items()},
+        "category_mapper": {
+            v: k for k, v in upload_mapping["category_mapper"].items()
+        },
+        "subcategory_mapper": {
+            v: k for k, v in upload_mapping["subcategory_mapper"].items()
+        },
+        "data_quality_mapper": {
+            v: k for k, v in upload_mapping["data_quality_mapper"].items()
+        },
+        "value_unit_mapper": {
+            v: k for k, v in upload_mapping["value_unit_mapper"].items()
+        },
+        "dimension_type_mapper": {
+            v: k for k, v in upload_mapping["dimension_type_mapper"].items()
+        },
         "non_literal_dimension_value_mapper": {
             all_dimension_val_dict["on"]: "ON",
             all_dimension_val_dict["ab"]: "AB",
@@ -168,8 +180,8 @@ def export_mapper():
             all_dimension_val_dict["girls"]: "GIRLS",
             all_dimension_val_dict["m"]: "MALES",
             all_dimension_val_dict["f"]: "FEMALES",
-            all_dimension_val_dict["canada"]: "CANADA"
-        }
+            all_dimension_val_dict["canada"]: "CANADA",
+        },
     }
 
     return export_mapping

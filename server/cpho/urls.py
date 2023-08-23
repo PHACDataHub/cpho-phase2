@@ -91,9 +91,14 @@ urlpatterns = [
         views.GlobalChangelog.as_view(),
         name="global_changelog",
     ),
-     path(
+    path(
         "indicators/<int:pk>/export/",
         views.ExportIndicator.as_view(),
         name="export_indicator",
+    ),
+    path(
+        "indicators/export/template/",
+        views.ExportIndicator.as_view(),
+        name="export_indicator_template",
     ),
 ]

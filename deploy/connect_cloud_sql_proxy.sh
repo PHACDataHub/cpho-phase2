@@ -13,6 +13,8 @@ if ! which cloud-sql-proxy; then
   exit 1
 fi
 
+local_access_env_path=$(dirname "${BASH_SOURCE[0]}")/../server/.env.prod
+
 function cleanup {
   echo ""
   echo "Deleting temporary app env file"
@@ -30,7 +32,7 @@ trap cleanup EXIT
 
 echo ""
 echo "Enabling public IP for database instance, initially configured to refuse all public IP connections"
-gcloud sql instances patch "${DB_INSTANCE_NAME}" --clear-authorized-networks --assign-ip
+gcloud sql instances patch "${DB_INSTANCE_NAME}" --clear-authorized-networks --assign-ip --quiet
 
 echo ""
 echo "Adding current machine's external IP address to the DB's allow list"
@@ -38,9 +40,8 @@ echo "Adding current machine's external IP address to the DB's allow list"
 # ask whoever received it what they see it as (on the far side of your router, ISP, any other intermediate networks, etc)
 # ... so we're trusting that ipinfo.io doesn't lie to us. If we keep this approach long term, maybe we host our own IP reflector? 
 external_ip=$(curl https://ipinfo.io/ip)
-gcloud sql instances patch "${DB_INSTANCE_NAME}" --authorized-networks "${external_ip}"
+gcloud sql instances patch "${DB_INSTANCE_NAME}" --authorized-networks "${external_ip}" --quiet
 
-local_access_env_path=$(dirname "${BASH_SOURCE[0]}")/../server/.env.prod
 echo ""
 echo "Getting a temporary env file that configures the local dev app for prod DB access, written to ${local_access_env_path}"
 gcloud secrets versions access latest --secret "${SKEY_LOCAL_ACCESS_PROD_ENV_FILE}" --out-file "${local_access_env_path}"

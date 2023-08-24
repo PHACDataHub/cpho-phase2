@@ -13,7 +13,9 @@
   "scripts": {
     "precreate-uptime-monitoring": "npm ci && gcloud auth application-default login",
     "create-uptime-monitoring": "cd ./uptime_monitoring && (pulumi stack init uptime-monitoring || :) && (source ../../gcloud_env_vars.sh && pulumi up --stack uptime-monitoring)",
+    "postcreate-uptime-monitoring": "gcloud auth application-default revoke --quiet",
     "predestroy-uptime-monitoring": "npm ci && gcloud auth application-default login",
-    "destroy-uptime-monitoring": "cd ./uptime_monitoring && pulumi destroy --stack uptime-monitoring && pulumi stack rm uptime-monitoring"
+    "destroy-uptime-monitoring": "cd ./uptime_monitoring && pulumi destroy --stack uptime-monitoring && pulumi stack rm uptime-monitoring",
+    "postdestroy-uptime-monitoring": "gcloud auth application-default revoke --quiet"
   }
 }

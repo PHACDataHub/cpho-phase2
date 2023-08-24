@@ -94,6 +94,7 @@ def upload_mapper():
             "PER 1,000 CENSUS INHABITANTS": "per_100k_census",
             "PER 10,000 PATIENT DAYS": "per_100k_patient_days",
             "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
+            "OTHER": "other",
         },
         "dimension_type_mapper": {
             "Province": all_dimension_dict["province"],
@@ -129,6 +130,61 @@ def upload_mapper():
             ("Canada", "CANADA"): all_dimension_val_dict["canada"],
         },
     }
+
+
+def export_mapper():
+    all_dimension_vals = DimensionValue.objects.all()
+    all_dimension_val_dict = {
+        dimension_val.value: dimension_val
+        for dimension_val in all_dimension_vals
+    }
+
+    upload_mapping = upload_mapper()
+
+    export_mapping = {
+        "category_mapper": {
+            v: k for k, v in upload_mapping["category_mapper"].items()
+        },
+        "subcategory_mapper": {
+            v: k for k, v in upload_mapping["subcategory_mapper"].items()
+        },
+        "data_quality_mapper": {
+            v: k for k, v in upload_mapping["data_quality_mapper"].items()
+        },
+        "value_unit_mapper": {
+            v: k for k, v in upload_mapping["value_unit_mapper"].items()
+        },
+        "dimension_type_mapper": {
+            v: k for k, v in upload_mapping["dimension_type_mapper"].items()
+        },
+        "non_literal_dimension_value_mapper": {
+            all_dimension_val_dict["on"]: "ON",
+            all_dimension_val_dict["ab"]: "AB",
+            all_dimension_val_dict["sk"]: "SK",
+            all_dimension_val_dict["mb"]: "MB",
+            all_dimension_val_dict["bc"]: "BC",
+            all_dimension_val_dict["qc"]: "QC",
+            all_dimension_val_dict["nb"]: "NB",
+            all_dimension_val_dict["ns"]: "NS",
+            all_dimension_val_dict["nl"]: "NL",
+            all_dimension_val_dict["pe"]: "PE",
+            all_dimension_val_dict["nu"]: "NU",
+            all_dimension_val_dict["nt"]: "NT",
+            all_dimension_val_dict["yt"]: "YT",
+            all_dimension_val_dict["atlantic"]: "ATLANTIC",
+            all_dimension_val_dict["prairies"]: "PRAIRIE",
+            all_dimension_val_dict["territories"]: "TERRITORIES",
+            all_dimension_val_dict["men"]: "MEN",
+            all_dimension_val_dict["women"]: "WOMEN",
+            all_dimension_val_dict["boys"]: "BOYS",
+            all_dimension_val_dict["girls"]: "GIRLS",
+            all_dimension_val_dict["m"]: "MALES",
+            all_dimension_val_dict["f"]: "FEMALES",
+            all_dimension_val_dict["canada"]: "CANADA",
+        },
+    }
+
+    return export_mapping
 
 
 # def deduce_dimension_type(record, csv_line_number):

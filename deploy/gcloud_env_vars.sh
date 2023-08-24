@@ -80,7 +80,11 @@ export DB_VERSION=POSTGRES_14
 export DB_TIER=db-g1-small
 export DB_INSTANCE_NAME="${PROJECT_SERVICE_NAME}-db-instance"
 export DB_NAME="${PROJECT_SERVICE_NAME}_db"
-export DB_USER="${PROJECT_SERVICE_NAME}_db_user"
+export DB_APP_USER="${PROJECT_SERVICE_NAME}_db_user"
+export DB_LOCAL_ACCESS_USER="${PROJECT_SERVICE_NAME}_db_local_access_user"
+
+# ----- LOCAL ACCESS TO PROD DB -----
+export LOCAL_ACCESS_DB_PORT=6543
 
 # ----- VPC NETWORK -----
 export VPC_NAME=default
@@ -90,8 +94,10 @@ export VPC_CONNECTOR_RANGE="10.8.0.0/28" # must be /28 and unused. 10.8.0.0 shou
 
 # ----- SECRET MANAGER (keys only) -----
 export SKEY_DB_ROOT_PASSWORD=db_root_password
-export SKEY_DB_USER_PASSWORD=db_user_password
+export SKEY_DB_APP_USER_PASSWORD_TEMP=db_app_user_password_temp
+export SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP=db_local_access_user_password_temp
 export SKEY_PROD_ENV_FILE=django_production_env
+export SKEY_LOCAL_ACCESS_PROD_ENV_FILE=django_local_prod_db_access_env
 export SKEY_PROD_SLACK_ALERTING_APP_TOKEN=slack_alerting_app_token
 
 

@@ -4,6 +4,7 @@
 import os
 import sys
 
+from server.config_util import get_project_config
 from server.open_telemetry_util import instrument_app_for_open_telemetry
 
 

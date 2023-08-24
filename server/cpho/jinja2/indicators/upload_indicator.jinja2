@@ -44,7 +44,7 @@
        tabindex="-1"
        aria-labelledby="expectedColumnModalLabel"
        aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 60%;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="expectedColumnModalLabel">{{ tdt("Expected column names") }}</h5>
@@ -171,6 +171,7 @@
                     <li>{{ tdt("Sex") }}</li>
                     <li>{{ tdt("Canada") }}</li>
                     <li>{{ tdt("Age Group") }}</li>
+                    <li>{{ tdt("Living Arrangement") }}</li>
                   </ul>
                 </td>
               </tr>
@@ -181,7 +182,8 @@
                 <td>
                   <div class="d-flex flex-row bd-highlight mb-3">
                     <div class="p-2 border">
-                      {{ tdt("Province:") }}
+                      <span class="fw-bold">{{ tdt("Province:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("ON") }}</li>
                         <li>{{ tdt("AB") }}</li>
@@ -199,7 +201,8 @@
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Gender:") }}
+                      <span class="fw-bold">{{ tdt("Gender:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("MEN") }}</li>
                         <li>{{ tdt("WOMEN") }}</li>
@@ -208,7 +211,8 @@
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Region:") }}
+                      <span class="fw-bold">{{ tdt("Region:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("ATLANTIC") }}</li>
                         <li>{{ tdt("PRAIRIE") }}</li>
@@ -216,22 +220,38 @@
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Sex:") }}
+                      <span class="fw-bold">{{ tdt("Sex:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("MALES") }}</li>
                         <li>{{ tdt("FEMALES") }}</li>
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Canada:") }}
+                      <span class="fw-bold">{{ tdt("Canada:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("CANADA") }}</li>
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Age Group:") }}
+                      <span class="fw-bold">{{ tdt("Age Group:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("Open Text Field") }}</li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      <span class="fw-bold">{{ tdt("Living Arrangement:") }}</span>
+                      <hr>
+                      <ul>
+                        <li>{{ tdt("MALE LIVING ALONE") }}</li>
+                        <li>{{ tdt("FEMALE LIVING ALONE") }}</li>
+                        <li>{{ tdt("COUPLE NO CHILDREN") }}</li>
+                        <li>{{ tdt("COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD") }}</li>
+                        <li>{{ tdt("FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD") }}</li>
+                        <li>{{ tdt("MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD") }}</li>
+                        <li>{{ tdt("OTHER LIVING ARRANGEMENTS") }}</li>
                       </ul>
                     </div>
                   </td>

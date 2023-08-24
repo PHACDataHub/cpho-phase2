@@ -103,6 +103,7 @@ def upload_mapper():
             "Canada": all_dimension_dict["canada"],
             "Region": all_dimension_dict["region"],
             "Gender": all_dimension_dict["gender"],
+            "Living Arrangement": all_dimension_dict["living_arrangement"],
         },
         "non_literal_dimension_value_mapper": {
             ("Province", "ON"): all_dimension_val_dict["on"],
@@ -128,6 +129,34 @@ def upload_mapper():
             ("Sex", "MALES"): all_dimension_val_dict["m"],
             ("Sex", "FEMALES"): all_dimension_val_dict["f"],
             ("Canada", "CANADA"): all_dimension_val_dict["canada"],
+            (
+                "Living Arrangement",
+                "MALE LIVING ALONE",
+            ): all_dimension_val_dict["male_alone"],
+            (
+                "Living Arrangement",
+                "FEMALE LIVING ALONE",
+            ): all_dimension_val_dict["female_alone"],
+            (
+                "Living Arrangement",
+                "COUPLE NO CHILDREN",
+            ): all_dimension_val_dict["couple_no_children"],
+            (
+                "Living Arrangement",
+                "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            ): all_dimension_val_dict["couple_with_childrenU18"],
+            (
+                "Living Arrangement",
+                "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            ): all_dimension_val_dict["female_with_childrenU18"],
+            (
+                "Living Arrangement",
+                "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            ): all_dimension_val_dict["male_with_childrenU18"],
+            (
+                "Living Arrangement",
+                "OTHER LIVING ARRANGEMENTS",
+            ): all_dimension_val_dict["other_living_arrangements"],
         },
     }
 
@@ -181,6 +210,21 @@ def export_mapper():
             all_dimension_val_dict["m"]: "MALES",
             all_dimension_val_dict["f"]: "FEMALES",
             all_dimension_val_dict["canada"]: "CANADA",
+            all_dimension_val_dict["male_alone"]: "MALE LIVING ALONE",
+            all_dimension_val_dict["female_alone"]: "FEMALE LIVING ALONE",
+            all_dimension_val_dict["couple_no_children"]: "COUPLE NO CHILDREN",
+            all_dimension_val_dict[
+                "couple_with_childrenU18"
+            ]: "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            all_dimension_val_dict[
+                "female_with_childrenU18"
+            ]: "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            all_dimension_val_dict[
+                "male_with_childrenU18"
+            ]: "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            all_dimension_val_dict[
+                "other_living_arrangements"
+            ]: "OTHER LIVING ARRANGEMENTS",
         },
     }
 

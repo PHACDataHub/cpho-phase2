@@ -31,6 +31,10 @@ function cleanup {
 trap cleanup EXIT
 
 echo ""
+echo "Starting DB backup (async). Note: manual backups are not deleted automatically, may require periodic cleanup"
+gcloud sql backups create --instance "${DB_INSTANCE_NAME}" --async --description "Triggered by connect_cloud_sql_proxy.sh"
+
+echo ""
 echo "Enabling public IP for database instance, initially configured to refuse all public IP connections"
 gcloud sql instances patch "${DB_INSTANCE_NAME}" --clear-authorized-networks --assign-ip --quiet
 
@@ -49,6 +53,19 @@ gcloud secrets versions access latest --secret "${SKEY_LOCAL_ACCESS_PROD_ENV_FIL
 echo ""
 echo "Getting temporary credentials for cloud-sql-proxy (oauth step)"
 gcloud auth application-default login
+
+echo ""
+echo "Waiting for async backup operation..."
+while [ true ]; do
+  running_backups=gcloud sql backups list --instance "${DB_INSTANCE_NAME}" --filter "status=RUNNING" --format "value(ID)"
+
+  if [ -z "${running_backups}" ]; then
+    echo "Backup complete"
+    break;
+  else
+    sleep 1
+  fi
+done
 
 echo ""
 echo "Connecting via cloud-sql-proxy. The database will be available via localhost at port ${LOCAL_ACCESS_DB_PORT}"

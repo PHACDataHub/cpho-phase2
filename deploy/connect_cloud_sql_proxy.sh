@@ -32,7 +32,7 @@ trap cleanup EXIT
 
 echo ""
 echo "Starting DB backup. Note: manual backups are not deleted automatically, may require periodic cleanup"
-gcloud sql backups create --instance "${DB_INSTANCE_NAME}" --description "Triggered by connect_cloud_sql_proxy.sh"
+gcloud sql backups create --instance "${DB_INSTANCE_NAME}" --location ${PROJECT_REGION} --description "Triggered by connect_cloud_sql_proxy.sh"
 
 echo ""
 echo "Enabling public IP for database instance, configured to only accept traffic from your current external IP"

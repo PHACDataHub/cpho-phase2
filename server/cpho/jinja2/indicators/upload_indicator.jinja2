@@ -44,7 +44,7 @@
        tabindex="-1"
        aria-labelledby="expectedColumnModalLabel"
        aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 60%;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="expectedColumnModalLabel">{{ tdt("Expected column names") }}</h5>
@@ -171,6 +171,7 @@
                     <li>{{ tdt("Sex") }}</li>
                     <li>{{ tdt("Canada") }}</li>
                     <li>{{ tdt("Age Group") }}</li>
+                    <li>{{ tdt("Living Arrangement") }}</li>
                   </ul>
                 </td>
               </tr>
@@ -181,57 +182,62 @@
                 <td>
                   <div class="d-flex flex-row bd-highlight mb-3">
                     <div class="p-2 border">
-                      {{ tdt("Province:") }}
+                      <span class="fw-bold">{{ tdt("Province:") }}</span>
+                      <hr>
                       <ul>
-                        <li>{{ tdt("ON") }}</li>
-                        <li>{{ tdt("AB") }}</li>
-                        <li>{{ tdt("SK") }}</li>
-                        <li>{{ tdt("MB") }}</li>
-                        <li>{{ tdt("BC") }}</li>
-                        <li>{{ tdt("QC") }}</li>
-                        <li>{{ tdt("NB") }}</li>
-                        <li>{{ tdt("NS") }}</li>
-                        <li>{{ tdt("NL") }}</li>
-                        <li>{{ tdt("PE") }}</li>
-                        <li>{{ tdt("NU") }}</li>
-                        <li>{{ tdt("NT") }}</li>
-                        <li>{{ tdt("YT") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Province" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Gender:") }}
+                      <span class="fw-bold">{{ tdt("Gender:") }}</span>
+                      <hr>
                       <ul>
-                        <li>{{ tdt("MEN") }}</li>
-                        <li>{{ tdt("WOMEN") }}</li>
-                        <li>{{ tdt("BOYS") }}</li>
-                        <li>{{ tdt("GIRLS") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Gender" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Region:") }}
+                      <span class="fw-bold">{{ tdt("Region:") }}</span>
+                      <hr>
                       <ul>
-                        <li>{{ tdt("ATLANTIC") }}</li>
-                        <li>{{ tdt("PRAIRIE") }}</li>
-                        <li>{{ tdt("TERRITORIES") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Region" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Sex:") }}
+                      <span class="fw-bold">{{ tdt("Sex:") }}</span>
+                      <hr>
                       <ul>
-                        <li>{{ tdt("MALES") }}</li>
-                        <li>{{ tdt("FEMALES") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Sex" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Canada:") }}
+                      <span class="fw-bold">{{ tdt("Canada:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("CANADA") }}</li>
                       </ul>
                     </div>
                     <div class="p-2 border">
-                      {{ tdt("Age Group:") }}
+                      <span class="fw-bold">{{ tdt("Age Group:") }}</span>
+                      <hr>
                       <ul>
                         <li>{{ tdt("Open Text Field") }}</li>
+                      </ul>
+                    </div>
+                    <div class="p-2 border">
+                      <span class="fw-bold">{{ tdt("Living Arrangement:") }}</span>
+                      <hr>
+                      <ul>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Living Arrangement" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                   </td>

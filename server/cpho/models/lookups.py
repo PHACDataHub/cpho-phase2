@@ -44,9 +44,9 @@ class DimensionValue(models.Model):
         related_name="possible_values",
     )
 
-    name_en = fields.CharField(max_length=75)
+    name_en = fields.CharField(max_length=200)
 
-    name_fr = fields.CharField(max_length=75)
+    name_fr = fields.CharField(max_length=200)
 
     value = fields.CharField(
         max_length=50

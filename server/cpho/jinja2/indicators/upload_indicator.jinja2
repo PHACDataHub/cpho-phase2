@@ -185,46 +185,36 @@
                       <span class="fw-bold">{{ tdt("Province:") }}</span>
                       <hr>
                       <ul>
-                        <li>{{ tdt("ON") }}</li>
-                        <li>{{ tdt("AB") }}</li>
-                        <li>{{ tdt("SK") }}</li>
-                        <li>{{ tdt("MB") }}</li>
-                        <li>{{ tdt("BC") }}</li>
-                        <li>{{ tdt("QC") }}</li>
-                        <li>{{ tdt("NB") }}</li>
-                        <li>{{ tdt("NS") }}</li>
-                        <li>{{ tdt("NL") }}</li>
-                        <li>{{ tdt("PE") }}</li>
-                        <li>{{ tdt("NU") }}</li>
-                        <li>{{ tdt("NT") }}</li>
-                        <li>{{ tdt("YT") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Province" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
                       <span class="fw-bold">{{ tdt("Gender:") }}</span>
                       <hr>
                       <ul>
-                        <li>{{ tdt("MEN") }}</li>
-                        <li>{{ tdt("WOMEN") }}</li>
-                        <li>{{ tdt("BOYS") }}</li>
-                        <li>{{ tdt("GIRLS") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Gender" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
                       <span class="fw-bold">{{ tdt("Region:") }}</span>
                       <hr>
                       <ul>
-                        <li>{{ tdt("ATLANTIC") }}</li>
-                        <li>{{ tdt("PRAIRIE") }}</li>
-                        <li>{{ tdt("TERRITORIES") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Region" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
                       <span class="fw-bold">{{ tdt("Sex:") }}</span>
                       <hr>
                       <ul>
-                        <li>{{ tdt("MALES") }}</li>
-                        <li>{{ tdt("FEMALES") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Sex" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                     <div class="p-2 border">
@@ -245,13 +235,9 @@
                       <span class="fw-bold">{{ tdt("Living Arrangement:") }}</span>
                       <hr>
                       <ul>
-                        <li>{{ tdt("MALE LIVING ALONE") }}</li>
-                        <li>{{ tdt("FEMALE LIVING ALONE") }}</li>
-                        <li>{{ tdt("COUPLE NO CHILDREN") }}</li>
-                        <li>{{ tdt("COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD") }}</li>
-                        <li>{{ tdt("FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD") }}</li>
-                        <li>{{ tdt("MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD") }}</li>
-                        <li>{{ tdt("OTHER LIVING ARRANGEMENTS") }}</li>
+                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                          {% if key[0] == "Living Arrangement" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                        {% endfor %}
                       </ul>
                     </div>
                   </td>

@@ -25,8 +25,8 @@ export GITHUB_MAIN_BRANCH_NAME=main
 export PROJECT_IS_USING_WHITENOISE=true
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
-export TEST_COVERAGE_THRESHOLD=80
-export TEST_DELTA_THRESHOLD=-5  #current commit test coverage minus last commit on main's coverage
+export TEST_COVERAGE_THRESHOLD=77.5 # set just below current coverage, consider increasing in time
+export TEST_DELTA_THRESHOLD=-2  # % value, threshold for current commit test coverage minus last commit on main's coverage
 
 export APP_HEALTHCHECK_ROUTE=/healthcheck
 export SLACK_ALERTING_CHANNEL_NAME="#cpho-hopic-prod-alerts"

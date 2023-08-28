@@ -127,16 +127,18 @@ steps:
       if [ ${#failure_reasons[@]} -eq 0 ]; then
         echo "Test coverage is suficient  - continuing..."
       else
-        echo "Step would have failed for the following reasons: "
+        echo "Insufficent test coverage" 
         for reason in "${failure_reasons[@]}"; do
           echo "$reason"
-        done
+        done 
 
-        # Fail build if not main (or master) deployment branch.
-        # if [[ "${BRANCH_NAME}" != "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
-        #   echo "Insufficent test coverage - build failed."  
-        #   exit 1
-        # fi
+        # Exit/fail build if not the main branch; we want to enforce coverage on branches at PR time,
+        # but not totally block development/deployment from main over it
+        if [[ "${BRANCH_NAME}" != "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
+          exit 1
+        else
+          echo "Continuing despite insufficient coverage..."
+        fi
       fi
 
 

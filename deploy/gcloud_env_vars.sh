@@ -19,10 +19,7 @@ export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
-export GITHUB_MAIN_BRANCH_NAME=main
-
-# NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
-export PROJECT_IS_USING_WHITENOISE=true
+export GITHUB_MAIN_BRANCH_NAME=user-testing
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
 export TEST_COVERAGE_THRESHOLD=77.5 # set just below current coverage, consider increasing in time
@@ -30,6 +27,9 @@ export TEST_DELTA_THRESHOLD=-2  # % value, threshold for current commit test cov
 
 export APP_HEALTHCHECK_ROUTE=/healthcheck
 export SLACK_ALERTING_CHANNEL_NAME="#cpho-hopic-prod-alerts"
+
+# NOTE: if PROJECT_IS_USING_WHITENOISE is true then no media cloud storage will be created for the project
+export PROJECT_IS_USING_WHITENOISE=true
 
 #########################################
 # Derived & less likely to need changes #

@@ -352,6 +352,7 @@ if [[ "${sql_skip}" != "S" ]]; then
   gcloud beta sql instances create "${DB_INSTANCE_NAME}" \
     --project "${PROJECT_ID}" \
     --region "${PROJECT_REGION}" \
+    --backup-location "${PROJECT_REGION}" \
     --database-version "${DB_VERSION}" \
     --tier "${DB_TIER}" \
     --root-password $(get_secret "${SKEY_DB_ROOT_PASSWORD}") \

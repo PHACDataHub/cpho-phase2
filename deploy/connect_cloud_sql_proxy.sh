@@ -31,16 +31,16 @@ function cleanup {
 trap cleanup EXIT
 
 echo ""
-echo "Enabling public IP for database instance, initially configured to refuse all public IP connections"
-gcloud sql instances patch "${DB_INSTANCE_NAME}" --clear-authorized-networks --assign-ip --quiet
+echo "Starting DB backup. Note: manual backups are not deleted automatically, may require periodic cleanup"
+gcloud sql backups create --instance "${DB_INSTANCE_NAME}" --location ${PROJECT_REGION} --description "Triggered by connect_cloud_sql_proxy.sh"
 
 echo ""
-echo "Adding current machine's external IP address to the DB's allow list"
+echo "Enabling public IP for database instance, configured to only accept traffic from your current external IP"
 # Your system doesn't usually know it's own external ip, need to send a packet out of your network, and then
 # ask whoever received it what they see it as (on the far side of your router, ISP, any other intermediate networks, etc)
 # ... so we're trusting that ipinfo.io doesn't lie to us. If we keep this approach long term, maybe we host our own IP reflector? 
-external_ip=$(curl https://ipinfo.io/ip)
-gcloud sql instances patch "${DB_INSTANCE_NAME}" --authorized-networks "${external_ip}" --quiet
+your_external_ip=$(curl https://ipinfo.io/ip)
+gcloud sql instances patch "${DB_INSTANCE_NAME}" --assign-ip --authorized-networks "${your_external_ip}"  --quiet
 
 echo ""
 echo "Getting a temporary env file that configures the local dev app for prod DB access, written to ${local_access_env_path}"

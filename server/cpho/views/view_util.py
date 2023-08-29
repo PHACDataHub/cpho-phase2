@@ -61,6 +61,9 @@ def upload_mapper():
         dimension_val.value: dimension_val
         for dimension_val in all_dimension_vals
     }
+    all_period_dict = {
+        period.generate_code: period for period in Period.objects.all()
+    }
     return {
         "category_mapper": {
             "": "",
@@ -105,6 +108,7 @@ def upload_mapper():
             "Gender": all_dimension_dict["gender"],
             "Living Arrangement": all_dimension_dict["living_arrangement"],
         },
+        "period_mapper": all_period_dict,
         "non_literal_dimension_value_mapper": {
             ("Province", "ON"): all_dimension_val_dict["on"],
             ("Province", "AB"): all_dimension_val_dict["ab"],

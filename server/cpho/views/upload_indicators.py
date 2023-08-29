@@ -63,9 +63,13 @@ class UploadForm(forms.Form):
 
     def handle_indicator_data(self, indicator_obj, datum):
         mapper = upload_mapper()
-        preiod_val = Period.objects.get(
-            year=2021, quarter=None, year_type="calendar"
+        default_period = (
+            Period.relevant_years().filter(year_type="calendar").first()
         )
+        period_val = default_period
+
+        if "Period" in datum and datum["Period"] != "":
+            period_val = mapper["period_mapper"][datum["Period"]]
 
         if not test_rule("can_edit_indicator_data", self.user, indicator_obj):
             return None
@@ -86,7 +90,7 @@ class UploadForm(forms.Form):
             ],
             dimension_value=dim_val,
             literal_dimension_val=lit_dim_val,
-            period=preiod_val,
+            period=period_val,
             data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
             value=(float(datum["Value"]) if datum["Value"] != "" else None),
             value_lower_bound=(
@@ -111,10 +115,10 @@ class UploadForm(forms.Form):
                     datum["Dimension_Type"]
                 ],
                 dimension_value=dim_val,
+                period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
 
-            indData_obj.period = preiod_val
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
             ]
@@ -238,9 +242,13 @@ class UploadForm(forms.Form):
                             f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
                         )
                     )
-
-            # data_dimension = deduce_dimension_type(data_row, idx)
-            # print(data_dimension)
+            if "Period" in data_row and data_row["Period"] != "":
+                if data_row["Period"] not in mapper["period_mapper"]:
+                    errorlist.append(
+                        tdt(
+                            f"row: {idx} Period: {data_row['Period']} is not valid"
+                        )
+                    )
 
             # checking if indicator already exists
             indicator_obj = Indicator.objects.filter(

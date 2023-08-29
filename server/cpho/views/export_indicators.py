@@ -19,10 +19,14 @@ class ExportIndicator(View):
     def get(self, request, *args, **kwargs):
         indicator = self.indicator
 
+        filename = "indicator_template"
+        if indicator:
+            filename = indicator.name
+
         response = HttpResponse(
             content_type="text/csv",
             headers={
-                "Content-Disposition": 'attachment; filename="indicator_data.csv"'
+                "Content-Disposition": f"attachment; filename={filename}.csv"
             },
         )
 
@@ -42,6 +46,7 @@ class ExportIndicator(View):
             "Value_Displayed",
             "Dimension_Type",
             "Dimension_Value",
+            "Period",
         ]
         writer.writerow(header_row)
 
@@ -78,6 +83,7 @@ class ExportIndicator(View):
                             record.dimension_type, ""
                         ),
                         deduced_dimension_value,
+                        record.period.generate_code,
                     ]
                 )
 

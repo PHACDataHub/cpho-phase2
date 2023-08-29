@@ -12,3 +12,8 @@ class SUBMISSION_STATUSES:
     PROGRAM_SUBMITTED = "program_submitted"
     SUBMITTED = "submission_up_to_date"
     MODIFIED_SINCE_LAST_SUBMISSION = "modified_since_last_submission"
+
+
+ADMIN_GROUP_NAME = "super_admin"
+ACCOUNT_MANAGER_GROUP_NAME = "account_admin"
+HSO_GROUP_NAME = "hso"

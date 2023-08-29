@@ -83,7 +83,7 @@ class ExportIndicator(View):
                             record.dimension_type, ""
                         ),
                         deduced_dimension_value,
-                        record.period.generate_code,
+                        record.period.code,
                     ]
                 )
 

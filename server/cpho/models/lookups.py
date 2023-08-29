@@ -91,7 +91,7 @@ class Period(models.Model):
         return getattr(self, f"name_{get_lang_code()}")
 
     @property
-    def generate_code(self):
+    def code(self):
         s = str(self.year)
         if self.year_type == self.FISCAL_YEAR_TYPE:
             s = f"FY{s}"

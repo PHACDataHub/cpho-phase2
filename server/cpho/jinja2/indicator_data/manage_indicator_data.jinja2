@@ -44,6 +44,9 @@
         {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
       {% endif %}
     </td>
+    <td>{{ form.value_displayed }}</td>
+    <td>{{ form.pt_data_availability }}</td>
+    <td>{{ form.age_group_type }}</td>
     <td>
       {{ form.DELETE }}
       {{ form.id }} {# this is hidden #}
@@ -84,6 +87,9 @@
               <th width="10%">{{ tdt("Data Quality") }}</th>
               <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
               <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
+              <th width="12%">{{ tdt("Value Displayed") }}</th>
+              <th width="12%">{{ tdt("Pt Data Availability") }}</th>
+              <th width="12%">{{ tdt("Age Group Type") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
@@ -133,6 +139,9 @@
                     </div>
                   {% endif %}
                 </td>
+                <td>{{ form.value_displayed }}</td>
+                <td>{{ form.pt_data_availability }}</td>
+                <td>{{ form.age_group_type }}</td>
               </tr>
             {% endfor %}
 
@@ -157,6 +166,9 @@
               <th width="10%">{{ tdt("Data Quality") }}</th>
               <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
               <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
+              <th width="12%">{{ tdt("Value Displayed") }}</th>
+              <th width="12%">{{ tdt("Pt Data Availability") }}</th>
+              <th width="12%">{{ tdt("Age Group Type") }}</th>
               <th width="5%">{{ tdt("Delete") }}</th>
             </tr>
           </thead>

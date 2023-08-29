@@ -1,5 +1,4 @@
 import csv
-import time
 
 from django import forms
 from django.contrib import messages
@@ -153,8 +152,6 @@ class UploadForm(forms.Form):
             self.handle_indicator_data(indicator_obj, datum)
 
     def clean_csv_file(self):
-        start_time = time.time()
-
         csv_file = self.cleaned_data["csv_file"]
         if not csv_file.name.endswith(".csv"):
             raise forms.ValidationError(tdt("File is not CSV type"))
@@ -284,8 +281,6 @@ class UploadForm(forms.Form):
         if errorlist:
             raise forms.ValidationError(mark_safe(" </br> ".join(errorlist)))
 
-        print("--- %s seconds ---" % (time.time() - start_time))
-
         return data_dict
 
 
@@ -315,9 +310,8 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
         return reverse("list_indicators")
 
     def form_valid(self, form):
-        start_time = time.time()
         form.save()
-        print("--- %s seconds ---" % (time.time() - start_time))
+
         messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 

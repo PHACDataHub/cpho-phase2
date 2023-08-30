@@ -35,7 +35,6 @@
       </div>
     </div>
   </form>
-
  
   {% if form.csv_file.errors %}<div class="my-2 error-div">{{ form.csv_file.errors }}</div>{% endif %}
 
@@ -175,7 +174,6 @@
                   </ul>
                 </td>
               </tr>
- 
               <tr>
                 <td>{{ tdt("Dimension_Value") }}</td>
                 <td>{{ tdt("Specification of dimension recorded") }}</td>
@@ -242,6 +240,32 @@
                     </div>
                   </td>
                 </div>
+              </tr>
+              <tr>
+                <td>{{ tdt("Period") }}</td>
+                <td>{{ tdt("Period to which the data belongs") }}</td>
+                <td>
+                  <div class="row">
+                    <div class="col-4">
+                      <ul>
+                        {% for key in mapper["period_mapper"] %}<li>{{ tdt(key) }}</li>{% endfor %}
+                      </ul>
+                    </div>
+                    <div class="col-8">
+                      <span class="fw-bold">{{ tdt("Legend:") }}</span>
+                      <ul class="mt-0 mb-2">
+                        <li>{{ tdt("FY: Fiscal Year") }}</li>
+                        <li>{{ tdt("CY: Calendar Year") }}</li>
+                        <li>{{ tdt("Q: Quarter (1-4)") }}</li>
+                      </ul>
+                      <span class="fw-bold">{{ tdt("Note: ") }}</span>
+                      <ul class="mt-0 mb-2">
+                        <li>{{ tdt("Quarters are only valid for fiscal years") }}</li>
+                        {# <li>{{ tdt("Indicators uploaded with blank period column will default to the current calendar year") }}</li> #}
+                      </ul>
+                    </div>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>

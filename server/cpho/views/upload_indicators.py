@@ -1,5 +1,4 @@
 import csv
-import time
 
 from django import forms
 from django.contrib import messages
@@ -63,9 +62,8 @@ class UploadForm(forms.Form):
 
     def handle_indicator_data(self, indicator_obj, datum):
         mapper = upload_mapper()
-        preiod_val = Period.objects.get(
-            year=2021, quarter=None, year_type="calendar"
-        )
+
+        period_val = mapper["period_mapper"][datum["Period"]]
 
         if not test_rule("can_edit_indicator_data", self.user, indicator_obj):
             return None
@@ -86,7 +84,7 @@ class UploadForm(forms.Form):
             ],
             dimension_value=dim_val,
             literal_dimension_val=lit_dim_val,
-            period=preiod_val,
+            period=period_val,
             data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
             value=(float(datum["Value"]) if datum["Value"] != "" else None),
             value_lower_bound=(
@@ -111,10 +109,10 @@ class UploadForm(forms.Form):
                     datum["Dimension_Type"]
                 ],
                 dimension_value=dim_val,
+                period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
 
-            indData_obj.period = preiod_val
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
             ]
@@ -149,8 +147,6 @@ class UploadForm(forms.Form):
             self.handle_indicator_data(indicator_obj, datum)
 
     def clean_csv_file(self):
-        start_time = time.time()
-
         csv_file = self.cleaned_data["csv_file"]
         if not csv_file.name.endswith(".csv"):
             raise forms.ValidationError(tdt("File is not CSV type"))
@@ -176,6 +172,7 @@ class UploadForm(forms.Form):
             "MultiYear_TimeFrame",
             "Dimension_Type",
             "Dimension_Value",
+            "Period",
             # "Age_Group_Type",
             # "PT_Data_Availability",
             # "Value_Units",
@@ -238,9 +235,12 @@ class UploadForm(forms.Form):
                             f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
                         )
                     )
-
-            # data_dimension = deduce_dimension_type(data_row, idx)
-            # print(data_dimension)
+            if data_row["Period"] not in mapper["period_mapper"]:
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Period: {data_row['Period']} is not valid"
+                    )
+                )
 
             # checking if indicator already exists
             indicator_obj = Indicator.objects.filter(
@@ -276,8 +276,6 @@ class UploadForm(forms.Form):
         if errorlist:
             raise forms.ValidationError(mark_safe(" </br> ".join(errorlist)))
 
-        print("--- %s seconds ---" % (time.time() - start_time))
-
         return data_dict
 
 
@@ -307,9 +305,8 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
         return reverse("list_indicators")
 
     def form_valid(self, form):
-        start_time = time.time()
         form.save()
-        print("--- %s seconds ---" % (time.time() - start_time))
+
         messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 

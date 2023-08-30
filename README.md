@@ -28,7 +28,7 @@ Note: run all this in the repo's root directory
         python ./manage.py migrate
         python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
         python ./manage.py loaddata cpho/fixtures/periods.yaml
-        python -m manage seed_programs --mode reset
+        python -m manage seed_programs --mode reset --yes
         python ./manage.py runscript cpho.scripts.dev
         ```
 10. `python manage.py runserver`
@@ -45,4 +45,3 @@ Resetting test db (useful when migrations get in the way of running tests)
 ```bash
 dropdb -U cpho_db_user cpho_test_db
 ```
-

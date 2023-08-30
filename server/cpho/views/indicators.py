@@ -1,10 +1,6 @@
-import csv
-from typing import Any, Dict
-
 from django import forms
 from django.contrib import messages
 from django.forms.models import ModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import (
@@ -21,7 +17,7 @@ from cpho.text import tdt, tm
 from cpho.util import group_by
 from server.rules_framework import test_rule
 
-from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin
+from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin, export_mapper
 
 
 class IndicatorForm(ModelForm):

@@ -39,6 +39,10 @@ if "${allow_cleanup}"; then
 
   # ----- ARTIFACT REGISTRY -----
   gcloud artifacts repositories delete "${ARTIFACT_REGISTRY_REPO}" --location "${PROJECT_REGION}" || :
+
+  # ----- CLOUD STORAGE -----
+  gcloud storage buckets delete "gs://${MEDIA_BUCKET_NAME}" --location "${PROJECT_REGION}" || :
+  gcloud storage buckets delete "gs://${TEST_COVERAGE_BUCKET_NAME}" --location "${PROJECT_REGION}" || :
   
   # ----- CLOUD BUILD ----
   gcloud builds triggers delete github "${BUILD_CLOUD_BUILD_TRIGGER_NAME}" --region "${PROJECT_REGION}" || :

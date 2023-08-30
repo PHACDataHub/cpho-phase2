@@ -1,10 +1,10 @@
-###########
-# BUILDER #
-###########
-FROM python:3.10.6-alpine3.16 as builder
+#################
+# WHEEL BUILDER #
+#################
+FROM python:3.10.6-alpine3.16 as wheel_builder
 
 # set work directory
-WORKDIR /usr/src/app
+WORKDIR /wheels
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -23,20 +23,18 @@ RUN apk update \
 # Update pip
 RUN pip install --upgrade pip
 
-# install dependencies
+# build prod dependencies in /wheels/prod
 COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt  
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./prod -r requirements.txt  
 
-# TODO: this is a workaround, to be replaced when working out a proper data migration approach, possibly
-# when using entrypoint.prod.sh to seed dat, need dev requirements installed. Also needed for testing.
+# build dev-test dependencies in /wheels/dev-test
 COPY ./requirements_dev.txt .
 COPY ./requirements_formatting.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements_dev.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./dev-test -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
 
 #########
 # FINAL #
 #########
-# pull official base image
 FROM python:3.10.6-alpine3.16
 
 ENV USER=5678
@@ -56,12 +54,13 @@ RUN \
 
 WORKDIR $APP_HOME
 
-# copy and install dependencies from build stage in virtual environment
-COPY --chown=$USER --from=builder /usr/src/app/wheels $WHEELDIR
-
 RUN python -mvenv $VIRTUALENV
 ENV PATH="${VIRTUALENV}/bin:$PATH"
 
+# copy and install dependencies from build stage in virtual environment
+# choice of "prod" or "dev-test", corresponding to dependency directories from the wheel_builder step
+ARG DEPENDENCY_SET="prod"
+COPY --chown=$USER --from=wheel_builder /wheels/$DEPENDENCY_SET $WHEELDIR
 RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
     python -m pip install --no-cache $WHEELDIR/* && rm -rf $WHEELDIR
 

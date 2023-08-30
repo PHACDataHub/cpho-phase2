@@ -189,6 +189,32 @@ fi
 
 
 
+# ----- CLOUD STORAGE -----
+if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
+  echo ""
+  echo "Create a media bucket"
+  read -n 1 -p "Type S to skip this step, anything else to continue: " media_bucket_skip
+  echo ""
+  if [[ "${media_bucket_skip}" != "S" ]]; then
+  echo ""
+    gcloud services enable storage.googleapis.com
+
+    gcloud storage buckets create "gs://${MEDIA_BUCKET_NAME}" --location "${PROJECT_REGION}"
+  fi
+fi
+
+echo ""
+echo "Create a Google Cloud Storage bucket for test coverage reports"
+read -n 1 -p "Type S to skip this step, anything else to continue: " coverage_bucket_skip
+echo ""
+if [[ "${coverage_bucket_skip}" != "S" ]]; then
+  gcloud services enable storage.googleapis.com
+
+  gcloud storage buckets create "gs://${TEST_COVERAGE_BUCKET_NAME}" --location "${PROJECT_REGION}"
+fi
+
+
+
 # ----- CLOUD BUILD ----
 echo ""
 echo "Enable Cloud Build, triggered by GitHub pushes"
@@ -209,14 +235,21 @@ if [[ "${build_skip}" != "S" ]]; then
    
    # Set necessary roles for Cloud Build service account, including custom 
    #TODO - modify permissions & roles (i.e roles/run) to be "least-privileged"
-  cloud_build_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
-
-  for role in "${cloud_build_roles[@]}"; do
-     gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-       --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
-       --role "${role}"
+  cloud_build_project_roles=("roles/cloudbuild.serviceAgent" "roles/artifactregistry.writer" "roles/run.admin")
+  for role in "${cloud_build_project_roles[@]}"; do
+     cloud projects add-iam-policy-binding "${PROJECT_ID}" \
+      --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+      --role "${role}"
   done
 
+  # Give Cloud Build read-write to the test coverage bucket
+  cloud_build_coverage_bucket_roles=("roles/storage.objectCreator" "roles/storage.legacyBucketReader")
+  for role in "${cloud_build_coverage_bucket_roles[@]}"; do
+    gcloud storage buckets add-iam-policy-binding "gs://${TEST_COVERAGE_BUCKET_NAME}" \
+     --member "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+     --role "${role}"
+  done
+  
   # Give Cloud Build access to the Cloud Run service account
   gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}"-compute@developer.gserviceaccount.com \
     --member "serviceAccount:"${PROJECT_NUMBER}"@cloudbuild.gserviceaccount.com" \
@@ -243,43 +276,7 @@ if [[ "${build_skip}" != "S" ]]; then
       --include-logs-with-status \
       --no-require-approval
   fi
-
-  echo "Create a Google Cloud Storage bucket for test coverage reports"
-  if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
-      gsutil mb -l "${PROJECT_REGION}" "gs://${TEST_COVERAGE_BUCKET_NAME}"
-      echo "Bucket created."
-  else
-    echo "Bucket already exists."
-  fi
 fi
-
-
-# ----- CLOUD STORAGE -----
-echo ""
-echo "Enable Cloud Storage API"
-echo ""
-gcloud services enable \
-    storage.googleapis.com
-    
-if [ ! $PROJECT_IS_USING_WHITENOISE ]; then
-  echo ""
-  echo "Create a media bucket"
-  read -n 1 -p "Type S to skip this step, anything else to continue: " bucket_skip
-  echo ""
-  if [[ "${bucket_skip}" != "S" ]]; then
-    gsutil mb -l "${PROJECT_REGION}" "gs://${MEDIA_BUCKET_NAME}"
-  fi
-fi
-
-echo "Create a Google Cloud Storage bucket for test coverage reports"
-if ! gsutil ls "gs://${TEST_COVERAGE_BUCKET_NAME}" &> /dev/null; then
-    gsutil mb -l "${PROJECT_REGION}" "gs://${TEST_COVERAGE_BUCKET_NAME}"
-    echo "Bucket created."
-else
-  echo "Bucket already exists."
-
-echo "Allow cloud build read & write permissons for ${TEST_COVERAGE_BUCKET_NAME} bucket."
-gsutil iam ch "serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com:objectCreator,legacyBucketReader" "gs://${TEST_COVERAGE_BUCKET_NAME}"
 
 
 
@@ -355,6 +352,7 @@ if [[ "${sql_skip}" != "S" ]]; then
   gcloud beta sql instances create "${DB_INSTANCE_NAME}" \
     --project "${PROJECT_ID}" \
     --region "${PROJECT_REGION}" \
+    --backup-location "${PROJECT_REGION}" \
     --database-version "${DB_VERSION}" \
     --tier "${DB_TIER}" \
     --root-password $(get_secret "${SKEY_DB_ROOT_PASSWORD}") \
@@ -423,19 +421,24 @@ if [[ "${sql_skip}" != "S" ]]; then
   
   # This secret is short lived, to be deleted once the value has been saved in the .env.prod secret
   # Storing it as a secret here is just in case this script exits before the whole .env.prod is written
-  set_secret "${SKEY_DB_USER_PASSWORD}" $(openssl rand -base64 80)
-
-  # Create User
-  gcloud sql users create "${DB_USER}" \
+  set_secret "${SKEY_DB_APP_USER_PASSWORD_TEMP}" $(openssl rand -base64 80)
+  gcloud sql users create "${DB_APP_USER}" \
     --instance "${DB_INSTANCE_NAME}" \
-    --password $(get_secret "${SKEY_DB_USER_PASSWORD}")
+    --password $(get_secret "${SKEY_DB_APP_USER_PASSWORD_TEMP}")
+
+  # This secret is short lived, to be deleted once the value has been saved in the local-use .env.prod secret
+  # Storing it as a secret here is just in case this script exits before the whole local-use .env.prod is written
+  set_secret "${SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP}" $(openssl rand -base64 80)
+  gcloud sql users create "${DB_LOCAL_ACCESS_USER}" \
+    --instance "${DB_INSTANCE_NAME}" \
+    --password $(get_secret "${SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP}")
 fi
 
 
 
 # ----- SECRET MANAGER -----
 echo ""
-echo "Create and save .env.prod in Secret Manager"
+echo "Create and save the production app .env.prod in Secret Manager"
 read -n 1 -p "Type S to skip this step, anything else to continue: " secrets_skip
 echo ""
 if [[ "${secrets_skip}" != "S" ]]; then
@@ -449,8 +452,8 @@ if [[ "${secrets_skip}" != "S" ]]; then
   trap cleanup EXIT
 
   bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_prod_env}"
-  bash_escape "DB_USER=${DB_USER}" >> "${tmp_prod_env}"
-  bash_escape "DB_PASSWORD=$(get_secret "${SKEY_DB_USER_PASSWORD}")" >> "${tmp_prod_env}"
+  bash_escape "DB_USER=${DB_APP_USER}" >> "${tmp_prod_env}"
+  bash_escape "DB_PASSWORD=$(get_secret "${SKEY_DB_APP_USER_PASSWORD_TEMP}")" >> "${tmp_prod_env}"
   bash_escape "DB_HOST=$(gcloud sql instances list --filter name:"${DB_INSTANCE_NAME}" --format "value(PRIVATE_ADDRESS)")" >> "${tmp_prod_env}"
   bash_escape "DB_PORT=5432" >> "${tmp_prod_env}"
   
@@ -472,9 +475,55 @@ if [[ "${secrets_skip}" != "S" ]]; then
   rm -rf "${tmp_prod_env}"
 
   # Only want one source of truth for this, can be deleted now that it is also in the .env.prod secret
-  delete_secret "${SKEY_DB_USER_PASSWORD}"
+  delete_secret "${SKEY_DB_APP_USER_PASSWORD_TEMP}"
 fi
 
+echo ""
+echo "Create and save the local-access .env.prod, used for connecting local dev environments to the prod DB, in Secret Manager"
+read -n 1 -p "Type S to skip this step, anything else to continue: " secrets_skip
+echo ""
+if [[ "${secrets_skip}" != "S" ]]; then
+  gcloud services enable secretmanager.googleapis.com
+
+  tmp_local_access_prod_env=$(mktemp -t .env.prod-local.XXXX)
+  function cleanup {
+    rm -rf "${tmp_local_access_prod_env}"
+  }
+  trap cleanup EXIT
+
+  echo "# this is NOT the production application env file BUT it does contain credentials for the production database. Handle appropriately"
+  bash_escape "IS_LOCAL=True" >> "${tmp_local_access_prod_env}"
+
+  bash_escape "DB_NAME=${DB_NAME}" >> "${tmp_local_access_prod_env}"
+  echo "# this is NOT the same DB user/password as the live app" >> "${tmp_local_access_prod_env}"
+  bash_escape "DB_USER=${DB_LOCAL_ACCESS_USER}" >> "${tmp_local_access_prod_env}"
+  bash_escape "DB_PASSWORD=$(get_secret "${SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP}")" >> "${tmp_local_access_prod_env}"
+  echo "# assumes cloud-sql-proxy is proxying the prod DB locally over the configured port" >> "${tmp_local_access_prod_env}"
+  bash_escape "DB_HOST=localhost" >> "${tmp_local_access_prod_env}"
+  bash_escape "DB_PORT=${LOCAL_ACCESS_DB_PORT}" >> "${tmp_local_access_prod_env}"
+  
+  echo "# this is NOT the same Django secret key as used by the live app, but it should still be treated as secret" >> "${tmp_local_access_prod_env}"
+  echo "# as it is used to sign any sessions you create via your local app against the prod DB instance" >> "${tmp_local_access_prod_env}"
+  bash_escape "SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> "${tmp_local_access_prod_env}"
+  
+  bash_escape "ALLOWED_HOSTS=localhost" >> "${tmp_local_access_prod_env}"
+  
+  if [[ ! $PROJECT_IS_USING_WHITENOISE ]]; then
+    bash_escape "MEDIA_BUCKET_NAME=${MEDIA_BUCKET_NAME}" >> "${tmp_local_access_prod_env}"
+  fi
+
+  if [[ -n $(gcloud secrets describe --verbosity none "${SKEY_LOCAL_ACCESS_PROD_ENV_FILE}")  ]]; then
+    gcloud secrets versions add "${SKEY_LOCAL_ACCESS_PROD_ENV_FILE}" --data-file "${tmp_local_access_prod_env}"
+  else
+    gcloud secrets create --locations "${PROJECT_REGION}" --replication-policy user-managed "${SKEY_LOCAL_ACCESS_PROD_ENV_FILE}" --data-file "${tmp_local_access_prod_env}"
+  fi
+
+  # Not strictly necessary with the exit trap, but may as well delete this quickly once it's served it's purpose
+  rm -rf "${tmp_local_access_prod_env}"
+
+  # Only want one source of truth for this, can be deleted now that it is also in the .env.prod secret
+  delete_secret "${SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP}"
+fi
 
 
 # ----- CLOUD RUN -----

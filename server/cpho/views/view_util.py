@@ -231,6 +231,76 @@ def export_mapper():
     return export_mapping
 
 
+def export_mapper():
+    all_dimension_vals = DimensionValue.objects.all()
+    all_dimension_val_dict = {
+        dimension_val.value: dimension_val
+        for dimension_val in all_dimension_vals
+    }
+
+    upload_mapping = upload_mapper()
+
+    export_mapping = {
+        "category_mapper": {
+            v: k for k, v in upload_mapping["category_mapper"].items()
+        },
+        "subcategory_mapper": {
+            v: k for k, v in upload_mapping["subcategory_mapper"].items()
+        },
+        "data_quality_mapper": {
+            v: k for k, v in upload_mapping["data_quality_mapper"].items()
+        },
+        "value_unit_mapper": {
+            v: k for k, v in upload_mapping["value_unit_mapper"].items()
+        },
+        "dimension_type_mapper": {
+            v: k for k, v in upload_mapping["dimension_type_mapper"].items()
+        },
+        "non_literal_dimension_value_mapper": {
+            all_dimension_val_dict["on"]: "ON",
+            all_dimension_val_dict["ab"]: "AB",
+            all_dimension_val_dict["sk"]: "SK",
+            all_dimension_val_dict["mb"]: "MB",
+            all_dimension_val_dict["bc"]: "BC",
+            all_dimension_val_dict["qc"]: "QC",
+            all_dimension_val_dict["nb"]: "NB",
+            all_dimension_val_dict["ns"]: "NS",
+            all_dimension_val_dict["nl"]: "NL",
+            all_dimension_val_dict["pe"]: "PE",
+            all_dimension_val_dict["nu"]: "NU",
+            all_dimension_val_dict["nt"]: "NT",
+            all_dimension_val_dict["yt"]: "YT",
+            all_dimension_val_dict["atlantic"]: "ATLANTIC",
+            all_dimension_val_dict["prairies"]: "PRAIRIE",
+            all_dimension_val_dict["territories"]: "TERRITORIES",
+            all_dimension_val_dict["men"]: "MEN",
+            all_dimension_val_dict["women"]: "WOMEN",
+            all_dimension_val_dict["boys"]: "BOYS",
+            all_dimension_val_dict["girls"]: "GIRLS",
+            all_dimension_val_dict["m"]: "MALES",
+            all_dimension_val_dict["f"]: "FEMALES",
+            all_dimension_val_dict["canada"]: "CANADA",
+            all_dimension_val_dict["male_alone"]: "MALE LIVING ALONE",
+            all_dimension_val_dict["female_alone"]: "FEMALE LIVING ALONE",
+            all_dimension_val_dict["couple_no_children"]: "COUPLE NO CHILDREN",
+            all_dimension_val_dict[
+                "couple_with_childrenU18"
+            ]: "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            all_dimension_val_dict[
+                "female_with_childrenU18"
+            ]: "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            all_dimension_val_dict[
+                "male_with_childrenU18"
+            ]: "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            all_dimension_val_dict[
+                "other_living_arrangements"
+            ]: "OTHER LIVING ARRANGEMENTS",
+        },
+    }
+
+    return export_mapping
+
+
 # def deduce_dimension_type(record, csv_line_number):
 #     dimension_deduced_bool = False
 #     dimension_deduced = None

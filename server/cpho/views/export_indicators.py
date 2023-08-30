@@ -4,11 +4,22 @@ from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views.generic import View
 
+from server.rules_framework import test_rule
+
 from cpho.models import Indicator, IndicatorDatum
 from cpho.views.view_util import export_mapper
 
+from .view_util import MustPassAuthCheckMixin
 
-class ExportIndicator(View):
+
+class ExportIndicator(MustPassAuthCheckMixin, View):
+    def check_rule(self):
+        return test_rule(
+            "can_export_indicator",
+            self.request.user,
+            self.indicator,
+        )
+
     @cached_property
     def indicator(self):
         if "pk" in self.kwargs:

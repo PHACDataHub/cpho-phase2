@@ -134,3 +134,10 @@ def can_submit_as_hso_or_program(user, indicator):
         or (is_hso(user) and can_submit_as_hso(user, indicator))
         or (is_program(user) and can_submit_as_program(user, indicator))
     )
+
+
+@auto_rule
+def can_export_indicator(user, indicator):
+    if indicator:
+        return can_view_indicator(user, indicator)
+    return can_upload_indicator(user)

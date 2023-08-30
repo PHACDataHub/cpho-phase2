@@ -90,6 +90,17 @@ class Period(models.Model):
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
 
+    @property
+    def code(self):
+        s = str(self.year)
+        if self.year_type == self.FISCAL_YEAR_TYPE:
+            s = f"FY{s}"
+        else:
+            s = f"CY{s}"
+        if self.quarter:
+            s = f"{s}Q{self.quarter}"
+        return s
+
     def as_tuple(self):
         # can be used for sorting
         # python's default sort will stably sort by year, then quarter

@@ -62,13 +62,7 @@ class UploadForm(forms.Form):
 
     def handle_indicator_data(self, indicator_obj, datum):
         mapper = upload_mapper()
-        # default_period = (
-        #     Period.relevant_years().filter(year_type="calendar").first()
-        # )
-        # period_val = default_period
 
-        # if "Period" in datum and datum["Period"] != "":
-        #     period_val = mapper["period_mapper"][datum["Period"]]
         period_val = mapper["period_mapper"][datum["Period"]]
 
         if not test_rule("can_edit_indicator_data", self.user, indicator_obj):

@@ -62,9 +62,7 @@ class ExportIndicator(View):
                         indicator.detailed_indicator,
                         indicator.sub_indicator_measurement,
                         mapper["category_mapper"].get(indicator.category, ""),
-                        mapper["subcategory_mapper"].get(
-                            indicator.sub_category, ""
-                        ),
+                        mapper["topic_mapper"].get(indicator.topic, ""),
                         mapper["data_quality_mapper"].get(
                             record.data_quality, ""
                         ),

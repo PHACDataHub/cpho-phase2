@@ -174,8 +174,8 @@ def export_mapper():
         "category_mapper": {
             v: k for k, v in upload_mapping["category_mapper"].items()
         },
-        "subcategory_mapper": {
-            v: k for k, v in upload_mapping["subcategory_mapper"].items()
+        "topic_mapper": {
+            v: k for k, v in upload_mapping["topic_mapper"].items()
         },
         "data_quality_mapper": {
             v: k for k, v in upload_mapping["data_quality_mapper"].items()

@@ -178,7 +178,10 @@ class UserFormView(FormView, CanManageUsersMixin):
     def assign_orgs(self, user, form):
         user.phac_org_roles.all().delete()
         for org in form.cleaned_data["phac_org_multi"]:
-            PhacOrgRole.objects.create(user=user, phac_org=org)
+            # TODO: if we keep branch leads, split this out into 2 fields, branches_lead and branches_read_only
+            PhacOrgRole.objects.create(
+                user=user, phac_org=org, is_phac_org_lead=True
+            )
 
     def assign_groups(self, user, form):
         user.groups.remove(

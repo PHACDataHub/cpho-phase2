@@ -45,7 +45,6 @@ def seed_core_data(globally_scoped_fixture_helper):
     create_users()
     # ensure groups created (caching groups break accross tests if not pre-created)
     GroupFetcher.hso_group
-    GroupFetcher.account_manager_group
     GroupFetcher.admin_group
 
 

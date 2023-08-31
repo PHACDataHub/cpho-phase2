@@ -9,11 +9,7 @@ from server.model_util import (
     track_versions_with_editor_and_submission,
 )
 
-from cpho.constants import (
-    ACCOUNT_MANAGER_GROUP_NAME,
-    ADMIN_GROUP_NAME,
-    HSO_GROUP_NAME,
-)
+from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
 
 
 class GroupPrefetcherManager(UserManager):
@@ -45,10 +41,6 @@ class User(AbstractUser):
     @property
     def is_hso(self):
         return HSO_GROUP_NAME in self.group_names
-
-    @property
-    def is_account_manager(self):
-        return ACCOUNT_MANAGER_GROUP_NAME in self.group_names
 
     @property
     def is_admin(self):

@@ -34,14 +34,14 @@ def test_modify_user(vanilla_user_client, cdsb_org, emb_org):
         data = {
             "phac_org_multi": [emb_org.id],  # delete cdsb, add cira
             # ommission of is_admin should imply false
-            "is_account_manager": True,
+            "is_admin": True,
         }
         resp = vanilla_user_client.post(url, data=data)
         assert resp.status_code == 302
         assert resp.url == reverse("manage_users")
         new_roles = PhacOrgRole.objects.filter(user=u)
         assert {r.phac_org for r in new_roles} == {emb_org}
-        assert set(u.groups.all()) == {GroupFetcher.account_manager_group}
+        assert set(u.groups.all()) == {GroupFetcher.admin_group}
 
 
 def test_create_user(vanilla_user_client, cdsb_org, emb_org):
@@ -59,7 +59,7 @@ def test_create_user(vanilla_user_client, cdsb_org, emb_org):
     data = {
         "email": email,
         "phac_org_multi": [cdsb_org.id, emb_org.id],
-        "is_account_manager": True,
+        "is_hso": True,
     }
     with patch_rules(can_manage_users=True):
         resp = vanilla_user_client.post(url, data=data)
@@ -71,4 +71,4 @@ def test_create_user(vanilla_user_client, cdsb_org, emb_org):
         emb_org,
         cdsb_org,
     }
-    assert set(user.groups.all()) == {GroupFetcher.account_manager_group}
+    assert set(user.groups.all()) == {GroupFetcher.hso_group}

@@ -116,7 +116,7 @@ def can_submit_as_program(user, indicator):
 
 @auto_rule
 def can_manage_users(user):
-    return is_admin_or_hso(user) or user.is_account_manager
+    return is_admin_or_hso(user)
 
 
 @auto_rule

@@ -15,5 +15,4 @@ class SUBMISSION_STATUSES:
 
 
 ADMIN_GROUP_NAME = "super_admin"
-ACCOUNT_MANAGER_GROUP_NAME = "account_admin"
 HSO_GROUP_NAME = "hso"

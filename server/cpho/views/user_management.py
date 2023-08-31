@@ -12,11 +12,7 @@ from autocomplete import widgets as ac_widgets
 
 from server.rules_framework import test_rule
 
-from cpho.constants import (
-    ACCOUNT_MANAGER_GROUP_NAME,
-    ADMIN_GROUP_NAME,
-    HSO_GROUP_NAME,
-)
+from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
 from cpho.models import (
     DimensionType,
     Indicator,
@@ -107,15 +103,6 @@ class UserForm(forms.Form):
             }
         ),
     )
-    is_account_manager = forms.BooleanField(
-        required=False,
-        label=tdt("Account Manager"),
-        widget=forms.CheckboxInput(
-            attrs={
-                "class": "form-check-input",
-            }
-        ),
-    )
     is_hso = forms.BooleanField(
         required=False,
         label=tdt("HSO User"),
@@ -195,16 +182,12 @@ class UserFormView(FormView, CanManageUsersMixin):
 
     def assign_groups(self, user, form):
         user.groups.remove(
-            GroupFetcher.account_manager_group,
             GroupFetcher.hso_group,
             GroupFetcher.admin_group,
         )
 
         if form.cleaned_data["is_admin"]:
             user.groups.add(GroupFetcher.admin_group)
-
-        if form.cleaned_data["is_account_manager"]:
-            user.groups.add(GroupFetcher.account_manager_group)
 
         if form.cleaned_data["is_hso"]:
             user.groups.add(GroupFetcher.hso_group)
@@ -242,7 +225,6 @@ class ModifyUser(UserFormView, CanManageUsersMixin):
         user = User.objects.get(id=self.kwargs["user_id"])
         initial = {
             "is_admin": user.is_admin,
-            "is_account_manager": user.is_account_manager,
             "is_hso": user.is_hso,
             "phac_org_multi": [r.phac_org for r in user.phac_org_roles.all()],
         }

@@ -302,7 +302,7 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
         return context
 
     def get_success_url(self):
-        return reverse("list_indicators")
+        return reverse("user_scoped_changelog", args=[self.request.user.id])
 
     def form_valid(self, form):
         form.save()

@@ -90,6 +90,16 @@ urlpatterns = [
         name="indicator_scoped_changelog",
     ),
     path(
+        "users/<int:user_id>/changelog/",
+        views.UserScopedChangelog.as_view(),
+        name="user_scoped_changelog",
+    ),
+    path(
+        "users/<int:user_id>/changelog/<int:page_num>/",
+        views.UserScopedChangelog.as_view(),
+        name="user_scoped_changelog",
+    ),
+    path(
         "global-changelog/",
         views.GlobalChangelog.as_view(),
         name="global_changelog",

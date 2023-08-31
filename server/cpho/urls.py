@@ -14,6 +14,14 @@ urlpatterns = [
     ),
     path("manage_users/", views.ManageUsers.as_view(), name="manage_users"),
     path(
+        "manage_users/create/", views.CreateUser.as_view(), name="create_user"
+    ),
+    path(
+        "users/<int:user_id>/edit/",
+        views.ModifyUser.as_view(),
+        name="modify_user",
+    ),
+    path(
         "indicators/", views.ListIndicators.as_view(), name="list_indicators"
     ),
     path(

@@ -3,12 +3,12 @@ from server.rules_framework import add_rule, auto_rule
 
 @auto_rule
 def is_admin(user):
-    return user.username == "admin"
+    return user.is_admin
 
 
 @auto_rule
 def is_hso(user):
-    return user.username == "hso"
+    return user.is_hso
 
 
 @auto_rule

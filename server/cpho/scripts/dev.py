@@ -16,6 +16,7 @@ from cpho.models import (
     PhacOrgRole,
     User,
 )
+from cpho.util import GroupFetcher
 
 
 @transaction.atomic
@@ -28,20 +29,22 @@ def create_users():
     # PhacOrgRole.objects.all().delete()
     # # create_phacorgs()
     User.objects.filter(username="admin").delete()
-    User.objects.create_superuser(
+    admin = User.objects.create_superuser(
         username="admin",
         password="admin",
     )
+    admin.groups.add(GroupFetcher.admin_group)
     User.objects.filter(username="person1").delete()
     User.objects.create_user(
         username="person1",
         password="person1",
     )
     User.objects.filter(username="hso").delete()
-    User.objects.create_user(
+    hso = User.objects.create_user(
         username="hso",
         password="hso",
     )
+    hso.groups.add(GroupFetcher.hso_group)
     branches = PHACOrg.branches()
     for branch in branches:
         branch_name = branch.acronym_en.lower().replace(" ", "")

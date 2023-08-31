@@ -9,6 +9,7 @@ from phac_aspc.django.settings.utils import configure_settings_for_tests
 from cpho.management.commands.seed_programs import seed_programs
 from cpho.models import PHACOrg, User
 from cpho.scripts.dev import create_users
+from cpho.util import GroupFetcher
 
 # Modify django settings to skip axes authentication backend
 configure_settings_for_tests()
@@ -42,6 +43,9 @@ def seed_core_data(globally_scoped_fixture_helper):
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
     seed_programs(mode="reset")
     create_users()
+    # ensure groups created (caching groups break accross tests if not pre-created)
+    GroupFetcher.hso_group
+    GroupFetcher.admin_group
 
 
 @pytest.fixture
@@ -73,12 +77,19 @@ def oae_lead():
 
 @pytest.fixture
 def hso_user():
-    return User.objects.get(username="hso")
+    u = User.objects.get(username="hso")
+    u.groups.add(GroupFetcher.hso_group)
+    return u
 
 
 @pytest.fixture
 def cdsb_org():
     return PHACOrg.objects.get(acronym_en="CDSB")
+
+
+@pytest.fixture
+def emb_org():
+    return PHACOrg.objects.get(acronym_en="EMB")
 
 
 @pytest.fixture

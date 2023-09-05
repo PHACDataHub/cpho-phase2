@@ -131,6 +131,7 @@ INSTALLED_APPS = configure_apps(
         "whitenoise.runserver_nostatic",
         "django.contrib.staticfiles",
         "graphene_django",
+        "autocomplete",
         "django_extensions",
         *(["debug_toolbar"] if ENABLE_DEBUG_TOOLBAR else []),
         "rules.apps.AutodiscoverRulesConfig",

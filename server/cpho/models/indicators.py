@@ -1,17 +1,15 @@
 from django.apps import apps
 from django.db import models
-
 from pleasant_promises.dataloader import SingletonDataLoader
 
+from cpho.constants import SUBMISSION_STATUSES
+from cpho.text import tdt
 from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
     track_versions_with_editor_and_submission,
 )
-
-from cpho.constants import SUBMISSION_STATUSES
-from cpho.text import tdt
 
 
 @add_to_admin
@@ -243,12 +241,12 @@ class IndicatorDatum(models.Model):
         ("daily_dose_per_1k_census", tdt("Defined Daily Dose/1,000 Census")),
         ("percentage", tdt("Percentage")),
         ("percentage_crude_rate", tdt("Percentage (Crude Rate)")),
-        ("rate_per_10k_parient", tdt("Rate per 10,000 Patient Days")),
+        ("rate_per_10k_patient", tdt("Rate per 10,000 Patient Days")),
         ("rate_per_100k", tdt("Rate per 100,000")),
         ("rate_per_100k_crude", tdt("Rate per 100,000 (Crude Rate)")),
         ("rate_per_100k_live_births", tdt("Rate per 100,000 Live Births")),
-        ("years", tdt("Years")),
-        ("other", tdt("Other")),
+        ("years", tdt("years")),
+        ("other", tdt("other")),
     ]
 
     value_unit = fields.CharField(
@@ -261,11 +259,11 @@ class IndicatorDatum(models.Model):
         ("", tdt("--")),
         ("%", tdt("%")),
         ("per_1k_census", tdt("Per 1,000 census inhabitants")),
-        ("per_10k_parient", tdt("Per 10,000 patient days")),
+        ("per_10k_patient", tdt("Per 10,000 patient days")),
         ("per_100k", tdt("Per 100,000")),
         ("per_100k_live_births", tdt("Per 100,000 live births")),
-        ("years", tdt("Years")),
-        ("other", tdt("Other")),
+        ("years", tdt("years")),
+        ("other", tdt("other")),
     ]
 
     value_displayed = fields.CharField(

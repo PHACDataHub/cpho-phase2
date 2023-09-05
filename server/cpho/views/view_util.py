@@ -89,11 +89,25 @@ def upload_mapper():
         },
         "value_unit_mapper": {
             "": "",
+            "AGE-STANDARDIZED RATE": "age_rate",
+            "CRUDE RATE": "crude_rate",
+            "DEFINED DAILY DOSE/1,000 CENSUS": "daily_dose_per_1k_census",
+            "PERCENTAGE": "percentage",
+            "PERCENTAGE (CRUDE RATE)": "percentage_crude_rate",
+            "RATE PER 10,000 PATIENT DAYS": "rate_per_10k_patient",
+            "RATE PER 100,000": "rate_per_100k",
+            "RATE PER 100,000 (CRUDE RATE)": "rate_per_100k_crude",
+            "RATE PER 100,000 LIVE BIRTHS": "rate_per_100k_live_births",
+            "YEARS": "years",
+            "OTHER": "other",
+        },
+        "value_displayed_mapper": {
+            "": "",
             "%": "%",
             "PER 100,000": "per_100k",
             "YEARS": "years",
-            "PER 1,000 CENSUS INHABITANTS": "per_100k_census",
-            "PER 10,000 PATIENT DAYS": "per_100k_patient_days",
+            "PER 1,000 CENSUS INHABITANTS": "per_1k_census",
+            "PER 10,000 PATIENT DAYS": "per_10k_patient",
             "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
             "OTHER": "other",
         },
@@ -184,6 +198,9 @@ def export_mapper():
         },
         "value_unit_mapper": {
             v: k for k, v in upload_mapping["value_unit_mapper"].items()
+        },
+        "value_displayed_mapper": {
+            v: k for k, v in upload_mapping["value_displayed_mapper"].items()
         },
         "dimension_type_mapper": {
             v: k for k, v in upload_mapping["dimension_type_mapper"].items()

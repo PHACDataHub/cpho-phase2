@@ -116,4 +116,6 @@ class Period(models.Model):
 
     @staticmethod
     def relevant_years():
-        return Period.objects.filter(year=settings.CURRENT_YEAR)
+        return Period.objects.filter(
+            year__in=[settings.CURRENT_YEAR - 1, settings.CURRENT_YEAR]
+        )

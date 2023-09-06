@@ -14,7 +14,6 @@
         {{ form.email }}
       {% elif user_to_be_modified %}
         <label class="required" for="id_email">{{ tdt("email") }}</label>
-        {{ user.email }}
         <input disabled id="id_email"  value="{{ user_to_be_modified.email }}">
       {% endif %}
     </div>

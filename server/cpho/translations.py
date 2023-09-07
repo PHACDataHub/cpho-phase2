@@ -74,4 +74,8 @@ translation_entries = {
     "this_change": {
         "en": "This change",
     },
+    "please_login_to_see_page": {
+        "en": "Please login to see this page",
+        "fr": "Veuillez vous connecter pour voir cette page",
+    },
 }

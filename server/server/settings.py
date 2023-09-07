@@ -159,6 +159,7 @@ MIDDLEWARE = configure_middleware(
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "django_structlog.middlewares.RequestMiddleware",
+        "server.middleware.MustBeLoggedInMiddleware",
     ]
 )
 

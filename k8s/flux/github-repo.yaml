@@ -1,11 +1,66 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: GitRepository
 metadata:
-  name: github-repo
+  name: flux-system
   namespace: flux-system
 spec:
   interval: 1m0s
   ref:
-    branch: main
-  url: https://github.com/PHACDataHub/cpho-phase2.git
+    branch: "@simsingh/k8s-infra"
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/PHACDataHub/cpho-phase2
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/flux
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: istio
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/istio
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: demo
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/demo
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 2m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: certmanager
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/certmanager
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 2m0s

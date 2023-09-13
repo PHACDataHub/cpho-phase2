@@ -19,7 +19,7 @@ spec:
       - dns01:
           cloudDNS:
             # The ID of the GCP project
-            project: phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog
+            project: phx-01h4rr1468rj3v5k60b1vserd3
         selector: {}
 status: {}
 
@@ -46,7 +46,7 @@ spec:
       - dns01:
           cloudDNS:
             # The ID of the GCP project
-            project: phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog
+            project: phx-01h4rr1468rj3v5k60b1vserd3
         selector: {}
 status: {}
 

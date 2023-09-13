@@ -33,7 +33,7 @@ spec:
         # Set a unique label for the gateway. This is required to ensure Gateways can select this workload
         istio: ingressgateway
         # Enable gateway injection. If connecting to a revisioned control plane, replace with "istio.io/rev: revision-name"
-        istio.io/rev: asm-managed-rapid
+        istio.io/rev: asm-managed
     spec:
       containers:
       - name: istio-proxy
@@ -81,31 +81,3 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
----
-apiVersion: mesh.cloud.google.com/v1beta1
-kind: ControlPlaneRevision
-metadata:
-  name: asm-managed-rapid
-  namespace: istio-system
-  labels:
-    mesh.cloud.google.com/managed-cni-enabled: "true"
-spec:
-  type: managed_service
-  # channel: regular
-  channel: rapid
----
-apiVersion: v1
-data:
-  mesh: |-
-    defaultConfig:
-      image:
-        imageType: default
-      tracing:
-        stackdriver: {}
-    discoverySelectors:
-    - matchLabels:
-        istio-injection: enabled
-kind: ConfigMap
-metadata:
-  name: istio-asm-managed-rapid
-  namespace: istio-system

@@ -1,0 +1,61 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cpho-postgres-cluster
+  namespace: server
+  labels:
+    sidecar.istio.io/inject: "false"
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.4
+  instances: 3
+  startDelay: 900
+  stopDelay: 900
+  primaryUpdateStrategy: unsupervised
+
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+    pg_hba:
+      - host all all 10.244.0.0/16 md5
+
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+      secret:
+        name: cpho-app-user
+
+  superuserSecret:
+    name: cpho-superuser
+
+  storage:
+    storageClass: standard
+    size: 1Gi
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+  
+  backup:
+    barmanObjectStore:
+      destinationPath: gs://hopic-dev-postgres-backup
+      endpointURL: https://console.cloud.google.com/storage/browser/hopic-dev-postgres-backup
+      s3Credentials:
+        accessKeyId:
+          name: backup-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: backup-creds
+          key: ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        encryption: AES256
+      data:
+        compression: gzip
+        encryption: AES256
+        immediateCheckpoint: false
+        jobs: 2
+    retentionPolicy: "30d"

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pg-cluster-1-hs
+spec:
+  selector:
+    cnpg.io/instanceName: cpho-postgres-cluster-1 #taken from running pod description
+  clusterIP: None
+  ports:
+    - name: status
+      port: 8000
+      targetPort: 8000
+    - name: postgres
+      port: 5432
+      targetPort: 5432

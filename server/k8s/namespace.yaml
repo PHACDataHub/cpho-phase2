@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: server
+  annotations:
+    mesh.cloud.google.com/proxy: '{"managed": true}'
+  labels:
+    istio-injection: enabled
+    istio.io/rev: asm-managed
+spec: {}
+status: {}

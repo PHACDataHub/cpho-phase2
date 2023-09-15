@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
 - cnpg-cm.yaml
 - cnpg-crds.yaml
-- postgres-cluster-secrets.yaml
+- postgres-secrets.yaml
 - postgres-cluster-dev.yaml

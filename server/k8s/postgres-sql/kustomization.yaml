@@ -1,8 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- cnpg-1.20.2.yaml
-- cpho-app-super-user-secret.yaml
-- cpho-app-user-secret.yaml
-- cpho-postgres-backup.yaml
+- cnpg-cm.yaml
+- cnpg-crds.yaml
+- postgres-cluster-secrets.yaml
 - postgres-cluster-dev.yaml

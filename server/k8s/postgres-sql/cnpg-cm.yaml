@@ -4,4 +4,5 @@ metadata:
   name: cnpg-controller-manager-config
   namespace: cnpg-system
 data:
-  INHERITED_LABELS: sidecar.istio.io/*
+  INHERITED_LABELS: app
+  INHERITED_ANNOTATIONS: proxy.istio.io/*

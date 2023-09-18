@@ -45,3 +45,8 @@ Resetting test db (useful when migrations get in the way of running tests)
 ```bash
 dropdb -U cpho_db_user cpho_test_db
 ```
+
+
+## Remote DB manipulation
+
+To connect to the remote DB from your local machine, download, chmod and ensure the cloud-sql-proxy is in your path, then run `source deploy/connect_cloud_sql_proxy.sh`. In a different shell, you can now run `./manage.py` commands directly against the remote DB. Be careful and make sure you close the script process when you're done.

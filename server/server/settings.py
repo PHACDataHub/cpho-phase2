@@ -159,6 +159,7 @@ MIDDLEWARE = configure_middleware(
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "django_structlog.middlewares.RequestMiddleware",
+        "server.middleware.MustBeLoggedInMiddleware",
     ]
 )
 
@@ -273,7 +274,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # BUSINESS LOGIC CONFIGURATION
 
-CURRENT_YEAR = 2021
+CURRENT_YEAR = 2022
 
 # Logging
 

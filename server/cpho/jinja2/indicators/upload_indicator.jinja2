@@ -154,9 +154,13 @@
               <tr>
                 <td>{{ tdt("Value_Displayed") }}</td>
                 <td>{{ tdt("Value Displayed") }}</td>
-                {% for key in mapper["value_displayed_mapper"] %}
-                  {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                {% endfor %}
+                <td>
+                  <ul>
+                    {% for key in mapper["value_displayed_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>{{ tdt("Pt_Data_Availability") }}</td>

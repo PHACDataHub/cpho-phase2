@@ -84,7 +84,13 @@ class UploadForm(forms.Form):
             dimension_value=dim_val,
             literal_dimension_val=lit_dim_val,
             period=period_val,
+            age_group_type=mapper["age_group_type_mapper"][
+                datum["Age_Group_Type"]
+            ],
             data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
+            pt_data_availability=mapper["pt_data_availability_mapper"][
+                datum["PT_Data_Availability"]
+            ],
             value=(float(datum["Value"]) if datum["Value"] != "" else None),
             value_lower_bound=(
                 float(datum["Value_LowerCI"])
@@ -96,7 +102,10 @@ class UploadForm(forms.Form):
                 if datum["Value_UpperCI"] != ""
                 else None
             ),
-            value_unit=mapper["value_unit_mapper"][datum["Value_Displayed"]],
+            value_unit=mapper["value_unit_mapper"][datum["Value_Units"]],
+            value_displayed=mapper["value_displayed_mapper"][
+                datum["Value_Displayed"]
+            ],
             single_year_timeframe=datum["SingleYear_TimeFrame"],
             multi_year_timeframe=datum["MultiYear_TimeFrame"],
         ).first()
@@ -111,9 +120,14 @@ class UploadForm(forms.Form):
                 period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
-
+            indData_obj.age_group_type = mapper["age_group_type_mapper"][
+                datum["Age_Group_Type"]
+            ]
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
+            ]
+            indData_obj.pt_data_availability = mapper["data_quality_mapper"][
+                datum["PT_Data_Availability"]
             ]
             indData_obj.value = (
                 float(datum["Value"]) if datum["Value"] != "" else None
@@ -129,6 +143,9 @@ class UploadForm(forms.Form):
                 else None
             )
             indData_obj.value_unit = mapper["value_unit_mapper"][
+                datum["Value_Units"]
+            ]
+            indData_obj.value_displayed = mapper["value_displayed_mapper"][
                 datum["Value_Displayed"]
             ]
             indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
@@ -172,9 +189,9 @@ class UploadForm(forms.Form):
             "Dimension_Type",
             "Dimension_Value",
             "Period",
-            # "Age_Group_Type",
-            # "PT_Data_Availability",
-            # "Value_Units",
+            "Age_Group_Type",
+            "PT_Data_Availability",
+            "Value_Units",
         ]
         missing_headers = []
         for header in required_headers:
@@ -207,6 +224,21 @@ class UploadForm(forms.Form):
                         f"row: {idx} Data quality: {data_row['Data_Quality']} is not valid"
                     )
                 )
+            if (
+                data_row["PT_Data_Availability"]
+                not in mapper["pt_data_availability_mapper"]
+            ):
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} PT Data Availability: {data_row['PT_Data_Availability']} is not valid"
+                    )
+                )
+            if data_row["Value_Units"] not in mapper["value_unit_mapper"]:
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Value Units: {data_row['Value_Units']} is not valid"
+                    )
+                )
             if data_row["Value_Displayed"] not in mapper["value_unit_mapper"]:
                 errorlist.append(
                     tdt(
@@ -230,6 +262,15 @@ class UploadForm(forms.Form):
                     errorlist.append(
                         tdt(
                             f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
+                        )
+                    )
+                if (
+                    data_row["Age_Group_Type"]
+                    not in mapper["age_group_type_mapper"]
+                ):
+                    errorlist.append(
+                        tdt(
+                            f"row: {idx} Age Group Type: {data_row['Age_Group_Type']} is not valid"
                         )
                     )
             if data_row["Period"] not in mapper["period_mapper"]:

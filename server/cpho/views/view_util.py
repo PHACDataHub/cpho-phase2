@@ -87,6 +87,12 @@ def upload_mapper():
             "SUPPRESSED": "suppressed",
             "VERY GOOD": "very good",
         },
+        "pt_data_availability_mapper": {
+            "": "",
+            "AVAILABLE": "available",
+            "SUPPRESSED": "suppressed",
+            "NOT AVAILABLE": "not_available",
+        },
         "value_unit_mapper": {
             "": "",
             "AGE-STANDARDIZED RATE": "age_rate",

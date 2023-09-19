@@ -4,10 +4,9 @@ from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views.generic import View
 
-from server.rules_framework import test_rule
-
 from cpho.models import Indicator, IndicatorDatum
 from cpho.views.view_util import export_mapper
+from server.rules_framework import test_rule
 
 from .view_util import MustPassAuthCheckMixin
 
@@ -43,21 +42,24 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
 
         writer = csv.writer(response)
         header_row = [
+            "Category",
+            "Topic",
             "Indicator",
             "Detailed Indicator",
             "Sub_Indicator_Measurement",
-            "Category",
-            "Topic",
             "Data_Quality",
             "Value",
             "Value_LowerCI",
             "Value_UpperCI",
+            "Value_Displayed",
             "SingleYear_TimeFrame",
             "MultiYear_TimeFrame",
-            "Value_Displayed",
             "Dimension_Type",
             "Dimension_Value",
             "Period",
+            "Age_Group_Type",
+            "PT_Data_Availability",
+            "Value_Units",
         ]
         writer.writerow(header_row)
 
@@ -87,7 +89,16 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                         record.value_upper_bound,
                         record.single_year_timeframe,
                         record.multi_year_timeframe,
+                        mapper["age_group_type_mapper"].get(
+                            record.age_group_type
+                        ),
+                        mapper["pt_data_availability_mapper"].get(
+                            record.pt_data_availability
+                        ),
                         mapper["value_unit_mapper"].get(record.value_unit),
+                        mapper["value_displayed_mapper"].get(
+                            record.value_displayed
+                        ),
                         mapper["dimension_type_mapper"].get(
                             record.dimension_type, ""
                         ),

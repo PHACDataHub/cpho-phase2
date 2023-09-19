@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- cnpg-cm.yaml
 - cnpg-crds.yaml
-- postgres-secrets.yaml
+- cnpg-cm.yaml
 - postgres-cluster-dev.yaml

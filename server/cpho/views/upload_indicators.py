@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.generic import FormView
 
+from server.rules_framework import test_rule
+
 from cpho.models import (
     DimensionType,
     DimensionValue,
@@ -15,7 +17,6 @@ from cpho.models import (
     Period,
 )
 from cpho.text import tdt, tm
-from server.rules_framework import test_rule
 
 from .view_util import MustPassAuthCheckMixin, upload_mapper
 
@@ -126,9 +127,9 @@ class UploadForm(forms.Form):
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
             ]
-            indData_obj.pt_data_availability = mapper["data_quality_mapper"][
-                datum["PT_Data_Availability"]
-            ]
+            indData_obj.pt_data_availability = mapper[
+                "pt_data_availability_mapper"
+            ][datum["PT_Data_Availability"]]
             indData_obj.value = (
                 float(datum["Value"]) if datum["Value"] != "" else None
             )

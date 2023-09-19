@@ -240,7 +240,10 @@ class UploadForm(forms.Form):
                         f"row: {idx} Value Units: {data_row['Value_Units']} is not valid"
                     )
                 )
-            if data_row["Value_Displayed"] not in mapper["value_unit_mapper"]:
+            if (
+                data_row["Value_Displayed"]
+                not in mapper["value_displayed_mapper"]
+            ):
                 errorlist.append(
                     tdt(
                         f"row: {idx} Value displayed: {data_row['Value_Displayed']} is not valid"

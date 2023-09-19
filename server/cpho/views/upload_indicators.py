@@ -76,7 +76,8 @@ class UploadForm(forms.Form):
             ]
         else:
             lit_dim_val = datum["Dimension_Value"]
-
+        # filter data with all attributes equal to datum
+        # to see if exact match exists
         indData_obj = IndicatorDatum.objects.filter(
             indicator=indicator_obj,
             dimension_type=mapper["dimension_type_mapper"][
@@ -110,7 +111,10 @@ class UploadForm(forms.Form):
             single_year_timeframe=datum["SingleYear_TimeFrame"],
             multi_year_timeframe=datum["MultiYear_TimeFrame"],
         ).first()
-
+        # if exact match exists, do nothing
+        # if exact match does not exist, check if the data is modified
+        # if data is modified, create update data
+        # if data is new, create new data
         if indData_obj is None:
             indData_obj, created = IndicatorDatum.objects.get_or_create(
                 indicator=indicator_obj,
@@ -171,7 +175,10 @@ class UploadForm(forms.Form):
             raise forms.ValidationError(
                 tdt("Uploaded file is too big. Maximum size allowed is 2 MB")
             )
-        file_data = csv_file.read().decode("utf-8-sig").splitlines()
+        file_data = csv_file.read()
+        # keeping this print in here because the output is useful for adding to test_upload.py
+        # print(file_data)
+        file_data = file_data.decode("utf-8-sig").splitlines()
         reader = csv.DictReader(file_data)
         data_dict = []
         required_headers = [

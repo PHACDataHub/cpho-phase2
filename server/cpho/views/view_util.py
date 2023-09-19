@@ -81,10 +81,10 @@ def upload_mapper():
         },
         "age_group_type_mapper": {
             "": "",
-            "5 Year": "five_year",
-            "Grade": "grade",
-            "Life Course": "life_course",
-            "Setting": "setting",
+            "5 YEAR": "five_year",
+            "GRADE": "grade",
+            "LIFE COURSE": "life_course",
+            "SETTING": "setting",
         },
         "data_quality_mapper": {
             "": "",

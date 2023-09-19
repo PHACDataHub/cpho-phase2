@@ -96,9 +96,9 @@ def upload_mapper():
         },
         "pt_data_availability_mapper": {
             "": "",
-            "AVAILABLE": "available",
-            "SUPPRESSED": "suppressed",
-            "NOT AVAILABLE": "not_available",
+            "Available": "available",
+            "Suppressed": "suppressed",
+            "Not available": "not_available",
         },
         "value_unit_mapper": {
             "": "",

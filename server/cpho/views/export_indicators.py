@@ -4,9 +4,10 @@ from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views.generic import View
 
+from server.rules_framework import test_rule
+
 from cpho.models import Indicator, IndicatorDatum
 from cpho.views.view_util import export_mapper
-from server.rules_framework import test_rule
 
 from .view_util import MustPassAuthCheckMixin
 
@@ -76,19 +77,27 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                     ].get(record.dimension_value, "")
                 writer.writerow(
                     [
+                        mapper["category_mapper"].get(indicator.category, ""),
+                        mapper["topic_mapper"].get(indicator.topic, ""),
                         indicator.name,
                         indicator.detailed_indicator,
                         indicator.sub_indicator_measurement,
-                        mapper["category_mapper"].get(indicator.category, ""),
-                        mapper["topic_mapper"].get(indicator.topic, ""),
                         mapper["data_quality_mapper"].get(
                             record.data_quality, ""
                         ),
                         record.value,
                         record.value_lower_bound,
                         record.value_upper_bound,
+                        mapper["value_displayed_mapper"].get(
+                            record.value_displayed
+                        ),
                         record.single_year_timeframe,
                         record.multi_year_timeframe,
+                        mapper["dimension_type_mapper"].get(
+                            record.dimension_type, ""
+                        ),
+                        deduced_dimension_value,
+                        record.period.code,
                         mapper["age_group_type_mapper"].get(
                             record.age_group_type
                         ),
@@ -96,14 +105,6 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                             record.pt_data_availability
                         ),
                         mapper["value_unit_mapper"].get(record.value_unit),
-                        mapper["value_displayed_mapper"].get(
-                            record.value_displayed
-                        ),
-                        mapper["dimension_type_mapper"].get(
-                            record.dimension_type, ""
-                        ),
-                        deduced_dimension_value,
-                        record.period.code,
                     ]
                 )
 

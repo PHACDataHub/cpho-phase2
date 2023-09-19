@@ -40,19 +40,11 @@ spec:
     metadata:
       annotations:
         # insert the service account token
-        iam.gke.io/gcp-service-account: 
+        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com	
   
   backup:
     barmanObjectStore:
       destinationPath: gs://hopic-dev-postgres-backup
       googleCredentials:
         gkeEnvironment: true
-      wal:
-        compression: gzip
-        encryption: AES256
-      data:
-        compression: gzip
-        encryption: AES256
-        immediateCheckpoint: false
-        jobs: 2
     retentionPolicy: "30d"

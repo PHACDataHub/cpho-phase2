@@ -206,8 +206,15 @@ def export_mapper():
         "topic_mapper": {
             v: k for k, v in upload_mapping["topic_mapper"].items()
         },
+        "age_group_type_mapper": {
+            v: k for k, v in upload_mapping["age_group_type_mapper"].items()
+        },
         "data_quality_mapper": {
             v: k for k, v in upload_mapping["data_quality_mapper"].items()
+        },
+        "pt_data_availability_mapper": {
+            v: k
+            for k, v in upload_mapping["pt_data_availability_mapper"].items()
         },
         "value_unit_mapper": {
             v: k for k, v in upload_mapping["value_unit_mapper"].items()

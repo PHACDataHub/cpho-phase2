@@ -104,7 +104,7 @@ def upload_mapper():
             "": "",
             "AGE-STANDARDIZED RATE": "age_rate",
             "CRUDE RATE": "crude_rate",
-            "DEFINED DAILY DOSE/1,000 CENSUS": "daily_dose_per_1k_census",
+            "DEFINED DAILY DOSE/1,000 CENSUS INHABITANTS": "daily_dose_per_1k_census",
             "PERCENTAGE": "percentage",
             "PERCENTAGE (CRUDE RATE)": "percentage_crude_rate",
             "RATE PER 10,000 PATIENT DAYS": "rate_per_10k_patient",

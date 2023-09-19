@@ -79,6 +79,13 @@ def upload_mapper():
             "CHILDHOOD AND FAMILY RISK FACTORS": "childhood_and_family_risk_and_protective_factors",
             "CHRONIC DISEASES AND MENTAL HEALTH": "chronic_diseases_and_mental_health",
         },
+        "age_group_type_mapper": {
+            "": "",
+            "5 Year": "five_year",
+            "Grade": "grade",
+            "Life Course": "life_course",
+            "Setting": "setting",
+        },
         "data_quality_mapper": {
             "": "",
             "CAUTION": "caution",

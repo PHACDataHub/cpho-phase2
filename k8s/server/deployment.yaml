@@ -23,11 +23,20 @@ spec:
         image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2@sha256:98af5eae23ecf51b95a6ca5b03d00e01da4bb80dd2a364a74ee5c3444c676b51 
         env:
         - name: SECRET_KEY
-          value: "12345"
+          valueFrom:
+            secretKeyRef: 
+              name: django-secret-key
+              key: secret-key          
         - name: ALLOWED_HOSTS
-          value: "hopic-sdpac.phac-aspc.alpha.canada.ca,34.149.100.163,localhost"
+          valueFrom:
+            secretKeyRef: 
+              name: allowed-hosts
+              key: allowed-hosts          
         - name: SLACK_WEBHOOK_URL
-          value: "https://hooks.slack.com/services/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"
+          valueFrom:
+            secretKeyRef: 
+              name: slack-webhook-url
+              key: slack-url   
         - name: DB_NAME
           value: "app"
         - name: DB_HOST
@@ -37,12 +46,12 @@ spec:
         - name: DB_USER
           valueFrom:
             secretKeyRef: 
-              name: cpho-app-user
+              name: cpho-postgres-cluster-app
               key: username
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef: 
-              name: cpho-app-user
+              name: cpho-postgres-cluster-app
               key: password        
         resources:
           limits:

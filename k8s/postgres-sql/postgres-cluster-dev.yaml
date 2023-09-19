@@ -21,17 +21,12 @@ spec:
       pg_stat_statements.track: all
       auto_explain.log_min_duration: '10s'
     pg_hba:
-      - host all all 10.244.0.0/16 md5
+      - host all all all md5
 
   bootstrap:
     initdb:
       database: app
       owner: app
-      secret:
-        name: cpho-app-user
-
-  superuserSecret:
-    name: cpho-superuser
 
   storage:
     storageClass: standard
@@ -41,17 +36,17 @@ spec:
     inProgress: false
     reusePVC: false
   
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        # insert the service account token
+        iam.gke.io/gcp-service-account: 
+  
   backup:
     barmanObjectStore:
       destinationPath: gs://hopic-dev-postgres-backup
-      endpointURL: https://console.cloud.google.com/storage/browser/hopic-dev-postgres-backup
-      s3Credentials:
-        accessKeyId:
-          name: backup-creds
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: backup-creds
-          key: ACCESS_SECRET_KEY
+      googleCredentials:
+        gkeEnvironment: true
       wal:
         compression: gzip
         encryption: AES256

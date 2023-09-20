@@ -94,3 +94,12 @@ patches:
       - op: replace
         path: /metadata/namespace
         value: cert-manager
+  # enable istio injection for the namespace
+  - target:
+      kind: Namespace
+      name: cert-manager
+    patch: |-
+      - op: replace
+        path: /metadata/labels
+        value:
+          istio.io/rev: asm-managed

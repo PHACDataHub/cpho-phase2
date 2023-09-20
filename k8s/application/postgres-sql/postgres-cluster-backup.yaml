@@ -1,3 +1,4 @@
+# this file is not synced with flux
 apiVersion: postgresql.cnpg.io/v1
 kind: Backup
 metadata:

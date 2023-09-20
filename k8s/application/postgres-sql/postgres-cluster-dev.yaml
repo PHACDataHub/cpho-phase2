@@ -25,8 +25,8 @@ spec:
 
   bootstrap:
     initdb:
-      database: app
-      owner: app
+      database: cpho-phase2_db
+      owner: cpho-phase2_db
 
   storage:
     storageClass: standard

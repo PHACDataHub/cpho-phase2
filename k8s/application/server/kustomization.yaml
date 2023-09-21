@@ -4,4 +4,5 @@ resources:
 - secrets.yaml
 - deployment.yaml
 - service.yaml
+- hpa.yaml
 - virtual-service.yaml

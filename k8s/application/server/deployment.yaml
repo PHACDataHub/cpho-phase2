@@ -6,7 +6,6 @@ metadata:
   name: server
   namespace: server
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: server
@@ -54,10 +53,8 @@ spec:
               name: cpho-postgres-cluster-app
               key: password        
         resources:
-          limits:
-            cpu: 300m
-            memory: 70Mi
+          # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)
           requests:
-            cpu: 300m
-            memory: 70Mi
+            cpu: 250m
+            memory: 512Mi
 status: {}

@@ -20,7 +20,7 @@ spec:
       - name: server
         securityContext:
           runAsUser: 5678
-        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2@sha256:98af5eae23ecf51b95a6ca5b03d00e01da4bb80dd2a364a74ee5c3444c676b51 
+        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2@sha256:8941e6fa9066c14d9c7bf4e03b361d8818f445c97923b4ae74661b84229fdc2d 
         env:
         - name: SECRET_KEY
           valueFrom:

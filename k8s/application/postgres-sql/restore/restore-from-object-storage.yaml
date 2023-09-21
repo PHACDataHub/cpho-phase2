@@ -1,10 +1,10 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cpho-postgres-cluster
+  name: cpho-postgres-cluster-object-storage
   namespace: server
   labels:
-    app: postgres-cluster-dev
+    app: postgres-cluster-object-storage
   annotations:
     proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 spec:
@@ -20,13 +20,27 @@ spec:
       pg_stat_statements.max: '10000'
       pg_stat_statements.track: all
       auto_explain.log_min_duration: '10s'
+      "pgaudit.log": "all, -misc"
+      "pgaudit.log_catalog": "off"
+      "pgaudit.log_parameter": "on"
+      "pgaudit.log_relation": "on"
+      "pgaudit.log_statement": none" 
+      "pgaudit.log_min_messages": "error"
+      "pgaudit.log_checkpoints": "on"
+      "pgaudit.log_lock_waits": "on"
+      "pgaudit.log_temp_files": "0"
+      "pgaudit.log_connections": "on"
+      "pgaudit.log_disconnections": "on"
+      "pgaudit.log_hostname": "on"
     pg_hba:
       - host all all all md5
 
+
   bootstrap:
-    initdb:
+    recovery:
+      source: cpho-postgres-restore
+      owner: cpho-phase2_db_user
       database: cpho-phase2_db
-      owner: cpho-phase2_db
 
   storage:
     storageClass: standard
@@ -41,10 +55,20 @@ spec:
       annotations:
         # insert the service account token
         iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com	
-  
+
   backup:
     barmanObjectStore:
       destinationPath: gs://hopic-dev-postgres-backup
       googleCredentials:
         gkeEnvironment: true
-    retentionPolicy: "30d"
+    retentionPolicy: "30d"	
+
+  externalClusters:
+    - name: cpho-postgres-restore
+      barmanObjectStore:
+        serverName: cpho-postgres-cluster
+        destinationPath: gs://hopic-dev-postgres-backup/
+        googleCredentials:
+          gkeEnvironment: true
+        wal:
+          maxParallel: 8

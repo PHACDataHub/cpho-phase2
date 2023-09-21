@@ -10,8 +10,8 @@ patches:
   - target:
       kind: Namespace
       name: flux-system
+    # use ~1 instead of / in path (see https://github.com/kubernetes-sigs/kustomize/issues/1256)
     patch: |-
-      - op: replace
-        path: /metadata/labels
-        value:
-          istio.io/rev: asm-managed
+      - op: add
+        path: /metadata/labels/istio.io~1rev
+        value: asm-managed

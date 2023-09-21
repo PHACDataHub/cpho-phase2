@@ -4,3 +4,14 @@ resources:
 - cnpg-crds.yaml
 - cnpg-cm.yaml
 - postgres-cluster-dev.yaml
+
+patches:
+  # enable istio injection for the namespace
+  - target:
+      kind: Namespace
+      name: cnpg-system
+    # use ~1 instead of / in path (see https://github.com/kubernetes-sigs/kustomize/issues/1256)
+    patch: |-
+      - op: add
+        path: /metadata/labels/istio.io~1rev
+        value: asm-managed

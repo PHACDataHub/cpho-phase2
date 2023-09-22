@@ -14,7 +14,9 @@ spec:
   stopDelay: 900
   primaryUpdateStrategy: unsupervised
 
-  # PostGres Best Practices for the Logging https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+# PostGres Best Practices for the Logging 
+  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
   postgresql:
     parameters:
       shared_buffers: 256MB
@@ -24,15 +26,14 @@ spec:
       pgaudit.log: "all, -misc"
       pgaudit.log_catalog: "off"
       pgaudit.log_parameter: "on"
-      pgaudit.log_relation: "on"  
-      "log_statement": "none" 
-      "log_min_messages": "error"
-      "log_checkpoints": "on"
-      "log_lock_waits": "on"
-      "log_temp_files": :0"
-      "log_connections": "on"
-      "log_disconnections": "on"
-      "log_hostname": "on" 
+      pgaudit.log_relation: "on"
+      log_min_messages: "error"
+      log_checkpoints: "on" 
+      log_lock_waits: "on"
+      log_temp_files: "0"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_hostname: "on"
     pg_hba:
       - host all all all md5
 

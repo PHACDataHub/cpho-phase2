@@ -11,7 +11,7 @@ patches:
 - patch: |-
     - op: add
       path: /spec/loadBalancerIP
-      value: 34.152.34.239
+      value: 34.152.0.41
   target:
     kind: Service
     name: istio-ingressgateway

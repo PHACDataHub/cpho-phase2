@@ -32,7 +32,8 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
 
         filename = "indicator_template"
         if indicator:
-            filename = indicator.name
+            # remove commas to avoid issues with csv
+            filename = str(indicator.name).replace(",", "")
 
         response = HttpResponse(
             content_type="text/csv",
@@ -88,7 +89,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                         record.value_lower_bound,
                         record.value_upper_bound,
                         mapper["value_displayed_mapper"].get(
-                            record.value_displayed
+                            record.value_displayed, ""
                         ),
                         record.single_year_timeframe,
                         record.multi_year_timeframe,
@@ -98,9 +99,9 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                         deduced_dimension_value,
                         record.period.code,
                         mapper["reason_for_null_mapper"].get(
-                            record.reason_for_null
+                            record.reason_for_null, ""
                         ),
-                        mapper["value_unit_mapper"].get(record.value_unit),
+                        mapper["value_unit_mapper"].get(record.value_unit, ""),
                     ]
                 )
 

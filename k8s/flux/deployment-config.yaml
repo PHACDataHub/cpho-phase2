@@ -22,15 +22,6 @@ spec:
     crds: CreateReplace
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
-kind: ImageRepository
-metadata:
-  name: server
-  namespace: flux-system
-spec:
-  image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2
-  interval: 1m0s
----
-apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
   name: server

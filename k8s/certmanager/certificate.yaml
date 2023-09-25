@@ -4,7 +4,7 @@ metadata:
   name: ingress-cert
   namespace: istio-ingress
 spec:
-  commonName: hopic-sdpac.k8s.sphac-aspc.alpha.canada.ca
+  commonName: hopic-sdpac.k8s.phac-aspc.alpha.canada.ca
   dnsNames:
     - hopic-sdpac.k8s.phac-aspc.alpha.canada.ca
   issuerRef:

@@ -1,5 +1,5 @@
-apiVersion: kustomize.config.k8s.io/v1alpha1
-kind: Component
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 # https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
 
 resources:
@@ -94,6 +94,14 @@ patches:
       - op: replace
         path: /metadata/namespace
         value: cert-manager
+  # to avoid "doc is missing path" error in the later patch
+  - target:
+      kind: Namespace
+      name: cert-manager
+    patch: |-
+      - op: add
+        path: /metadata/labels
+        value: {}
   # enable istio injection for the namespace
   - target:
       kind: Namespace

@@ -27,7 +27,7 @@ spec:
               name: django-secret-key
               key: secret-key
         - name: ALLOWED_HOSTS
-          value: "hopic-sdpac.phac-aspc.alpha.canada.ca,34.149.100.163,localhost,34.152.0.41"
+          value: "hopic-sdpac.k8s.phac-aspc.alpha.canada.ca,34.149.100.163,localhost,34.152.0.41"
         - name: SLACK_WEBHOOK_URL
           valueFrom:
             secretKeyRef:

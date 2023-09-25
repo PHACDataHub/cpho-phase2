@@ -34,10 +34,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = get_project_config()
 
-
-IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
+IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
+IS_DEV = config("IS_DEV", cast=bool, default=False)
 IS_RUNNING_TESTS = is_running_tests()
-if IS_LOCAL_DEV:
+
+if IS_LOCAL and not IS_DEV:
+    answer = input(
+        "WARNING: the current .env file is meant for connecting a LOCAL app to the PRODUCITON DB. Are you sure you want to target the production DB? [y/n]: "
+    )
+    if not answer or answer[0].lower() != "y":
+        exit(1)
+
+if IS_LOCAL and IS_DEV:
     # For security, these test/dev settings should _never_ be used in production!
     DEBUG = config("DEBUG", default=False, cast=bool)
     ENABLE_DEBUG_TOOLBAR = DEBUG and config(
@@ -52,7 +60,6 @@ if IS_LOCAL_DEV:
         from . import monkey_patch_for_testing
 
         TEST_RUNNER = "tests.pytest_test_runner.PytestTestRunner"
-
 else:
     DEBUG = False
     ENABLE_DEBUG_TOOLBAR = False
@@ -73,7 +80,7 @@ CORS_ALLOWED_ORIGINS = []
 CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
 
 # Prod only security settings
-if not IS_LOCAL_DEV:
+if not IS_DEV:
     # TODO these might be good to set, may be why an empty CSRF_TRUSTED_ORIGINS doesn't work, assuming
     # the cloud run load balancer/proxy might be downgrading our connection internally? Something to look in to,
     # likely requires corresponding changes to the load balancer's configuration though
@@ -99,7 +106,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # whitenoise configuration
 if config(
-    "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL_DEV)
+    "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL)
 ):
     # requires staticfiles dir, run `./manage.py collectstatic --noinput` as needed!
     WHITENOISE_USE_FINDERS = False
@@ -124,6 +131,7 @@ INSTALLED_APPS = configure_apps(
         "whitenoise.runserver_nostatic",
         "django.contrib.staticfiles",
         "graphene_django",
+        "autocomplete",
         "django_extensions",
         *(["debug_toolbar"] if ENABLE_DEBUG_TOOLBAR else []),
         "rules.apps.AutodiscoverRulesConfig",
@@ -151,6 +159,7 @@ MIDDLEWARE = configure_middleware(
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "django_structlog.middlewares.RequestMiddleware",
+        "server.middleware.MustBeLoggedInMiddleware",
     ]
 )
 
@@ -265,7 +274,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # BUSINESS LOGIC CONFIGURATION
 
-CURRENT_YEAR = 2021
+CURRENT_YEAR = 2022
 
 # Logging
 

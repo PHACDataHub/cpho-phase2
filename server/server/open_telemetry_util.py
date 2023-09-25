@@ -26,13 +26,14 @@ from server.logging_util import add_metadata_to_all_logs_for_current_request
 
 def instrument_app_for_open_telemetry():
     config = get_project_config()
-    IS_LOCAL_DEV = config("IS_LOCAL_DEV", cast=bool, default=False)
-    OUTPUT_TELEMETRY_TO_CONSOLE = config(
-        "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
-    )
+    IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
 
-    if IS_LOCAL_DEV:
-        project_id = "local-dev"
+    if IS_LOCAL:
+        project_id = "local"
+
+        OUTPUT_TELEMETRY_TO_CONSOLE = config(
+            "OUTPUT_TELEMETRY_TO_CONSOLE", cast=bool, default=False
+        )
 
         span_exporter = ConsoleSpanExporter(
             out=(
@@ -51,9 +52,9 @@ def instrument_app_for_open_telemetry():
 
         span_exporter = CloudTraceSpanExporter(
             project_id=project_id,
-            # resource attributes aren't exported in GCP by default, as they aren't actually supported
-            # by Cloud Trace. This regex pattern is used to select resource attributes to covert and
-            # upload as regular attributes
+            # resource labels aren't exported in GCP by default, as the labels aren't actually supported
+            # by Cloud Trace. This regex pattern is used to select resource labels to pick out and convert
+            # to span attributes
             resource_regex=".*",
         )
 
@@ -61,7 +62,7 @@ def instrument_app_for_open_telemetry():
         # `opentelemetry.sdk.resources.get_aggregated_resources`. This calls detect() and
         # merges the results for you BUT it uses thread pools and may not be Cloud Run safe.
         # Manually call detect and merge as needed instead, not a big deal
-        # Note for merge, the order matters with priority given to proceeding resource objects
+        # Note for merge, the order matters with priority given to preceding resource objects
         resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
         resource.merge(ProcessResourceDetector(raise_on_error=True).detect())
 
@@ -121,20 +122,17 @@ def instrument_app_for_open_telemetry():
         skip_dep_check=True,
     )
 
-    # Setting this env var is currently the only way to exclude URLs from tracing. It only read in
-    # during OpenTelemetry's initialization, which happens before the django app is installed,
-    # so we can't add to it dynamically or evenuse `django.urls.reverse` while constructing it,
-    # have to settle for hardcoding it in the .env (or setting a sensible default)
-    excluded_url_env_var_name = "OTEL_PYTHON_DJANGO_EXCLUDED_URLS"
-    excluded_urls = config(excluded_url_env_var_name, default="healthcheck")
-    # if this was set in an env file rather than an env var, need to lift it in to env vars
-    if not excluded_url_env_var_name in os.environ:
-        os.environ[excluded_url_env_var_name] = excluded_urls
-
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
         request_hook=associate_request_logs_to_telemetry,
+        # GOTCHA: in Cloud Run, if we disable our own instrumentation, I believe it just falls back to using
+        # the default tracing Google has on Cloud Run instance... so you'll still get generic spans for excluded routes.
+        # The default tracing is much lighter weight, so disabling does server _some_ purpose. This will also work as
+        # expected in non-Cloud Run deployments
+        excluded_urls=config(
+            "OTEL_PYTHON_DJANGO_EXCLUDED_URLS", default="healthcheck"
+        ),
         # confusingly named (typo included), this actually adds a sqlcommenter middleware, and is
         # redundant to the preferable Psycopg2Instrumentor commenter
         is_sql_commentor_enabled=False,

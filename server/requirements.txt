@@ -1,5 +1,6 @@
 django-debug-toolbar==3.8.1
 django-extensions==3.2.1
+django-htmx-autocomplete==0.8.2
 django-phac_aspc-helpers==0.4.3
 django-versionator==1.0.0
 Django==4.1.9

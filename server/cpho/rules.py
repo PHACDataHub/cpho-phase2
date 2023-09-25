@@ -3,12 +3,12 @@ from server.rules_framework import add_rule, auto_rule
 
 @auto_rule
 def is_admin(user):
-    return user.username == "admin"
+    return user.is_admin
 
 
 @auto_rule
 def is_hso(user):
-    return user.username == "hso"
+    return user.is_hso
 
 
 @auto_rule
@@ -56,6 +56,11 @@ def indicator_of_users_branch(user, indicator):
 @auto_rule
 def can_create_indicator(user):
     return is_admin_or_hso(user)
+
+
+@auto_rule
+def can_upload_indicator(user):
+    return is_admin_or_hso(user) or is_branch_lead(user)
 
 
 @auto_rule
@@ -129,3 +134,10 @@ def can_submit_as_hso_or_program(user, indicator):
         or (is_hso(user) and can_submit_as_hso(user, indicator))
         or (is_program(user) and can_submit_as_program(user, indicator))
     )
+
+
+@auto_rule
+def can_export_indicator(user, indicator):
+    if indicator:
+        return can_view_indicator(user, indicator)
+    return can_upload_indicator(user)

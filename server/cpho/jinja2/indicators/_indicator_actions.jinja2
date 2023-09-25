@@ -24,5 +24,12 @@
         </a>
       </li>
     {% endif %}
+    <li>
+      <a class="dropdown-item"
+         href="{{ url('export_indicator', args=[indicator.pk]) }}">
+        <i class="bi bi-file-earmark-spreadsheet"></i>
+        {{ tdt("Export to CSV") }}
+      </a>
+    </li>
   </ul>
 </div>

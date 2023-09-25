@@ -1,0 +1,20 @@
+{% extends 'base.jinja2' %}
+{% from 'changelog/changelog_macros.jinja2' import changelog_table %}
+
+
+{% block content %}
+
+  <a href="{{ url("list_indicators") }}" class="btn btn-secondary mb-2">{{ tdt("Back to indicators") }}</a>
+
+  <h1>{{ tdt("Changelog for user :") }} {{ user }}</h1>
+
+  <p>{{ tdt("These are all the indicator data changes your account has made") }}</p>
+
+  <style>{% include 'changelog/_changelog_styles.css' %}</style>
+
+  {{ changelog_table(edit_entries,True,False) }}
+  {% include "changelog/_changelog_pagination.jinja2" %}
+
+
+
+{% endblock %}

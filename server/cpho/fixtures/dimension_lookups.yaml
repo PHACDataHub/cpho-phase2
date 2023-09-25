@@ -40,41 +40,18 @@
     name_fr: Genre
     code: gender
     is_literal: false
+- model: cpho.dimensiontype
+  pk: 7
+  fields:
+    name_en: Living Arrangement
+    name_fr: Conditions de vie
+    code: living_arrangement
+    is_literal: false
 
 # dimension values
 
-- model: cpho.dimensionvalue
-  pk: 24
-  fields:
-    dimension_type: 6
-    name_en: Men
-    name_fr: Hommes
-    value: men
-    order: 0.0
-- model: cpho.dimensionvalue
-  pk: 25
-  fields:
-    dimension_type: 6
-    name_en: Women
-    name_fr: Femmes
-    value: women
-    order: 1.0
-- model: cpho.dimensionvalue
-  pk: 26
-  fields:
-    dimension_type: 6
-    name_en: Boys
-    name_fr: Garçons
-    value: boys
-    order: 2.0
-- model: cpho.dimensionvalue
-  pk: 27
-  fields:
-    dimension_type: 6
-    name_en: Girls
-    name_fr: Filles
-    value: girls
-    order: 4.0
+
+
 
 - model: cpho.dimensionvalue
   pk: 2
@@ -220,23 +197,23 @@
     value: atlantic
     order: 0.0
 
-- model: cpho.dimensionvalue
-  pk: 18
-  fields:
-    dimension_type: 3
-    name_en: Quebec
-    name_fr: Québec
-    value: quebec
-    order: 1.0
+# - model: cpho.dimensionvalue
+#   pk: 18
+#   fields:
+#     dimension_type: 3
+#     name_en: Quebec
+#     name_fr: Québec
+#     value: quebec
+#     order: 1.0
 
-- model: cpho.dimensionvalue
-  pk: 19
-  fields:
-    dimension_type: 3
-    name_en: Ontario
-    name_fr: Ontario
-    value: ontario
-    order: 2.0
+# - model: cpho.dimensionvalue
+#   pk: 19
+#   fields:
+#     dimension_type: 3
+#     name_en: Ontario
+#     name_fr: Ontario
+#     value: ontario
+#     order: 2.0
 
 - model: cpho.dimensionvalue
   pk: 20
@@ -247,14 +224,14 @@
     value: prairies
     order: 3.0
 
-- model: cpho.dimensionvalue
-  pk: 21
-  fields:
-    dimension_type: 3
-    name_en: British Columbia
-    name_fr: Colombie-Britannique
-    value: british_columbia
-    order: 4.0
+# - model: cpho.dimensionvalue
+#   pk: 21
+#   fields:
+#     dimension_type: 3
+#     name_en: British Columbia
+#     name_fr: Colombie-Britannique
+#     value: british_columbia
+#     order: 4.0
 
 - model: cpho.dimensionvalue
   pk: 22
@@ -274,6 +251,96 @@
     name_fr: Canada
     value: canada
     order: 0.0
+
+- model: cpho.dimensionvalue
+  pk: 24
+  fields:
+    dimension_type: 6
+    name_en: Men
+    name_fr: Hommes
+    value: men
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 25
+  fields:
+    dimension_type: 6
+    name_en: Women
+    name_fr: Femmes
+    value: women
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 26
+  fields:
+    dimension_type: 6
+    name_en: Boys
+    name_fr: Garçons
+    value: boys
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 27
+  fields:
+    dimension_type: 6
+    name_en: Girls
+    name_fr: Filles
+    value: girls
+    order: 4.0
+
+- model: cpho.dimensionvalue
+  pk: 28
+  fields:
+    dimension_type: 7
+    name_en: Male Living Alone
+    name_fr: Homme vivant seul
+    value: male_alone
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 29
+  fields:
+    dimension_type: 7
+    name_en: Female Living Alone
+    name_fr: Femme vivant seule
+    value: female_alone
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 30
+  fields:
+    dimension_type: 7
+    name_en: Couple no children
+    name_fr: Couple sans enfant
+    value: couple_no_children
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 31
+  fields:
+    dimension_type: 7
+    name_en: Couple with child(ren) less than 18 years old
+    name_fr: Couple avec enfant(s) de moins de 18 ans
+    value: couple_with_childrenU18
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 32
+  fields:
+    dimension_type: 7
+    name_en: Female lone parent with child(ren) less than 18 years old
+    name_fr: Femme parent isolé avec enfant(s) de moins de 18 ans
+    value: female_with_childrenU18
+    order: 4.0
+- model: cpho.dimensionvalue
+  pk: 33
+  fields:
+    dimension_type: 7
+    name_en: Male lone parent with child(ren) less than 18 years old
+    name_fr: Homme parent isolé avec enfant(s) de moins de 18 ans
+    value: male_with_childrenU18
+    order: 5.0
+- model: cpho.dimensionvalue
+  pk: 34
+  fields:
+    dimension_type: 7
+    name_en: Other living arrangements
+    name_fr: Autres conditions de vie
+    value: other_living_arrangements
+    order: 6.0
 
 # - model: cpho.dimensionvalue
 #   pk: 24

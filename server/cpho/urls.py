@@ -14,6 +14,14 @@ urlpatterns = [
     ),
     path("manage_users/", views.ManageUsers.as_view(), name="manage_users"),
     path(
+        "manage_users/create/", views.CreateUser.as_view(), name="create_user"
+    ),
+    path(
+        "users/<int:user_id>/edit/",
+        views.ModifyUser.as_view(),
+        name="modify_user",
+    ),
+    path(
         "indicators/", views.ListIndicators.as_view(), name="list_indicators"
     ),
     path(
@@ -82,6 +90,16 @@ urlpatterns = [
         name="indicator_scoped_changelog",
     ),
     path(
+        "users/<int:user_id>/changelog/",
+        views.UserScopedChangelog.as_view(),
+        name="user_scoped_changelog",
+    ),
+    path(
+        "users/<int:user_id>/changelog/<int:page_num>/",
+        views.UserScopedChangelog.as_view(),
+        name="user_scoped_changelog",
+    ),
+    path(
         "global-changelog/",
         views.GlobalChangelog.as_view(),
         name="global_changelog",
@@ -90,5 +108,15 @@ urlpatterns = [
         "global-changelog/<int:page_num>/",
         views.GlobalChangelog.as_view(),
         name="global_changelog",
+    ),
+    path(
+        "indicators/<int:pk>/export/",
+        views.ExportIndicator.as_view(),
+        name="export_indicator",
+    ),
+    path(
+        "indicators/export/template/",
+        views.ExportIndicator.as_view(),
+        name="export_indicator_template",
     ),
 ]

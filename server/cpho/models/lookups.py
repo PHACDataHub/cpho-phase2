@@ -44,9 +44,9 @@ class DimensionValue(models.Model):
         related_name="possible_values",
     )
 
-    name_en = fields.CharField(max_length=50)
+    name_en = fields.CharField(max_length=200)
 
-    name_fr = fields.CharField(max_length=50)
+    name_fr = fields.CharField(max_length=200)
 
     value = fields.CharField(
         max_length=50
@@ -90,6 +90,17 @@ class Period(models.Model):
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
 
+    @property
+    def code(self):
+        s = str(self.year)
+        if self.year_type == self.FISCAL_YEAR_TYPE:
+            s = f"FY{s}"
+        else:
+            s = f"CY{s}"
+        if self.quarter:
+            s = f"{s}Q{self.quarter}"
+        return s
+
     def as_tuple(self):
         # can be used for sorting
         # python's default sort will stably sort by year, then quarter
@@ -105,4 +116,6 @@ class Period(models.Model):
 
     @staticmethod
     def relevant_years():
-        return Period.objects.filter(year=settings.CURRENT_YEAR)
+        return Period.objects.filter(
+            year__in=[settings.CURRENT_YEAR - 1, settings.CURRENT_YEAR]
+        )

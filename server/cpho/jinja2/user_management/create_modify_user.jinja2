@@ -1,0 +1,42 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display %}
+
+{% block content %}
+  <a class="btn btn-warning mb-4" href="{{ url("manage_users") }}">{{ tdt("Back") }}</a>
+
+  {{ form.media }}
+  {% if form.errors %}<div class="alert alert-danger">{{ form.errors }}</div>{% endif %}
+  <form method="post">
+    {{ csrf_input }}
+    <div class="mb-3">
+      {% if form.email %}
+        <label class="required" for="id_email">{{ form.email.label }} ({{ tdt("required") }})</label>
+        {{ form.email }}
+      {% elif user_to_be_modified %}
+        <label class="required" for="id_email">{{ tdt("email") }}</label>
+        <input disabled id="id_email"  value="{{ user_to_be_modified.email }}">
+      {% endif %}
+    </div>
+    {% if respects_rule("is_admin") %}
+      <div class="form-check">
+        <label class="form-check-label">
+          {{ form.is_hso }}
+          {{ form.is_hso.label }}
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          {{ form.is_admin }}
+          <span class="text-danger">{{ form.is_admin.label }}</span>
+        </label>
+      </div>
+    {% endif %}
+    <div class="my-3">
+      {{ form.phac_org_multi.label_tag() }}
+      {{ form.phac_org_multi }}
+    </div>
+
+    <input class="btn btn-primary" type="submit" value="{{ tdt("save") }}">
+    <a class="btn btn-secondary" href="{{ url("manage_users") }}">{{ tdt("cancel") }}</a>
+  </form>
+{% endblock %}

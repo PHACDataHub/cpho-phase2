@@ -3,11 +3,18 @@ from unittest.mock import patch
 from django.urls import reverse
 
 from cpho.model_factories import IndicatorFactory
-from cpho.models import DimensionType, DimensionValue, Indicator, Period
+from cpho.models import (
+    DimensionType,
+    DimensionValue,
+    Indicator,
+    IndicatorDatumHistory,
+    IndicatorHistory,
+    Period,
+)
 
 
 def create_versions():
-    i1 = IndicatorFactory()
+    i1 = IndicatorFactory(name="i1")
     i2 = IndicatorFactory()
     p1 = Period.objects.first()
     p2 = Period.objects.last()
@@ -54,11 +61,11 @@ def test_changelog(vanilla_user_client):
     create_versions()
 
     with patch(
-        "cpho.views.changelog.GlobalChangelog.get_page_size", lambda _: 2
+        "cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2
     ):
         resp = vanilla_user_client.get(reverse("global_changelog"))
         assert resp.status_code == 200
-        assert resp.context["num_pages"] > 4
+        assert resp.context["num_pages"] == 7
         assert resp.context["page_num"] == 1
 
         resp = vanilla_user_client.get(
@@ -76,7 +83,7 @@ def test_indicator_changelog(vanilla_user_client):
     i1 = Indicator.objects.first()
 
     with patch(
-        "cpho.views.changelog.IndicatorScopedChangelog.get_page_size",
+        "cpho.views.changelog.ChangelogView.get_page_size",
         lambda _: 2,
     ):
         resp = vanilla_user_client.get(
@@ -100,5 +107,46 @@ def test_indicator_changelog(vanilla_user_client):
             reverse(
                 "indicator_scoped_changelog",
                 kwargs={"indicator_id": i1.id, "page_num": 4},
+            )
+        )
+
+
+def test_user_scoped_changelog(vanilla_user, vanilla_user_client):
+    u_id = vanilla_user.id
+    create_versions()
+    IndicatorHistory.objects.filter(name="i1").update(edited_by_id=u_id)
+    IndicatorDatumHistory.objects.filter(indicator__name="i1").update(
+        edited_by_id=u_id
+    )
+
+    with patch(
+        "cpho.views.changelog.ChangelogView.get_page_size",
+        lambda _: 2,
+    ):
+        resp = vanilla_user_client.get(
+            reverse("user_scoped_changelog", kwargs={"user_id": u_id})
+        )
+        assert resp.status_code == 200
+        assert resp.context["num_pages"] == 4
+        assert resp.context["page_num"] == 1
+
+        resp = vanilla_user_client.get(
+            reverse(
+                "user_scoped_changelog",
+                kwargs={
+                    "user_id": u_id,
+                    "page_num": 2,
+                },
+            )
+        )
+        assert resp.status_code == 200
+
+        resp = vanilla_user_client.get(
+            reverse(
+                "user_scoped_changelog",
+                kwargs={
+                    "user_id": u_id,
+                    "page_num": 4,
+                },
             )
         )

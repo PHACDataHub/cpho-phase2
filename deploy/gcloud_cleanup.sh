@@ -39,6 +39,10 @@ if "${allow_cleanup}"; then
 
   # ----- ARTIFACT REGISTRY -----
   gcloud artifacts repositories delete "${ARTIFACT_REGISTRY_REPO}" --location "${PROJECT_REGION}" || :
+
+  # ----- CLOUD STORAGE -----
+  gcloud storage buckets delete "gs://${MEDIA_BUCKET_NAME}" --location "${PROJECT_REGION}" || :
+  gcloud storage buckets delete "gs://${TEST_COVERAGE_BUCKET_NAME}" --location "${PROJECT_REGION}" || :
   
   # ----- CLOUD BUILD ----
   gcloud builds triggers delete github "${BUILD_CLOUD_BUILD_TRIGGER_NAME}" --region "${PROJECT_REGION}" || :
@@ -53,6 +57,9 @@ if "${allow_cleanup}"; then
   gcloud compute networks vpc-access connectors delete "${VPC_CONNECTOR_NAME}" --region "${PROJECT_REGION}" || :
   gcloud compute addresses delete "${VPC_SERVICE_CONNECTION_NAME}" || :
   
+  # ----- UPTIME MONITORING -----
+  (cd pulumi && npm run destroy-uptime-monitoring)
+
   # ----- SECRET MANAGER -----
   skey_env_var_names=$(env -0 | cut -z -f1 -d= | tr '\0' '\n' | grep "^SKEY_")
   for env_var_name in ${skey_env_var_names}; do

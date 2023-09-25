@@ -127,16 +127,18 @@ steps:
       if [ ${#failure_reasons[@]} -eq 0 ]; then
         echo "Test coverage is suficient  - continuing..."
       else
-        echo "Step would have failed for the following reasons: "
+        echo "Insufficent test coverage" 
         for reason in "${failure_reasons[@]}"; do
           echo "$reason"
-        done
+        done 
 
-        # Fail build if not main (or master) deployment branch.
-        # if [[ "${BRANCH_NAME}" != "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
-        #   echo "Insufficent test coverage - build failed."  
-        #   exit 1
-        # fi
+        # Exit/fail build if not the main branch; we want to enforce coverage on branches at PR time,
+        # but not totally block development/deployment from main over it
+        if [[ "${BRANCH_NAME}" != "${GITHUB_MAIN_BRANCH_NAME}" ]]; then  
+          exit 1
+        else
+          echo "Continuing despite insufficient coverage..."
+        fi
       fi
 
 
@@ -192,7 +194,7 @@ steps:
       # IMPORTANT: don't just use latest. The secrets are mounted at container start, not deploy time,
       # so instances deployed with "latest" may end up using incompatable secret versions as new secret
       # versions are pushed, but before the coresponding images are pushed
-      prod_env_secret_version=11
+      prod_env_secret_version=13
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Deploy new image to Cloud Run"

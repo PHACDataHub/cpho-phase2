@@ -13,7 +13,7 @@ github: github {
   shape: image
 }
 
-slack: Slack alerting\nwebhook {
+slack: Slack alerts\nchannel {
   icon: ./icons/Slack_icon_2019.svg
   shape: image
 }
@@ -179,7 +179,7 @@ gcp: Google Cloud {
     }
   }
 
-  uptime_checks: Uptime Monitoring {
+  uptime_checks: Uptime Check &\nAlert Policy {
     icon: ./icons/cloud_monitoring.svg
     style: {
       stroke: "#000000"
@@ -193,7 +193,7 @@ devs <-> github
 devs -> gcp.regional.project_vpc.cloud_sql: TBD: DB data\nmaintenance access
 devs -> gcp.regional.secret_manager: Write access
 gcp.regional.cloud_run_vpc.cloud_run -> slack: Error log\nalerts
-gcp.uptime_checks <-> gcp.load_balancer.forwarding_rule: Health check
+gcp.uptime_checks <-> gcp.load_balancer.forwarding_rule: App health check\nrequest
 gcp.uptime_checks -> slack: Outage\nalerts
 slack -> devs
 

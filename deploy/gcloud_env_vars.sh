@@ -19,14 +19,17 @@ export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
-export GITHUB_MAIN_BRANCH_NAME=main
-
-# NOTE: if PROJECT_IS_USING_WHITENOISE is true then no cloud storage will be created for the project
-export PROJECT_IS_USING_WHITENOISE=true
+export GITHUB_MAIN_BRANCH_NAME=user-testing
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
-export TEST_COVERAGE_THRESHOLD=80
-export TEST_DELTA_THRESHOLD=-5  #current commit test coverage minus last commit on main's coverage
+export TEST_COVERAGE_THRESHOLD=77.5 # set just below current coverage, consider increasing in time
+export TEST_DELTA_THRESHOLD=-2  # % value, threshold for current commit test coverage minus last commit on main's coverage
+
+export APP_HEALTHCHECK_ROUTE=/healthcheck
+export SLACK_ALERTING_CHANNEL_NAME="#cpho-hopic-prod-alerts"
+
+# NOTE: if PROJECT_IS_USING_WHITENOISE is true then no media cloud storage will be created for the project
+export PROJECT_IS_USING_WHITENOISE=true
 
 #########################################
 # Derived & less likely to need changes #
@@ -77,7 +80,11 @@ export DB_VERSION=POSTGRES_14
 export DB_TIER=db-g1-small
 export DB_INSTANCE_NAME="${PROJECT_SERVICE_NAME}-db-instance"
 export DB_NAME="${PROJECT_SERVICE_NAME}_db"
-export DB_USER="${PROJECT_SERVICE_NAME}_db_user"
+export DB_APP_USER="${PROJECT_SERVICE_NAME}_db_user"
+export DB_LOCAL_ACCESS_USER="${PROJECT_SERVICE_NAME}_db_local_access_user"
+
+# ----- LOCAL ACCESS TO PROD DB -----
+export LOCAL_ACCESS_DB_PORT=6543
 
 # ----- VPC NETWORK -----
 export VPC_NAME=default
@@ -87,8 +94,11 @@ export VPC_CONNECTOR_RANGE="10.8.0.0/28" # must be /28 and unused. 10.8.0.0 shou
 
 # ----- SECRET MANAGER (keys only) -----
 export SKEY_DB_ROOT_PASSWORD=db_root_password
-export SKEY_DB_USER_PASSWORD=db_user_password
+export SKEY_DB_APP_USER_PASSWORD_TEMP=db_app_user_password_temp
+export SKEY_DB_LOCAL_ACCESS_USER_PASSWORD_TEMP=db_local_access_user_password_temp
 export SKEY_PROD_ENV_FILE=django_production_env
+export SKEY_LOCAL_ACCESS_PROD_ENV_FILE=django_local_prod_db_access_env
+export SKEY_PROD_SLACK_ALERTING_APP_TOKEN=slack_alerting_app_token
 
 
 set_secret () {

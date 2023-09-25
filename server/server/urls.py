@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path, re_path
 
+from autocomplete import HTMXAutoComplete
+
 from cpho.urls import (
     urlpatterns as cpho_urls,  # force an import for runserver's refresh sake
 )
@@ -20,10 +22,18 @@ urlpatterns = i18n_patterns(
     path("phac_admin/", admin.site.urls),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
+    *HTMXAutoComplete.url_dispatcher("ac"),
     path("", include(cpho_urls)),
     prefix_default_language=False,
 ) + [
     path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),
+    path(
+        "robots.txt",
+        lambda r: HttpResponse(
+            "User-Agent: *\nDisallow: /", content_type="text/plain"
+        ),
+        name="robots",
+    ),
     re_path("^$", RootView.as_view(), name="root"),
     *dev_routes,
 ]

@@ -1,5 +1,4 @@
 import csv
-import time
 
 from django import forms
 from django.contrib import messages
@@ -7,6 +6,8 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.generic import FormView
+
+from server.rules_framework import test_rule
 
 from cpho.models import (
     DimensionType,
@@ -17,10 +18,14 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
-from .view_util import upload_mapper
+from .view_util import MustPassAuthCheckMixin, upload_mapper
 
 
 class UploadForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+
     csv_file = forms.FileField(
         required=True,
         widget=forms.FileInput(
@@ -30,57 +35,84 @@ class UploadForm(forms.Form):
         ),
     )
 
-    def save(self):
-        data = self.cleaned_data["csv_file"]
-        # TODO: Update Periods
-        preiod_val = Period.objects.get(
-            year=2021, quarter=None, year_type="calendar"
-        )
+    def handle_indicators(self, datum):
         mapper = upload_mapper()
-        for datum in data:
-            # For the future: Indicators should not be created; just queried
+        # try to find if indicator with same exact attributes exists first
+        indicator_obj = Indicator.objects.filter(
+            name=datum["Indicator"],
+            category=mapper["category_mapper"][datum["Category"]],
+            sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+            detailed_indicator=datum["Detailed Indicator"],
+            sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
+        ).first()
 
-            # try to find if indicator with same exact attributes exists first
-            indicator_obj = Indicator.objects.filter(
-                name=datum["Indicator"],
-                category=mapper["category_mapper"][datum["Category"]],
-                sub_category=mapper["subcategory_mapper"][datum["Topic"]],
-                detailed_indicator=datum["Detailed Indicator"],
-                sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
-            )
-            # if it exists, use it(saves extra queries to db); otherwise create it
-            if len(indicator_obj) == 0:
-                indicator_obj, created = Indicator.objects.get_or_create(
+        if indicator_obj is None:
+            if test_rule("can_create_indicator", self.user):
+                indicator_obj = Indicator.objects.create(
                     name=datum["Indicator"],
                     category=mapper["category_mapper"][datum["Category"]],
                     sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                    detailed_indicator=datum["Detailed Indicator"],
+                    sub_indicator_measurement=datum[
+                        "Sub_Indicator_Measurement"
+                    ],
                 )
-                indicator_obj.detailed_indicator = datum["Detailed Indicator"]
-                indicator_obj.sub_indicator_measurement = datum[
-                    "Sub_Indicator_Measurement"
-                ]
-                indicator_obj.save()
-            else:
-                indicator_obj = indicator_obj[0]
 
-            dim_val = None
-            lit_dim_val = None
-            if datum["Dimension_Type"] != "Age Group":
-                dim_val = mapper["non_literal_dimension_value_mapper"][
-                    (datum["Dimension_Type"], datum["Dimension_Value"])
-                ]
-            else:
-                lit_dim_val = datum["Dimension_Value"]
+        return indicator_obj
 
+    def handle_indicator_data(self, indicator_obj, datum):
+        mapper = upload_mapper()
+
+        period_val = mapper["period_mapper"][datum["Period"]]
+
+        if not test_rule("can_edit_indicator_data", self.user, indicator_obj):
+            return None
+
+        dim_val = None
+        lit_dim_val = None
+        if datum["Dimension_Type"] != "Age Group":
+            dim_val = mapper["non_literal_dimension_value_mapper"][
+                (datum["Dimension_Type"], datum["Dimension_Value"])
+            ]
+        else:
+            lit_dim_val = datum["Dimension_Value"]
+
+        indData_obj = IndicatorDatum.objects.filter(
+            indicator=indicator_obj,
+            dimension_type=mapper["dimension_type_mapper"][
+                datum["Dimension_Type"]
+            ],
+            dimension_value=dim_val,
+            literal_dimension_val=lit_dim_val,
+            period=period_val,
+            data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
+            value=(float(datum["Value"]) if datum["Value"] != "" else None),
+            value_lower_bound=(
+                float(datum["Value_LowerCI"])
+                if datum["Value_LowerCI"] != ""
+                else None
+            ),
+            value_upper_bound=(
+                float(datum["Value_UpperCI"])
+                if datum["Value_UpperCI"] != ""
+                else None
+            ),
+            value_unit=mapper["value_unit_mapper"][datum["Value_Displayed"]],
+            single_year_timeframe=datum["SingleYear_TimeFrame"],
+            multi_year_timeframe=datum["MultiYear_TimeFrame"],
+        ).first()
+
+        if indData_obj is None:
             indData_obj, created = IndicatorDatum.objects.get_or_create(
                 indicator=indicator_obj,
                 dimension_type=mapper["dimension_type_mapper"][
                     datum["Dimension_Type"]
                 ],
                 dimension_value=dim_val,
+                period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
-            indData_obj.period = preiod_val
+
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
             ]
@@ -104,9 +136,17 @@ class UploadForm(forms.Form):
             indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
             indData_obj.save()
 
-    def clean_csv_file(self):
-        start_time = time.time()
+    def save(self):
+        data = self.cleaned_data["csv_file"]
+        for datum in data:
+            indicator_obj = self.handle_indicators(datum)
 
+            if indicator_obj is None:
+                continue
+
+            self.handle_indicator_data(indicator_obj, datum)
+
+    def clean_csv_file(self):
         csv_file = self.cleaned_data["csv_file"]
         if not csv_file.name.endswith(".csv"):
             raise forms.ValidationError(tdt("File is not CSV type"))
@@ -132,13 +172,8 @@ class UploadForm(forms.Form):
             "MultiYear_TimeFrame",
             "Dimension_Type",
             "Dimension_Value",
-            # "COUNTRY",
-            # "Geography",
-            # "Sex",
-            # "Gender",
-            # "Age_Group",
+            "Period",
             # "Age_Group_Type",
-            # "Living_Arrangement",
             # "PT_Data_Availability",
             # "Value_Units",
         ]
@@ -200,30 +235,78 @@ class UploadForm(forms.Form):
                             f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
                         )
                     )
+            if data_row["Period"] not in mapper["period_mapper"]:
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Period: {data_row['Period']} is not valid"
+                    )
+                )
 
-            # data_dimension = deduce_dimension_type(data_row, idx)
-            # print(data_dimension)
+            # checking if indicator already exists
+            indicator_obj = Indicator.objects.filter(
+                name=data_row["Indicator"],
+                category=mapper["category_mapper"][data_row["Category"]],
+                sub_category=mapper["subcategory_mapper"][data_row["Topic"]],
+                detailed_indicator=data_row["Detailed Indicator"],
+                sub_indicator_measurement=data_row[
+                    "Sub_Indicator_Measurement"
+                ],
+            ).first()
+            if indicator_obj is None and not test_rule(
+                "can_create_indicator", self.user
+            ):
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Indicator: {data_row['Indicator']} does not exist and you do not have permission to create it"
+                    )
+                )
+
+            if indicator_obj is not None:
+                if not test_rule(
+                    "can_edit_indicator_data", self.user, indicator_obj
+                ):
+                    errorlist.append(
+                        tdt(
+                            f"row: {idx} You do not have permission to edit data for Indicator: {indicator_obj.name}"
+                        )
+                    )
+
             data_dict.append(data_row)
 
         if errorlist:
             raise forms.ValidationError(mark_safe(" </br> ".join(errorlist)))
 
-        print("--- %s seconds ---" % (time.time() - start_time))
-
         return data_dict
 
 
-class UploadIndicator(FormView):
+class UploadIndicator(MustPassAuthCheckMixin, FormView):
     template_name = "indicators/upload_indicator.jinja2"
     form_class = UploadForm
 
+    def check_rule(self):
+        return test_rule(
+            "can_upload_indicator",
+            self.request.user,
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["mapper"] = upload_mapper()
+
+        return context
+
     def get_success_url(self):
-        return reverse("list_indicators")
+        return reverse("user_scoped_changelog", args=[self.request.user.id])
 
     def form_valid(self, form):
-        start_time = time.time()
         form.save()
-        print("--- %s seconds ---" % (time.time() - start_time))
+
         messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 

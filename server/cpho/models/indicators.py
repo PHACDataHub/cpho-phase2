@@ -1,15 +1,17 @@
 from django.apps import apps
 from django.db import models
+
 from pleasant_promises.dataloader import SingletonDataLoader
 
-from cpho.constants import SUBMISSION_STATUSES
-from cpho.text import tdt
 from server import fields
 from server.model_util import (
     add_to_admin,
     track_versions_with_editor,
     track_versions_with_editor_and_submission,
 )
+
+from cpho.constants import SUBMISSION_STATUSES
+from cpho.text import tdt
 
 
 @add_to_admin
@@ -187,20 +189,6 @@ class IndicatorDatum(models.Model):
         on_delete=models.RESTRICT,
     )
 
-    AGE_GROUP_TYPE_CHOICES = [
-        ("", "--"),
-        ("five_year", tdt("5 Year")),
-        ("grade", tdt("Grade")),
-        ("life_course", tdt("Life Course")),
-        ("setting", tdt("Setting")),
-    ]
-
-    age_group_type = fields.CharField(
-        max_length=50,
-        choices=AGE_GROUP_TYPE_CHOICES,
-        null=True,
-    )
-
     DATA_QUALITY_CHOICES = [
         ("", "--"),
         ("caution", tdt("Caution")),
@@ -217,15 +205,14 @@ class IndicatorDatum(models.Model):
         null=True,
     )
 
-    PT_DATA_AVAILABILITY_CHOICES = [
+    REASON_FOR_NULL_CHOICES = [
         ("", "--"),
-        ("available", tdt("Available")),
         ("suppressed", tdt("Suppressed")),
         ("not_available", tdt("Not available")),
     ]
 
-    pt_data_availability = fields.CharField(
-        max_length=75, choices=PT_DATA_AVAILABILITY_CHOICES, null=True
+    reason_for_null = fields.CharField(
+        max_length=75, choices=REASON_FOR_NULL_CHOICES, null=True, default=""
     )
 
     value = fields.FloatField(null=True)

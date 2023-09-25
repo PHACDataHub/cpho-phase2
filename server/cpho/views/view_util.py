@@ -75,16 +75,8 @@ def upload_mapper():
             "HEALTH STATUS": "health_status",
             "COMMUNICABLE DISEASES": "communicable_diseases",
             "SUBSTANCE USE": "substance_use",
-            "CHILDHOOD AND FAMILY FACTORS": "childhood_and_family_risk_and_protective_factors",
-            "CHILDHOOD AND FAMILY RISK FACTORS": "childhood_and_family_risk_and_protective_factors",
+            "CHILDHOOD AND FAMILY FACTORS": "childhood_and_family_factors",
             "CHRONIC DISEASES AND MENTAL HEALTH": "chronic_diseases_and_mental_health",
-        },
-        "age_group_type_mapper": {
-            "": "",
-            "5 YEAR": "five_year",
-            "GRADE": "grade",
-            "LIFE COURSE": "life_course",
-            "SETTING": "setting",
         },
         "data_quality_mapper": {
             "": "",
@@ -94,9 +86,8 @@ def upload_mapper():
             "SUPPRESSED": "suppressed",
             "VERY GOOD": "very good",
         },
-        "pt_data_availability_mapper": {
+        "reason_for_null_mapper": {
             "": "",
-            "Available": "available",
             "Suppressed": "suppressed",
             "Not available": "not_available",
         },
@@ -206,15 +197,11 @@ def export_mapper():
         "topic_mapper": {
             v: k for k, v in upload_mapping["topic_mapper"].items()
         },
-        "age_group_type_mapper": {
-            v: k for k, v in upload_mapping["age_group_type_mapper"].items()
-        },
         "data_quality_mapper": {
             v: k for k, v in upload_mapping["data_quality_mapper"].items()
         },
-        "pt_data_availability_mapper": {
-            v: k
-            for k, v in upload_mapping["pt_data_availability_mapper"].items()
+        "reason_for_null_mapper": {
+            v: k for k, v in upload_mapping["reason_for_null_mapper"].items()
         },
         "value_unit_mapper": {
             v: k for k, v in upload_mapping["value_unit_mapper"].items()

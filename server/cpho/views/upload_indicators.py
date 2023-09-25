@@ -86,12 +86,9 @@ class UploadForm(forms.Form):
             dimension_value=dim_val,
             literal_dimension_val=lit_dim_val,
             period=period_val,
-            age_group_type=mapper["age_group_type_mapper"][
-                datum["Age_Group_Type"]
-            ],
             data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
-            pt_data_availability=mapper["pt_data_availability_mapper"][
-                datum["PT_Data_Availability"]
+            reason_for_null=mapper["reason_for_null_mapper"][
+                datum["Reason_for_Null_Data"]
             ],
             value=(float(datum["Value"]) if datum["Value"] != "" else None),
             value_lower_bound=(
@@ -125,15 +122,12 @@ class UploadForm(forms.Form):
                 period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
-            indData_obj.age_group_type = mapper["age_group_type_mapper"][
-                datum["Age_Group_Type"]
-            ]
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
             ]
-            indData_obj.pt_data_availability = mapper[
-                "pt_data_availability_mapper"
-            ][datum["PT_Data_Availability"]]
+            indData_obj.reason_for_null = mapper["reason_for_null_mapper"][
+                datum["Reason_for_Null_Data"]
+            ]
             indData_obj.value = (
                 float(datum["Value"]) if datum["Value"] != "" else None
             )
@@ -197,8 +191,7 @@ class UploadForm(forms.Form):
             "Dimension_Type",
             "Dimension_Value",
             "Period",
-            "Age_Group_Type",
-            "PT_Data_Availability",
+            "Reason_for_Null_Data",
             "Value_Units",
         ]
         missing_headers = []
@@ -233,12 +226,12 @@ class UploadForm(forms.Form):
                     )
                 )
             if (
-                data_row["PT_Data_Availability"]
-                not in mapper["pt_data_availability_mapper"]
+                data_row["Reason_for_Null_Data"]
+                not in mapper["reason_for_null_mapper"]
             ):
                 errorlist.append(
                     tdt(
-                        f"row: {idx} PT Data Availability: {data_row['PT_Data_Availability']} is not valid"
+                        f"row: {idx} Reason_for_Null_Data: {data_row['reason_for_null']} is not valid"
                     )
                 )
             if data_row["Value_Units"] not in mapper["value_unit_mapper"]:
@@ -273,15 +266,6 @@ class UploadForm(forms.Form):
                     errorlist.append(
                         tdt(
                             f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
-                        )
-                    )
-                if (
-                    data_row["Age_Group_Type"]
-                    not in mapper["age_group_type_mapper"]
-                ):
-                    errorlist.append(
-                        tdt(
-                            f"row: {idx} Age Group Type: {data_row['Age_Group_Type']} is not valid"
                         )
                     )
             if data_row["Period"] not in mapper["period_mapper"]:

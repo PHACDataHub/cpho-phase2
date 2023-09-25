@@ -6,9 +6,7 @@
   <button type="button mt-5"
           class="btn btn-primary"
           data-bs-toggle="modal"
-          data-bs-target="#expectedColumnModal">
-    {{ tdt("View expected column names") }}
-  </button>
+          data-bs-target="#expectedColumnModal">{{ tdt("View expected column names") }}</button>
  
   <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tdt("Download a file template") }}</a>
  
@@ -163,14 +161,13 @@
                 </td>
               </tr>
               <tr>
-                <td>{{ tdt("Pt_Data_Availability") }}</td>
-                <td>{{ tdt("Pt Data Avalability") }}</td>
+                <td>{{ tdt("Reason_for_Null_Data") }}</td>
+                <td>{{ tdt("Reason for null Data. Deafult is empty") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("%") }}</li>
-                    <li>{{ tdt("Available") }}</li>
-                    <li>{{ tdt("Suppressed") }}</li>
-                    <li>{{ tdt("Not available") }}</li>
+                    {% for key in mapper["reason_for_null_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>
@@ -179,13 +176,9 @@
                 <td>{{ tdt("Dimension of data recorded") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("Province") }}</li>
-                    <li>{{ tdt("Gender") }}</li>
-                    <li>{{ tdt("Region") }}</li>
-                    <li>{{ tdt("Sex") }}</li>
-                    <li>{{ tdt("Canada") }}</li>
-                    <li>{{ tdt("Age Group") }}</li>
-                    <li>{{ tdt("Living Arrangement") }}</li>
+                    {% for key in mapper["dimension_type_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>

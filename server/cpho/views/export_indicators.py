@@ -58,8 +58,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
             "Dimension_Type",
             "Dimension_Value",
             "Period",
-            "Age_Group_Type",
-            "PT_Data_Availability",
+            "Reason_for_Null_Data",
             "Value_Units",
         ]
         writer.writerow(header_row)
@@ -98,11 +97,8 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                         ),
                         deduced_dimension_value,
                         record.period.code,
-                        mapper["age_group_type_mapper"].get(
-                            record.age_group_type
-                        ),
-                        mapper["pt_data_availability_mapper"].get(
-                            record.pt_data_availability
+                        mapper["reason_for_null_mapper"].get(
+                            record.reason_for_null
                         ),
                         mapper["value_unit_mapper"].get(record.value_unit),
                     ]

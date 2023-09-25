@@ -45,8 +45,7 @@
       {% endif %}
     </td>
     <td>{{ form.value_displayed }}</td>
-    <td>{{ form.pt_data_availability }}</td>
-    <td>{{ form.age_group_type }}</td>
+    <td>{{ form.reason_for_null }}</td>
     <td>
       {{ form.DELETE }}
       {{ form.id }} {# this is hidden #}
@@ -88,7 +87,7 @@
               <th width="9%">{{ tdt("Single Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Value Displayed") }}</th>
-              <th width="9%">{{ tdt("Pt Data Availability") }}</th>
+              <th width="9%">{{ tdt("Reason For Null Data") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
@@ -139,7 +138,7 @@
                   {% endif %}
                 </td>
                 <td>{{ form.value_displayed }}</td>
-                <td>{{ form.pt_data_availability }}</td>
+                <td>{{ form.reason_for_null }}</td>
               </tr>
             {% endfor %}
 
@@ -165,8 +164,7 @@
               <th width="9%">{{ tdt("Single Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Value Displayed") }}</th>
-              <th width="9%">{{ tdt("Pt Data Availability") }}</th>
-              <th width="9%">{{ tdt("Age Group Type") }}</th>
+              <th width="9%">{{ tdt("Reason For Null Data") }}</th>
               <th width="5%">{{ tdt("Delete") }}</th>
             </tr>
           </thead>

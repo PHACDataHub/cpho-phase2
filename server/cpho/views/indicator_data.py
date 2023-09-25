@@ -58,8 +58,7 @@ class IndicatorDatumForm(ModelForm):
             "multi_year_timeframe",
             "literal_dimension_val",
             "value_displayed",
-            "pt_data_availability",
-            "age_group_type"
+            "reason_for_null",
         ]
 
     value = forms.FloatField(
@@ -116,18 +115,9 @@ class IndicatorDatumForm(ModelForm):
             }
         ),
     )
-    pt_data_availability = forms.ChoiceField(
+    reason_for_null = forms.ChoiceField(
         required=False,
-        choices=IndicatorDatum.PT_DATA_AVAILABILITY_CHOICES,
-        widget=forms.Select(
-            attrs={
-                "class": "form-select",
-            }
-        ),
-    )
-    age_group_type = forms.ChoiceField(
-        required=False,
-        choices=IndicatorDatum.AGE_GROUP_TYPE_CHOICES,
+        choices=IndicatorDatum.REASON_FOR_NULL_CHOICES,
         widget=forms.Select(
             attrs={
                 "class": "form-select",

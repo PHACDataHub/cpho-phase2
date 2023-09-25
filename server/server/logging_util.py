@@ -95,6 +95,9 @@ def get_logging_dict_config(
     return {
         "version": 1,
         "disable_existing_loggers": False,
+        "filters": {
+            "filter_noisy_loggers": {"()": SlackHandlerFilterNoisyLoggers}
+        },
         "formatters": {
             "console_formatter": {
                 "()": FlatConsoleLogFormatter,
@@ -120,6 +123,7 @@ def get_logging_dict_config(
                 "url": slack_webhook_url,
                 "fail_silent": slack_handler_fail_silent,
                 "formatter": "plaintext_formatter",
+                "filters": ["filter_noisy_loggers"],
             },
         },
         "root": {
@@ -211,3 +215,12 @@ class AbstractJSONPostHandler(logging.Handler, metaclass=ABCMeta):
 class SlackWebhookHandler(AbstractJSONPostHandler):
     def get_json_from_record(self, record):
         return {"text": self.format(record)}
+
+
+class SlackHandlerFilterNoisyLoggers:
+    def filter(self, record):
+        noisy_loggers = ["django.security.DisallowedHost"]
+        if record.module in noisy_loggers:
+            return 0
+        else:
+            return 1

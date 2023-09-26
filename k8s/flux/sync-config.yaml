@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: "@simsingh/k8s-infra"
+    branch: "main"
   secretRef:
     name: flux-system
   url: ssh://git@github.com/PHACDataHub/cpho-phase2

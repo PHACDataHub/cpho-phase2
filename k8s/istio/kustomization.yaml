@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- public-gateway.yaml
+- ingress.yaml
+- namespace.yaml
+
+  # Patch the Istio ingress service so that our IP is used.
+patches:
+- patch: |-
+    - op: add
+      path: /spec/loadBalancerIP
+      value: 34.152.0.41
+  target:
+    kind: Service
+    name: istio-ingressgateway
+    namespace: istio-ingress
+    version: v1

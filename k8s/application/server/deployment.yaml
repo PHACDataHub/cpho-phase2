@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: server
+  name: server
+  namespace: server
+spec:
+  selector:
+    matchLabels:
+      app: server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+      - name: server
+        securityContext:
+          runAsUser: 5678
+        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-cd415c8-1694804733 # {"$imagepolicy": "flux-system:server"}
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: django-secret-key
+              key: secret-key
+        - name: ALLOWED_HOSTS
+          value: "hopic-sdpac.k8s.phac-aspc.alpha.canada.ca,34.149.100.163,localhost,34.152.0.41"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack-webhook-url
+              key: slack-url
+        - name: DB_NAME
+          value: "cpho-phase2_db"
+        - name: DB_HOST
+          value: "cpho-postgres-cluster-rw"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: cpho-postgres-cluster-app
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cpho-postgres-cluster-app
+              key: password
+        resources:
+          # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)
+          requests:
+            cpu: 250m
+            memory: 512Mi
+status: {}

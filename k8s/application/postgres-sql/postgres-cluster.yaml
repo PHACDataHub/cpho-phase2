@@ -1,0 +1,66 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cpho-postgres-cluster
+  namespace: server
+  labels:
+    app: postgres-cluster
+  annotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.4
+  instances: 3
+  startDelay: 900
+  stopDelay: 900
+  primaryUpdateStrategy: unsupervised
+
+# PostGres Best Practices for the Logging 
+  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+      pgaudit.log: "all, -misc"
+      pgaudit.log_catalog: "off"
+      pgaudit.log_parameter: "on"
+      pgaudit.log_relation: "on"
+      log_min_messages: "error"
+      log_checkpoints: "on" 
+      log_lock_waits: "on"
+      log_temp_files: "0"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_hostname: "on"
+    pg_hba:
+      - host all all all md5
+
+
+  bootstrap:
+    initdb:
+      database: cpho-phase2_db
+      owner: cpho-phase2_db_user
+
+  storage:
+    storageClass: standard
+    size: 1Gi
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+  
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        # insert the service account token
+        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com	
+  
+  backup:
+    barmanObjectStore:
+      destinationPath: gs://hopic-dev-postgres-backup
+      googleCredentials:
+        gkeEnvironment: true
+    retentionPolicy: "30d"
+    

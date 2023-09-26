@@ -22,7 +22,7 @@ fi
 
 commit_sha="${2}::8"
 if [[ -z "${commit_sha}" ]]; then
-  commit_sha="locally-triggerd"
+  commit_sha="locally-triggered"
 fi
 
 bash_escape "BRANCH_NAME=${branch_name}" >> "${env_file}"

@@ -19,9 +19,11 @@ from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
 )
+from phac_aspc.django.helpers.logging.utils import (
+    add_fields_to_all_logs_for_current_request,
+)
 
 from server.config_util import get_project_config, is_running_tests
-from server.logging_util import add_metadata_to_all_logs_for_current_request
 
 
 def instrument_app_for_open_telemetry():
@@ -92,7 +94,7 @@ def instrument_app_for_open_telemetry():
     )
 
     def associate_request_logs_to_telemetry(span, request):
-        add_metadata_to_all_logs_for_current_request(
+        add_fields_to_all_logs_for_current_request(
             {
                 # see https://cloud.google.com/trace/docs/trace-log-integration#associating
                 # and https://cloud.google.com/logging/docs/structured-logging#special-payload-fields

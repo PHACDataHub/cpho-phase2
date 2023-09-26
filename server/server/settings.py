@@ -17,20 +17,12 @@ from pathlib import Path
 from django.urls import reverse_lazy
 
 from decouple import Csv
-from phac_aspc.django.settings import *
-from phac_aspc.django.settings.utils import (
-    configure_apps,
-    configure_authentication_backends,
-    configure_middleware,
-)
 
 from server.config_util import get_project_config, is_running_tests
-from server.logging_util import configure_logging
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 config = get_project_config()
 
@@ -55,6 +47,10 @@ if IS_LOCAL and IS_DEV:
         config("INTERNAL_IPS", default="") if ENABLE_DEBUG_TOOLBAR else ""
     )
 
+    # Disable session timeout
+    PHAC_ASPC_SESSION_COOKIE_AGE = 99999999
+    PHAC_ASPC_SESSION_COOKIE_SECURE = 0
+
     # Test settings
     if IS_RUNNING_TESTS:
         from . import monkey_patch_for_testing
@@ -65,6 +61,21 @@ else:
     ENABLE_DEBUG_TOOLBAR = False
     INTERNAL_IPS = ""
 
+PHAC_ASPC_LOGGING_USE_HELPERS_CONFIG = True
+PHAC_ASPC_LOGGING_LOWEST_LEVEL = (
+    "INFO"  # set to DEBUG if you want to get hit with the firehose
+)
+PHAC_ASPC_LOGGING_PRETTY_FORMAT_CONSOLE_LOGS = IS_LOCAL
+PHAC_ASPC_LOGGING_SLACK_WEBHOOK_URL = config("SLACK_WEBHOOK_URL", None)
+
+# REMINDER: phac_aspc imports must occur **after** all PHAC_ASPC_... settings have
+# been declared
+from phac_aspc.django.settings import *
+from phac_aspc.django.settings.utils import (
+    configure_apps,
+    configure_authentication_backends,
+    configure_middleware,
+)
 
 # Secrets and security
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -275,27 +286,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # BUSINESS LOGIC CONFIGURATION
 
 CURRENT_YEAR = 2022
-
-# Logging
-
-# LOGGING_CONFIG = None drops the Django default logging config rather than merging our rules with it.
-# I preffer this as having to consult the default rules and work out what is or isn't overwritten
-# by the merging just feels like gotcha city for future maintainers. This doesn't disable built-in loggers,
-# just let's us cleanly customize handlers and formatters
-LOGGING_CONFIG = None
-
-configure_logging(
-    lowest_level_to_log=config("LOWEST_LOG_LEVEL", "INFO"),
-    format_console_logs_as_json=config(
-        "FORMAT_CONSOLE_LOGS_AS_JSON", cast=bool, default=True
-    ),
-    slack_webhook_url=config("SLACK_WEBHOOK_URL", None),
-    slack_webhook_fail_silent=config(
-        "SLACK_WEBHOOK_FAIL_SILENT",
-        # default to failing silent if webhook URL not set, failing loud otherwise
-        bool(config("SLACK_WEBHOOK_URL", None)),
-    ),
-    # Mute console logging output when running tests, because it conflicts with pytests own
-    # console output (which captures and reports errors after all tests have finished running)
-    mute_console=IS_RUNNING_TESTS,
-)

@@ -5,6 +5,3 @@ pytest-django==4.5.2
 pytest-watch==4.2.0
 pytest-cov
 factory-boy===3.2.1
-responses===0.22.0
-testfixtures===7.1.0
-pytest-timeout===2.1.0

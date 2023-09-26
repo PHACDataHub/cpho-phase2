@@ -160,7 +160,6 @@ MIDDLEWARE = configure_middleware(
             if ENABLE_DEBUG_TOOLBAR
             else []
         ),
-        "django.middleware.locale.LocaleMiddleware",
         "django.middleware.common.CommonMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
@@ -169,7 +168,6 @@ MIDDLEWARE = configure_middleware(
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "versionator.middleware.WhodidMiddleware",
-        "django_structlog.middlewares.RequestMiddleware",
         "server.middleware.MustBeLoggedInMiddleware",
     ]
 )

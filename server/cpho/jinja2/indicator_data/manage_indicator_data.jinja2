@@ -44,6 +44,8 @@
         {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
       {% endif %}
     </td>
+    <td>{{ form.value_displayed }}</td>
+    <td>{{ form.reason_for_null }}</td>
     <td>
       {{ form.DELETE }}
       {{ form.id }} {# this is hidden #}
@@ -78,12 +80,14 @@
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
               <th width="9%">{{ tdt("Value") }}</th>
-              <th width="10%">{{ tdt("Value Unit") }}</th>
+              <th width="9%">{{ tdt("Value Unit") }}</th>
               <th width="9%">{{ tdt("Value Lower Bound") }}</th>
               <th width="9%">{{ tdt("Value Upper Bound") }}</th>
-              <th width="10%">{{ tdt("Data Quality") }}</th>
-              <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
-              <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
+              <th width="9%">{{ tdt("Data Quality") }}</th>
+              <th width="9%">{{ tdt("Single Year Timeframe") }}</th>
+              <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
+              <th width="9%">{{ tdt("Value Displayed") }}</th>
+              <th width="9%">{{ tdt("Reason For Null Data") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
@@ -133,6 +137,8 @@
                     </div>
                   {% endif %}
                 </td>
+                <td>{{ form.value_displayed }}</td>
+                <td>{{ form.reason_for_null }}</td>
               </tr>
             {% endfor %}
 
@@ -149,14 +155,16 @@
         <table class="table mb-0" id="{{ dimension_type }}-table">
           <thead class="table-light text-center">
             <tr>
-              <th width="10%">{{ tdt("Age") }}</th>
+              <th width="9%">{{ tdt("Age") }}</th>
               <th width="9%">{{ tdt("Value") }}</th>
-              <th width="10%">{{ tdt("Value Unit") }}</th>
+              <th width="9%">{{ tdt("Value Unit") }}</th>
               <th width="9%">{{ tdt("Value Lower Bound") }}</th>
               <th width="9%">{{ tdt("Value Upper Bound") }}</th>
-              <th width="10%">{{ tdt("Data Quality") }}</th>
-              <th width="12%">{{ tdt("Single Year Timeframe") }}</th>
-              <th width="12%">{{ tdt("Multi Year Timeframe") }}</th>
+              <th width="9%">{{ tdt("Data Quality") }}</th>
+              <th width="9%">{{ tdt("Single Year Timeframe") }}</th>
+              <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
+              <th width="9%">{{ tdt("Value Displayed") }}</th>
+              <th width="9%">{{ tdt("Reason For Null Data") }}</th>
               <th width="5%">{{ tdt("Delete") }}</th>
             </tr>
           </thead>

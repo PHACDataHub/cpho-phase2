@@ -9,8 +9,11 @@ from .utils_for_tests import patch_rules
 
 def test_import(hso_client):
     data = {}
+    # byte file mimicking a file with the following contents:
+    # indicator name = Test Upload
+    # 2 data points
     data["csv_file"] = io.BytesIO(
-        b'Indicator,Detailed Indicator,Sub_Indicator_Measurement,Category,Topic,Data_Quality,Value,Value_LowerCI,Value_UpperCI,SingleYear_TimeFrame,MultiYear_TimeFrame,Value_Displayed,Dimension_Type,Dimension_Value,Period\r\nTest Upload,synergize mission-critical content,re-contextualize value-added action-items,HEALTH OUTCOMES,SUBSTANCE USE,CAUTION,39.882262018304,15.2404,93.85413575209,,,"PER 100,000",Sex,MALES,FY2023\r\nTest Upload,synergize mission-critical content,re-contextualize value-added action-items,HEALTH OUTCOMES,SUBSTANCE USE,SUPPRESSED,52.4,12.3550187,82.78,,,"PER 100,000 LIVE BIRTHS",Sex,FEMALES,FY2023\r\n'
+        b'Category,Topic,Indicator,Detailed Indicator,Sub_Indicator_Measurement,Data_Quality,Value,Value_LowerCI,Value_UpperCI,Value_Displayed,SingleYear_TimeFrame,MultiYear_TimeFrame,Dimension_Type,Dimension_Value,Period,Reason_for_Null_Data,Value_Units\r\nHEALTH OUTCOMES,COMMUNICABLE DISEASES,Test Upload,morph cross-platform technologies,embrace best-of-breed applications,CAUTION,78.100478,12.92545,98.81349619,,,,Sex,MALES,CY2021,,PERCENTAGE (CRUDE RATE)\r\nHEALTH OUTCOMES,COMMUNICABLE DISEASES,Test Upload,morph cross-platform technologies,embrace best-of-breed applications,ACCEPTABLE,53.61193482,14.15379785,93.3798263,,,,Age Group,custom value,CY2021,,"RATE PER 10,000 PATIENT DAYS"\r\n'
     )
     data["csv_file"].name = "test.csv"
     url = reverse("upload_indicator")

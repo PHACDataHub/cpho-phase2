@@ -32,7 +32,8 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
 
         filename = "indicator_template"
         if indicator:
-            filename = indicator.name
+            # remove commas to avoid issues with csv
+            filename = str(indicator.name).replace(",", "")
 
         response = HttpResponse(
             content_type="text/csv",
@@ -43,21 +44,23 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
 
         writer = csv.writer(response)
         header_row = [
+            "Category",
+            "Topic",
             "Indicator",
             "Detailed Indicator",
             "Sub_Indicator_Measurement",
-            "Category",
-            "Topic",
             "Data_Quality",
             "Value",
             "Value_LowerCI",
             "Value_UpperCI",
+            "Value_Displayed",
             "SingleYear_TimeFrame",
             "MultiYear_TimeFrame",
-            "Value_Displayed",
             "Dimension_Type",
             "Dimension_Value",
             "Period",
+            "Reason_for_Null_Data",
+            "Value_Units",
         ]
         writer.writerow(header_row)
 
@@ -74,27 +77,31 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                     ].get(record.dimension_value, "")
                 writer.writerow(
                     [
+                        mapper["category_mapper"].get(indicator.category, ""),
+                        mapper["topic_mapper"].get(indicator.topic, ""),
                         indicator.name,
                         indicator.detailed_indicator,
                         indicator.sub_indicator_measurement,
-                        mapper["category_mapper"].get(indicator.category, ""),
-                        mapper["subcategory_mapper"].get(
-                            indicator.sub_category, ""
-                        ),
                         mapper["data_quality_mapper"].get(
                             record.data_quality, ""
                         ),
                         record.value,
                         record.value_lower_bound,
                         record.value_upper_bound,
+                        mapper["value_displayed_mapper"].get(
+                            record.value_displayed, ""
+                        ),
                         record.single_year_timeframe,
                         record.multi_year_timeframe,
-                        mapper["value_unit_mapper"].get(record.value_unit),
                         mapper["dimension_type_mapper"].get(
                             record.dimension_type, ""
                         ),
                         deduced_dimension_value,
                         record.period.code,
+                        mapper["reason_for_null_mapper"].get(
+                            record.reason_for_null, ""
+                        ),
+                        mapper["value_unit_mapper"].get(record.value_unit, ""),
                     ]
                 )
 

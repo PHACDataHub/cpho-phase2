@@ -15,7 +15,7 @@
         <tr>
           <th>{{ tdt("Indicator Name") }}</th>
           <th>{{ tdt("Category") }}</th>
-          <th>{{ tdt("Subcategory") }}</th>
+          <th>{{ tdt("Topic") }}</th>
           <th>{{ tdt("Lead Program") }}</th>
           {# <th>{{ tdt('Detailed indicator') }}</th> #}
           {# <th>{{ tdt('Sub Indicator Mesaurement') }}</th> #}
@@ -28,7 +28,7 @@
             <tr>
               <td>{{ indicator.name }}</td>
               <td>{{ indicator.get_category_display() }}</td>
-              <td>{{ indicator.get_sub_category_display() }}</td>
+              <td>{{ indicator.get_topic_display() }}</td>
               <td>{{ indicator.PHACOrg }}</td>
               {# <td>{{ indicator.detailed_indicator }}</td> #}
               {# <td>{{ indicator.sub_indicator_measurement }}</td> #}

@@ -11,12 +11,11 @@ from django.views.generic import (
     UpdateView,
 )
 
-from server.rules_framework import test_rule
-
 from cpho.models import DimensionType, Indicator, Period, PHACOrg
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
 from cpho.util import group_by
+from server.rules_framework import test_rule
 
 from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin, export_mapper
 
@@ -27,7 +26,7 @@ class IndicatorForm(ModelForm):
         fields = [
             "name",
             "category",
-            "sub_category",
+            "topic",
             "detailed_indicator",
             "sub_indicator_measurement",
             "PHACOrg",
@@ -46,9 +45,9 @@ class IndicatorForm(ModelForm):
         ),
     )
 
-    sub_category = forms.ChoiceField(
+    topic = forms.ChoiceField(
         required=False,
-        choices=Indicator.SUB_CATEGORY_CHOICES,
+        choices=Indicator.TOPIC_CHOICES,
         widget=forms.Select(
             attrs={
                 "class": "form-select",

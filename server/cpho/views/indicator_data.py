@@ -57,6 +57,8 @@ class IndicatorDatumForm(ModelForm):
             "single_year_timeframe",
             "multi_year_timeframe",
             "literal_dimension_val",
+            "value_displayed",
+            "reason_for_null",
         ]
 
     value = forms.FloatField(
@@ -103,6 +105,24 @@ class IndicatorDatumForm(ModelForm):
     )
     literal_dimension_val = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    value_displayed = forms.ChoiceField(
+        required=False,
+        choices=IndicatorDatum.VALUE_DISPLAYED_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+    )
+    reason_for_null = forms.ChoiceField(
+        required=False,
+        choices=IndicatorDatum.REASON_FOR_NULL_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
     )
 
     def clean(self):

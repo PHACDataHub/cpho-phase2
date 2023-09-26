@@ -41,7 +41,7 @@ class UploadForm(forms.Form):
         indicator_obj = Indicator.objects.filter(
             name=datum["Indicator"],
             category=mapper["category_mapper"][datum["Category"]],
-            sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+            topic=mapper["topic_mapper"][datum["Topic"]],
             detailed_indicator=datum["Detailed Indicator"],
             sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
         ).first()
@@ -51,7 +51,7 @@ class UploadForm(forms.Form):
                 indicator_obj = Indicator.objects.create(
                     name=datum["Indicator"],
                     category=mapper["category_mapper"][datum["Category"]],
-                    sub_category=mapper["subcategory_mapper"][datum["Topic"]],
+                    topic=mapper["topic_mapper"][datum["Topic"]],
                     detailed_indicator=datum["Detailed Indicator"],
                     sub_indicator_measurement=datum[
                         "Sub_Indicator_Measurement"
@@ -76,7 +76,8 @@ class UploadForm(forms.Form):
             ]
         else:
             lit_dim_val = datum["Dimension_Value"]
-
+        # filter data with all attributes equal to datum
+        # to see if exact match exists
         indData_obj = IndicatorDatum.objects.filter(
             indicator=indicator_obj,
             dimension_type=mapper["dimension_type_mapper"][
@@ -86,6 +87,9 @@ class UploadForm(forms.Form):
             literal_dimension_val=lit_dim_val,
             period=period_val,
             data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
+            reason_for_null=mapper["reason_for_null_mapper"][
+                datum["Reason_for_Null_Data"]
+            ],
             value=(float(datum["Value"]) if datum["Value"] != "" else None),
             value_lower_bound=(
                 float(datum["Value_LowerCI"])
@@ -97,11 +101,17 @@ class UploadForm(forms.Form):
                 if datum["Value_UpperCI"] != ""
                 else None
             ),
-            value_unit=mapper["value_unit_mapper"][datum["Value_Displayed"]],
+            value_unit=mapper["value_unit_mapper"][datum["Value_Units"]],
+            value_displayed=mapper["value_displayed_mapper"][
+                datum["Value_Displayed"]
+            ],
             single_year_timeframe=datum["SingleYear_TimeFrame"],
             multi_year_timeframe=datum["MultiYear_TimeFrame"],
         ).first()
-
+        # if exact match exists, do nothing
+        # if exact match does not exist, check if the data is modified
+        # if data is modified, create update data
+        # if data is new, create new data
         if indData_obj is None:
             indData_obj, created = IndicatorDatum.objects.get_or_create(
                 indicator=indicator_obj,
@@ -112,9 +122,11 @@ class UploadForm(forms.Form):
                 period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
-
             indData_obj.data_quality = mapper["data_quality_mapper"][
                 datum["Data_Quality"]
+            ]
+            indData_obj.reason_for_null = mapper["reason_for_null_mapper"][
+                datum["Reason_for_Null_Data"]
             ]
             indData_obj.value = (
                 float(datum["Value"]) if datum["Value"] != "" else None
@@ -130,6 +142,9 @@ class UploadForm(forms.Form):
                 else None
             )
             indData_obj.value_unit = mapper["value_unit_mapper"][
+                datum["Value_Units"]
+            ]
+            indData_obj.value_displayed = mapper["value_displayed_mapper"][
                 datum["Value_Displayed"]
             ]
             indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
@@ -154,7 +169,10 @@ class UploadForm(forms.Form):
             raise forms.ValidationError(
                 tdt("Uploaded file is too big. Maximum size allowed is 2 MB")
             )
-        file_data = csv_file.read().decode("utf-8-sig").splitlines()
+        file_data = csv_file.read()
+        # keeping this print in here because the output is useful for adding to test_upload.py
+        # print(file_data)
+        file_data = file_data.decode("utf-8-sig").splitlines()
         reader = csv.DictReader(file_data)
         data_dict = []
         required_headers = [
@@ -173,9 +191,8 @@ class UploadForm(forms.Form):
             "Dimension_Type",
             "Dimension_Value",
             "Period",
-            # "Age_Group_Type",
-            # "PT_Data_Availability",
-            # "Value_Units",
+            "Reason_for_Null_Data",
+            "Value_Units",
         ]
         missing_headers = []
         for header in required_headers:
@@ -198,11 +215,9 @@ class UploadForm(forms.Form):
                         f"row: {idx} Category: {data_row['Category']} is not valid"
                     )
                 )
-            if data_row["Topic"] not in mapper["subcategory_mapper"]:
+            if data_row["Topic"] not in mapper["topic_mapper"]:
                 errorlist.append(
-                    tdt(
-                        f"row: {idx} Sub category: {data_row['Topic']} is not valid"
-                    )
+                    tdt(f"row: {idx} Topic: {data_row['Topic']} is not valid")
                 )
             if data_row["Data_Quality"] not in mapper["data_quality_mapper"]:
                 errorlist.append(
@@ -210,7 +225,25 @@ class UploadForm(forms.Form):
                         f"row: {idx} Data quality: {data_row['Data_Quality']} is not valid"
                     )
                 )
-            if data_row["Value_Displayed"] not in mapper["value_unit_mapper"]:
+            if (
+                data_row["Reason_for_Null_Data"]
+                not in mapper["reason_for_null_mapper"]
+            ):
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Reason_for_Null_Data: {data_row['reason_for_null']} is not valid"
+                    )
+                )
+            if data_row["Value_Units"] not in mapper["value_unit_mapper"]:
+                errorlist.append(
+                    tdt(
+                        f"row: {idx} Value Units: {data_row['Value_Units']} is not valid"
+                    )
+                )
+            if (
+                data_row["Value_Displayed"]
+                not in mapper["value_displayed_mapper"]
+            ):
                 errorlist.append(
                     tdt(
                         f"row: {idx} Value displayed: {data_row['Value_Displayed']} is not valid"
@@ -246,7 +279,7 @@ class UploadForm(forms.Form):
             indicator_obj = Indicator.objects.filter(
                 name=data_row["Indicator"],
                 category=mapper["category_mapper"][data_row["Category"]],
-                sub_category=mapper["subcategory_mapper"][data_row["Topic"]],
+                topic=mapper["topic_mapper"][data_row["Topic"]],
                 detailed_indicator=data_row["Detailed Indicator"],
                 sub_indicator_measurement=data_row[
                     "Sub_Indicator_Measurement"

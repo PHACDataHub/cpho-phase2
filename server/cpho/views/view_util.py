@@ -69,14 +69,13 @@ def upload_mapper():
             "GENERAL HEALTH STATUS": "general_health_status",
             "HEALTH OUTCOMES": "health_outcomes",
         },
-        "subcategory_mapper": {
+        "topic_mapper": {
             "": "",
             "SOCIAL FACTORS": "social_factors",
             "HEALTH STATUS": "health_status",
             "COMMUNICABLE DISEASES": "communicable_diseases",
             "SUBSTANCE USE": "substance_use",
-            "CHILDHOOD AND FAMILY FACTORS": "childhood_and_family_risk_and_protective_factors",
-            "CHILDHOOD AND FAMILY RISK FACTORS": "childhood_and_family_risk_and_protective_factors",
+            "CHILDHOOD AND FAMILY FACTORS": "childhood_and_family_factors",
             "CHRONIC DISEASES AND MENTAL HEALTH": "chronic_diseases_and_mental_health",
         },
         "data_quality_mapper": {
@@ -85,15 +84,34 @@ def upload_mapper():
             "GOOD": "good",
             "ACCEPTABLE": "acceptable",
             "SUPPRESSED": "suppressed",
-            "VERY GOOD": "excellent",
+            "VERY GOOD": "very good",
+        },
+        "reason_for_null_mapper": {
+            "": "",
+            "Suppressed": "suppressed",
+            "Not available": "not_available",
         },
         "value_unit_mapper": {
+            "": "",
+            "AGE-STANDARDIZED RATE": "age_rate",
+            "CRUDE RATE": "crude_rate",
+            "DEFINED DAILY DOSE/1,000 CENSUS INHABITANTS": "daily_dose_per_1k_census",
+            "PERCENTAGE": "percentage",
+            "PERCENTAGE (CRUDE RATE)": "percentage_crude_rate",
+            "RATE PER 10,000 PATIENT DAYS": "rate_per_10k_patient",
+            "RATE PER 100,000": "rate_per_100k",
+            "RATE PER 100,000 (CRUDE RATE)": "rate_per_100k_crude",
+            "RATE PER 100,000 LIVE BIRTHS": "rate_per_100k_live_births",
+            "YEARS": "years",
+            "OTHER": "other",
+        },
+        "value_displayed_mapper": {
             "": "",
             "%": "%",
             "PER 100,000": "per_100k",
             "YEARS": "years",
-            "PER 1,000 CENSUS INHABITANTS": "per_100k_census",
-            "PER 10,000 PATIENT DAYS": "per_100k_patient_days",
+            "PER 1,000 CENSUS INHABITANTS": "per_1k_census",
+            "PER 10,000 PATIENT DAYS": "per_10k_patient",
             "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
             "OTHER": "other",
         },
@@ -176,14 +194,20 @@ def export_mapper():
         "category_mapper": {
             v: k for k, v in upload_mapping["category_mapper"].items()
         },
-        "subcategory_mapper": {
-            v: k for k, v in upload_mapping["subcategory_mapper"].items()
+        "topic_mapper": {
+            v: k for k, v in upload_mapping["topic_mapper"].items()
         },
         "data_quality_mapper": {
             v: k for k, v in upload_mapping["data_quality_mapper"].items()
         },
+        "reason_for_null_mapper": {
+            v: k for k, v in upload_mapping["reason_for_null_mapper"].items()
+        },
         "value_unit_mapper": {
             v: k for k, v in upload_mapping["value_unit_mapper"].items()
+        },
+        "value_displayed_mapper": {
+            v: k for k, v in upload_mapping["value_displayed_mapper"].items()
         },
         "dimension_type_mapper": {
             v: k for k, v in upload_mapping["dimension_type_mapper"].items()

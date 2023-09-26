@@ -1,7 +1,6 @@
-from django.urls import reverse
-
 from cpho.model_factories import IndicatorFactory
 from cpho.models import Indicator
+from django.urls import reverse
 
 from .utils_for_tests import patch_rules
 
@@ -17,7 +16,7 @@ def test_create_indicator(vanilla_user_client):
             data={
                 "name": "Test Indicator",
                 "category": Indicator.CATEGORY_CHOICES[-1][0],
-                "sub_category": Indicator.SUB_CATEGORY_CHOICES[-1][0],
+                "topic": Indicator.TOPIC_CHOICES[-1][0],
                 "detailed_indicator": "Test Detailed Indicator",
                 "sub_indicator_measurement": "Test Sub Indicator Measurement",
             },

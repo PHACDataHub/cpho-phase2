@@ -24,11 +24,11 @@ class Indicator(models.Model):
         ("health_outcomes", tdt("Health Outcomes")),
     ]
 
-    SUB_CATEGORY_CHOICES = [
+    TOPIC_CHOICES = [
         ("", "--"),
         (
-            "childhood_and_family_risk_and_protective_factors",
-            tdt("Childhood and Family Risk and Protective Factors"),
+            "childhood_and_family_factors",
+            tdt("Childhood and Family Factors"),
         ),
         ("social_factors", tdt("Social Factors")),
         ("substance_use", tdt("Substance Use")),
@@ -48,10 +48,10 @@ class Indicator(models.Model):
         verbose_name=tdt("Category"),
     )
 
-    sub_category = fields.CharField(
+    topic = fields.CharField(
         max_length=50,
-        choices=SUB_CATEGORY_CHOICES,
-        verbose_name=tdt("Sub Category"),
+        choices=TOPIC_CHOICES,
+        verbose_name=tdt("Topic"),
     )
 
     detailed_indicator = fields.CharField(max_length=300)
@@ -177,6 +177,92 @@ class IndicatorDatum(models.Model):
         Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
     )
 
+    literal_dimension_val = fields.CharField(
+        max_length=50, null=True, blank=True, default=None
+    )
+
+    period = fields.ForeignKey(
+        # TODO: figure out if this should be null, default to current period or null w/out default
+        "cpho.Period",
+        null=True,
+        blank=True,
+        on_delete=models.RESTRICT,
+    )
+
+    DATA_QUALITY_CHOICES = [
+        ("", "--"),
+        ("caution", tdt("Caution")),
+        ("acceptable", tdt("Acceptable")),
+        ("good", tdt("Good")),
+        ("suppressed", tdt("Suppressed")),
+        ("very_good", tdt("Very Good")),
+    ]
+
+    data_quality = fields.CharField(
+        max_length=50,
+        choices=DATA_QUALITY_CHOICES,
+        verbose_name=tdt("Data Quality"),
+        null=True,
+    )
+
+    REASON_FOR_NULL_CHOICES = [
+        ("", "--"),
+        ("suppressed", tdt("Suppressed")),
+        ("not_available", tdt("Not available")),
+    ]
+
+    reason_for_null = fields.CharField(
+        max_length=75, choices=REASON_FOR_NULL_CHOICES, null=True, default=""
+    )
+
+    value = fields.FloatField(null=True)
+
+    value_lower_bound = fields.FloatField(null=True)
+
+    value_upper_bound = fields.FloatField(null=True)
+
+    VALUE_UNIT_CHOICES = [
+        ("", tdt("--")),
+        ("age_rate", tdt("Age-Standardized Rate")),
+        ("crude_rate", tdt("Crude Rate")),
+        ("daily_dose_per_1k_census", tdt("Defined Daily Dose/1,000 Census")),
+        ("percentage", tdt("Percentage")),
+        ("percentage_crude_rate", tdt("Percentage (Crude Rate)")),
+        ("rate_per_10k_patient", tdt("Rate per 10,000 Patient Days")),
+        ("rate_per_100k", tdt("Rate per 100,000")),
+        ("rate_per_100k_crude", tdt("Rate per 100,000 (Crude Rate)")),
+        ("rate_per_100k_live_births", tdt("Rate per 100,000 Live Births")),
+        ("years", tdt("years")),
+        ("other", tdt("other")),
+    ]
+
+    value_unit = fields.CharField(
+        max_length=75,
+        choices=VALUE_UNIT_CHOICES,
+        verbose_name=tdt("Value Unit"),
+    )
+
+    VALUE_DISPLAYED_CHOICES = [
+        ("", tdt("--")),
+        ("%", tdt("%")),
+        ("per_1k_census", tdt("Per 1,000 census inhabitants")),
+        ("per_10k_patient", tdt("Per 10,000 patient days")),
+        ("per_100k", tdt("Per 100,000")),
+        ("per_100k_live_births", tdt("Per 100,000 live births")),
+        ("years", tdt("years")),
+        ("other", tdt("other")),
+    ]
+
+    value_displayed = fields.CharField(
+        max_length=75,
+        choices=VALUE_DISPLAYED_CHOICES,
+        null=True,
+    )
+
+    single_year_timeframe = fields.CharField(max_length=50, null=True)
+
+    multi_year_timeframe = fields.CharField(max_length=50, null=True)
+
     dimension_type = fields.ForeignKey(
         "cpho.DimensionType",
         null=False,
@@ -190,58 +276,6 @@ class IndicatorDatum(models.Model):
         blank=True,
         on_delete=models.RESTRICT,
     )
-
-    literal_dimension_val = fields.CharField(
-        max_length=50, null=True, blank=True, default=None
-    )
-
-    period = fields.ForeignKey(
-        # TODO: figure out if this should be null, default to current period or null w/out default
-        "cpho.Period",
-        null=True,
-        blank=True,
-        on_delete=models.RESTRICT,
-    )
-    DATA_QUALITY_CHOICES = [
-        ("", "--"),
-        ("caution", tdt("Caution")),
-        ("acceptable", tdt("Acceptable")),
-        ("good", tdt("Good")),
-        ("suppressed", tdt("Suppressed")),
-        ("excellent", tdt("Excellent")),
-    ]
-    VALUE_UNIT_CHOICES = [
-        ("", tdt("--")),
-        ("%", tdt("%")),
-        ("per_100k", tdt("Per 100K")),
-        ("years", tdt("Years")),
-        ("per_100k_census", tdt("Per 100K census inhabitants")),
-        ("per_100k_patient_days", tdt("Per 100K patient days")),
-        ("per_100k_live_births", tdt("Per 100K live births")),
-        ("other", tdt("Other")),
-    ]
-
-    data_quality = fields.CharField(
-        max_length=50,
-        choices=DATA_QUALITY_CHOICES,
-        verbose_name=tdt("Data Quality"),
-    )
-
-    value = fields.FloatField(null=True)
-
-    value_lower_bound = fields.FloatField(null=True)
-
-    value_upper_bound = fields.FloatField(null=True)
-
-    value_unit = fields.CharField(
-        max_length=50,
-        choices=VALUE_UNIT_CHOICES,
-        verbose_name=tdt("Value Unit"),
-    )
-
-    single_year_timeframe = fields.CharField(max_length=50, null=True)
-
-    multi_year_timeframe = fields.CharField(max_length=50, null=True)
 
     def __str__(self):
         return " ".join(

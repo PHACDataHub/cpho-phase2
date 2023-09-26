@@ -85,24 +85,20 @@
                 <td>{{ tdt("Category") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("FACTORS INFLUENCING HEALTH") }}</li>
-                    <li>{{ tdt("HEALTH OUTCOMES") }}</li>
-                    <li>{{ tdt("GENERAL HEALTH STATUS") }}</li>
+                    {% for key in mapper["category_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td>{{ tdt("Topic") }}</td>
-                <td>{{ tdt("Sub category") }}</td>
+                <td>{{ tdt("Topic") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("SOCIAL FACTORS") }}</li>
-                    <li>{{ tdt("HEALTH STATUS") }}</li>
-                    <li>{{ tdt("COMMUNICABLE DISEASES") }}</li>
-                    <li>{{ tdt("SUBSTANCE USE") }}</li>
-                    <li>{{ tdt("CHILDHOOD AND FAMILY FACTORS") }}</li>
-                    <li>{{ tdt("CHILDHOOD AND FAMILY RISK FACTORS") }}</li>
-                    <li>{{ tdt("CHRONIC DISEASES AND MENTAL HEALTH") }}</li>
+                    {% for key in mapper["topic_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>
@@ -111,11 +107,9 @@
                 <td>{{ tdt("Quality of data") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("CAUTION") }}</li>
-                    <li>{{ tdt("GOOD") }}</li>
-                    <li>{{ tdt("ACCEPTABLE") }}</li>
-                    <li>{{ tdt("SUPPRESSED") }}</li>
-                    <li>{{ tdt("VERY GOOD") }}</li>
+                    {% for key in mapper["data_quality_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>
@@ -145,17 +139,35 @@
                 <td>{{ tdt("Open text field YYYY-YYYY") }}</td>
               </tr>
               <tr>
-                <td>{{ tdt("Value_Displayed") }}</td>
+                <td>{{ tdt("Value_Unit") }}</td>
                 <td>{{ tdt("Value unit") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("%") }}</li>
-                    <li>{{ tdt("PER 100,000") }}</li>
-                    <li>{{ tdt("YEARS") }}</li>
-                    <li>{{ tdt("PER 1,000 CENSUS INHABITANTS") }}</li>
-                    <li>{{ tdt("PER 10,000 PATIENT DAYS") }}</li>
-                    <li>{{ tdt("PER 100,000 LIVE BIRTHS") }}</li>
-                    <li>{{ tdt("OTHER") }}</li>
+                    {% for key in mapper["value_unit_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>{{ tdt("Value_Displayed") }}</td>
+                <td>{{ tdt("Value Displayed") }}</td>
+                <td>
+                  <ul>
+                    {% for key in mapper["value_displayed_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>{{ tdt("Reason_for_Null_Data") }}</td>
+                <td>{{ tdt("Reason for null Data. Deafult is empty") }}</td>
+                <td>
+                  <ul>
+                    {% for key in mapper["reason_for_null_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>
@@ -164,13 +176,9 @@
                 <td>{{ tdt("Dimension of data recorded") }}</td>
                 <td>
                   <ul>
-                    <li>{{ tdt("Province") }}</li>
-                    <li>{{ tdt("Gender") }}</li>
-                    <li>{{ tdt("Region") }}</li>
-                    <li>{{ tdt("Sex") }}</li>
-                    <li>{{ tdt("Canada") }}</li>
-                    <li>{{ tdt("Age Group") }}</li>
-                    <li>{{ tdt("Living Arrangement") }}</li>
+                    {% for key in mapper["dimension_type_mapper"] %}
+                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>

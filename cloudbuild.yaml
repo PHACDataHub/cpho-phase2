@@ -154,7 +154,9 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
-      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+      # TODO: `|| "${BRANCH_NAME}" == "main"` temporarily added so images are still built and pushed (but
+      # not deployed to cloud run) while `GITHUB_MAIN_BRANCH_NAME` is set to the user-testing branch
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" || "${BRANCH_NAME}" == "main" ]]; then
         echo "Build a new application run time image"
         docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
        else
@@ -172,7 +174,9 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
-      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+      # TODO: `|| "${BRANCH_NAME}" == "main"` temporarily added so images are still built and pushed (but
+      # not deployed to cloud run) while `GITHUB_MAIN_BRANCH_NAME` is set to the user-testing branch
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" || "${BRANCH_NAME}" == "main" ]]; then
         echo "Push the new image to the project's artifact registry"
         docker push "${IMAGE_NAME_FOR_RUN}"
       else

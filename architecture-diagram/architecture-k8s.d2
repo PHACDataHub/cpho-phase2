@@ -1,3 +1,4 @@
+# ref: https://github.com/sleepycat/diagrams/blob/main/deployment.d2
 direction: down
 
 slack: Slack alerts\nchannel {
@@ -26,6 +27,7 @@ letsencrypt: Let's Encrypt {
 }
 
 gcp: Google Cloud {
+  icon: ./icons/gcp/logo.svg
   style: {
     stroke: "#000000"
     fill: "#f1f3f4"
@@ -33,19 +35,18 @@ gcp: Google Cloud {
 
   scc: Security Command Center {
     icon: ./icons/gcp/security_command_center.svg
-    style: {
-      stroke: "#808080"
-      fill: "#ffffff"
-    }
+    shape: image
   }
 
   project: Project {
+    icon: ./icons/general/folder.svg
     style: {
       stroke: "#ffffff"
       fill: "#e1f6fe"
     }
 
-    vpc: User managed VPC 10.1.0.0./16 {
+    vpc: Default VPC - 10.162.0.0/20 {
+      icon: ./icons/gcp/virtual_private_cloud.svg
       style: {
         stroke: blue
         font-color: blue
@@ -54,84 +55,218 @@ gcp: Google Cloud {
       }
 
       fw: Firewall {
+        icon: ./icons/gcp/cloud_firewall_rules.svg
         style: {
           stroke: black
           font-color: black
           stroke-dash: 3
           fill: transparent
         }
+
         clouddns: Cloud DNS {
           icon: ./icons/gcp/cloud_dns.svg
-          style: {
-            stroke: "#808080"
-            fill: "#ffffff"
-          }
+          shape: image
         }
+
+        cloudstorage: Cloud Storage {
+          icon: ./icons/gcp/cloud_storage.svg
+          shape: image
+        }
+
         ci_cd: CI/CD {
-          style: {
-            stroke: "#000000"
-            stroke-dash: 3
-            fill: transparent
-          }
-
-          cloud_build: Cloud Build {
-            icon: ./icons/gcp/cloud_build.svg
-            style: {
-              stroke: "#000000"
-              fill: "#ffffff"
-            }
-          }
-          registry: Artifact Registry {
-            icon: ./icons/gcp/artifact_registry.svg
-            style: {
-              stroke: "#808080"
-              fill: "#ffffff"
-            }
-          }
-        }
-
-        k8s: GKE Autopilot Cluster/Managed PaaS {
           style: {
             stroke: blue
             font-color: blue
             fill: transparent
           }
 
-          ingress: Google Managed Ingress {
-            icon: ./icons/kubernetes/pod.svg
+          cloud_build: Cloud Build {
+            icon: ./icons/gcp/cloud_build.svg
             shape: image
           }
 
-          certmanager: Cert Manager {
-            icon: ./icons/certmanager/logo.svg
+          registry: Artifact Registry {
+            icon: ./icons/gcp/artifact_registry.svg
             shape: image
           }
+        }
 
-          container: Low attack surface container {
+        k8s: GKE Autopilot Cluster/Managed PaaS with ASM {
+          icon: ./icons/gcp/anthos_service_mesh.svg
+          style: {
+            stroke: blue
+            font-color: blue
+            fill: transparent
+          }
+
+          istio_ingress: istio-ingress {
+            icon: ./icons/kubernetes/ns.svg
             style: {
-              stroke: black
-              font-color: black
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
+              fill: transparent
+            }
+
+            ingress: Google Managed Ingress {
+              icon: ./icons/kubernetes/pod.svg
+              shape: image
+            }
+          }
+
+          cert-manager: cert-manager {
+            icon: ./icons/kubernetes/ns.svg
+            style: {
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
+              fill: transparent
+            }
+
+            certmanager-op: Cert Manager {
+              icon: ./icons/certmanager/logo.svg
+              shape: image
+            }
+          }
+
+          server: server {
+            icon: ./icons/kubernetes/ns.svg
+            style: {
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
               fill: transparent
             }
 
             django: Django App {
               icon: ./icons/django/logo.svg
+              style: {
+                stroke: "#000000"
+                fill: transparent
+              }
+
+              svc: SVC {
+                icon: ./icons/kubernetes/svc.svg
+                shape: image
+              }
+
+              deploy: Deployment {
+                icon: ./icons/kubernetes/deploy.svg
+                shape: image
+              }
+
+              hpa: HPA (65% Mem / 64% CPU) {
+                icon: ./icons/kubernetes/hpa.svg
+                shape: image
+              }
+
+              pods: Pods {
+                style: {
+                  stroke: blue
+                  font-color: blue
+                  stroke-dash: 3
+                  fill: transparent
+                }
+                pod1: {
+                  icon: ./icons/kubernetes/pod.svg
+                  shape: image
+                }
+                pod2: {
+                  icon: ./icons/kubernetes/pod.svg
+                  shape: image
+                }
+              }
+            }
+
+            pg: HA PostgreSQL Cluster {
+              icon: ./icons/cloudnativepg/logo.svg
+              style: {
+                stroke: "#000000"
+                fill: transparent
+              }
+
+              rw_svc: Connect to primary for rw {
+                icon: ./icons/kubernetes/svc.svg
+                shape: image
+              }
+
+              ro_svc: Connect to standby for ro {
+                icon: ./icons/kubernetes/svc.svg
+                shape: image
+              }
+
+              r_svc: Connect to any for ro {
+                icon: ./icons/kubernetes/svc.svg
+                shape: image
+              }
+
+              primary_boundary: Primary {
+                style: {
+                  stroke: blue
+                  font-color: blue
+                  stroke-dash: 3
+                  fill: transparent
+                }
+                pod: Primary {
+                  icon: ./icons/kubernetes/pod.svg
+                  shape: image
+                }
+                pvc: PV {
+                  icon: ./icons/kubernetes/pv.svg
+                  shape: image
+                }
+              }
+
+              standby_boundary: Standby 1 {
+                style: {
+                  stroke: blue
+                  font-color: blue
+                  stroke-dash: 3
+                  fill: transparent
+                }
+
+                pod: Standby {
+                  icon: ./icons/kubernetes/pod.svg
+                  shape: image
+                }
+
+                pvc: PV {
+                  icon: ./icons/kubernetes/pv.svg
+                  shape: image
+                }
+              }
+            }
+          }
+
+          flux_system: flux-system {
+            icon: ./icons/kubernetes/ns.svg
+            style: {
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
+              fill: transparent
+            }
+
+            flux: Flux GitOps operator {
+              icon: ./icons/flux/logo.svg
               shape: image
             }
           }
 
-          pg: HA PostgreSQL Cluster {
-            icon: ./icons/cloudnativepg/logo.svg
-            shape: image
-          }
+          cnpg_system: cnpg-system {
+            icon: ./icons/kubernetes/ns.svg
+            style: {
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
+              fill: transparent
+            }
 
-          flux: GitOps operator {
-            icon: ./icons/flux/logo.svg
-            shape: image
+            cnpg_op: Cloudnative-PG Operator {
+              icon: ./icons/cloudnativepg/logo.svg
+              shape: image
+            }
           }
-
-          ingress -> container: mtls
-          container -> pg: mtls
         }
       }
     }
@@ -141,18 +276,37 @@ gcp: Google Cloud {
 # external entities
 devs <-> gh
 slack -> devs
-internet -> gcp.project.vpc.fw.k8s.ingress: https
-letsencrypt <-> gcp.project.vpc.fw.k8s.certmanager: ACME
+internet -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: HTTPS
+letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME
 
 # ci / cd
 gh -> gcp.project.vpc.fw.ci_cd.cloud_build: Cloud Build trigger\non "main" branch
 gcp.project.vpc.fw.ci_cd.cloud_build -> gcp.project.vpc.fw.ci_cd.registry: Push image
 
+# mtls
+gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django: mTLS
+gcp.project.vpc.fw.k8s.server.django -> gcp.project.vpc.fw.k8s.server.pg: mTLS
+
+# django
+gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.deploy
+gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.hpa
+gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: "Based on metrics server"
+gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods
+
+# postgres
+gcp.project.vpc.fw.k8s.cnpg_system.cnpg_op -> gcp.project.vpc.fw.k8s.server.pg: "Provisions and manages"
+gcp.project.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
+gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
+gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
+gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
+gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
+gcp.project.vpc.fw.k8s.server.pg -> gcp.project.vpc.fw.cloudstorage: "Manual / Scheduled backups at 0 0 * * * *"
+
 # gcp entities
-gcp.project.vpc.fw.k8s.container.django -> slack: Error log\nalerts
-gcp.project.vpc.fw.k8s.flux -> gh: Pull based deployment via https
+gcp.project.vpc.fw.k8s.server.django -> slack: Error log alerts
+gcp.project.vpc.fw.k8s.flux_system.flux -> gh: Pull based deployment via https
 gcp.project.vpc.fw.k8s -> gcp.project.vpc.fw.ci_cd.registry: Pull images via https
-gcp.project.vpc.fw.clouddns <-> gcp.project.vpc.fw.k8s.certmanager: least priviledge service account via https
+gcp.project.vpc.fw.clouddns <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: least priviledge service account via https
 gcp.project.vpc.fw.clouddns <-> letsencrypt: ACME
 
 gcp.project -> gcp.scc: All project logs/events visible in Security Command Center

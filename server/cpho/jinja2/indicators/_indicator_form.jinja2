@@ -37,6 +37,12 @@
     </div>
     <div class="col-lg-10">{{ form.sub_indicator_measurement }}</div>
   </div>
+  <div class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.relevant_dimensions.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    <div class="col-lg-10">{{ form.relevant_dimensions }}</div>
+  </div>
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
          value="{{ tdt("Submit") }}" />

@@ -11,13 +11,22 @@ from django.views.generic import (
     UpdateView,
 )
 
+from server.rules_framework import test_rule
+
 from cpho.models import DimensionType, Indicator, Period, PHACOrg
 from cpho.queries import get_submission_statuses
 from cpho.text import tdt, tm
-from cpho.util import group_by
-from server.rules_framework import test_rule
+from cpho.util import get_lang_code, group_by
 
 from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin, export_mapper
+
+
+# might need to move this to a form_fields.py file
+class RelevantDimensionChoiceMultiCheckbox(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        if get_lang_code() == "fr":
+            return obj.name_fr
+        return obj.name_en
 
 
 class IndicatorForm(ModelForm):
@@ -30,6 +39,7 @@ class IndicatorForm(ModelForm):
             "detailed_indicator",
             "sub_indicator_measurement",
             "PHACOrg",
+            "relevant_dimensions",
         ]
 
     name = forms.CharField(
@@ -69,6 +79,14 @@ class IndicatorForm(ModelForm):
                 "class": "form-select",
             }
         ),
+    )
+
+    # make it display name_en attribute of DimensionType model
+    relevant_dimensions = RelevantDimensionChoiceMultiCheckbox(
+        required=False,
+        queryset=DimensionType.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        initial=DimensionType.objects.all(),
     )
 
 

@@ -65,6 +65,12 @@ class Indicator(models.Model):
         on_delete=models.RESTRICT,
     )
 
+    relevant_dimensions = fields.ManyToManyField(
+        "cpho.DimensionType",
+        blank=True,
+        related_name="indicators",
+    )
+
     def __str__(self):
         return " ".join(
             [

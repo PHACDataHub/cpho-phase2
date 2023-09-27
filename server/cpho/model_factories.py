@@ -46,6 +46,16 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
     PHACOrg = factory.Iterator(PHACOrg.objects.all())
     sub_indicator_measurement = factory.Faker("bs")
 
+    @factory.post_generation
+    def relevant_dimensions(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for dimension in extracted:
+                self.relevant_dimensions.add(dimension)
+            return
+        self.relevant_dimensions.set(DimensionType.objects.all())
+
 
 class IndicatorDatumFactory(factory.django.DjangoModelFactory):
     class Meta:

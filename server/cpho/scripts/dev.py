@@ -98,6 +98,9 @@ def create_data():
 
                     indicator.name = new_name
                     indicator.save()
+                    # indicator.relevant_dimensions.set(
+                    #     DimensionType.objects.all()
+                    # )
                     indicators.append(indicator)
 
     for dimension in DimensionType.objects.all():

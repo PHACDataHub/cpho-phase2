@@ -1,0 +1,158 @@
+direction: down
+
+slack: Slack alerts\nchannel {
+  icon: ./icons/general/Slack_icon_2019.svg
+  shape: image
+}
+
+devs: Developers {
+  icon: ./icons/general/Developer_(94088)_-_The_Noun_Project.svg
+  shape: image
+}
+
+gh: GitHub {
+  icon: ./icons/github/logo.svg
+  shape: image
+}
+
+internet: The Internet {
+  icon: ./icons/gcp/my_cloud.svg
+  shape: image
+}
+
+letsencrypt: Let's Encrypt {
+  icon: ./icons/letsencrypt/logo.svg
+  shape: image
+}
+
+gcp: Google Cloud {
+  style: {
+    stroke: "#000000"
+    fill: "#f1f3f4"
+  }
+
+  scc: Security Command Center {
+    icon: ./icons/gcp/security_command_center.svg
+    style: {
+      stroke: "#808080"
+      fill: "#ffffff"
+    }
+  }
+
+  project: Project {
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+
+    vpc: User managed VPC 10.1.0.0./16 {
+      style: {
+        stroke: blue
+        font-color: blue
+        stroke-dash: 3
+        fill: transparent
+      }
+
+      fw: Firewall {
+        style: {
+          stroke: black
+          font-color: black
+          stroke-dash: 3
+          fill: transparent
+        }
+        clouddns: Cloud DNS {
+          icon: ./icons/gcp/cloud_dns.svg
+          style: {
+            stroke: "#808080"
+            fill: "#ffffff"
+          }
+        }
+        ci_cd: CI/CD {
+          style: {
+            stroke: "#000000"
+            stroke-dash: 3
+            fill: transparent
+          }
+
+          cloud_build: Cloud Build {
+            icon: ./icons/gcp/cloud_build.svg
+            style: {
+              stroke: "#000000"
+              fill: "#ffffff"
+            }
+          }
+          registry: Artifact Registry {
+            icon: ./icons/gcp/artifact_registry.svg
+            style: {
+              stroke: "#808080"
+              fill: "#ffffff"
+            }
+          }
+        }
+
+        k8s: GKE Autopilot Cluster/Managed PaaS {
+          style: {
+            stroke: blue
+            font-color: blue
+            fill: transparent
+          }
+
+          ingress: Google Managed Ingress {
+            icon: ./icons/kubernetes/pod.svg
+            shape: image
+          }
+
+          certmanager: Cert Manager {
+            icon: ./icons/certmanager/logo.svg
+            shape: image
+          }
+
+          container: Low attack surface container {
+            style: {
+              stroke: black
+              font-color: black
+              fill: transparent
+            }
+
+            django: Django App {
+              icon: ./icons/django/logo.svg
+              shape: image
+            }
+          }
+
+          pg: HA PostgreSQL Cluster {
+            icon: ./icons/cloudnativepg/logo.svg
+            shape: image
+          }
+
+          flux: GitOps operator {
+            icon: ./icons/flux/logo.svg
+            shape: image
+          }
+
+          ingress -> container: mtls
+          container -> pg: mtls
+        }
+      }
+    }
+  }
+}
+
+# external entities
+devs <-> gh
+slack -> devs
+internet -> gcp.project.vpc.fw.k8s.ingress: https
+letsencrypt <-> gcp.project.vpc.fw.k8s.certmanager: ACME
+
+# ci / cd
+gh -> gcp.project.vpc.fw.ci_cd.cloud_build: Cloud Build trigger\non "main" branch
+gcp.project.vpc.fw.ci_cd.cloud_build -> gcp.project.vpc.fw.ci_cd.registry: Push image
+
+# gcp entities
+gcp.project.vpc.fw.k8s.container.django -> slack: Error log\nalerts
+gcp.project.vpc.fw.k8s.flux -> gh: Pull based deployment via https
+gcp.project.vpc.fw.k8s -> gcp.project.vpc.fw.ci_cd.registry: Pull images via https
+gcp.project.vpc.fw.clouddns <-> gcp.project.vpc.fw.k8s.certmanager: least priviledge service account via https
+gcp.project.vpc.fw.clouddns <-> letsencrypt: ACME
+
+gcp.project -> gcp.scc: All project logs/events visible in Security Command Center

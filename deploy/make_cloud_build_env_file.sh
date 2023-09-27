@@ -20,16 +20,18 @@ if [[ -z "${branch_name}" ]]; then
   branch_name=$(git rev-parse --abbrev-ref HEAD)
 fi
 
-commit_sha="${2}::8"
+commit_sha="${2}"
+short_sha="${commit_sha::8}"
 if [[ -z "${commit_sha}" ]]; then
   commit_sha="locally-triggered"
+  short_sha="${commit_sha}"
 fi
 
 bash_escape "BRANCH_NAME=${branch_name}" >> "${env_file}"
 
 bash_escape "COMMIT_SHA=${commit_sha}" >> "${env_file}"
 
-bash_escape "IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUN_IMAGE_NAME}:${branch_name}-${commit_sha}-$(date +%s)" >> "${env_file}"
+bash_escape "IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUN_IMAGE_NAME}:${branch_name}-${short_sha}-$(date +%s)" >> "${env_file}"
 
 # re-exports from gcloud_env_vars.sh
 bash_escape "GITHUB_MAIN_BRANCH_NAME=${GITHUB_MAIN_BRANCH_NAME}" >> "${env_file}"

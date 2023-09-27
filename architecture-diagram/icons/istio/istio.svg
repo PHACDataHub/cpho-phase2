@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="3.2326584mm"
+   height="4.8489876mm"
+   viewBox="0 0 3.2326584 4.8489876"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1"><clipPath
+       id="d"><use
+         width="100%"
+         height="100%"
+         overflow="visible"
+         xlink:href="#c"
+         id="use61" /></clipPath><clipPath
+       id="clipPath1"><use
+         width="100%"
+         height="100%"
+         overflow="visible"
+         xlink:href="#c"
+         id="use1" /></clipPath><path
+       id="c"
+       d="m 179.95,147.92 h 55 v 55 h -55 z" /><style
+       id="style1">.cls-1{fill:#4285f4;}.cls-1,.cls-2,.cls-4{fill-rule:evenodd;}.cls-2{fill:#1e88e5;}.cls-3,.cls-4{fill:#aecbfa;}.cls-5{fill:#669df6;}</style></defs><g
+     id="layer1"
+     transform="translate(-64.29375,-65.331742)"><g
+       transform="matrix(0.11755121,0,0,0.11755121,41.524081,47.13599)"
+       id="g63"><defs
+         id="defs61"><path
+           id="path1"
+           d="m 179.95,147.92 h 55 v 55 h -55 z" /></defs><clipPath
+         id="clipPath2"><use
+           width="100%"
+           height="100%"
+           overflow="visible"
+           xlink:href="#c"
+           id="use2" /></clipPath><path
+         fill="#466bb0"
+         d="m 193.7,190.89 h 27.5 l -17.19,5.15 z m 0,-1.72 10.31,-1.72 v -18.91 z"
+         clip-path="url(#d)"
+         id="path62" /><path
+         fill="#476baf"
+         d="m 205.73,187.45 15.47,1.72 -15.47,-34.38 z"
+         clip-path="url(#d)"
+         id="path63" /></g></g></svg>

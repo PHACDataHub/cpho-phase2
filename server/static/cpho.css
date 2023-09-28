@@ -3,14 +3,7 @@ main {
 }
 
 footer {
-    position: static;
-    bottom: 0rem;
     width: 100%;
-    height: 3rem;
-}
-
-#footer-placeholder {
-    height: 3rem;
 }
 
 .navbar h1 {

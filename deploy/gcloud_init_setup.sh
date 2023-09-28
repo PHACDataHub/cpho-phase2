@@ -101,7 +101,7 @@ fi
 
 # ----- ARTIFACT REGISTRY -----
 echo ""
-echo "Enable Artifact Registry to store container images for Cloud Run to use"
+echo "Enable Artifact Registry to store app images"
 read -n 1 -p "Type S to skip this step, anything else to continue: " artifact_skip
 echo ""
 if [[ "${artifact_skip}" != "S" ]]; then

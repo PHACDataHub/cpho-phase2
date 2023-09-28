@@ -19,7 +19,7 @@ export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
 export BUILD_GITHUB_REPO_NAME=cpho-phase2
 export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
-export GITHUB_MAIN_BRANCH_NAME=user-testing
+export GITHUB_MAIN_BRANCH_NAME=main
 
 export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
 export TEST_COVERAGE_THRESHOLD=77.5 # set just below current coverage, consider increasing in time

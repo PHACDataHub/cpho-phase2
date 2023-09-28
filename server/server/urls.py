@@ -3,7 +3,9 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path, re_path
+from django.views.decorators.csrf import csrf_exempt
 
+from api import views as api_views
 from autocomplete import HTMXAutoComplete
 
 from cpho.urls import (
@@ -24,6 +26,16 @@ urlpatterns = i18n_patterns(
     path("logout/", LogoutView.as_view(), name="logout"),
     *HTMXAutoComplete.url_dispatcher("ac"),
     path("", include(cpho_urls)),
+    path(
+        "graphiql/",
+        csrf_exempt(api_views.GraphiQLView.as_view()),
+        name="graphiql",
+    ),
+    path(
+        "graphql/",
+        csrf_exempt(api_views.GraphQLView.as_view()),
+        name="graphql",
+    ),
     prefix_default_language=False,
 ) + [
     path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),

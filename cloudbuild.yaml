@@ -3,7 +3,7 @@
 # deploy/make_cloud_build_env_file.sh is responsible for providing local fallbacks as needed
 
 
-# [START cloudrun_django_cloudbuild]
+# [START django_cloudbuild]
 steps:
   - id: "Make .env.cloud_build for subsequent steps"
     name: gcr.io/cloud-builders/gcloud
@@ -141,9 +141,7 @@ steps:
         fi
       fi
 
-
-
-  - id: "Build image if main"
+  - id: "Build and push app image if main"
     name: "gcr.io/cloud-builders/docker"
     script: |
       #!/usr/bin/env bash
@@ -154,65 +152,13 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
-      # TODO: `|| "${BRANCH_NAME}" == "main"` temporarily added so images are still built and pushed (but
-      # not deployed to cloud run) while `GITHUB_MAIN_BRANCH_NAME` is set to the user-testing branch
-      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" || "${BRANCH_NAME}" == "main" ]]; then
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Build a new application run time image"
         docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+
+        echo "Push the new image to the project's artifact registry"
+        docker push "${IMAGE_NAME_FOR_RUN}"
        else
         echo "pass"
       fi
-
-  - id: "Push image if main"
-    name: "gcr.io/cloud-builders/docker"
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
-      
-      echo "Get cloud build environment variables"
-      source .env.cloud_build
-
-      # TODO: `|| "${BRANCH_NAME}" == "main"` temporarily added so images are still built and pushed (but
-      # not deployed to cloud run) while `GITHUB_MAIN_BRANCH_NAME` is set to the user-testing branch
-      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" || "${BRANCH_NAME}" == "main" ]]; then
-        echo "Push the new image to the project's artifact registry"
-        docker push "${IMAGE_NAME_FOR_RUN}"
-      else
-        echo "pass"
-        exit 0
-      fi
-
-  - id: "Deploy to Cloud Run if main"
-    name: "gcr.io/cloud-builders/gcloud"
-    script: |
-      #!/usr/bin/env bash
-      set -o errexit
-      set -o pipefail
-      set -o nounset
-      
-      echo "Get cloud build environment variables"
-      source .env.cloud_build
-
-      # IMPORTANT: don't just use latest. The secrets are mounted at container start, not deploy time,
-      # so instances deployed with "latest" may end up using incompatable secret versions as new secret
-      # versions are pushed, but before the coresponding images are pushed
-      prod_env_secret_version=13
-
-      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
-        echo "Deploy new image to Cloud Run"
-        gcloud run deploy "${PROJECT_SERVICE_NAME}" \
-          --image "${IMAGE_NAME_FOR_RUN}" \
-          --region "${PROJECT_REGION}" \
-          --add-cloudsql-instances "${DB_INSTANCE_NAME}" \
-          --vpc-connector "${VPC_CONNECTOR_NAME}" \
-          --set-secrets "/secrets/.env.prod=${SKEY_PROD_ENV_FILE}:${prod_env_secret_version}" \
-          --platform managed \
-          --allow-unauthenticated \
-          --ingress internal-and-cloud-load-balancing
-      else
-        echo "pass"
-        exit 0
-      fi
-# [END cloudrun_django_cloudbuild]
+# [END django_cloudbuild]

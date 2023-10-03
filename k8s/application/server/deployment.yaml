@@ -19,7 +19,7 @@ spec:
       - name: server
         securityContext:
           runAsUser: 5678
-        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-cd415c8-1694804733 # {"$imagepolicy": "flux-system:server"}
+        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-6ecdd502-1696005164 # {"$imagepolicy": "flux-system:server"}
         env:
         - name: SECRET_KEY
           valueFrom:

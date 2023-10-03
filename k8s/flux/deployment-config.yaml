@@ -52,11 +52,11 @@ spec:
   git:
     checkout:
       ref:
-        branch: "@simsingh/k8s-infra"
+        branch: "main"
     commit:
       author:
         name: fluxbot
         email: fluxcd@users.noreply.github.com
       messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
     push:
-      branch: "@simsingh/k8s-infra"
+      branch: "main"

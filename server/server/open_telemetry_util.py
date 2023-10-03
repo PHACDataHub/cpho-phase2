@@ -62,9 +62,11 @@ def instrument_app_for_open_telemetry():
 
         # WARNING: you might see examples wrapping a list of resource detectors in
         # `opentelemetry.sdk.resources.get_aggregated_resources`. This calls detect() and
-        # merges the results for you BUT it uses thread pools and may not be Cloud Run safe.
-        # Manually call detect and merge as needed instead, not a big deal
-        # Note for merge, the order matters with priority given to preceding resource objects
+        # merges the results for you BUT it uses thread pools and may not be suited for all
+        # prod environments (Cloud Run, small k8s pods, etc).
+        # Manually call detect and merge as needed instead, not a big deal, this only happens once
+        # and isn't CPU intensive at all.
+        # Note: for merge, the order matters with priority given to preceding resource objects
         resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
         resource.merge(ProcessResourceDetector(raise_on_error=True).detect())
 
@@ -74,15 +76,16 @@ def instrument_app_for_open_telemetry():
     # A BatchSpanProcessor is significantly better for performance, but has some caveats:
     #   1) gunicorn caveat: it uses a worker thread, which means instrumentation calls must happen post-gunicorn
     #   worker fork, or else multiple gunicron app worker threads will attempt to share one BatchSpanProcessor
-    #   worker (and trip over eachother's process locks)
+    #   worker (and trip over eachother's process locks). Does not apply if gunicorn workers = threads = 1
     #   2) Cloud Run caveat: GCP docs say NOT to use BatchSpanProcessor in Cloud Run, as Cloud Run "does not
     #   support background processes". That is a simplification though, what they really mean is that a Cloud Run
     #   container will lose it's CPU when not actively processing a request, so background processes not tied to
     #   request handling may not have a chance to immediately finish all their work without interuption. They can
     #   still resume in the background when the container next receives a request. In the case that a container is
     #   terminated before receiving a new request, the container receives a SIGTERM signal and 10 seconds of grace time
-    #   with a CPU to wrap things up (https://cloud.google.com/run/docs/container-contract#lifecycle-services); see
-    #   `flush_telemetry_callback` and its use in gunicorn.conf.py for how we take advantage of that
+    #   with a CPU to wrap things up (https://cloud.google.com/run/docs/container-contract#lifecycle-services).
+    #   This caveat may apply in other auto-scalling environments
+    #   The returned `flush_telemetry_callback` can be used to manage this if your environment requires.
     span_processor = BatchSpanProcessor(span_exporter)
 
     tracer_provider = TracerProvider(

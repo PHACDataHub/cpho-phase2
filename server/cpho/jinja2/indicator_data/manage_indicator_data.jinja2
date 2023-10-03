@@ -53,7 +53,7 @@
 {% endmacro %}
 
 {% block content %}
-  <h1>{{ tdt("Indcator data for: ") }} {{ indicator.name }} ({{ period }})</h1>
+  <h1>{{ tdt("Indicator data for: ") }} {{ indicator.name }} ({{ period }})</h1>
   <a class="btn btn-warning btn-sm"
      href="{{ url('view_indicator_for_period', args=[indicator.id, period.id]) }}">Cancel</a>
 
@@ -74,7 +74,9 @@
           <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ dimension_type.name }}</div>
         </div>
  
-        <table class="table mb-0" id="{{ dimension_type }}-table">
+        <table class="table mb-0"
+               id="{{ dimension_type }}-table"
+               style="overflow-x:auto; display:block">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>

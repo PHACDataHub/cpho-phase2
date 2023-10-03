@@ -14,7 +14,10 @@ from django.views.generic import (
 from server.rules_framework import test_rule
 
 from cpho.models import DimensionType, Indicator, Period, PHACOrg
-from cpho.queries import get_submission_statuses
+from cpho.queries import (
+    get_submission_statuses,
+    relevant_dimension_types_for_period,
+)
 from cpho.text import tdt, tm
 from cpho.util import get_lang_code, group_by
 
@@ -169,7 +172,10 @@ class ViewIndicatorForPeriod(
     def get_context_data(self, *args, **kwargs):
         return {
             **super().get_context_data(*args, **kwargs),
-            "dimension_types": DimensionType.objects.all(),
+            # "dimension_types": DimensionType.objects.all(),
+            "dimension_types": relevant_dimension_types_for_period(
+                self.indicator, self.period
+            ),
             "submission_statuses": get_submission_statuses(
                 self.indicator, self.period
             ),

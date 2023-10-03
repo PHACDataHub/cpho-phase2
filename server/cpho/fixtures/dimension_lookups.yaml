@@ -47,6 +47,20 @@
     name_fr: Conditions de vie
     code: living_arrangement
     is_literal: false
+- model: cpho.dimensiontype
+  pk: 8
+  fields:
+    name_en: Education Household
+    name_fr: Éducation Ménage
+    code: education_household
+    is_literal: false
+- model: cpho.dimensiontype
+  pk: 9
+  fields:
+    name_en: Income Quintiles
+    name_fr: Quintiles de revenu
+    code: income_quintiles
+    is_literal: false
 
 # dimension values
 
@@ -341,10 +355,89 @@
     name_fr: Autres conditions de vie
     value: other_living_arrangements
     order: 6.0
-
+- model: cpho.dimensionvalue
+  pk: 35
+  fields:
+    dimension_type: 8
+    name_en: Less than high school
+    name_fr: Moins que le secondaire
+    value: less_than_high_school
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 36
+  fields:
+    dimension_type: 8
+    name_en: High School Graduate
+    name_fr: Diplôme d'études secondaires
+    value: high_school_graduate
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 37
+  fields:
+    dimension_type: 8
+    name_en: Community college/Technical school/University Certificate
+    name_fr: Collège communautaire/École technique/Certificat universitaire
+    value: community_technical_certificate
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 38
+  fields:
+    dimension_type: 8
+    name_en: University Graduate
+    name_fr: Diplômé de l'université
+    value: university_graduate
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 39
+  fields:
+    dimension_type: 8
+    name_en: Missing
+    name_fr: Manquant
+    value: missing
+    order: 4.0
+- model: cpho.dimensionvalue
+  pk: 40
+  fields:
+    dimension_type: 9
+    name_en: Quintile 1
+    name_fr: Quintile 1
+    value: quintile_one
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 41
+  fields:
+    dimension_type: 9
+    name_en: Quintile 2
+    name_fr: Quintile 2
+    value: quintile_two
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 42
+  fields:
+    dimension_type: 9
+    name_en: Quintile 3
+    name_fr: Quintile 3
+    value: quintile_three
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 43
+  fields:
+    dimension_type: 9
+    name_en: Quintile 4
+    name_fr: Quintile 4
+    value: quintile_four
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 44
+  fields:
+    dimension_type: 9
+    name_en: Quintile 5
+    name_fr: Quintile 5
+    value: quintile_five
+    order: 4.0
 # - model: cpho.dimensionvalue
 #   pk: 24
-#   fields:
+#   fields:deep
 #     dimension_type: 5
 #     name_en: 0-4
 #     name_fr: 0-4

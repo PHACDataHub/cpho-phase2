@@ -16,6 +16,14 @@ spec:
         app: server
     spec:
       containers:
+      - name: istio-proxy
+        image: auto
+        # istio-proxies are injected by anthos, see `istio.io/rev: asm-managed` in ../namespace.yaml
+        # these are overrides for the default configuration of those injected proxy sidecars
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
       - name: server
         securityContext:
           runAsUser: 5678

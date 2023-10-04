@@ -27,6 +27,10 @@ if [[ -z "${commit_sha}" ]]; then
   short_sha="${commit_sha}"
 fi
 
+bash_escape (){
+  printf "%q\n" "${1}"
+}
+
 bash_escape "BRANCH_NAME=${branch_name}" >> "${env_file}"
 
 bash_escape "COMMIT_SHA=${commit_sha}" >> "${env_file}"
@@ -35,11 +39,7 @@ bash_escape "IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUN_IMAGE_NAME}:${branch_name}-${s
 
 # re-exports from gcloud_env_vars.sh
 bash_escape "GITHUB_MAIN_BRANCH_NAME=${GITHUB_MAIN_BRANCH_NAME}" >> "${env_file}"
-bash_escape "PROJECT_SERVICE_NAME=${PROJECT_SERVICE_NAME}" >> "${env_file}"
 bash_escape "PROJECT_REGION=${PROJECT_REGION}" >> "${env_file}"
-bash_escape "DB_INSTANCE_NAME=${DB_INSTANCE_NAME}" >> "${env_file}"
-bash_escape "VPC_CONNECTOR_NAME=${VPC_CONNECTOR_NAME}" >> "${env_file}"
-bash_escape "SKEY_PROD_ENV_FILE=${SKEY_PROD_ENV_FILE}" >> "${env_file}"
 bash_escape "TEST_COVERAGE_BUCKET_NAME=${TEST_COVERAGE_BUCKET_NAME}" >> "${env_file}"
 bash_escape "TEST_COVERAGE_THRESHOLD=${TEST_COVERAGE_THRESHOLD}" >> "${env_file}"
 bash_escape "TEST_DELTA_THRESHOLD=${TEST_DELTA_THRESHOLD}" >> "${env_file}"

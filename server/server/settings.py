@@ -93,7 +93,7 @@ CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
 # Prod only security settings
 if not IS_DEV:
     # TODO these might be good to set, may be why an empty CSRF_TRUSTED_ORIGINS doesn't work, assuming
-    # the cloud run load balancer/proxy might be downgrading our connection internally? Something to look in to,
+    # the some load balancer/proxy might be downgrading our connection internally? Something to look in to,
     # likely requires corresponding changes to the load balancer's configuration though
     # SECURE_SSL_REDIRECT = True
     # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")

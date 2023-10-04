@@ -76,7 +76,8 @@
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto; display:block">
+               style="overflow-x:auto;
+                      display:block">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
@@ -153,7 +154,11 @@
           <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}</div>
         </div>
  
-        <table class="table mb-0" id="{{ dimension_type }}-table">
+        <table class="table mb-0"
+               id="{{ dimension_type }}-table"
+               style="overflow-x:auto;
+                      display:block">
+ 
           <thead class="table-light text-center">
             <tr>
               <th width="9%">{{ tdt("Age") }}</th>

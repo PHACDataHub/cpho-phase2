@@ -57,6 +57,9 @@ class UploadForm(forms.Form):
                         "Sub_Indicator_Measurement"
                     ],
                 )
+                indicator_obj.relevant_dimensions.set(
+                    DimensionType.objects.all()
+                )
 
         return indicator_obj
 

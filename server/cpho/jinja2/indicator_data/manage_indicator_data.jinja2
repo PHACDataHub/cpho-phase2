@@ -8,7 +8,6 @@
   {{ bc.item(tdt("Edit") , None, True) }}
 {% endblock %}
 
-
 {% macro age_group_form(form) %}
   <tr class="age-group-form">
     <td class="fw-bold">{{ form.literal_dimension_val }}</td>
@@ -54,7 +53,7 @@
 {% endmacro %}
 
 {% block content %}
-  <h1>{{ tdt("Indcator data for: ") }} {{ indicator.name }} ({{ period }})</h1>
+  <h1>{{ tdt("Indicator data for: ") }} {{ indicator.name }} ({{ period }})</h1>
   <a class="btn btn-warning btn-sm"
      href="{{ url('view_indicator_for_period', args=[indicator.id, period.id]) }}">Cancel</a>
 
@@ -75,7 +74,10 @@
           <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ dimension_type.name }}</div>
         </div>
  
-        <table class="table mb-0" id="{{ dimension_type }}-table">
+        <table class="table mb-0"
+               id="{{ dimension_type }}-table"
+               style="overflow-x:auto;
+                      display:block">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
@@ -98,7 +100,7 @@
                 <td>
                   {{ form.value }}
                   {% if form.errors.value %}
-                    <div class=error-display>
+                    <div class="error-display">
                       {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
                   {% endif %}
@@ -107,7 +109,7 @@
                 <td>
                   {{ form.value_lower_bound }}
                   {% if form.errors.value_lower_bound %}
-                    <div class=error-display>
+                    <div class="error-display">
                       {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
                   {% endif %}
@@ -115,7 +117,7 @@
                 <td>
                   {{ form.value_upper_bound }}
                   {% if form.errors.value_upper_bound %}
-                    <div class=error-display>
+                    <div class="error-display">
                       {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
                   {% endif %}
@@ -124,7 +126,7 @@
                 <td>
                   {{ form.single_year_timeframe }}
                   {% if form.errors.single_year_timeframe %}
-                    <div class=error-display>
+                    <div class="error-display">
                       {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
                   {% endif %}
@@ -132,7 +134,7 @@
                 <td>
                   {{ form.multi_year_timeframe }}
                   {% if form.errors.multi_year_timeframe %}
-                    <div class=error-display>
+                    <div class="error-display">
                       {% for error in form.multi_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
                   {% endif %}
@@ -152,7 +154,11 @@
           <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}</div>
         </div>
  
-        <table class="table mb-0" id="{{ dimension_type }}-table">
+        <table class="table mb-0"
+               id="{{ dimension_type }}-table"
+               style="overflow-x:auto;
+                      display:block">
+ 
           <thead class="table-light text-center">
             <tr>
               <th width="9%">{{ tdt("Age") }}</th>

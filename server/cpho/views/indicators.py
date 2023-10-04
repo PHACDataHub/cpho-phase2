@@ -172,7 +172,6 @@ class ViewIndicatorForPeriod(
     def get_context_data(self, *args, **kwargs):
         return {
             **super().get_context_data(*args, **kwargs),
-            # "dimension_types": DimensionType.objects.all(),
             "dimension_types": relevant_dimension_types_for_period(
                 self.indicator, self.period
             ),

@@ -348,14 +348,6 @@ class ManageIndicatorData(
 
     @cached_property
     def possible_values_by_dimension_type(self):
-        # return {
-        #     dt: dt.possible_values.all()
-        #     for dt in self.indicator.relevant_dimensions.all()
-        #     .prefetch_related("possible_values")
-        #     .filter(
-        #         is_literal=False,
-        #     )
-        # }
         return {
             dt: dt.possible_values.all()
             for dt in DimensionType.objects.all()
@@ -428,11 +420,6 @@ class ManageIndicatorData(
                     self.indicator, self.period
                 ),
             )
-            # predefined_dimension_types = (
-            #     self.indicator.relevant_dimensions.all().filter(
-            #         is_literal=False
-            #     )
-            # )
         elif self.dimension_type.code == "age":
             predefined_dimension_types = []
         else:

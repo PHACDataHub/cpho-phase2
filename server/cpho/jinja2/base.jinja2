@@ -58,8 +58,8 @@
     {% block nav_container %}
       <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container">
+          {{ phac_aspc.phac_aspc_inline_svg("phac_aspc_helpers/phac_logos/" + ("en" if get_lang_code() == "en-ca" else "fr") + "__dark.svg", style="height: 2rem; padding-right: 2rem;") }}
           {% block available_apps %}{% endblock %}
-          {# <a class="nav-link text-white h1" href="{{ url('list_indicators') }}">{{ tdt("HoPiC")}}</a> #}
           <h1 class="nav-header">
             <a href="{{ url("list_indicators") }}"
                class="text-reset text-decoration-none">
@@ -149,13 +149,12 @@
     <div id="modal" class="modal fade" tabindex="-1">
       <div id="dialog" class="modal-dialog" hx-target="this"></div>
     </div>
-    <div id="footer-placeholder"></div>
     <footer class="d-print-none goc-footer bg-light">
       <div class="container">
         <div class="row">
           <div class="col"></div>
           <div class="col-auto">
-            <object type="image/svg+xml" tabindex="-1" role="img" data="{{ static("third_party/img/wmms-blk.svg") }}" aria-label="Symbol of the Government of Canada" style="height: 2rem"></object>
+            <object type="image/svg+xml" tabindex="-1" role="img" data="{{ static("third_party/img/wmms-blk.svg") }}" aria-label="Symbol of the Government of Canada" style="height: 2rem; margin: 1rem 0;"></object>
           </div>
         </div>
       </div>

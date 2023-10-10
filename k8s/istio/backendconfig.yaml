@@ -4,7 +4,8 @@ metadata:
   name: istio-ingressgateway-backendconfig
   namespace: istio-ingress
 spec:
-  enableLogging: "true"
+  logging: 
+    enable: true
   securityPolicy:
     # TODO: this is the policy created via the old deploy scripts. Creation and management
     # of this Cloud Armor policy will need to move to IAD/IAC

@@ -31,3 +31,14 @@ class patch_rules:
 
     def __exit__(self, *excp):
         return self._patch.__exit__(*excp)
+
+
+def submit_indicator_datum(indicator_datum):
+    """
+    quick and dirty way to emulate an approved data-record
+    does not create a submission meta-record
+    """
+    datum_version = indicator_datum.versions.last()
+    datum_version.is_hso_submitted = True
+    datum_version.is_program_submitted = True
+    datum_version.save()

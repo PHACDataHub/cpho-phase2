@@ -16,7 +16,7 @@ class AbstractModelByIdLoader(SingletonDataLoader):
     def batch_load(cls, ids):
         records = list(cls.model.objects.filter(id__in=ids))
         by_id = {record.id: record for record in records}
-        return [by_id[id] for id in ids]
+        return [by_id.get(id, None) for id in ids]
 
 
 class PrimaryKeyDataLoaderFactory:

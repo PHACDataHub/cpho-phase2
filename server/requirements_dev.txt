@@ -5,4 +5,3 @@ pytest-django==4.5.2
 pytest-watch==4.2.0
 pytest-cov
 factory-boy===3.2.1
-django-graphiql-debug-toolbar==0.2.0

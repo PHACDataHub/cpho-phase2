@@ -7,6 +7,7 @@ from decouple import Config, RepositoryEmpty, RepositoryEnv
 ENV_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEV_SECRET_ENV_FILE_NAME = ".env.dev-secret"
 DEV_PUBLIC_ENV_FILE_NAME = ".env.dev-public"
+K8S_FLAG_ENV_VAR_KEY = "IS_K8S"
 
 
 def is_running_tests():
@@ -17,7 +18,7 @@ def is_running_tests():
 def get_project_config(
     env_dir=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 ):
-    if os.getenv("IS_K8S"):
+    if os.getenv(K8S_FLAG_ENV_VAR_KEY):
         # In our k8s deployments, env vars are injected in to the container via
         # the app server's deployment.yaml. When in a k8s environment, we just
         # use Config as a wrapper for accessing OS env vars, by providing an

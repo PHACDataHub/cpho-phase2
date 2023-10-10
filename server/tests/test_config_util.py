@@ -1,5 +1,6 @@
 import os
 import sys
+from unittest import mock
 
 import pytest
 from decouple import UndefinedValueError
@@ -50,11 +51,10 @@ def test_is_running_tests_returns_false_outside_test_execution_environment():
     assert non_test_execution_env_result == "False"
 
 
+@mock.patch.dict(os.environ, {K8S_FLAG_ENV_VAR_KEY: "true"})
 def test_get_project_config_ignoes_env_files_if_k8s(tmp_path):
     write_env_file(tmp_path, DEV_PUBLIC_ENV_FILE_NAME)
     write_env_file(tmp_path, DEV_SECRET_ENV_FILE_NAME)
-
-    os.environ[K8S_FLAG_ENV_VAR_KEY] = "true"
 
     config = get_project_config(env_dir=tmp_path)
 
@@ -69,8 +69,6 @@ def test_get_project_config_ignoes_env_files_if_k8s(tmp_path):
         )
         == "can_still_use_defaults"
     )
-
-    del os.environ[K8S_FLAG_ENV_VAR_KEY]
 
 
 def test_get_project_config_uses_merged_dev_envs_with_priority_for_dev_secret(

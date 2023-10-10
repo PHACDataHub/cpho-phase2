@@ -144,7 +144,14 @@ INSTALLED_APPS = configure_apps(
         "graphene_django",
         "autocomplete",
         "django_extensions",
-        *(["debug_toolbar"] if ENABLE_DEBUG_TOOLBAR else []),
+        *(
+            [
+                "debug_toolbar",
+                "graphiql_debug_toolbar",
+            ]
+            if ENABLE_DEBUG_TOOLBAR
+            else []
+        ),
         "rules.apps.AutodiscoverRulesConfig",
     ]
 )
@@ -155,7 +162,7 @@ MIDDLEWARE = configure_middleware(
         "whitenoise.middleware.WhiteNoiseMiddleware",
         *(
             [
-                "debug_toolbar.middleware.DebugToolbarMiddleware",
+                "graphiql_debug_toolbar.middleware.DebugToolbarMiddleware",
             ]
             if ENABLE_DEBUG_TOOLBAR
             else []

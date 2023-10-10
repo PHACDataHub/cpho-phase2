@@ -1,17 +1,8 @@
 from django.urls import path, re_path
-from django.views.decorators.csrf import csrf_exempt
-
-from graphene_django.views import GraphQLView
-
-from cpho.schema import schema
 
 from . import views
 
 urlpatterns = [
-    path(
-        "graphql",
-        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)),
-    ),
     path("manage_users/", views.ManageUsers.as_view(), name="manage_users"),
     path(
         "manage_users/create/", views.CreateUser.as_view(), name="create_user"

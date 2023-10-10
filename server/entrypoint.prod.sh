@@ -6,13 +6,9 @@ set -o nounset
 # WARNING: this needs to run inside the app docker container, which is alpine linux
 # That means sh instead of bash, different unix utilities, etc
 
-if [[ -f /secrets/.env.prod ]]; then
-  echo "Found .env.prod in mounted secrets volume, copying to ${APP_HOME}"
-  cp /secrets/.env.prod "${APP_HOME}"
-fi
-
 # I'd love for this to be a Docker build time step, but there's subtle differences to the
-# output depending on if .env.dev or .env.prod is used, so it can't happen sooner than here
+# output depending on if this is running with dev or prod env vars is used, so it
+# has to happen after the prod env have been (potentially) injected at run time
 echo "Running collectstatic..."
 python manage.py collectstatic --no-input
 

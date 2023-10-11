@@ -6,7 +6,12 @@ metadata:
   labels:
     app: postgres-cluster
   annotations:
+  # Sidecar injection for limits and resources https://cloud.google.com/service-mesh/docs/managed/provision-managed-anthos-service-mesh#custom-injection
     proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+    sidecar.istio.io/proxyCPU: "50m"
+    sidecar.istio.io/proxyCPULimit: "50m"
+    sidecar.istio.io/proxyMemory: "100Mi"
+    sidecar.istio.io/proxyMemoryLimit: "100Mi"
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:15.4
   instances: 3

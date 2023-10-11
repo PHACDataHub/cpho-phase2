@@ -3,6 +3,13 @@ kind: Service
 metadata:
   name: istio-ingressgateway
   namespace: istio-ingress
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    cloud.google.com/load-balancer-type: External
+    networking.gke.io/suppress-firewall-xpn-error: "true"
+    kubernetes.io/ingress.class: istio
+    cloud.google.com/backend-config: '{"default": "istio-ingressgateway-backendconfig"}'
 spec:
   type: LoadBalancer
   selector:

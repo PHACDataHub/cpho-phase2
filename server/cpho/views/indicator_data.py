@@ -18,7 +18,10 @@ from cpho.models import (
     Indicator,
     IndicatorDatum,
 )
-from cpho.queries import get_submission_statuses
+from cpho.queries import (
+    get_submission_statuses,
+    relevant_dimension_types_for_period,
+)
 from cpho.text import tdt, tm
 
 from .view_util import (
@@ -292,17 +295,22 @@ class ManageIndicatorData(
                 literal_dimension_val__isnull=True
             )
         }
+        # looks like {"Male": <male data>, "Canada": <Canada data> }
 
         possible_values = DimensionValue.objects.filter(
             dimension_type__is_literal=False
         )
+        # looks like [<Male dim val>, <Female dim val>, <Canada dim val>...]
         if self.dimension_type is not None:
             possible_values = possible_values.filter(
                 dimension_type=self.dimension_type
             )
+        # if managing data for sex
+        # looks like [<Male dim val>, <Female dim val>]
 
         instances = []
         for pv in possible_values:
+            # get existing record for each dim val or create a new one and append to instances
             if existing_data_by_dimension_value.get(pv, None):
                 record = existing_data_by_dimension_value[pv]
             else:
@@ -336,6 +344,8 @@ class ManageIndicatorData(
             for form in self.predefined_values_formset.forms
         }
 
+    # looks like {"Male": <male form>, "Canada": <Canada form> }
+
     @cached_property
     def possible_values_by_dimension_type(self):
         return {
@@ -347,7 +357,16 @@ class ManageIndicatorData(
 
     @cached_property
     def has_age_group_forms(self):
-        return self.dimension_type is None or self.dimension_type.code == "age"
+        if self.dimension_type is None:
+            # if age not in relevant dimensions for indicator, but age data exists for this period
+            for dt in relevant_dimension_types_for_period(
+                self.indicator, self.period
+            ):
+                if dt.code == "age":
+                    return True
+        elif self.dimension_type.code == "age":
+            return True
+        return False
 
     def check_rule(self):
         return test_rule(
@@ -396,7 +415,13 @@ class ManageIndicatorData(
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:
             predefined_dimension_types = DimensionType.objects.filter(
-                is_literal=False
+                is_literal=False,
+                code__in=[
+                    dim.code
+                    for dim in relevant_dimension_types_for_period(
+                        self.indicator, self.period
+                    )
+                ],
             )
         elif self.dimension_type.code == "age":
             predefined_dimension_types = []

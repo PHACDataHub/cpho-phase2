@@ -23,7 +23,10 @@ from cpho.models import (
     Indicator,
     IndicatorDatum,
 )
-from cpho.queries import get_submission_statuses
+from cpho.queries import (
+    get_submission_statuses,
+    relevant_dimension_types_for_period,
+)
 from cpho.services import SubmitIndicatorDataService
 from cpho.text import tdt, tm
 from cpho.util import group_by
@@ -124,10 +127,12 @@ class ReviewData(
 
     @cached_property
     def dimension_types(self):
-        qs = DimensionType.objects.all()
         if self.dimension_type:
-            qs = qs.filter(pk=self.dimension_type.pk)
-        return qs
+            return [self.dimension_type]
+        relevant_dimensions = relevant_dimension_types_for_period(
+            self.indicator, self.period
+        )
+        return relevant_dimensions
 
     def get_context_data(self, *args, **kwargs):
         return {

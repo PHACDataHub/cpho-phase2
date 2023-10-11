@@ -416,9 +416,12 @@ class ManageIndicatorData(
         if self.dimension_type is None:
             predefined_dimension_types = DimensionType.objects.filter(
                 is_literal=False,
-                code__in=relevant_dimension_types_for_period(
-                    self.indicator, self.period
-                ),
+                code__in=[
+                    dim.code
+                    for dim in relevant_dimension_types_for_period(
+                        self.indicator, self.period
+                    )
+                ],
             )
         elif self.dimension_type.code == "age":
             predefined_dimension_types = []

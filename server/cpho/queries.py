@@ -84,8 +84,12 @@ def get_submission_statuses(indicator, period):
 
 
 def relevant_dimension_types_for_period(indicator, period):
-    data = indicator.data.filter(period=period).distinct("dimension_type")
-    dimension_types = set([d.dimension_type for d in data]).union(
+    data = (
+        indicator.data.filter(period=period)
+        .prefetch_related("dimension_type")
+        .distinct("dimension_type")
+    )
+    dimension_types = {d.dimension_type for d in data}.union(
         indicator.relevant_dimensions.all()
     )
     return list(dimension_types)

@@ -5,6 +5,7 @@ resources:
 - public-gateway.yaml
 - ingress.yaml
 - namespace.yaml
+- backendconfig.yaml
 
   # Patch the Istio ingress service so that our IP is used.
 patches:

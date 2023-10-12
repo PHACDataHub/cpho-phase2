@@ -13,4 +13,4 @@ spec:
     name: flux-system
   wait: true
   dependsOn:
-    - cert-manager-resources
+    - name: cert-manager-resources

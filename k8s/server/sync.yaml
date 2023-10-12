@@ -13,7 +13,7 @@ spec:
     name: flux-system
   wait: true
   dependsOn:
-    - cnpg-system
+    - name: cnpg-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -28,7 +28,7 @@ spec:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - server-postgres
+    - name: server-postgres
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository

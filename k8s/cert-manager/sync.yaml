@@ -13,7 +13,7 @@ spec:
     name: flux-system
   wait: true
   dependsOn:
-    - istio-ingress
+    - name: istio-ingress
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -29,4 +29,4 @@ spec:
     name: flux-system
   wait: true
   dependsOn:
-    - cert-manager-crds
+    - name: cert-manager-crds

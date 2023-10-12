@@ -13,4 +13,4 @@ spec:
     name: flux-system
   wait: true
   dependsOn:
-    - flux-system
+    - name: flux-system

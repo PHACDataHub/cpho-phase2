@@ -72,11 +72,11 @@ spec:
   git:
     checkout:
       ref:
-        branch: "main"
+        branch: "rearrange-k8s"
     commit:
       author:
         name: fluxbot
         email: fluxcd@users.noreply.github.com
       messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
     push:
-      branch: "main"
+      branch: "rearrange-k8s"

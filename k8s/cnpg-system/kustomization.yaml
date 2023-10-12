@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- cnpg-crds.yaml
+- cnpg-cm.yaml
+
+patches:
+  # enable istio injection for the namespace
+  - target:
+      kind: Namespace
+      name: cnpg-system
+    # use ~1 instead of / in path (see https://github.com/kubernetes-sigs/kustomize/issues/1256)
+    patch: |-
+      - op: add
+        path: /metadata/labels/istio.io~1rev
+        value: asm-managed
+  # Using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: cnpg-controller-manager
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 400Mi   
+              - name: istio-proxy
+                image: auto
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 112Mi   
+    target:
+      kind: Deployment
+      name: cnpg-controller-manager

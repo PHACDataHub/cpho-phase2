@@ -18,12 +18,11 @@ metadata:
   namespace: flux-system
 spec:
   interval: 2m0s
-  path: ./k8s/flux
+  path: ./k8s/flux-system
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
----
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository

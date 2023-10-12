@@ -5,4 +5,4 @@ metadata:
   namespace: cnpg-system
 data:
   INHERITED_LABELS: app
-  INHERITED_ANNOTATIONS: proxy.istio.io/*
+  INHERITED_ANNOTATIONS: proxy.istio.io/*, sidecar.istio.io/*

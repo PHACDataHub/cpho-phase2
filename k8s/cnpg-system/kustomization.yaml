@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
 - cnpg-crds.yaml
 - cnpg-cm.yaml
-- postgres-cluster.yaml
 
 patches:
   # enable istio injection for the namespace

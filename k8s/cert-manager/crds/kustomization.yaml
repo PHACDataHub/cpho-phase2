@@ -4,8 +4,6 @@ kind: Kustomization
 
 resources:
   - cert-manager.yaml
-  - issuers.yaml
-  - certificate.yaml
 
 patches:
   # Add an argument to the cert-manager deployment to enable Workload identity

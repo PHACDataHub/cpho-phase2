@@ -3,8 +3,7 @@ kind: Kustomization
 resources:
 - flux-crds.yaml
 - gcr-sync.yaml
-- sync-config.yaml
-- deployment-config.yaml
+- sync.yaml
 
 patches:
   # enable istio injection for the namespace

@@ -1,25 +1,28 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
-  name: sealed-secrets
+  name: application
   namespace: flux-system
 spec:
-  chart:
-    spec:
-      chart: sealed-secrets
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: sealed-secrets
-      version: '>=1.15.0-0'
-  install:
-    crds: Create
-  interval: 1h0m0s
-  releaseName: sealed-secrets-controller
-  targetNamespace: flux-system
-  upgrade:
-    crds: CreateReplace
+  interval: 2m0s
+  path: ./k8s/application
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 2m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: server
+  namespace: flux-system
+spec:
+  image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2
+  interval: 1m0s
+  secretRef:
+    name: gcr-credentials
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy

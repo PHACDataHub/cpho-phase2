@@ -1,0 +1,181 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
+
+resources:
+  - cert-manager.yaml
+
+patches:
+  # Add an argument to the cert-manager deployment to enable Workload identity
+  # This is needed because cert-manager needs permission to manipulate DNS records
+  # to complete a DNS01 challenge. Google's workload identity links K8s accounts
+  # to IAM accounts/roles.
+  # https://cert-manager.io/docs/configuration/acme/dns01/google/#gke-workload-identity
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        # args/0 would prepend to the array, args/- appends
+        path: /spec/template/spec/containers/0/args/-
+        value: --issuer-ambient-credentials=true
+  # Patch the cert-manager service account so that it has permissions to use Cloud DNS:
+  # https://cert-manager.io/docs/configuration/acme/dns01/google/#link-ksa-to-gsa-in-kubernetes
+  #"iam.gke.io/gcp-service-account=dns01-solver@$PROJECT_ID.iam.gserviceaccount.com"
+  - target:
+      version: v1
+      kind: ServiceAccount
+      name: cert-manager
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        path: "/metadata/annotations"
+        value:
+          iam.gke.io/gcp-service-account: dns01-solver@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
+  # autopilot compatibility: change leader election namespace. autopilot doesn't allow access to kube-system
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        # args/0 would prepend to the array, args/- appends
+        path: /spec/template/spec/containers/0/args
+        value:
+          - --v=2
+          - --cluster-resource-namespace=$(POD_NAMESPACE)
+          - --issuer-ambient-credentials=true
+          - --leader-election-namespace=cert-manager
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager-cainjector
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args
+        value:
+          - --v=2
+          - --leader-election-namespace=cert-manager
+  - target:
+      kind: Role
+      name: cert-manager:leaderelection
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: cert-manager
+  - target:
+      kind: Role
+      name: cert-manager-cainjector:leaderelection
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: cert-manager
+  - target:
+      kind: RoleBinding
+      name: cert-manager:leaderelection
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: cert-manager
+  - target:
+      kind: RoleBinding
+      name: cert-manager-cainjector:leaderelection
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: cert-manager
+  # to avoid "doc is missing path" error in the later patch
+  - target:
+      kind: Namespace
+      name: cert-manager
+    patch: |-
+      - op: add
+        path: /metadata/labels
+        value: {}
+  # enable istio injection for the namespace
+  - target:
+      kind: Namespace
+      name: cert-manager
+    # use ~1 instead of / in path (see https://github.com/kubernetes-sigs/kustomize/issues/1256)
+    patch: |-
+      - op: add
+        path: /metadata/labels/istio.io~1rev
+        value: asm-managed
+  # Using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: cert-manager
+      spec:
+        template:
+          spec:
+            containers:
+              - name: cert-manager-controller
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 400Mi   
+              - name: istio-proxy
+                image: auto
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 112Mi   
+    target:
+      kind: Deployment
+      name: "cert-manager"
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: cert-manager-cainjector
+      spec:
+        template:
+          spec:
+            containers:
+              - name: cert-manager-cainjector
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 400Mi   
+              - name: istio-proxy
+                image: auto
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 112Mi   
+    target:
+      kind: Deployment
+      name: "cert-manager-cainjector"
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: cert-manager-webhook
+      spec:
+        template:
+          spec:
+            containers:
+              - name: cert-manager-webhook
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 400Mi   
+              - name: istio-proxy
+                image: auto
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 112Mi   
+    target:
+      kind: Deployment
+      name: "cert-manager-webhook"

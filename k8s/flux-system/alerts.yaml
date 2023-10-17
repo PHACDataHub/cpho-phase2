@@ -22,7 +22,7 @@ spec:
     region: "northamerica-northeast1"
   providerRef:
     name: slack-bot
-  eventSeverity: info
+  eventSeverity: error
   eventSources:
     - kind: GitRepository
       name: '*'

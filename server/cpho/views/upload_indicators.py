@@ -1,11 +1,13 @@
 import csv
+from typing import Any
 
 from django import forms
 from django.contrib import messages
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView, View
 
 from server.rules_framework import test_rule
 
@@ -24,6 +26,7 @@ from .view_util import MustPassAuthCheckMixin, upload_mapper
 class UploadForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
+        self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
 
     csv_file = forms.FileField(
@@ -35,134 +38,14 @@ class UploadForm(forms.Form):
         ),
     )
 
-    def handle_indicators(self, datum):
-        mapper = upload_mapper()
-        # try to find if indicator with same exact attributes exists first
-        indicator_obj = Indicator.objects.filter(
-            name=datum["Indicator"],
-            category=mapper["category_mapper"][datum["Category"]],
-            topic=mapper["topic_mapper"][datum["Topic"]],
-            detailed_indicator=datum["Detailed Indicator"],
-            sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
-        ).first()
-
-        if indicator_obj is None:
-            if test_rule("can_create_indicator", self.user):
-                indicator_obj = Indicator.objects.create(
-                    name=datum["Indicator"],
-                    category=mapper["category_mapper"][datum["Category"]],
-                    topic=mapper["topic_mapper"][datum["Topic"]],
-                    detailed_indicator=datum["Detailed Indicator"],
-                    sub_indicator_measurement=datum[
-                        "Sub_Indicator_Measurement"
-                    ],
-                )
-                indicator_obj.relevant_dimensions.set(
-                    DimensionType.objects.all()
-                )
-
-        return indicator_obj
-
-    def handle_indicator_data(self, indicator_obj, datum):
-        mapper = upload_mapper()
-
-        period_val = mapper["period_mapper"][datum["Period"]]
-
-        if not test_rule("can_edit_indicator_data", self.user, indicator_obj):
-            return None
-
-        dim_val = None
-        lit_dim_val = None
-        if datum["Dimension_Type"] != "Age Group":
-            dim_val = mapper["non_literal_dimension_value_mapper"][
-                (datum["Dimension_Type"], datum["Dimension_Value"])
-            ]
-        else:
-            lit_dim_val = datum["Dimension_Value"]
-        # filter data with all attributes equal to datum
-        # to see if exact match exists
-        indData_obj = IndicatorDatum.objects.filter(
-            indicator=indicator_obj,
-            dimension_type=mapper["dimension_type_mapper"][
-                datum["Dimension_Type"]
-            ],
-            dimension_value=dim_val,
-            literal_dimension_val=lit_dim_val,
-            period=period_val,
-            data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
-            reason_for_null=mapper["reason_for_null_mapper"][
-                datum["Reason_for_Null_Data"]
-            ],
-            value=(float(datum["Value"]) if datum["Value"] != "" else None),
-            value_lower_bound=(
-                float(datum["Value_LowerCI"])
-                if datum["Value_LowerCI"] != ""
-                else None
-            ),
-            value_upper_bound=(
-                float(datum["Value_UpperCI"])
-                if datum["Value_UpperCI"] != ""
-                else None
-            ),
-            value_unit=mapper["value_unit_mapper"][datum["Value_Units"]],
-            value_displayed=mapper["value_displayed_mapper"][
-                datum["Value_Displayed"]
-            ],
-            single_year_timeframe=datum["SingleYear_TimeFrame"],
-            multi_year_timeframe=datum["MultiYear_TimeFrame"],
-        ).first()
-        # if exact match exists, do nothing
-        # if exact match does not exist, check if the data is modified
-        # if data is modified, create update data
-        # if data is new, create new data
-        if indData_obj is None:
-            indData_obj, created = IndicatorDatum.objects.get_or_create(
-                indicator=indicator_obj,
-                dimension_type=mapper["dimension_type_mapper"][
-                    datum["Dimension_Type"]
-                ],
-                dimension_value=dim_val,
-                period=period_val,
-                literal_dimension_val=lit_dim_val,
-            )
-            indData_obj.data_quality = mapper["data_quality_mapper"][
-                datum["Data_Quality"]
-            ]
-            indData_obj.reason_for_null = mapper["reason_for_null_mapper"][
-                datum["Reason_for_Null_Data"]
-            ]
-            indData_obj.value = (
-                float(datum["Value"]) if datum["Value"] != "" else None
-            )
-            indData_obj.value_lower_bound = (
-                float(datum["Value_LowerCI"])
-                if datum["Value_LowerCI"] != ""
-                else None
-            )
-            indData_obj.value_upper_bound = (
-                float(datum["Value_UpperCI"])
-                if datum["Value_UpperCI"] != ""
-                else None
-            )
-            indData_obj.value_unit = mapper["value_unit_mapper"][
-                datum["Value_Units"]
-            ]
-            indData_obj.value_displayed = mapper["value_displayed_mapper"][
-                datum["Value_Displayed"]
-            ]
-            indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
-            indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
-            indData_obj.save()
-
     def save(self):
         data = self.cleaned_data["csv_file"]
-        for datum in data:
-            indicator_obj = self.handle_indicators(datum)
-
-            if indicator_obj is None:
-                continue
-
-            self.handle_indicator_data(indicator_obj, datum)
+        self.request.session["upload_data"] = data
+        # for datum in data:
+        #     indicator_obj = self.handle_indicator_save(datum)
+        #     if indicator_obj is None:
+        #         continue
+        #     self.handle_indicator_data_save(indicator_obj, datum)
 
     def clean_csv_file(self):
         csv_file = self.cleaned_data["csv_file"]
@@ -316,7 +199,7 @@ class UploadForm(forms.Form):
 
 
 class UploadIndicator(MustPassAuthCheckMixin, FormView):
-    template_name = "indicators/upload_indicator.jinja2"
+    template_name = "indicators/upload/upload_indicator.jinja2"
     form_class = UploadForm
 
     def check_rule(self):
@@ -328,21 +211,20 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
+        kwargs["request"] = self.request
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context["mapper"] = upload_mapper()
-
         return context
 
     def get_success_url(self):
-        return reverse("user_scoped_changelog", args=[self.request.user.id])
+        # return reverse("user_scoped_changelog", args=[self.request.user.id])
+        return reverse("preview_upload")
 
     def form_valid(self, form):
         form.save()
-
         messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 
@@ -360,3 +242,168 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
                 tdt("There was an error uploading the file. Please try again"),
             )
         return super().form_invalid(form)
+
+
+class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
+    template_name = "indicators/upload/preview_upload.jinja2"
+
+    def check_rule(self):
+        return test_rule(
+            "can_upload_indicator",
+            self.request.user,
+        )
+
+    def get_context_data(self, **kwargs: Any):
+        csv_data = self.request.session["upload_data"]
+
+        context = {
+            **super().get_context_data(**kwargs),
+            "csv_data": csv_data,
+        }
+        return context
+
+
+class SaveUpload(MustPassAuthCheckMixin, View):
+    def check_rule(self):
+        return test_rule(
+            "can_upload_indicator",
+            self.request.user,
+        )
+
+    def handle_indicator_save(self, datum):
+        mapper = upload_mapper()
+        # try to find if indicator with same exact attributes exists first
+        indicator_obj = Indicator.objects.filter(
+            name=datum["Indicator"],
+            category=mapper["category_mapper"][datum["Category"]],
+            topic=mapper["topic_mapper"][datum["Topic"]],
+            detailed_indicator=datum["Detailed Indicator"],
+            sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
+        ).first()
+
+        if indicator_obj is None:
+            if test_rule("can_create_indicator", self.request.user):
+                indicator_obj = Indicator.objects.create(
+                    name=datum["Indicator"],
+                    category=mapper["category_mapper"][datum["Category"]],
+                    topic=mapper["topic_mapper"][datum["Topic"]],
+                    detailed_indicator=datum["Detailed Indicator"],
+                    sub_indicator_measurement=datum[
+                        "Sub_Indicator_Measurement"
+                    ],
+                )
+                indicator_obj.relevant_dimensions.set(
+                    DimensionType.objects.all()
+                )
+
+        return indicator_obj
+
+    def handle_indicator_data_save(self, indicator_obj, datum):
+        mapper = upload_mapper()
+
+        period_val = mapper["period_mapper"][datum["Period"]]
+
+        if not test_rule(
+            "can_edit_indicator_data", self.request.user, indicator_obj
+        ):
+            return None
+
+        dim_val = None
+        lit_dim_val = None
+        if datum["Dimension_Type"] != "Age Group":
+            dim_val = mapper["non_literal_dimension_value_mapper"][
+                (datum["Dimension_Type"], datum["Dimension_Value"])
+            ]
+        else:
+            lit_dim_val = datum["Dimension_Value"]
+        # filter data with all attributes equal to datum
+        # to see if exact match exists
+        indData_obj = IndicatorDatum.objects.filter(
+            indicator=indicator_obj,
+            dimension_type=mapper["dimension_type_mapper"][
+                datum["Dimension_Type"]
+            ],
+            dimension_value=dim_val,
+            literal_dimension_val=lit_dim_val,
+            period=period_val,
+            data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
+            reason_for_null=mapper["reason_for_null_mapper"][
+                datum["Reason_for_Null_Data"]
+            ],
+            value=(float(datum["Value"]) if datum["Value"] != "" else None),
+            value_lower_bound=(
+                float(datum["Value_LowerCI"])
+                if datum["Value_LowerCI"] != ""
+                else None
+            ),
+            value_upper_bound=(
+                float(datum["Value_UpperCI"])
+                if datum["Value_UpperCI"] != ""
+                else None
+            ),
+            value_unit=mapper["value_unit_mapper"][datum["Value_Units"]],
+            value_displayed=mapper["value_displayed_mapper"][
+                datum["Value_Displayed"]
+            ],
+            single_year_timeframe=datum["SingleYear_TimeFrame"],
+            multi_year_timeframe=datum["MultiYear_TimeFrame"],
+        ).first()
+        # if exact match exists, do nothing
+        # if exact match does not exist, check if the data is modified
+        # if data is modified, update data
+        # if data is new, create new data
+        if indData_obj is None:
+            indData_obj, created = IndicatorDatum.objects.get_or_create(
+                indicator=indicator_obj,
+                dimension_type=mapper["dimension_type_mapper"][
+                    datum["Dimension_Type"]
+                ],
+                dimension_value=dim_val,
+                period=period_val,
+                literal_dimension_val=lit_dim_val,
+            )
+            indData_obj.data_quality = mapper["data_quality_mapper"][
+                datum["Data_Quality"]
+            ]
+            indData_obj.reason_for_null = mapper["reason_for_null_mapper"][
+                datum["Reason_for_Null_Data"]
+            ]
+            indData_obj.value = (
+                float(datum["Value"]) if datum["Value"] != "" else None
+            )
+            indData_obj.value_lower_bound = (
+                float(datum["Value_LowerCI"])
+                if datum["Value_LowerCI"] != ""
+                else None
+            )
+            indData_obj.value_upper_bound = (
+                float(datum["Value_UpperCI"])
+                if datum["Value_UpperCI"] != ""
+                else None
+            )
+            indData_obj.value_unit = mapper["value_unit_mapper"][
+                datum["Value_Units"]
+            ]
+            indData_obj.value_displayed = mapper["value_displayed_mapper"][
+                datum["Value_Displayed"]
+            ]
+            indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
+            indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
+            indData_obj.save()
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        data = request.session["upload_data"]
+        for datum in data:
+            print(datum)
+            indicator_obj = self.handle_indicator_save(datum)
+            if indicator_obj is None:
+                continue
+            self.handle_indicator_data_save(indicator_obj, datum)
+
+        messages.success(request, tdt("Data HELO"))
+        response = HttpResponse()
+        response["HX-Redirect"] = reverse(
+            "user_scoped_changelog", args=[request.user.id]
+        )
+        return response

@@ -1,0 +1,60 @@
+{% extends 'base.jinja2' %}
+{% block content %}
+
+
+  <a href="#" hx-post="{{ url("save_upload") }}" class="btn btn-primary">{{ tdt("Confirm") }}</a>
+  <a href='' class="btn btn-danger">{{ tdt("Cancel") }}</a>
+
+  <div class = "table-responsive">
+    <table class="table table-hover ">
+      <thead>
+        <tr>
+          <th>{{ tdt("Indicator") }}</th>
+          <th>{{ tdt("Detailed Indicator") }}</th>
+          <th>{{ tdt("Sub Indicator Measurement") }}</th>
+          <th>{{ tdt("Category") }}</th>
+          <th>{{ tdt("Topic") }}</th>
+          <th>{{ tdt("Data Quality") }}</th>
+          <th>{{ tdt("Value") }}</th>
+          <th>{{ tdt("Value LowerCI") }}</th>
+          <th>{{ tdt("Value UpperCI") }}</th>
+          <th>{{ tdt("SingleYear TimeFrame") }}</th>
+          <th>{{ tdt("MultiYear TimeFrame") }}</th>
+          <th>{{ tdt("Value Unit") }}</th>
+          <th>{{ tdt("Value Displayed") }}</th>
+          <th>{{ tdt("Reason for Null Data") }}</th>
+          <th>{{ tdt("Dimension Type") }}</th>
+          <th>{{ tdt("Dimension Value") }}</th>
+          <th>{{ tdt("Period") }}</th>
+        </tr>
+      </thead>
+
+ 
+      <tbody>
+        {% for datum in csv_data %}
+          <tr>
+            <td>{{ datum["Indicator"] }}</td>
+            <td>{{ datum["Detailed Indicator"] }}</td>
+            <td>{{ datum["Sub_Indicator_Measurement"] }}</td>
+            <td>{{ datum["Category"] }}</td>
+            <td>{{ datum["Topic"] }}</td>
+            <td>{{ datum["Data_Quality"] }}</td>
+            <td>{{ datum["Value"] }}</td>
+            <td>{{ datum["Value_LowerCI"] }}</td>
+            <td>{{ datum["Value_UpperCI"] }}</td>
+            <td>{{ datum["SingleYear_TimeFrame"] }}</td>
+            <td>{{ datum["MultiYear_TimeFrame"] }}</td>
+            <td>{{ datum["Value_Units"] }}</td>
+            <td>{{ datum["Value_Displayed"] }}</td>
+            <td>{{ datum["Reason_for_Null_Data"] }}</td>
+            <td>{{ datum["Dimension_Type"] }}</td>
+            <td>{{ datum["Dimension_Value"] }}</td>
+            <td>{{ datum["Period"] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+{% endblock %}

@@ -95,6 +95,7 @@ class UploadForm(forms.Form):
         for idx, data_row in enumerate(reader):
             for key, value in data_row.items():
                 data_row[key] = value.strip()
+            data_row["line"] = idx + 2
             if data_row["Category"] not in mapper["category_mapper"]:
                 errorlist.append(
                     tdt(
@@ -225,7 +226,7 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, tdt("Data Uploaded Successfully"))
+        # messages.success(self.request, tdt("Data Uploaded Successfully"))
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -255,10 +256,23 @@ class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
 
     def get_context_data(self, **kwargs: Any):
         csv_data = self.request.session["upload_data"]
+        from collections import defaultdict
+
+        indicator_grouped_data = defaultdict(list)
+        # grouping data by indicator, detailed indicator, sub indicator measurement, category, topic
+        for datum in csv_data:
+            indicator_grouped_data[
+                datum["Indicator"],
+                datum["Detailed Indicator"],
+                datum["Sub_Indicator_Measurement"],
+                datum["Category"],
+                datum["Topic"],
+            ].append(datum)
 
         context = {
             **super().get_context_data(**kwargs),
             "csv_data": csv_data,
+            "grouped_data": indicator_grouped_data,
         }
         return context
 

@@ -6,7 +6,7 @@ resources:
 - gcr-sync.yaml
 - sealed-secrets.yaml
 - slack-secret.yaml
-- alerts.yaml
+- slack-alerts.yaml
 
 patches:
   # enable istio injection for the namespace

@@ -51,3 +51,42 @@ td:has(>.error-display)>input {
     border: 2px solid #75070c;
 
 }
+
+.error-div-preview {
+    background: #ffe0e2;
+    color: #842029;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.error-td-preview {
+    background-color: #ffe0e2 !important;
+    color: #842029;
+    padding: 5px;
+}
+
+.error-msg {
+    color: #842029;
+    background-color: #f8abb2;
+    border-radius: 10px;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 80%;
+
+}
+
+a.disabled {
+    pointer-events: none;
+    color: #ccc;
+}
+
+span.new-ind-tag {
+    display: inline-block;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 5px;
+    padding: 0rem 0.1rem;
+    border: 2px solid #0c3816;
+    margin: 1px;
+    font-size: 90%;
+}

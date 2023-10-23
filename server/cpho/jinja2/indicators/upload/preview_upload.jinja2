@@ -1,29 +1,54 @@
 {% extends 'base.jinja2' %}
+{% from 'cpho_macros.jinja2' import check_error, check_error_class %}
 {% block content %}
 
-  <a href="#" hx-post="{{ url("save_upload") }}" class="btn btn-primary">{{ tdt("Confirm") }}</a>
-  <a href='' class="btn btn-danger">{{ tdt("Cancel") }}</a>
 
-
+ 
+  <a id='upload_btn'
+     href="#"
+     onclick="showLoading()"
+     hx-post="{{ url("save_upload") }}"
+     class="btn btn-primary {{ disabled if not no_errors }}">{{ tdt("Upload Data") }}</a>
+  <button id='loading_btn'
+          class="btn btn-primary d-none"
+          type="button"
+          disabled>
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+    {{ tdt("Uploading Data") }}
+  </button>
+  <a href="{{ url("list_indicators") }}" class="btn btn-danger">{{ tdt("Cancel") }}</a>
+ 
   {% for indicator in grouped_data %}
     <div class='mt-5 card'>
       <div class="card-header">
-        <div class="h5">{{ tdt("Indicator") }} : {{ indicator[0] }}</div>
+        <div class="h5">
+          {{ tdt("Indicator") }} : {{ indicator[0] }}
+          {% if grouped_data[indicator][0]["new_indicator"] %}<span class="new-ind-tag">{{ tdt("New") }}</span>{% endif %}
+        </div>
  
-      </div>
 
+      </div>
       <div class=" card-body">
+
+        {{ (check_error(grouped_data[indicator][0], "Indicator") ) }}
+ 
+
         <div class="p">
           <span class="fw-bold">{{ tdt("Detailed Indicator") }}</span> : {{ indicator[1] }}
         </div>
+ 
         <div class="p">
           <span class="fw-bold">{{ tdt("Sub Indicator Measurement") }}</span> : {{ indicator[2] }}
         </div>
-        <div class="p">
+
+        <div class="p {{ check_error_class(grouped_data[indicator][0], 'Category').strip() }}">
           <span class="fw-bold">{{ tdt("Category") }}</span> : {{ indicator[3] }}
+          {{ (check_error(grouped_data[indicator][0], "Category") ) }}
         </div>
-        <div class="p">
-          <span class="fw-bold">{{ tdt("Topic") }}</span> : {{ indicator[4] }}
+
+        <div class="p {{ check_error_class(grouped_data[indicator][0], 'Topic').strip() }}">
+          <span class="fw-bold">{{ tdt("Topic") }}</span> : {{ indicator[3] }}
+          {{ check_error(grouped_data[indicator][0], "Topic") }}
         </div>
 
         <div class="table-container mt-2">
@@ -51,18 +76,40 @@
               {% for datum in grouped_data[indicator] %}
                 <tr>
                   <td>{{ datum["line"] }}</td>
-                  <td>{{ datum["Dimension_Type"] }}</td>
-                  <td>{{ datum["Dimension_Value"] }}</td>
-                  <td>{{ datum["Data_Quality"] }}</td>
+                  <td class="{{ check_error_class(datum, 'Dimension_Type').strip() }}">
+                    {{ datum["Dimension_Type"] }}
+                    {{ check_error(datum, "Dimension_Type") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Dimension_Value').strip() }}">
+                    {{ datum["Dimension_Value"] }}
+                    {{ check_error(datum, "Dimension_Value") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Data_Quality').strip() }}">
+                    {{ datum["Data_Quality"] }}
+                    {{ check_error(datum, "Data_Quality") }}
+                  </td>
+ 
                   <td>{{ datum["Value"] }}</td>
                   <td>{{ datum["Value_LowerCI"] }}</td>
                   <td>{{ datum["Value_UpperCI"] }}</td>
                   <td>{{ datum["SingleYear_TimeFrame"] }}</td>
                   <td>{{ datum["MultiYear_TimeFrame"] }}</td>
-                  <td>{{ datum["Value_Units"] }}</td>
-                  <td>{{ datum["Value_Displayed"] }}</td>
-                  <td>{{ datum["Reason_for_Null_Data"] }}</td>
-                  <td>{{ datum["Period"] }}</td>
+                  <td class="{{ check_error_class(datum, 'Value_Units').strip() }}">
+                    {{ datum["Value_Units"] }}
+                    {{ check_error(datum, "Value_Units") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Value_Displayed').strip() }}">
+                    {{ datum["Value_Displayed"] }}
+                    {{ check_error(datum, "Value_Displayed") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Reason_for_Null_Data').strip() }}">
+                    {{ datum["Reason_for_Null_Data"] }}
+                    {{ check_error(datum, "Reason_for_Null_Data") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Period').strip() }}">
+                    {{ datum["Period"] }}
+                    {{ check_error(datum, "Period") }}
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -72,6 +119,14 @@
       </div>
     </div>
   {% endfor %}
+
+  <script>
+    function showLoading() {
+      document.getElementById("upload_btn").disabled = true;
+      document.getElementById("upload_btn").classList.add("d-none");
+      document.getElementById("loading_btn").classList.remove("d-none");
+    }
+  </script>
  
 
 {% endblock %}

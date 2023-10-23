@@ -41,11 +41,6 @@ class UploadForm(forms.Form):
     def save(self):
         data = self.cleaned_data["csv_file"]
         self.request.session["upload_data"] = data
-        # for datum in data:
-        #     indicator_obj = self.handle_indicator_save(datum)
-        #     if indicator_obj is None:
-        #         continue
-        #     self.handle_indicator_data_save(indicator_obj, datum)
 
     def clean_csv_file(self):
         csv_file = self.cleaned_data["csv_file"]
@@ -96,100 +91,89 @@ class UploadForm(forms.Form):
             for key, value in data_row.items():
                 data_row[key] = value.strip()
             data_row["line"] = idx + 2
+            data_row["errors"] = {}
             if data_row["Category"] not in mapper["category_mapper"]:
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Category: {data_row['Category']} is not valid"
-                    )
+                data_row["errors"]["Category"] = tdt(
+                    f"Category: {data_row['Category']} is not valid"
                 )
             if data_row["Topic"] not in mapper["topic_mapper"]:
-                errorlist.append(
-                    tdt(f"row: {idx} Topic: {data_row['Topic']} is not valid")
+                data_row["errors"]["Topic"] = tdt(
+                    tdt(f"Topic: {data_row['Topic']} is not valid")
                 )
             if data_row["Data_Quality"] not in mapper["data_quality_mapper"]:
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Data quality: {data_row['Data_Quality']} is not valid"
-                    )
+                data_row["errors"]["Data_Quality"] = tdt(
+                    f"Data quality: {data_row['Data_Quality']} is not valid"
                 )
             if (
                 data_row["Reason_for_Null_Data"]
                 not in mapper["reason_for_null_mapper"]
             ):
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Reason_for_Null_Data: {data_row['reason_for_null']} is not valid"
-                    )
+                data_row["errors"]["Reason_for_Null_Data"] = tdt(
+                    f"Reason_for_Null_Data: {data_row['reason_for_null']} is not valid"
                 )
             if data_row["Value_Units"] not in mapper["value_unit_mapper"]:
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Value Units: {data_row['Value_Units']} is not valid"
-                    )
+                data_row["errors"]["Value_Units"] = tdt(
+                    f"Value Units: {data_row['Value_Units']} is not valid"
                 )
             if (
                 data_row["Value_Displayed"]
                 not in mapper["value_displayed_mapper"]
             ):
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Value displayed: {data_row['Value_Displayed']} is not valid"
-                    )
+                data_row["errors"]["Value_Displayed"] = tdt(
+                    f"Value displayed: {data_row['Value_Displayed']} is not valid"
                 )
             if data_row["Dimension_Type"] != "Age Group":
                 if (
                     data_row["Dimension_Type"]
                     not in mapper["dimension_type_mapper"]
                 ):
-                    errorlist.append(
-                        tdt(
-                            f"row: {idx} Dimension Type: {data_row['Dimension_Type']} is not valid"
-                        )
+                    print("in here")
+                    data_row["errors"]["Dimension_Type"] = tdt(
+                        f"Dimension Type: {data_row['Dimension_Type']} is not valid"
                     )
                 if (
                     data_row["Dimension_Type"],
                     data_row["Dimension_Value"],
                 ) not in mapper["non_literal_dimension_value_mapper"]:
-                    errorlist.append(
-                        tdt(
-                            f"row: {idx} Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
-                        )
+                    data_row["errors"]["Dimension_Value"] = tdt(
+                        f"Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
                     )
             if data_row["Period"] not in mapper["period_mapper"]:
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Period: {data_row['Period']} is not valid"
-                    )
+                data_row["errors"]["Period"] = tdt(
+                    f"Period: {data_row['Period']} is not valid"
                 )
 
             # checking if indicator already exists
-            indicator_obj = Indicator.objects.filter(
-                name=data_row["Indicator"],
-                category=mapper["category_mapper"][data_row["Category"]],
-                topic=mapper["topic_mapper"][data_row["Topic"]],
-                detailed_indicator=data_row["Detailed Indicator"],
-                sub_indicator_measurement=data_row[
-                    "Sub_Indicator_Measurement"
-                ],
-            ).first()
+            try:
+                indicator_obj = Indicator.objects.filter(
+                    name=data_row["Indicator"],
+                    category=mapper["category_mapper"][data_row["Category"]],
+                    topic=mapper["topic_mapper"][data_row["Topic"]],
+                    detailed_indicator=data_row["Detailed Indicator"],
+                    sub_indicator_measurement=data_row[
+                        "Sub_Indicator_Measurement"
+                    ],
+                ).first()
+            except Exception:
+                indicator_obj = None
+
+            data_row["new_indicator"] = (
+                True if indicator_obj is None else False
+            )
+
             if indicator_obj is None and not test_rule(
                 "can_create_indicator", self.user
             ):
-                errorlist.append(
-                    tdt(
-                        f"row: {idx} Indicator: {data_row['Indicator']} does not exist and you do not have permission to create it"
-                    )
+                data_row["errors"]["Indicator"] = tdt(
+                    f"Indicator: {data_row['Indicator']} does not exist and you do not have permission to create it"
                 )
 
-            if indicator_obj is not None:
-                if not test_rule(
-                    "can_edit_indicator_data", self.user, indicator_obj
-                ):
-                    errorlist.append(
-                        tdt(
-                            f"row: {idx} You do not have permission to edit data for Indicator: {indicator_obj.name}"
-                        )
-                    )
+            if indicator_obj is not None and not test_rule(
+                "can_edit_indicator_data", self.user, indicator_obj
+            ):
+                data_row["errors"]["Indicator"] = tdt(
+                    f"You do not have permission to edit data for Indicator: {indicator_obj.name}"
+                )
 
             data_dict.append(data_row)
 
@@ -258,9 +242,14 @@ class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
         csv_data = self.request.session["upload_data"]
         from collections import defaultdict
 
+        no_errors = True
         indicator_grouped_data = defaultdict(list)
-        # grouping data by indicator, detailed indicator, sub indicator measurement, category, topic
+
         for datum in csv_data:
+            # global error check across all data
+            if datum["errors"]:
+                no_errors = False
+            # grouping data by indicator, detailed indicator, sub indicator measurement, category, topic
             indicator_grouped_data[
                 datum["Indicator"],
                 datum["Detailed Indicator"],
@@ -273,6 +262,7 @@ class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
             **super().get_context_data(**kwargs),
             "csv_data": csv_data,
             "grouped_data": indicator_grouped_data,
+            "no_errors": no_errors,
         }
         return context
 
@@ -409,13 +399,12 @@ class SaveUpload(MustPassAuthCheckMixin, View):
     def post(self, request, *args, **kwargs):
         data = request.session["upload_data"]
         for datum in data:
-            print(datum)
             indicator_obj = self.handle_indicator_save(datum)
             if indicator_obj is None:
                 continue
             self.handle_indicator_data_save(indicator_obj, datum)
 
-        messages.success(request, tdt("Data HELO"))
+        messages.success(request, tdt("Data Uploaded Successfully"))
         response = HttpResponse()
         response["HX-Redirect"] = reverse(
             "user_scoped_changelog", args=[request.user.id]

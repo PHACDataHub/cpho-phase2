@@ -43,3 +43,13 @@
   {% endif %}
   <span class="badge bg-{{ badge_type }}">{{ submission_status_label(submission_status) }}</span>
 {% endmacro %}
+
+{% macro check_error(datum, field) %}
+  {% if datum['errors'][field] %}<div class="error-msg">{{ datum['errors'][field] }}</div>{% endif %}
+{% endmacro %}
+
+{% macro check_error_class(datum, field) %}
+  {% if datum['errors'][field] %}
+    {{ 'error-div-preview' if field in ["Category", "Indicator", "Topic"] else 'error-td-preview' }}
+  {% endif %}
+{% endmacro %}

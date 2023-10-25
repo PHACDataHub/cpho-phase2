@@ -52,15 +52,15 @@ td:has(>.error-display)>input {
 
 }
 
-.error-div-preview {
+div.error-preview {
     background: #ffe0e2;
     color: #842029;
     border-radius: 10px;
     padding: 5px;
 }
 
-.error-td-preview {
-    background-color: #ffe0e2 !important;
+td.error-preview {
+    background-color: #ffe0e2;
     color: #842029;
     padding: 5px;
 }

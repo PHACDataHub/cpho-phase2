@@ -26,17 +26,13 @@
                  class="btn btn-primary mt-3 float-end"
                  value="{{ tdt("Preview file data") }}">
         </div>
-        <div id="loadingModal" style="display: none;">
-          <button class="btn btn-primary mt-3 float-end" type="button" disabled>
-            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-            {{ tdt("Getting data ready for preview") }}
-          </button>
-        </div>
+      </div>
+      <div id="loadingModal" class="d-none mt-3 float-end">
+        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+        <span>{{ tdt("Getting data ready for preview") }}</span>
       </div>
     </div>
   </form>
-
-
  
   {% if form.csv_file.errors %}<div class="my-2 error-div">{{ form.csv_file.errors }}</div>{% endif %}
 
@@ -44,8 +40,8 @@
   <script>
     function openLoader() {
       document.getElementById("submit-btn").disabled = true;
-      document.getElementById("submit-btn-div").style.display = "none";
-      document.getElementById("loadingModal").style.display = "block";
+      document.getElementById("submit-btn-div").classList.add("d-none");
+      document.getElementById("loadingModal").classList.remove("d-none");
       }
   </script>
  

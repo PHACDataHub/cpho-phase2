@@ -109,7 +109,7 @@ class UploadForm(forms.Form):
                 not in mapper["reason_for_null_mapper"]
             ):
                 data_row["errors"]["Reason_for_Null_Data"] = tdt(
-                    f"Reason_for_Null_Data: {data_row['reason_for_null']} is not valid"
+                    f"Reason_for_Null_Data: {data_row['Reason_for_Null_Data']} is not valid"
                 )
             if data_row["Value_Units"] not in mapper["value_unit_mapper"]:
                 data_row["errors"]["Value_Units"] = tdt(

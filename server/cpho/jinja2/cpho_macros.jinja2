@@ -49,7 +49,5 @@
 {% endmacro %}
 
 {% macro check_error_class(datum, field) %}
-  {% if datum['errors'][field] %}
-    {{ 'error-div-preview' if field in ["Category", "Indicator", "Topic"] else 'error-td-preview' }}
-  {% endif %}
+  {% if datum['errors'][field] %}{{ 'error-preview' }}{% endif %}
 {% endmacro %}

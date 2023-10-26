@@ -1,14 +1,14 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cpho-postgres-cluster-object-storage
+  name: cpho-postgres14-cluster-object-storage
   namespace: server
   labels:
-    app: postgres-cluster-object-storage
+    app: postgres14-cluster-object-storage
   annotations:
     proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 spec:
-  imageName: ghcr.io/cloudnative-pg/postgresql:15.4
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.9
   instances: 3
   startDelay: 900
   stopDelay: 900
@@ -68,7 +68,7 @@ spec:
   externalClusters:
     - name: cpho-postgres-restore
       barmanObjectStore:
-        serverName: cpho-postgres-cluster
+        serverName: cpho-postgres14-cluster
         destinationPath: gs://hopic-dev-postgres-backup/
         googleCredentials:
           gkeEnvironment: true

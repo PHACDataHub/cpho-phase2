@@ -2,19 +2,19 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Backup
 metadata:
-  name: postgres-cluster-backup
+  name: postgres14-cluster-backup
   namespace: server
 spec:
   cluster:
-    name: cpho-postgres-cluster
+    name: cpho-postgres14-cluster
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: postgres-cluster-scheduled-backup
+  name: postgres14-cluster-scheduled-backup
   namespace: server
 spec:
   schedule: "0 0 0 * * *"
   backupOwnerReference: self
   cluster:
-    name: cpho-postgres-cluster
+    name: cpho-postgres14-cluster

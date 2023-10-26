@@ -49,18 +49,18 @@ spec:
         - name: DB_NAME
           value: "cpho-phase2_db"
         - name: DB_HOST
-          value: "cpho-postgres-cluster-rw"
+          value: "cpho-postgres14-cluster-rw"
         - name: DB_PORT
           value: "5432"
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: cpho-postgres-cluster-app
+              name: cpho-postgres14-cluster-app
               key: username
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: cpho-postgres-cluster-app
+              name: cpho-postgres14-cluster-app
               key: password
         resources:
           # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)

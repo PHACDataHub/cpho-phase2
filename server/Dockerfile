@@ -1,7 +1,7 @@
 #################
 # WHEEL BUILDER #
 #################
-FROM python:3.10.6-alpine3.16 as wheel_builder
+FROM python:3.10.13-alpine3.18 as wheel_builder
 
 # set work directory
 WORKDIR /wheels
@@ -35,7 +35,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./dev-test -r requirements.tx
 #########
 # FINAL #
 #########
-FROM python:3.10.6-alpine3.16
+FROM python:3.10.13-alpine3.18
 
 ENV USER=5678
 
@@ -44,7 +44,7 @@ ENV APP_HOME=$HOME/web
 ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
 
-RUN apk update && apk add postgresql14-client
+RUN apk update && apk add postgresql15-client
 
 RUN \
     addgroup -S app && adduser --shell /bin/sh -u $USER -S app -G app --home $HOME && \

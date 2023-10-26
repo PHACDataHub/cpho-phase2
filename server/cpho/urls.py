@@ -41,6 +41,16 @@ urlpatterns = [
         name="upload_indicator",
     ),
     path(
+        "indicators/upload/preview/",
+        views.PreviewUpload.as_view(),
+        name="preview_upload",
+    ),
+    path(
+        "indicators/upload/save/",
+        views.SaveUpload.as_view(),
+        name="save_upload",
+    ),
+    path(
         "indicators/<int:indicator_id>/period/<int:period_pk>/manage_data/<int:dimension_type_id>/",
         views.ManageIndicatorData.as_view(),
         name="manage_indicator_data",

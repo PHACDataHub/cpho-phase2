@@ -1,0 +1,142 @@
+{% extends 'base.jinja2' %}
+{% from 'cpho_macros.jinja2' import check_error, check_error_class %}
+{% block content %}
+
+  <form id='upload-form'
+        class="mt-4"
+        onsubmit="showLoading()"
+        hx-post="{{ url("save_upload") }}">
+    <button id="upload-btn"
+            class="btn btn-primary"
+            type="submit"
+            {% if not no_errors %}disabled{% endif %}>{{ tdt("Upload Data") }}</button>
+    <a href="{{ url("list_indicators") }}" class="btn btn-danger">{{ tdt("Cancel") }}</a>
+  </form>
+
+  <div id="status-div" class="d-none">
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+    <span>{{ tdt("Uploading Data") }}</span>
+  </div>
+
+  <div class="mt-4">
+    {% if not no_errors %}
+      <p class="text-danger">{{ tdt("Identified errors in file; Please review and fix them before re-uploading.") }}</p>
+    {% endif %}
+    <p>
+      {{ tdt("Preview of the file data. Note that the data is not saved in the system until you click the 'Upload Data' button.") }}
+    </p>
+  </div>
+ 
+ 
+  {% for indicator in grouped_data %}
+    <div class='mt-5 card'>
+      <div class="card-header">
+        <div class="h5">
+          {{ tdt("Indicator") }} : {{ indicator[0] }}
+          {% if grouped_data[indicator][0]["new_indicator"] %}<span class="new-ind-tag">{{ tdt("New") }}</span>{% endif %}
+        </div>
+ 
+
+      </div>
+      <div class=" card-body">
+
+        {{ (check_error(grouped_data[indicator][0], "Indicator") ) }}
+ 
+
+        <div class="p">
+          <span class="fw-bold">{{ tdt("Detailed Indicator") }}</span> : {{ indicator[1] }}
+        </div>
+ 
+        <div class="p">
+          <span class="fw-bold">{{ tdt("Sub Indicator Measurement") }}</span> : {{ indicator[2] }}
+        </div>
+
+        <div class="p {{ check_error_class(grouped_data[indicator][0], 'Category').strip() }}">
+          <span class="fw-bold">{{ tdt("Category") }}</span> : {{ indicator[3] }}
+          {{ (check_error(grouped_data[indicator][0], "Category") ) }}
+        </div>
+
+        <div class="p {{ check_error_class(grouped_data[indicator][0], 'Topic').strip() }}">
+          <span class="fw-bold">{{ tdt("Topic") }}</span> : {{ indicator[3] }}
+          {{ check_error(grouped_data[indicator][0], "Topic") }}
+        </div>
+
+        <div class="table-container mt-2" style="overflow-x: auto;">
+ 
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>{{ tdt("Line#") }}</th>
+                <th>{{ tdt("Dimension Type") }}</th>
+                <th>{{ tdt("Dimension Value") }}</th>
+                <th>{{ tdt("Data Quality") }}</th>
+                <th>{{ tdt("Value") }}</th>
+                <th>{{ tdt("Value LowerCI") }}</th>
+                <th>{{ tdt("Value UpperCI") }}</th>
+                <th>{{ tdt("SingleYear TimeFrame") }}</th>
+                <th>{{ tdt("MultiYear TimeFrame") }}</th>
+                <th>{{ tdt("Value Unit") }}</th>
+                <th>{{ tdt("Value Displayed") }}</th>
+                <th>{{ tdt("Reason for Null Data") }}</th>
+                <th>{{ tdt("Period") }}</th>
+              </tr>
+            </thead>
+ 
+            <tbody>
+              {% for datum in grouped_data[indicator] %}
+                <tr>
+                  <td>{{ datum["line"] }}</td>
+                  <td class="{{ check_error_class(datum, 'Dimension_Type').strip() }}">
+                    {{ datum["Dimension_Type"] }}
+                    {{ check_error(datum, "Dimension_Type") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Dimension_Value').strip() }}">
+                    {{ datum["Dimension_Value"] }}
+                    {{ check_error(datum, "Dimension_Value") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Data_Quality').strip() }}">
+                    {{ datum["Data_Quality"] }}
+                    {{ check_error(datum, "Data_Quality") }}
+                  </td>
+ 
+                  <td>{{ datum["Value"] }}</td>
+                  <td>{{ datum["Value_LowerCI"] }}</td>
+                  <td>{{ datum["Value_UpperCI"] }}</td>
+                  <td>{{ datum["SingleYear_TimeFrame"] }}</td>
+                  <td>{{ datum["MultiYear_TimeFrame"] }}</td>
+                  <td class="{{ check_error_class(datum, 'Value_Units').strip() }}">
+                    {{ datum["Value_Units"] }}
+                    {{ check_error(datum, "Value_Units") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Value_Displayed').strip() }}">
+                    {{ datum["Value_Displayed"] }}
+                    {{ check_error(datum, "Value_Displayed") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Reason_for_Null_Data').strip() }}">
+                    {{ datum["Reason_for_Null_Data"] }}
+                    {{ check_error(datum, "Reason_for_Null_Data") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Period').strip() }}">
+                    {{ datum["Period"] }}
+                    {{ check_error(datum, "Period") }}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+ 
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  <script>
+    function showLoading() {
+      document.getElementById("upload-btn").disabled = true;
+      document.getElementById("upload-form").classList.add("d-none");
+      document.getElementById("status-div").classList.remove("d-none");
+    }
+  </script>
+ 
+
+{% endblock %}

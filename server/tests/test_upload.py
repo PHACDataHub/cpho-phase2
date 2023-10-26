@@ -21,11 +21,16 @@ def test_import(hso_client):
         response = hso_client.post(
             url,
             data=data,
-            # follow_redirects=True,
-            # content_type="multipart/form-data",
         )
     assert response.status_code == 302
     assert response["Content-Type"] == "text/html; charset=utf-8"
+
+    url = reverse("save_upload")
+    with patch_rules(can_upload_indicator=True):
+        response = hso_client.post(
+            url,
+        )
+    assert response.status_code == 200
 
     indicator = Indicator.objects.get(name="Test Upload")
     assert indicator.name == "Test Upload"

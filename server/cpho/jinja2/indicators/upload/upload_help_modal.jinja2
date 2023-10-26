@@ -1,44 +1,4 @@
-{% extends 'base.jinja2' %}
-{% block content %}
-
-  <div class="h2 mb-3">{{ tdt("Indicator file upload") }}</div>
-
-  <button type="button mt-5"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#expectedColumnModal">{{ tdt("View expected column names") }}</button>
- 
-  <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tdt("Download a file template") }}</a>
- 
-  <form action="{{ url("upload_indicator") }}"
-        method="post"
-        enctype="multipart/form-data"
-        onsubmit="openLoader()"
-        class="form-horizontal mt-3">
- 
-    {{ csrf_input }}
-    <div>
-      {{ form.csv_file }}
-      <div class="row">
-        <div id="submit-btn-div" class="form-group">
-          <input type="submit"
-                 id="submit-btn"
-                 class="btn btn-primary mt-3 float-end"
-                 value="{{ tdt("Upload") }}">
-        </div>
-        <div id="loadingModal" style="display: none;">
-          <button class="btn btn-primary mt-3 float-end" type="button" disabled>
-            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-            {{ tdt("Uploading") }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>
- 
-  {% if form.csv_file.errors %}<div class="my-2 error-div">{{ form.csv_file.errors }}</div>{% endif %}
-
-  <div class="modal fade modal-xl"
+<div class="modal fade modal-xl"
        id="expectedColumnModal"
        tabindex="-1"
        aria-labelledby="expectedColumnModalLabel"
@@ -284,12 +244,3 @@
       </div>
     </div>
   </div>
-  <script>
-    function openLoader() {
-      document.getElementById("submit-btn").disabled = true;
-      document.getElementById("submit-btn-div").style.display = "none";
-      document.getElementById("loadingModal").style.display = "block";
-      }
-  </script>
- 
-{% endblock %}

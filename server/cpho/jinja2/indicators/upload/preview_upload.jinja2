@@ -19,6 +19,9 @@
   </div>
 
   <div class="mt-4">
+    {% if not no_errors %}
+      <p class="text-danger">{{ tdt("Identified errors in file; Please review and fix them before re-uploading.") }}</p>
+    {% endif %}
     <p>
       {{ tdt("Preview of the file data. Note that the data is not saved in the system until you click the 'Upload Data' button.") }}
     </p>

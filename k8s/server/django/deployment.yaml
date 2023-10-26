@@ -30,7 +30,7 @@ spec:
       - name: server
         securityContext:
           runAsUser: 5678
-        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-44b8c9ae-1697142256 # {"$imagepolicy": "flux-system:server"}
+        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-a3688946-1698347629 # {"$imagepolicy": "flux-system:server"}
         env:
         - name: IS_K8S
           value: "true"
@@ -73,8 +73,8 @@ spec:
             path: /healthcheck
             port: 8080
             httpHeaders:
-              - name: Host
-                value: hopic-sdpac.k8s.phac-aspc.alpha.canada.ca
+            - name: Host
+              value: hopic-sdpac.k8s.phac-aspc.alpha.canada.ca
           initialDelaySeconds: 35
           periodSeconds: 10
           timeoutSeconds: 3

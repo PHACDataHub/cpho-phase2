@@ -4,9 +4,9 @@ metadata:
   name: ingress-cert
   namespace: istio-ingress
 spec:
-  commonName: hopic-sdpac.k8s.phac-aspc.alpha.canada.ca
   dnsNames:
     - hopic-sdpac.k8s.phac-aspc.alpha.canada.ca
+    - hopic-sdpac.phac-aspc.alpha.canada.ca
   issuerRef:
     kind: Issuer
     # name: letsencrypt-staging

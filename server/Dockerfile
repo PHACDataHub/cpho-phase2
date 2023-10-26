@@ -44,6 +44,8 @@ ENV APP_HOME=$HOME/web
 ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
 
+RUN apk update && apk add postgresql14-client
+
 RUN \
     addgroup -S app && adduser --shell /bin/sh -u $USER -S app -G app --home $HOME && \
     mkdir -p $APP_HOME && \

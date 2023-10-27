@@ -12,6 +12,17 @@
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }} {{ period }}</div>
 
+  <div class="my-3">
+    {% if respects_rule('can_edit_indicator_data', indicator) %}
+      <a class="btn btn-primary btn-lg"
+         href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Edit all data") }}</a>
+    {% endif %}
+    {% if respects_rule('can_submit_as_hso_or_program', indicator) %}
+      <a class="btn btn-success btn-lg"
+         href="{{ url('review_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Review and submit all data") }}</a>
+    {% endif %}
+  </div>
+
   <div class="mt-4">
     <div class="mt-5">
       {% for dimension_type in dimension_types %}
@@ -34,17 +45,6 @@
         </div>
       {% endfor %}
 
-      <div class="my-3">
-        <div class="h5">{{ tdt("Or, manage all data at once") }}</div>
-        {% if respects_rule('can_edit_indicator_data', indicator) %}
-          <a class="btn btn-primary btn-lg"
-             href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Edit all data") }}</a>
-        {% endif %}
-        {% if respects_rule('can_submit_as_hso_or_program', indicator) %}
-          <a class="btn btn-success btn-lg"
-             href="{{ url('review_indicator_data_all', args=[object.id, period.id]) }}">{{ tdt("Review and submit all data") }}</a>
-        {% endif %}
-      </div>
     </div>
 
 

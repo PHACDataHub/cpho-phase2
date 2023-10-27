@@ -23,22 +23,27 @@
   {% if respects_rule('can_view_indicator_data', indicator) %}
     <div class="mt-5">
       <div class="h3">{{ tdt("Periods with data") }}</div>
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>{{ tdt("Period") }}</th>
             <th>{{ tdt("Data Count") }}</th>
-            <th></th>
+            <th width="35%">{{ tdt("Progress") }}</th>
+            <th class="text-center">{{ tdt("Actions") }}</th>
           </tr>
         </thead>
         <tbody>
           {% for period,data_count in data_counts_by_period.items() %}
             {% if data_count > 0 %}
-              <tr>
+              {% set submission_statuses = submission_statuses_by_period[period] %}
+              {% set progress_in_table = True %}
+              <tr href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">
                 <th>{{ period }}</th>
                 <td>{{ data_count }}</td>
-                <td>
-                  <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+                <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
+                <td class="text-center">
+                  <a class='btn btn-outline-dark'
+                     href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
                 </td>
               </tr>
             {% endif %}

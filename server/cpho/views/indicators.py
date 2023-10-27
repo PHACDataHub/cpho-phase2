@@ -133,12 +133,16 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
             )
             for p in relevant_periods
         }
+        submission_statuses_by_period = {
+            p: get_submission_statuses(indicator, p) for p in relevant_periods
+        }
 
         return {
             **super().get_context_data(**kwargs),
             "dimension_types": DimensionType.objects.all(),
             "data_counts_by_period": data_counts_by_period,
             "indicator": indicator,
+            "submission_statuses_by_period": submission_statuses_by_period,
         }
 
 

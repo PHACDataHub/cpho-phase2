@@ -2,15 +2,8 @@ from django.urls import reverse
 
 from bs4 import BeautifulSoup
 
-from cpho.constants import SUBMISSION_STATUSES
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
-from cpho.models import (
-    DimensionType,
-    Indicator,
-    IndicatorDataSubmission,
-    Period,
-)
-from cpho.services import SubmitIndicatorDataService
+from cpho.models import DimensionType, Period
 
 from .utils_for_tests import patch_rules
 

@@ -70,8 +70,4 @@ spec:
                 --docker-server="$GCR_REGISTRY" \
                 --docker-username=oauth2accesstoken \
                 --docker-password="$(gcloud auth print-access-token)" \
-                -o yaml | kubectl apply -f -     
-          resources:
-            requests:
-              cpu: 250m
-              memory: 512Mi      
+                -o yaml | kubectl apply -f -

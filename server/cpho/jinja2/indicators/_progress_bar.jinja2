@@ -16,7 +16,7 @@
 <div class='row mt-1 gx-2 {% if not progress_in_table %}mb-4{% endif %}'>
   <div class="col-4 ">
     <div class="progress" style="height:0.75rem">
-      <div class="progress-bar bg-warning"
+      <div class="progress-bar bg-warning progress-data-entered"
            role="progressbar"
            style="width: {{ data_entered_percent }}%"
            aria-valuenow="{{ data_entered_percent }}"
@@ -35,7 +35,7 @@
   </div>
   <div class="col-4">
     <div class="progress" style="height:0.75rem">
-      <div class="progress-bar bg-info"
+      <div class="progress-bar bg-info progress-program-approved"
            role="progressbar"
            style="width: {{ program_approved_percent }}%"
            aria-valuenow="{{ program_approved_percent }}"
@@ -54,7 +54,7 @@
   </div>
   <div class="col-4">
     <div class="progress" style="height:0.75rem">
-      <div class="progress-bar bg-success"
+      <div class="progress-bar bg-success progress-hso-approved"
            role="progressbar"
            style="width: {{ hso_approved_percent }}%"
            aria-valuenow="{{ hso_approved_percent }}"

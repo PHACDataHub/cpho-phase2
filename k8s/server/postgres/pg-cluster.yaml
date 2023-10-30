@@ -5,13 +5,6 @@ metadata:
   namespace: server
   labels:
     app: postgres14-cluster
-  annotations:
-  # Sidecar injection for limits and resources https://cloud.google.com/service-mesh/docs/managed/provision-managed-anthos-service-mesh#custom-injection
-    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
-    sidecar.istio.io/proxyCPU: "50m"
-    sidecar.istio.io/proxyCPULimit: "50m"
-    sidecar.istio.io/proxyMemory: "100Mi"
-    sidecar.istio.io/proxyMemoryLimit: "100Mi"
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:14.9
   instances: 3
@@ -68,4 +61,14 @@ spec:
       googleCredentials:
         gkeEnvironment: true
     retentionPolicy: "30d"
-    
+
+  inheritedMetadata:
+    annotations:
+      proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+      ssidecar.istio.io/proxyCPU: 50m
+      sidecar.istio.io/proxyMemory: 112Mi
+
+  resources:
+    requests:
+      cpu: 450m
+      memory: 1926Mi

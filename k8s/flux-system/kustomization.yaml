@@ -40,17 +40,3 @@ patches:
                   requests:
                     cpu: 50m
                     memory: 112Mi
-  - target:
-      kind: HelmRelease
-      name: "sealed-secrets"
-    patch: |
-      apiVersion: helm.toolkit.fluxcd.io/v2beta1
-      kind: HelmRelease
-      metadata:
-        name: all
-      spec:
-        values:
-          resources:
-            requests:
-              cpu: 200m
-              memory: 400Mi

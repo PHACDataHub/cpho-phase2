@@ -65,7 +65,7 @@ spec:
   inheritedMetadata:
     annotations:
       proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
-      ssidecar.istio.io/proxyCPU: 50m
+      sidecar.istio.io/proxyCPU: 50m
       sidecar.istio.io/proxyMemory: 112Mi
 
   resources:

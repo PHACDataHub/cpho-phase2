@@ -14,57 +14,64 @@
 {% endif %}
 
 <div class='row mt-1 gx-2 {% if not progress_in_table %}mb-4{% endif %}'>
-  <div class="col-4 ">
+  <div id="{{ indicator.id }}-{{ period.code }}-data-entered" class="col-4">
     <div class="progress" style="height:0.75rem">
       <div class="progress-bar bg-warning progress-data-entered"
            role="progressbar"
            style="width: {{ data_entered_percent }}%"
            aria-valuenow="{{ data_entered_percent }}"
            aria-valuemin="0"
-           aria-valuemax="100"></div>
+           aria-valuemax="100"
+           aria-labelledby="{{ indicator.id }}-{{ period.code }}-data-entered"></div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
       {{ tdt("Data entered") }}
       {% if not progress_in_table %}
-        <i class="bi bi-info-circle mx-1"
+        <i tabindex="0"
+           class="bi bi-info-circle mx-1"
            data-bs-placement="bottom"
            data-bs-toggle="tooltip"
            data-bs-title="{{ tdt("Data currently in database but not approved by program or HSO. Data is not made visible through the API (for infobase) until approved by program and then HSO. Data modified after approval is also treated similarly") }}"></i>
       {% endif %}
     </div>
   </div>
-  <div class="col-4">
+  <div id="{{ indicator.id }}-{{ period.code }}-program-approved"
+       class="col-4">
     <div class="progress" style="height:0.75rem">
       <div class="progress-bar bg-info progress-program-approved"
            role="progressbar"
            style="width: {{ program_approved_percent }}%"
            aria-valuenow="{{ program_approved_percent }}"
            aria-valuemin="0"
-           aria-valuemax="100"></div>
+           aria-valuemax="100"
+           aria-labelledby="{{ indicator.id }}-{{ period.code }}-program-approved"></div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
       {{ tdt("Program Approved") }}
       {% if not progress_in_table %}
-        <i class="bi bi-info-circle mx-1"
+        <i tabindex="0"
+           class="bi bi-info-circle mx-1"
            data-bs-placement="bottom"
            data-bs-toggle="tooltip"
            data-bs-title="{{ tdt("Data is approved by program only. At this point is is not made visible through the API (for infobase) until HSO approves it.") }}"></i>
       {% endif %}
     </div>
   </div>
-  <div class="col-4">
+  <div id="{{ indicator.id }}-{{ period.code }}-hso-approved" class="col-4">
     <div class="progress" style="height:0.75rem">
       <div class="progress-bar bg-success progress-hso-approved"
            role="progressbar"
            style="width: {{ hso_approved_percent }}%"
            aria-valuenow="{{ hso_approved_percent }}"
            aria-valuemin="0"
-           aria-valuemax="100"></div>
+           aria-valuemax="100"
+           aria-labelledby="{{ indicator.id }}-{{ period.code }}-hso-approved"></div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
       {{ tdt("HSO approved") }}
       {% if not progress_in_table %}
-        <i class="bi bi-info-circle mx-1"
+        <i tabindex="0"
+           class="bi bi-info-circle mx-1"
            data-bs-placement="bottom"
            data-bs-toggle="tooltip"
            data-bs-title="{{ tdt("Data is approved by both program and HSO and has not been modified after obtaining approvals. At this point is is made available through the API (for infobase)") }}"></i>

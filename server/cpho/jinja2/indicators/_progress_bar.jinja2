@@ -14,7 +14,8 @@
 {% endif %}
 
 <div class='row mt-1 gx-2 {% if not progress_in_table %}mb-4{% endif %}'>
-  <div id="{{ indicator.id }}-{{ period.code }}-data-entered" class="col-4">
+  <div id="{{ indicator.id }}-{{ period.code }}-data-entered"
+       class="col-md-4 col-sm-12">
     <div class="progress" style="height:0.75rem">
       <div class="progress-bar bg-warning progress-data-entered"
            role="progressbar"
@@ -36,7 +37,7 @@
     </div>
   </div>
   <div id="{{ indicator.id }}-{{ period.code }}-program-approved"
-       class="col-4">
+       class="col-md-4 col-sm-12">
     <div class="progress" style="height:0.75rem">
       <div class="progress-bar bg-info progress-program-approved"
            role="progressbar"
@@ -57,7 +58,8 @@
       {% endif %}
     </div>
   </div>
-  <div id="{{ indicator.id }}-{{ period.code }}-hso-approved" class="col-4">
+  <div id="{{ indicator.id }}-{{ period.code }}-hso-approved"
+       class="col-md-4 col-sm-12">
     <div class="progress" style="height:0.75rem">
       <div class="progress-bar bg-success progress-hso-approved"
            role="progressbar"

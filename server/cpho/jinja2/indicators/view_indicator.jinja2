@@ -15,7 +15,7 @@
           {% if respects_rule('can_edit_indicator', indicator) %}
             <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
-              <span class="bi bi-pen"></span>
+              <span aria-hidden="true" class="bi bi-pen"></span>
               {{ tdt("Edit indicator") }}
             </a>
           {% endif %}
@@ -24,7 +24,7 @@
           {% if respects_rule('can_view_indicator_data', indicator) %}
             <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
-              <span class="bi bi-file-diff"></span>
+              <span aria-hidden="true"  class="bi bi-file-diff"></span>
               {{ tdt("Indicator changelog") }}
             </a>
           {% endif %}
@@ -32,14 +32,14 @@
         <div>
           <a href="{{ url("upload_indicator") }}"
              class="btn w-100 btn-outline-dark my-1">
-            <span class="bi bi-file-earmark-arrow-up"></span>
+            <span aria-hidden="true" class="bi bi-file-earmark-arrow-up"></span>
             {{ tdt("Upload data") }}
           </a>
         </div>
         <div>
           <a href="{{ url('export_indicator', args=[indicator.id]) }}"
              class="btn w-100 btn-outline-dark my-1">
-            <span class="bi bi-file-earmark-arrow-down"></span>
+            <span aria-hidden="true" class="bi bi-file-earmark-arrow-down"></span>
             {{ tdt("Export data") }}
           </a>
         </div>

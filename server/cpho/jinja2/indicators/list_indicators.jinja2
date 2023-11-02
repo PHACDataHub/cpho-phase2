@@ -17,22 +17,17 @@
           <th>{{ tdt("Category") }}</th>
           <th>{{ tdt("Topic") }}</th>
           <th>{{ tdt("Lead Program") }}</th>
-          {# <th>{{ tdt('Detailed indicator') }}</th> #}
-          {# <th>{{ tdt('Sub Indicator Mesaurement') }}</th> #}
           <th width="15%">{{ tdt("Actions") }}</th>
         </tr>
       </thead>
       <tbody>
         {% for indicator in object_list %}
           {% if respects_rule('can_view_indicator', indicator) %}
-            {# <tr onclick="window.open('{{ url('view_indicator', args=[indicator.pk]) }}');"> #}
             <tr>
               <td>{{ indicator.name }}</td>
               <td>{{ indicator.get_category_display() }}</td>
               <td>{{ indicator.get_topic_display() }}</td>
               <td>{{ indicator.PHACOrg }}</td>
-              {# <td>{{ indicator.detailed_indicator }}</td> #}
-              {# <td>{{ indicator.sub_indicator_measurement }}</td> #}
               <td>
                 <a class="btn btn-outline-dark"
                    href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ tdt("View indicator") }}</a>

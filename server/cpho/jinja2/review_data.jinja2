@@ -10,13 +10,18 @@
   {{ bc.item(tdt("Review for submission") , None, True) }}
 {% endblock %}
 
-
 {% block content %}
   <div class="h2">{{ tdt("Indicator Selected: ") }} {{ view.indicator.name }} {{ view.period }}</div>
-  <div class="mt-4">
-    <div class="mt-5">
+  <div>
+    <a type="button"
+       data-bs-toggle="modal"
+       data-bs-target="#confirmApproveModal"
+       class="btn btn-success my-3">{{ tdt("Approve Data") }}</a>
+  </div>
+  <div>
+    <div>
       {% for dimension_type in view.dimension_types %}
-        <div>
+        <div class="mt-5">
           <div class="h5">
             {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ submission_status_badge(view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id]) }}</sm>
           </div>
@@ -28,13 +33,6 @@
 
     <div class="my-5">
     {{ todo_block("TODO: changelog of changes since last submission") }}</center>
-  </div>
-
-  <div class="my-5">
-    <a type="button"
-       data-bs-toggle="modal"
-       data-bs-target="#confirmApproveModal"
-       class="btn btn-success float-end my-3">{{ tdt("Approve Data") }}</a>
   </div>
 </div>
 
@@ -83,7 +81,6 @@
           </div>
         </div>
         <div class="form-check my-3">
-
           <input class="form-check-input"
                  type="checkbox"
                  id="confirmCheckbox"

@@ -127,7 +127,6 @@ class UploadForm(forms.Form):
                     data_row["Dimension_Type"]
                     not in mapper["dimension_type_mapper"]
                 ):
-                    print("in here")
                     data_row["errors"]["Dimension_Type"] = tdt(
                         f"Dimension Type: {data_row['Dimension_Type']} is not valid"
                     )

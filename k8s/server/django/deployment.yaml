@@ -25,12 +25,12 @@ spec:
         resources:
           requests:
             # Experiment: using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
-            cpu: 100m # + `server` container = 250m
-            memory: 128Mi # + `server` container = 512MiB
+            cpu: 50m # + `server` container = 250m
+            memory: 112Mi # + `server` container = 512MiB
       - name: server
         securityContext:
           runAsUser: 5678
-        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-df2fc872-1698362282 # {"$imagepolicy": "flux-system:server"}
+        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-6cdb693a-1698417552 # {"$imagepolicy": "flux-system:server"}
         env:
         - name: IS_K8S
           value: "true"
@@ -66,8 +66,8 @@ spec:
           # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)
           requests:
             # Experiment: using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
-            cpu: 150m # + `isito-proxy` container = 250m
-            memory: 384Mi # + `isito-proxy` container = 512MiB
+            cpu: 200m # + `isito-proxy` container = 250m
+            memory: 400Mi # + `isito-proxy` container = 512MiB
         readinessProbe:
           httpGet:
             path: /healthcheck

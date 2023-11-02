@@ -6,7 +6,6 @@
   {{ bc.indicator(indicator,True) }}
 {% endblock %}
 
-
 {% block content %}
   <div class="container">
     <div class="row">
@@ -14,10 +13,9 @@
       <div class="col-md-2 mt-4">
         <div>
           {% if respects_rule('can_edit_indicator', indicator) %}
- 
             <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
-              <i class="bi bi-pen"></i>
+              <span class="bi bi-pen"></span>
               {{ tdt("Edit indicator") }}
             </a>
           {% endif %}
@@ -26,7 +24,7 @@
           {% if respects_rule('can_view_indicator_data', indicator) %}
             <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
-              <i class="bi bi-file-diff"></i>
+              <span class="bi bi-file-diff"></span>
               {{ tdt("Indicator changelog") }}
             </a>
           {% endif %}
@@ -34,14 +32,14 @@
         <div>
           <a href="{{ url("upload_indicator") }}"
              class="btn w-100 btn-outline-dark my-1">
-            <i class="bi bi-file-earmark-arrow-up"></i>
+            <span class="bi bi-file-earmark-arrow-up"></span>
             {{ tdt("Upload data") }}
           </a>
         </div>
         <div>
           <a href="{{ url('export_indicator', args=[indicator.id]) }}"
              class="btn w-100 btn-outline-dark my-1">
-            <i class="bi bi-file-earmark-arrow-down"></i>
+            <span class="bi bi-file-earmark-arrow-down"></span>
             {{ tdt("Export data") }}
           </a>
         </div>
@@ -54,20 +52,25 @@
               <div class="card-body">
                 <table class="table table-hover">
                   <thead>
-                    <tr>
-                      <th>{{ tdt("Period") }}</th>
-                      <th>{{ tdt("Data Count") }}</th>
-                      <th></th>
+                    <tr class="text-center">
+                      <th width="15%">{{ tdt("Period") }}</th>
+                      <th width="15%">{{ tdt("Data Count") }}</th>
+                      <th width="55%">{{ tdt("Progress") }}</th>
+                      <th width="15%">{{ tdt("Actions") }}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for period,data_count in data_counts_by_period.items() %}
                       {% if data_count > 0 %}
-                        <tr>
+                        {% set submission_statuses = submission_statuses_by_period[period] %}
+                        {% set progress_in_table = True %}
+                        <tr class="text-center">
                           <th>{{ period }}</th>
                           <td>{{ data_count }}</td>
+                          <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
                           <td>
-                            <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+                            <a class='btn btn-outline-dark'
+                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
                           </td>
                         </tr>
                       {% endif %}
@@ -94,8 +97,5 @@
         </div>
       </div>
     </div>
- 
-
- 
   </div>
 {% endblock %}

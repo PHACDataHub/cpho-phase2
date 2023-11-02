@@ -53,21 +53,25 @@ spec:
           serviceAccountName: gcr-credentials-sync
           restartPolicy: Never
           containers:
-          - image: google/cloud-sdk
-            name: create-secret
-            imagePullPolicy: IfNotPresent
-            env:
-            - name: SECRET_NAME
-              value: gcr-credentials
-            - name: GCR_REGISTRY
-              value: northamerica-northeast1-docker.pkg.dev
-            command:
-            - /bin/bash
-            - -ce
-            - |-
-              kubectl create secret docker-registry $SECRET_NAME \
-                --dry-run=client \
-                --docker-server="$GCR_REGISTRY" \
-                --docker-username=oauth2accesstoken \
-                --docker-password="$(gcloud auth print-access-token)" \
-                -o yaml | kubectl apply -f -           
+            - image: google/cloud-sdk
+              name: create-secret
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: SECRET_NAME
+                  value: gcr-credentials
+                - name: GCR_REGISTRY
+                  value: northamerica-northeast1-docker.pkg.dev
+              command:
+                - /bin/bash
+                - -ce
+                - |-
+                  kubectl create secret docker-registry $SECRET_NAME \
+                    --dry-run=client \
+                    --docker-server="$GCR_REGISTRY" \
+                    --docker-username=oauth2accesstoken \
+                    --docker-password="$(gcloud auth print-access-token)" \
+                    -o yaml | kubectl apply -f -     
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 400Mi      

@@ -17,9 +17,7 @@
           <th>{{ tdt("Category") }}</th>
           <th>{{ tdt("Topic") }}</th>
           <th>{{ tdt("Lead Program") }}</th>
-          {# <th>{{ tdt('Detailed indicator') }}</th> #}
-          {# <th>{{ tdt('Sub Indicator Mesaurement') }}</th> #}
-          <th>{{ tdt("Actions") }}</th>
+          <th width="15%">{{ tdt("Actions") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -30,13 +28,9 @@
               <td>{{ indicator.get_category_display() }}</td>
               <td>{{ indicator.get_topic_display() }}</td>
               <td>{{ indicator.PHACOrg }}</td>
-              {# <td>{{ indicator.detailed_indicator }}</td> #}
-              {# <td>{{ indicator.sub_indicator_measurement }}</td> #}
               <td>
-
-                {% with loop_index=loop.index %}
-                  {% include "indicators/_indicator_actions.jinja2" %}
-                {% endwith %}
+                <a class="btn btn-outline-dark"
+                   href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ tdt("View indicator") }}</a>
               </td>
             </tr>
           {% endif %}

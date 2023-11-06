@@ -95,22 +95,22 @@
                      aria-expanded="false">{{ request.user }}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ url("logout") }}">
-                      <i class="bi bi-power"></i>
+                      <span aria-hidden="true" class="bi bi-power"></span>
                       {{ tm("logout") }}
                     </a>
                     <a class="dropdown-item"
                        href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
-                      <i class="bi bi-file-diff"></i>
+                      <span aria-hidden="true" class="bi bi-file-diff"></span>
                       {{ tdt("View your own changes") }}
                     </a>
                     {% if respects_rule('can_manage_users') %}
                       <a class="dropdown-item" href="{{ url("manage_users") }}">
-                        <i class="bi bi-people"></i>
+                        <span aria-hidden="true" class="bi bi-people"></span>
                         {{ tdt("Manage Users") }}
                       </a>
                     {% endif %}
                     <a class="dropdown-item" href="{{ url("global_changelog") }}">
-                      <i class="bi bi-file-diff"></i>
+                      <span aria-hidden="true" class="bi bi-file-diff"></span>
                       {{ tdt("changelog") }}
                     </a>
                   </div>

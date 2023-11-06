@@ -6,66 +6,96 @@
   {{ bc.indicator(indicator,True) }}
 {% endblock %}
 
-
 {% block content %}
-  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
-  <div class="mt-4">
-
-    {% if respects_rule('can_edit_indicator', indicator) %}
-      <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
-         class="btn btn-primary">{{ tdt("Edit indicator") }}</a>
-    {% endif %}
-    {% if respects_rule('can_view_indicator_data', indicator) %}
-      <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
-         class="btn btn-success">{{ tdt("View changelog for this indicator's data") }}</a>
-    {% endif %}
-  </div>
-  {% if respects_rule('can_view_indicator_data', indicator) %}
-    <div class="mt-5">
-      <div class="h3">{{ tdt("Periods with data") }}</div>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>{{ tdt("Period") }}</th>
-            <th>{{ tdt("Data Count") }}</th>
-            <th width="35%">{{ tdt("Progress") }}</th>
-            <th class="text-center">{{ tdt("Actions") }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for period,data_count in data_counts_by_period.items() %}
-            {% if data_count > 0 %}
-              {% set submission_statuses = submission_statuses_by_period[period] %}
-              {% set progress_in_table = True %}
-              <tr href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">
-                <th>{{ period }}</th>
-                <td>{{ data_count }}</td>
-                <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
-                <td class="text-center">
-                  <a class='btn btn-outline-dark'
-                     href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
-                </td>
-              </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="mt-5">
-      <div class="h3">{{ tdt("Add data for new periods") }}</div>
-      <div>
-        <ul>
-          {% for period,data_count in data_counts_by_period.items() %}
-            {% if data_count == 0 %}
-              <li>
-                <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("Add data for ") }} {{ period }}</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+  <div class="container">
+    <div class="row">
+      <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
+      <div class="col-md-2 mt-4">
+        <div>
+          {% if respects_rule('can_edit_indicator', indicator) %}
+            <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
+               class="btn w-100 btn-outline-dark my-1">
+              <span aria-hidden="true" class="bi bi-pen"></span>
+              {{ tdt("Edit indicator") }}
+            </a>
+          {% endif %}
+        </div>
+        <div>
+          {% if respects_rule('can_view_indicator_data', indicator) %}
+            <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
+               class="btn w-100 btn-outline-dark my-1">
+              <span aria-hidden="true"  class="bi bi-file-diff"></span>
+              {{ tdt("Indicator changelog") }}
+            </a>
+          {% endif %}
+        </div>
+        <div>
+          <a href="{{ url("upload_indicator") }}"
+             class="btn w-100 btn-outline-dark my-1">
+            <span aria-hidden="true" class="bi bi-file-earmark-arrow-up"></span>
+            {{ tdt("Upload data") }}
+          </a>
+        </div>
+        <div>
+          <a href="{{ url('export_indicator', args=[indicator.id]) }}"
+             class="btn w-100 btn-outline-dark my-1">
+            <span aria-hidden="true" class="bi bi-file-earmark-arrow-down"></span>
+            {{ tdt("Export data") }}
+          </a>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div class="mt-4">
+          {% if respects_rule('can_view_indicator_data', indicator) %}
+            <div class='card my-4'>
+              <div class="card-header h3">{{ tdt("Periods with data") }}</div>
+              <div class="card-body">
+                <table class="table table-hover">
+                  <thead>
+                    <tr class="text-center">
+                      <th width="15%">{{ tdt("Period") }}</th>
+                      <th width="15%">{{ tdt("Data Count") }}</th>
+                      <th width="55%">{{ tdt("Progress") }}</th>
+                      <th width="15%">{{ tdt("Actions") }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for period,data_count in data_counts_by_period.items() %}
+                      {% if data_count > 0 %}
+                        {% set submission_statuses = submission_statuses_by_period[period] %}
+                        {% set progress_in_table = True %}
+                        <tr class="text-center">
+                          <th>{{ period }}</th>
+                          <td>{{ data_count }}</td>
+                          <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
+                          <td>
+                            <a class='btn btn-outline-dark'
+                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+                          </td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% endif %}
+          {% if respects_rule('can_view_indicator_data', indicator) %}
+            <div class="h3">{{ tdt("Add data for new periods") }}</div>
+            <div>
+              <ul>
+                {% for period,data_count in data_counts_by_period.items() %}
+                  {% if data_count == 0 %}
+                    <li>
+                      <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("Add data for ") }} {{ period }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
-  {% endif %}
-
- 
+  </div>
 {% endblock %}

@@ -1,0 +1,7 @@
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: cloudtrace.googleapis.com
+spec:
+  projectRef:
+    external: projects/phx-01h4rr1468rj3v5k60b1vserd3

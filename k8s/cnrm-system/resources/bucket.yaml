@@ -1,0 +1,14 @@
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  annotations:
+    cnrm.cloud.google.com/force-destroy: "false"
+  # StorageBucket names must be globally unique
+  name: hopic-dev-postgres-backup
+  namespace: cnrm-system
+spec:
+  location: northamerica-northeast1
+  versioning:
+    enabled: true
+  storageClass: STANDARD
+  uniformBucketLevelAccess: true

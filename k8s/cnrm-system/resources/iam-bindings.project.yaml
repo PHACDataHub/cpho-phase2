@@ -1,0 +1,40 @@
+# use IAMPartialPolicy because it's less authoritative as compared to IAMPolicy
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: cpho-iam-policies
+  namespace: cnrm-system
+spec:
+  bindings:
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: gcr-credentials-sync
+      role: roles/artifactregistry.reader
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: dns01-solver
+      role: roles/dns.admin
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: resourceprovisioner
+      role: roles/monitoring.metricWriter
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: resourceprovisioner
+      role: roles/owner
+    - members:
+      - member: serviceAccount:phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog[cnrm-system/cnrm-controller-manager-cnrm-system]
+      - member: serviceAccount:phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog[cert-manager/cert-manager]
+      - member: serviceAccount:phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog[flux-system/gcr-credentials-sync]
+      - member: serviceAccount:phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog[server/cpho-postgres-cluster-backup]
+      - member: serviceAccount:phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog[server/cpho-postgres-cluster-restore]
+      - member: serviceAccount:phx-01h4rr1468rj3v5k60b1vserd3.svc.id.goog[server/cpho-postgres-cluster]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    external: projects/phx-01h4rr1468rj3v5k60b1vserd3
+    kind: Project

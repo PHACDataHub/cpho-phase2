@@ -1,0 +1,18 @@
+# use IAMPartialPolicy because it's less authoritative as compared to IAMPolicy
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: cpho-iam-policies
+  namespace: cnrm-system
+spec:
+  bindings:
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: hopic-postgres-backup
+      role: roles/storage.admin
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: hopic-dev-postgres-backup
+    

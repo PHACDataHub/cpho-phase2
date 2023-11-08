@@ -1,0 +1,11 @@
+apiVersion: artifactregistry.cnrm.cloud.google.com/v1beta1
+kind: ArtifactRegistryRepository
+metadata:
+  name: cpho-phase2-artifact-registry
+  namespace: cnrm-system
+spec:
+  description: cpho-phase2-artifact-registry
+  format: DOCKER
+  location: northamerica-northeast1
+  mode: STANDARD_REPOSITORY
+  resourceID: cpho-phase2-artifact-registry

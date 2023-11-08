@@ -1,0 +1,19 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeNetwork
+metadata:
+  name: cpho-net
+  namespace: cnrm-system
+spec:
+  routingMode: REGIONAL
+  autoCreateSubnetworks: false
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeSubnetwork
+metadata:
+  name: cpho-subnet
+  namespace: cnrm-system
+spec:
+  ipCidrRange: 10.2.0.0/16
+  region: northamerica-northeast1
+  networkRef:
+    name: cpho-net

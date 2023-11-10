@@ -62,8 +62,10 @@ metadata:
 spec:
   providerRef:
     name: github-status
-  eventSeverity: error
+  eventSeverity: info
   eventSources:
     - kind: Kustomization
       name: '*'
+  exclusionList:
+    - "^Dependencies.*"
 ---

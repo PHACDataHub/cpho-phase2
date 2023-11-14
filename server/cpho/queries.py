@@ -46,8 +46,7 @@ def get_submission_statuses(indicator, period):
         .with_submission_annotations()
         .prefetch_related("dimension_value", "dimension_type")
     )
-
-    dimension_types = [d.dimension_type for d in data]
+    dimension_types = set([d.dimension_type for d in data])
     # dimension_values = [d.dimension_value for d in data]
     # data_by_dimension_value_id = {d.dimension_value_id: d for d in data}
     data_by_dimension_type_id = group_by(data, lambda d: d.dimension_type_id)
@@ -58,16 +57,26 @@ def get_submission_statuses(indicator, period):
 
     for dimension_type in dimension_types:
         dim_id = dimension_type.id
-        if not data_by_dimension_type_id[dim_id]:
+        data_for_dim = data_by_dimension_type_id[dim_id]
+        if not data_for_dim:
             submission_status_by_dimension_type_id[
                 dim_id
             ] = SUBMISSION_STATUSES.NO_DATA
             continue
 
-        data_for_dim = data_by_dimension_type_id[dim_id]
         submission_statuses = [
             datum.submission_status for datum in data_for_dim
         ]
+        if dimension_type.is_literal:
+            all_deleted = all(d.is_deleted for d in data_for_dim)
+            if (
+                all_deleted
+                and aggregate_statuses(submission_statuses)
+                != SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+            ):
+                if submission_status_by_dimension_type_id[dim_id]:
+                    submission_status_by_dimension_type_id.pop(dim_id)
+                    continue
 
         submission_status_by_dimension_type_id[dim_id] = aggregate_statuses(
             submission_statuses

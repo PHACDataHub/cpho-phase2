@@ -122,7 +122,9 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
         indicator = Indicator.objects.get(pk=self.kwargs["pk"])
         relevant_periods = Period.relevant_years()
 
-        data_for_periods = indicator.data.filter(period__in=relevant_periods)
+        data_for_periods = indicator.data.filter(
+            period__in=relevant_periods, is_deleted=False
+        )
         data_counts_by_period = {
             p: len(
                 [
@@ -159,7 +161,7 @@ class ViewIndicatorForPeriod(
     @cached_property
     def indicator_data(self):
         return (
-            self.indicator.data.filter(period=self.period)
+            self.indicator.data.filter(period=self.period, is_deleted=False)
             .select_related("dimension_value")
             .prefetch_related("dimension_type")
             .with_submission_annotations()

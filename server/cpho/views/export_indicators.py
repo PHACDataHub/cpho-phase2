@@ -66,7 +66,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
 
         if self.indicator:
             mapper = export_mapper()
-            for record in IndicatorDatum.objects.filter(
+            for record in IndicatorDatum.active_objects.filter(
                 indicator=self.indicator
             ):
                 if record.dimension_type.is_literal:

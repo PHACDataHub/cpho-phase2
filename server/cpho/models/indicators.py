@@ -167,16 +167,36 @@ class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
         return [self.get_name(by_id[x]) for x in datum_ids]
 
 
+class ActiveIndicatorDatumManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
 class IndicatorDatum(models.Model):
     objects = models.Manager.from_queryset(IndicatorDatumQueryset)()
+    active_objects = ActiveIndicatorDatumManager.from_queryset(
+        IndicatorDatumQueryset
+    )()
     changelog_live_name_loader_class = IndicatorDatumChangelogNameLoader
 
     class Meta:
         unique_together = [
-            ("indicator", "period", "dimension_type", "dimension_value"),
-            ("indicator", "period", "dimension_type", "literal_dimension_val"),
+            (
+                "indicator",
+                "period",
+                "dimension_type",
+                "dimension_value",
+            ),
+            (
+                "indicator",
+                "period",
+                "dimension_type",
+                "literal_dimension_val",
+                "is_deleted",
+                "deletion_time",
+            ),
         ]
 
     indicator = fields.ForeignKey(
@@ -281,6 +301,11 @@ class IndicatorDatum(models.Model):
         null=True,
         blank=True,
         on_delete=models.RESTRICT,
+    )
+
+    is_deleted = fields.BooleanField(default=False)
+    deletion_time = fields.CharField(
+        max_length=50, blank=True, null=True, default=""
     )
 
     def __str__(self):

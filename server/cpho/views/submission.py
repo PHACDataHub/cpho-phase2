@@ -93,7 +93,7 @@ class ReviewData(
     @cached_property
     def indicator_data(self):
         qs = (
-            self.indicator.data.filter(period=self.period)
+            self.indicator.data.filter(period=self.period, is_deleted=False)
             .select_related("dimension_value")
             .prefetch_related("dimension_type")
             .with_submission_annotations()

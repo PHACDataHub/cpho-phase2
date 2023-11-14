@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.contrib import messages
 from django.db import transaction
@@ -62,6 +64,8 @@ class IndicatorDatumForm(ModelForm):
             "literal_dimension_val",
             "value_displayed",
             "reason_for_null",
+            "is_deleted",
+            "deletion_time",
         ]
 
     value = forms.FloatField(
@@ -127,6 +131,7 @@ class IndicatorDatumForm(ModelForm):
             }
         ),
     )
+    is_deleted = forms.BooleanField(required=False)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -215,6 +220,13 @@ class IndicatorDatumForm(ModelForm):
 
         return multi_year
 
+    def save(self, commit=True):
+        if self.cleaned_data["is_deleted"]:
+            self.instance.deletion_time = str(datetime.now())
+        # else:
+        #     self.instance.deletion_time = "not_deleted"
+        return super().save(commit)
+
 
 class ManageIndicatorData(
     MustPassAuthCheckMixin,
@@ -231,7 +243,7 @@ class ManageIndicatorData(
     @cached_property
     def age_group_formset(self):
         existing_data = (
-            IndicatorDatum.objects.filter(
+            IndicatorDatum.active_objects.filter(
                 indicator=self.indicator,
                 dimension_type__code="age",
                 period=self.period,
@@ -247,7 +259,7 @@ class ManageIndicatorData(
             form=IndicatorDatumForm,
             # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
             extra=1,
-            can_delete=True,
+            can_delete=False,
         )
 
         kwargs = {
@@ -274,7 +286,7 @@ class ManageIndicatorData(
 
         # getting all indicator data for this indicator
         existing_data = (
-            IndicatorDatum.objects.filter(
+            IndicatorDatum.active_objects.filter(
                 indicator=self.indicator,
                 dimension_type__is_literal=False,
                 period=self.period,
@@ -396,7 +408,9 @@ class ManageIndicatorData(
                 )
         else:
             # get will just render the forms and their errors
-
+            print("\n\n\n\n\ errors")
+            print(self.predefined_values_formset.errors)
+            print(self.age_group_formset.errors)
             return self.get(*args, **kwargs)
 
     @cached_property

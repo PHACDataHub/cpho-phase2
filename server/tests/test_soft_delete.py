@@ -84,6 +84,16 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
         == 2
     )
 
+    record_51_75 = IndicatorDatum.objects.filter(
+        indicator=indicator,
+        period=period,
+        literal_dimension_val="51-75",
+        dimension_type=age_dim_type,
+    ).first()
+    # check that the record is soft deleted
+    assert record_51_75.is_deleted is True
+    assert record_51_75.deletion_time is not None
+
     # submit all data as program including deleted data
     url = reverse("submit_indicator_data_all", args=[indicator_id, period.id])
     with patch_rules(can_submit_as_hso_or_program=True):
@@ -106,6 +116,20 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
         assert resp.status_code == 302
 
     statuses = get_submission_statuses(indicator, period)
+    record_51_75_latest = (
+        IndicatorDatum.objects.filter(
+            indicator=indicator,
+            period=period,
+            literal_dimension_val="51-75",
+            dimension_type=age_dim_type,
+        )
+        .first()
+        .versions.last()
+    )
+    # deleted record should also get submitted
+    assert record_51_75_latest.is_deleted is True
+    assert record_51_75_latest.is_program_submitted is True
+    assert record_51_75_latest.is_hso_submitted is True
 
     assert statuses == {
         "statuses_by_dimension_type_id": {

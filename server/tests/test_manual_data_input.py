@@ -217,6 +217,12 @@ def test_agegroups_existing_data(vanilla_user_client):
         assert response.status_code == 403
     ind.refresh_from_db()
     assert ind.data.filter(period=period, is_deleted=False).count() == 4
+    deleted_record = ind.data.filter(
+        period=period, literal_dimension_val="51-75"
+    )
+    assert deleted_record.count() == 1
+    assert deleted_record.first().is_deleted
+    assert deleted_record.first().deletion_time is not None
     assert ind.data.get(literal_dimension_val="0-25") == record0_25
     assert ind.data.get(literal_dimension_val="25-50") == record25_50
     record0_25.refresh_from_db()

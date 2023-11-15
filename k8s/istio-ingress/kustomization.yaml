@@ -5,10 +5,9 @@ resources:
 - public-gateway.yaml
 - ingress.yaml
 - namespace.yaml
-- backendconfig.yaml
 
-  # Patch the Istio ingress service so that our IP is used.
 patches:
+# Patch the Istio ingress service so that our IP is used.
 - patch: |-
     - op: add
       path: /spec/loadBalancerIP

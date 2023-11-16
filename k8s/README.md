@@ -1,6 +1,64 @@
-# Kubernetes Manifests
-> TODO: add docs
+# Resource organization
+All kubernetes resources are arranged under the `k8s/` directory. Every sub-directory within `k8s/` corresponds to a name of the kubernetes namespace, i.e, resources provisioned in the same namespace are stored together. For example, all resources for the `flux-system` namespace are stored in the `k8s/flux-system` directory.
 
-## Architecture (WIP):
+Every sub-directory is expected to have a `sync.yaml` and a `kustomization.yaml` (from `kustomize.config.k8s.io/v1beta1` and not `kustomize.toolkit.fluxcd.io/v1`) that work together to enable reconciliations in flux. Currently, all resources in the `sync.yaml` are provisioned in the `flux-system` namespace. You can think of the `sync.yaml` as an entrypoint to a namespace / micro-service. It contains reconciliation mechanisms pertianing to any git repo / kustomize / image repo / image automation etc.
+
+Most of the `sync.yaml` (`kustomize.toolkit.fluxcd.io/v1`) resources have a `depends_on` key that enables a user to specify dependencies between kustomizations. This is particulary useful when deploying applications from scratch. For instance, the `cert-manager` CRDs must be available and ready to use in the cluster prior to the deployment of certificate and issuer resources. To achieve this, the `cert-manager-resources` kustomization has a dependency on `cert-manager-crds`; see `k8s/cert-manager/sync.yaml` for reference.
+
+# Setup
+
+## Configuring Flux
+Assuming that the necessary GCP resources have been provisioned and configured, kubernetes resources can be deployed by first configuring Flux with:
+
+```
+flux bootstrap git \
+  --author-email=<your.email> \
+  --url=ssh://git@github.com:PHACDataHub/cpho-phase2.git \
+  --branch=main \
+  --path=k8s/ \
+  --components-extra="image-reflector-controller,image-automation-controller"
+```
+
+More information on `flux bootstrap git` [here](https://fluxcd.io/flux/cmd/flux_bootstrap_git/).
+
+This will install flux on your cluster and, at some point during the process, will ask you to add the deploy key (printed on your terminal) to github. More information on how to add a deploy key to your repo [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#set-up-deploy-keys).
+
+The above command installs all manifests under `k8s/flux-system` directory.
+
+## Sealing secrets
+
+Once `flux-system` is ready, a public key from the sealed-secrets-controller (installed with the previous step) can be extracted with:
+```
+kubeseal --fetch-cert \
+--controller-name=sealed-secrets-controller \
+--controller-namespace=flux-system \
+> k8s/flux-system/pub-sealed-secrets.pem
+```
+
+> Note: Above command requires the [kubeseal](https://github.com/bitnami-labs/sealed-secrets#kubeseal) binary.
+
+This writes (or overwrites) the public key file at `k8s/flux-system/pub-sealed-secrets.pem` to work against the controller configuration of the cluster. Commit and push this change to the remote repo.
+
+Now, kubernetes secrets can be sealed and stored in git by following the instructions [here](https://fluxcd.io/flux/guides/sealed-secrets/#encrypt-secrets).
+
+More information about sealed-secrets + flux setup can be found [here](https://fluxcd.io/flux/guides/sealed-secrets/).
+
+## Installing other resources
+
+As mentioned earlier, the `sync.yaml` serves as an entrypoint to the resources in a particular namespace and can be added to the cluster with:
+
+```
+kubectl apply -f <path/to/directory>/sync.yaml
+```
+where `<path/to/directory>` could be, for example, `k8s/istio-ingress/sync.yaml` which would install / configure all resources under the `istio-system` namespace or more specifically all resources as per the `k8s/istio-ingress` directory's `kustomization.yaml`.
+
+Since there are dependencies between resources, the above command must be executed for each namespace in a certain order. At the time of writing, the order is:
+- `flux-system`: Flux and sealed-secrets CRDs and resources. 
+- `istio-ingress`: Ingress configurations. Requires update to the ip address in the directory's `kustomization.yaml`.
+- `cert-manager`: Cert-Manager crds and resources. Requires update to the domain names, project id, etc. at relevant places in the manifests.
+- `cnpg-system`: Cloud-Native Postgres crds and configurations.
+- `server`: Application and PostgresDB Cluster manifests
+
+# Architecture (WIP):
 
 ![draft architecture](../architecture-diagram/architecture-k8s.svg)

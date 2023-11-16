@@ -64,10 +64,6 @@ spec:
               key: password
         - name: PHAC_ASPC_OAUTH_PROVIDER
           value: "microsoft"
-        - name: PHAC_ASPC_OAUTH_USE_BACKEND
-          value: "core.auth_backend.OAuthBackend"
-        - name: PHAC_ASPC_OAUTH_REDIRECT_ON_LOGIN
-          value: "list_indicators"
         - name: PHAC_ASPC_OAUTH_APP_CLIENT_ID
           valueFrom:
             secretKeyRef:

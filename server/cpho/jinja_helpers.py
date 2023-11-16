@@ -1,5 +1,6 @@
 from urllib.parse import quote, urlencode, urlparse, urlunparse
 
+from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import activate, get_language
@@ -186,6 +187,9 @@ def environment(**options):
             "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
             "with_new_url_kwargs": with_new_url_kwargs,
             "with_same_params": with_same_params,
+            "PHAC_ASPC_OAUTH_PROVIDER": getattr(
+                settings, "PHAC_ASPC_OAUTH_PROVIDER", ""
+            ),
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

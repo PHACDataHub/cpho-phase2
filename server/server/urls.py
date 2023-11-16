@@ -19,6 +19,7 @@ if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:
 
     dev_routes += [re_path(r"^__debug__/", include(debug_toolbar.urls))]
 
+from phac_aspc.django.helpers.urls import urlpatterns as phac_aspc_helper_urls
 
 urlpatterns = i18n_patterns(
     path("phac_admin/", admin.site.urls),
@@ -38,6 +39,7 @@ urlpatterns = i18n_patterns(
     ),
     prefix_default_language=False,
 ) + [
+    *phac_aspc_helper_urls,
     path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),
     path(
         "robots.txt",

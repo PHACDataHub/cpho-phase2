@@ -45,7 +45,8 @@ class SubmittedDatumByIndicatorYearLoader(SingletonDataLoader):
 
         version_ids = [x.last_submitted_version_id for x in data]
         versions = IndicatorDatumHistory.objects.filter(
-            pk__in=version_ids
+            pk__in=version_ids,
+            is_deleted=False,
         ).select_related("period")
 
         versions_by_pair = defaultdict(list)

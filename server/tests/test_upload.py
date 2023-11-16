@@ -34,4 +34,4 @@ def test_import(hso_client):
 
     indicator = Indicator.objects.get(name="Test Upload")
     assert indicator.name == "Test Upload"
-    assert len(IndicatorDatum.objects.filter(indicator=indicator)) == 2
+    assert len(IndicatorDatum.active_objects.filter(indicator=indicator)) == 2

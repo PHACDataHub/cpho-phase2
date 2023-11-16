@@ -110,7 +110,7 @@ def test_indicator_datum_version_annotations():
     v4 = live_record.versions.last()
 
     refetched_record = (
-        IndicatorDatum.objects.all()
+        IndicatorDatum.active_objects.all()
         .with_last_version_id()
         .with_last_submitted_version_id()
         .get(id=live_record.id)

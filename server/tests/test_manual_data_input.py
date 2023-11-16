@@ -138,7 +138,7 @@ def test_create_agegroups_from_scratch(vanilla_user_client):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 403
 
-    created_data = IndicatorDatum.objects.filter(
+    created_data = IndicatorDatum.active_objects.filter(
         dimension_type=age_cat, indicator=ind, period=period
     )
     assert created_data.count() == 2
@@ -198,13 +198,13 @@ def test_agegroups_existing_data(vanilla_user_client):
         "agegroup-1-value": 7.5,
         # delete record_51_75
         "agegroup-2-id": record_51_75.id,
-        "agegroup-2-DELETE": "on",
+        "agegroup-2-is_deleted": "on",
         "agegroup-3-literal_dimension_val": "50-120",
         "agegroup-3-value": 10.5,
         # also add an extra record that is immediately deleted
         # just to show nothing happens
         "agegroup-4-literal_dimension_val": "120-150",
-        "agegroup-4-DELETE": "on",
+        "agegroup-4-is_deleted": "on",
         # add a new record too, it shouldn't matter that it comes after 4?
         "agegroup-5-literal_dimension_val": "75-120",
         "agegroup-5-value": 20.1,
@@ -216,7 +216,13 @@ def test_agegroups_existing_data(vanilla_user_client):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 403
     ind.refresh_from_db()
-    assert ind.data.filter(period=period).count() == 4
+    assert ind.data.filter(period=period, is_deleted=False).count() == 4
+    deleted_record = ind.data.filter(
+        period=period, literal_dimension_val="51-75"
+    )
+    assert deleted_record.count() == 1
+    assert deleted_record.first().is_deleted
+    assert deleted_record.first().deletion_time is not None
     assert ind.data.get(literal_dimension_val="0-25") == record0_25
     assert ind.data.get(literal_dimension_val="25-50") == record25_50
     record0_25.refresh_from_db()
@@ -226,7 +232,9 @@ def test_agegroups_existing_data(vanilla_user_client):
     assert ind.data.get(literal_dimension_val="50-120").value == 10.5
 
     # assert deleted
-    assert not IndicatorDatum.objects.filter(id=record_51_75.id).exists()
+    assert not IndicatorDatum.active_objects.filter(
+        id=record_51_75.id
+    ).exists()
 
     new_record = ind.data.get(literal_dimension_val="75-120")
     assert new_record.value == 20.1
@@ -293,7 +301,7 @@ def test_modify_all_dimensions(vanilla_user_client):
         assert response.status_code == 403
 
     ind.refresh_from_db()
-    assert ind.data.count() == 4
+    assert ind.data.filter(is_deleted=False).count() == 4
 
     assert (
         ind.data.get(

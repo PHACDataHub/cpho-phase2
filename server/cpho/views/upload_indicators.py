@@ -321,7 +321,7 @@ class SaveUpload(MustPassAuthCheckMixin, View):
             lit_dim_val = datum["Dimension_Value"]
         # filter data with all attributes equal to datum
         # to see if exact match exists
-        indData_obj = IndicatorDatum.objects.filter(
+        indData_obj = IndicatorDatum.active_objects.filter(
             indicator=indicator_obj,
             dimension_type=mapper["dimension_type_mapper"][
                 datum["Dimension_Type"]
@@ -356,7 +356,7 @@ class SaveUpload(MustPassAuthCheckMixin, View):
         # if data is modified, update data
         # if data is new, create new data
         if indData_obj is None:
-            indData_obj, created = IndicatorDatum.objects.get_or_create(
+            indData_obj, created = IndicatorDatum.active_objects.get_or_create(
                 indicator=indicator_obj,
                 dimension_type=mapper["dimension_type_mapper"][
                     datum["Dimension_Type"]

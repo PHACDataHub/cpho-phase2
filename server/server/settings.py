@@ -68,8 +68,7 @@ PHAC_ASPC_LOGGING_LOWEST_LEVEL = (
 PHAC_ASPC_LOGGING_PRETTY_FORMAT_CONSOLE_LOGS = IS_LOCAL
 PHAC_ASPC_LOGGING_SLACK_WEBHOOK_URL = config("SLACK_WEBHOOK_URL", None)
 
-# REMINDER: phac_aspc imports must occur **after** all PHAC_ASPC_... settings have
-# been declared
+# REMINDER: phac_aspc imports must occur **after** all PHAC_ASPC_... settings have been declared
 from phac_aspc.django.settings import *
 from phac_aspc.django.settings.utils import (
     configure_apps,

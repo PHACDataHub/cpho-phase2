@@ -79,6 +79,8 @@ spec:
             secretKeyRef:
               name: phac-aspc-oauth-config
               key: microsoft-tenant
+        - name: ENABLE_LEGACY_LOG_IN # TODO temporary for dev purposes, not to be used in final prod
+          value: "true"
         resources:
           # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)
           requests:

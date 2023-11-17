@@ -8,6 +8,7 @@ from django.utils.translation import activate, get_language
 import phac_aspc.django.helpers.templatetags as phac_aspc
 from jinja2 import Environment, pass_context
 
+from server.config_util import get_project_config
 from server.rules_framework import test_rule
 
 from cpho import models
@@ -15,6 +16,8 @@ from cpho.constants import SUBMISSION_STATUSES
 from cpho.util import eastern_timezone
 
 from .text import tdt, tm
+
+config = get_project_config()
 
 
 def convert_url_other_lang(url_str):
@@ -187,8 +190,11 @@ def environment(**options):
             "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
             "with_new_url_kwargs": with_new_url_kwargs,
             "with_same_params": with_same_params,
-            "PHAC_ASPC_OAUTH_PROVIDER": getattr(
-                settings, "PHAC_ASPC_OAUTH_PROVIDER", ""
+            "PHAC_ASPC_OAUTH_PROVIDER": config(
+                "PHAC_ASPC_OAUTH_PROVIDER", default=None
+            ),
+            "ENABLE_LEGACY_LOG_IN": config(
+                "ENABLE_LEGACY_LOG_IN", cast=bool, default=False
             ),
         }
     )

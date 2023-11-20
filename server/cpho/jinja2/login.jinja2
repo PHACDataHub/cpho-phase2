@@ -17,13 +17,7 @@
           <h2 class="card-header">{{ tm("log_in") }}</h2>
           <div class="card-body">
             <p>{{ tdt("Welcome") }}</p>
-            <p>{{ tm("prod_login_intro_2") }}</p>
-            {#
-              <p>
-                {{ tm("prod_login_intro_3") }}
-                <a href="{{ url("user_agreement") }}">{{ tm("user_agreement") | lower }}</a>.
-              </p>
-            #}
+            <p>{{ tm("prod_login_intro") }}</p>
             <div class="mx-auto float-end">{{ phac_aspc.phac_aspc_auth_signin_microsoft_button(request.GET.urlencode() ) }}</div>
           </div>
         </div>

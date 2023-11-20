@@ -13,12 +13,19 @@ class MustBeLoggedInMiddleware:
         return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        if getattr(view_func, "allow_unauthenticated", False):
+        third_party_allow_unauthenticated_url_names = [
+            "phac_aspc_helper_login",
+            "phac_aspc_helper_authorize",
+        ]
+
+        if getattr(view_func, "allow_unauthenticated", False) or (
+            request.resolver_match.url_name
+            in third_party_allow_unauthenticated_url_names
+        ):
             return None
 
         if request.user.is_authenticated:
             return None
-
         elif "/login" not in request.path.lower():
             qs_params = dict(next=request.build_absolute_uri())
             querystring = urllib.parse.urlencode(qs_params)

@@ -78,4 +78,10 @@ translation_entries = {
         "en": "Please login to see this page",
         "fr": "Veuillez vous connecter pour voir cette page",
     },
+    "prod_login_intro": {
+        "en": "To continue, please sign in with Microsoft using your PHAC credentials.",
+        "fr": None,
+        "translated_using": "To continue, please sign in with Microsoft using your PHAC credentials.",
+        "fr_auto": "Pour continuer, veuillez vous connecter avec Microsoft en utilisant vos identifiants de l'ASPC.",
+    },
 }

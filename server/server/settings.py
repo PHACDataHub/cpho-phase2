@@ -178,9 +178,14 @@ MIDDLEWARE = configure_middleware(
     ]
 )
 
-
-LOGIN_URL = "/login"
+LOGIN_URL = reverse_lazy("login")
 LOGIN_REDIRECT_URL = reverse_lazy("list_indicators")
+
+PHAC_ASPC_OAUTH_USE_BACKEND = "server.auth_backend.OAuthBackend"
+DISABLE_AUTO_REGISTRATION = config(
+    "DISABLE_AUTO_REGISTRATION", default=False, cast=bool
+)
+PHAC_ASPC_OAUTH_REDIRECT_ON_LOGIN = "list_indicators"
 
 ROOT_URLCONF = "server.urls"
 APPEND_SLASH = True

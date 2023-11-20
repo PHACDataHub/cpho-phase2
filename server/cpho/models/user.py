@@ -10,6 +10,7 @@ from server.model_util import (
 )
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
+from cpho.text import tm
 
 
 class GroupPrefetcherManager(UserManager):
@@ -28,7 +29,12 @@ class User(AbstractUser):
     class Meta:
         base_manager_name = "objects"
 
+    def __str__(self):
+        return f"{self.name if self.name else self.username}"
+
     objects = GroupPrefetcherManager()
+
+    name = models.CharField(tm("name"), max_length=300, blank=True)
 
     @cached_property
     def _all_groups(self):

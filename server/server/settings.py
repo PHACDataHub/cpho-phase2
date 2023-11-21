@@ -91,17 +91,12 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 # Additional CORS allowed and CSRF trusted origins should be empty until if/when the app
 # is serving a REST/GraphQL API for external consumption
 CORS_ALLOWED_ORIGINS = []
-# TODO: if the CSRF middleware and tokens were working, this could be empty. See comment
-# on SECURE_SSL_REDIRECT & SECURE_PROXY_SSL_HEADER below for a lead on what might be broken
-CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
+CSRF_TRUSTED_ORIGINS = []
 
 # Prod only security settings
 if not IS_DEV:
-    # TODO these might be good to set, may be why an empty CSRF_TRUSTED_ORIGINS doesn't work, assuming
-    # the some load balancer/proxy might be downgrading our connection internally? Something to look in to,
-    # likely requires corresponding changes to the load balancer's configuration though
-    # SECURE_SSL_REDIRECT = True
-    # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
 
     SECURE_HSTS_SECONDS = 3600  # TODO this could be set longer, most likely
     SECURE_HSTS_PRELOAD = True

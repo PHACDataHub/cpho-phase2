@@ -15,7 +15,7 @@ class MustBeLoggedInMiddleware:
     def process_view(self, request, view_func, view_args, view_kwargs):
         third_party_allow_unauthenticated_url_names = [
             "phac_aspc_helper_login",
-            "phac_aspc_helper_authorize",
+            "phac_aspc_authorize",
         ]
 
         if getattr(view_func, "allow_unauthenticated", False) or (

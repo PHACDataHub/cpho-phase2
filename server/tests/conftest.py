@@ -6,6 +6,7 @@ import pytest
 from jinja2 import Template as Jinja2Template
 from phac_aspc.django.settings.utils import configure_settings_for_tests
 
+from cpho.management.commands.seed_countries import seed_countries
 from cpho.management.commands.seed_programs import seed_programs
 from cpho.models import PHACOrg, User
 from cpho.scripts.dev import create_users
@@ -42,6 +43,7 @@ def seed_core_data(globally_scoped_fixture_helper):
     call_command("loaddata", "cpho/fixtures/periods.yaml")
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
     seed_programs(mode="reset")
+    seed_countries(mode="reset")
     create_users()
     # ensure groups created (caching groups break accross tests if not pre-created)
     GroupFetcher.hso_group

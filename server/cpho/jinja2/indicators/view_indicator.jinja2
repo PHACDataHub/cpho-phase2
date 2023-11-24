@@ -43,6 +43,16 @@
             {{ tdt("Export data") }}
           </a>
         </div>
+
+        <div>
+          {% if respects_rule('can_edit_indicator', indicator) %}
+            <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
+               class="btn w-100 btn-outline-dark my-1">
+              <span aria-hidden="true" class="bi bi-clipboard-data"></span>
+              {{ tdt("Benchmarking") }}
+            </a>
+          {% endif %}
+        </div>
       </div>
       <div class="col-md-10">
         <div class="mt-4">

@@ -1,6 +1,7 @@
 from .changelog import *
 from .export_indicators import *
 from .indicator_data import *
+from .indicator_metadata import *
 from .indicators import *
 from .submission import *
 from .upload_indicators import *

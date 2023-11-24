@@ -223,8 +223,6 @@ class IndicatorDatumForm(ModelForm):
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:
             self.instance.deletion_time = str(datetime.now())
-        # else:
-        #     self.instance.deletion_time = "not_deleted"
         return super().save(commit)
 
 
@@ -408,7 +406,6 @@ class ManageIndicatorData(
                 )
         else:
             # get will just render the forms and their errors
-            print("\n\n\n\n\ errors")
             print(self.predefined_values_formset.errors)
             print(self.age_group_formset.errors)
             return self.get(*args, **kwargs)

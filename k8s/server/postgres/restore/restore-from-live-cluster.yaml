@@ -1,0 +1,83 @@
+# Ref: https://cloudnative-pg.io/documentation/1.21/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cpho-postgres14-cluster-clone
+  namespace: server
+  labels:
+    app: postgres14-cluster
+  annotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.9
+  instances: 3
+  startDelay: 900
+  stopDelay: 900
+  primaryUpdateStrategy: unsupervised
+
+# PostGres Best Practices for the Logging 
+  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+      pgaudit.log: "all, -misc"
+      pgaudit.log_catalog: "off"
+      pgaudit.log_parameter: "on"
+      pgaudit.log_relation: "on"
+      log_min_messages: "error"
+      log_checkpoints: "on" 
+      log_lock_waits: "on"
+      log_temp_files: "0"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_hostname: "on"
+    pg_hba:
+      - host all all all md5
+
+
+  bootstrap:
+    pg_basebackup:
+      source: cpho-postgres14-cluster
+
+  storage:
+    storageClass: standard
+    size: 2Gi
+
+  replica:
+    enabled: true
+    source: cpho-postgres14-cluster
+
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        # k8s service account is created with the same as `metadata.name` above
+        # ensure an appropriate storage role(s) and workload identity is assigned: https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity
+        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com	
+
+  backup:
+    barmanObjectStore:
+      destinationPath: gs://hopic-dev-postgres-backup
+      googleCredentials:
+        gkeEnvironment: true
+    retentionPolicy: "30d"	
+
+  externalClusters:
+  - name: cpho-postgres14-cluster
+    connectionParameters:
+      host: cpho-postgres14-cluster-rw.server.svc
+      user: cpho-phase2_db_user
+      sslmode: verify-full
+      dbname: cpho-phase2_db
+    sslKey:
+      name: cpho-postgres14-cluster-replication
+      key: tls.key
+    sslCert:
+      name: cpho-postgres14-cluster-replication
+      key: tls.crt
+    sslRootCert:
+      name: cpho-postgres14-cluster-ca
+      key: ca.crt

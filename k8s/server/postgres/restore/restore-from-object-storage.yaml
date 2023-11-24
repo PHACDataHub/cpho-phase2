@@ -1,10 +1,11 @@
+# Ref: https://cloudnative-pg.io/documentation/1.21/recovery/#recovery-from-an-object-store
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cpho-postgres14-cluster-object-storage
+  name: cpho-postgres14-cluster-restore
   namespace: server
   labels:
-    app: postgres14-cluster-object-storage
+    app: postgres14-cluster
   annotations:
     proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 spec:

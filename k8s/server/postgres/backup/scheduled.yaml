@@ -1,12 +1,3 @@
-# this file is not synced with flux
-apiVersion: postgresql.cnpg.io/v1
-kind: Backup
-metadata:
-  name: postgres14-cluster-backup
-  namespace: server
-spec:
-  cluster:
-    name: cpho-postgres14-cluster
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup

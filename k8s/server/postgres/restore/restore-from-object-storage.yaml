@@ -1,10 +1,11 @@
+# Ref: https://cloudnative-pg.io/documentation/1.21/recovery/#recovery-from-an-object-store
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cpho-postgres14-cluster-object-storage
+  name: cpho-postgres14-cluster-restore
   namespace: server
   labels:
-    app: postgres14-cluster-object-storage
+    app: postgres14-cluster
   annotations:
     proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 spec:
@@ -55,7 +56,8 @@ spec:
   serviceAccountTemplate:
     metadata:
       annotations:
-        # insert the service account token
+        # k8s service account is created with the same as `metadata.name` above
+        # ensure an appropriate storage role(s) and workload identity is assigned: https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity
         iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com	
 
   backup:

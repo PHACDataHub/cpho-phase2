@@ -69,7 +69,7 @@ spec:
   - name: cpho-postgres14-cluster
     connectionParameters:
       host: cpho-postgres14-cluster-rw.server.svc
-      user: cpho-phase2_db_user
+      user: streaming_replica
       sslmode: verify-full
       dbname: cpho-phase2_db
     sslKey:

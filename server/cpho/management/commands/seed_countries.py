@@ -5,15 +5,15 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from cpho.models import Benchmarking, Countries
+from cpho.models import Benchmarking, Country
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class Command(BaseCommand):
-    """Seeds the HOPIC database with Countries from CSV"""
+    """Seeds the HOPIC database with Country from CSV"""
 
-    help = "Seeds the HOPIC database with Countries from CSV"
+    help = "Seeds the HOPIC database with County from CSV"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -30,10 +30,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         with transaction.atomic():
-            # We always need admin / account admin groups! This is non-destructive
-            # Group.objects.get_or_create(name=ITAP_ADMIN_GROUP)
-            # Group.objects.get_or_create(name=ITAP_ACCOUNT_ADMIN_GROUP)
-
             # Confirmation prompt
             if not kwargs["yes"] and kwargs["mode"] in ["reset", "wipe"]:
                 confirm = input(
@@ -51,9 +47,9 @@ def seed_countries(mode):
     """Seed programs based on options (upsert, reset, insert_ignore)"""
     # TODO: Currently only supports "reset" and wipe
     if mode in ["reset", "wipe"]:
-        # truncate Benchmarking before truncating Countries
+        # truncate Benchmarking before truncating Country
         Benchmarking.objects.all().delete()
-        Countries.objects.all().delete()
+        Country.objects.all().delete()
         if mode == "wipe":
             return
     create_countries(mode)
@@ -78,8 +74,8 @@ def create_countries(mode="reset"):
 
                 if mode in ["insert_ignore", "upsert"]:
                     try:
-                        country = Countries.objects.get(id=data["id"])
-                    except Countries.DoesNotExist:
+                        country = Country.objects.get(id=data["id"])
+                    except Country.DoesNotExist:
                         country = None
 
                     if country:
@@ -93,7 +89,7 @@ def create_countries(mode="reset"):
                             skipped_count += 1
                         continue
 
-                Countries.objects.create(
+                Country.objects.create(
                     id=data["id"],
                     name_en=data["name_en"],
                     name_fr=data["name_fr"],

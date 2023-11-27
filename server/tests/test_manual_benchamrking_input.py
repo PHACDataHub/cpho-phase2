@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
-from cpho.models import Benchmarking, Countries
+from cpho.models import Benchmarking, Country
 
 from .utils_for_tests import patch_rules
 
@@ -15,8 +15,8 @@ def test_benchmarking(vanilla_user_client):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
-    aus = Countries.objects.get(name_en="Australia")
-    canada = Countries.objects.get(name_en="Canada")
+    aus = Country.objects.get(name_en="Australia")
+    canada = Country.objects.get(name_en="Canada")
 
     data = {
         "benchmarking-TOTAL_FORMS": 2,

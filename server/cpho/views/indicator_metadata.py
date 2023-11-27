@@ -18,7 +18,7 @@ from server.rules_framework import test_rule
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     Benchmarking,
-    Countries,
+    Country,
     DimensionType,
     DimensionValue,
     Indicator,
@@ -51,7 +51,7 @@ class BenchmarkingForm(ModelForm):
         ]
 
     oecd_country = forms.ModelChoiceField(
-        queryset=Countries.objects.all(),
+        queryset=Country.objects.all(),
         widget=forms.Select(
             attrs={
                 "class": "form-select",

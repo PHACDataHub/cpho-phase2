@@ -344,17 +344,6 @@ class IndicatorDatum(models.Model):
         return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
 
 
-class Countries(models.Model):
-    id = models.CharField(max_length=10, primary_key=True)
-    name_en = fields.CharField(max_length=100)
-    name_fr = fields.CharField(max_length=100, blank=True, null=True)
-
-    def __str__(self):
-        if get_lang_code() == "fr" and self.name_fr:
-            return self.name_fr
-        return self.name_en
-
-
 class BenchmarkingManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)
@@ -378,7 +367,7 @@ class Benchmarking(models.Model):
     indicator = fields.ForeignKey(
         Indicator, on_delete=models.RESTRICT, related_name="benchmarking"
     )
-    oecd_country = fields.ForeignKey(Countries, on_delete=models.RESTRICT)
+    oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
     year = fields.IntegerField()
     standard_deviation = fields.FloatField()

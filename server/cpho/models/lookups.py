@@ -119,3 +119,14 @@ class Period(models.Model):
         return Period.objects.filter(
             year__in=[settings.CURRENT_YEAR - 1, settings.CURRENT_YEAR]
         )
+
+
+class Country(models.Model):
+    id = models.CharField(max_length=10, primary_key=True)
+    name_en = fields.CharField(max_length=100)
+    name_fr = fields.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        if get_lang_code() == "fr" and self.name_fr:
+            return self.name_fr
+        return self.name_en

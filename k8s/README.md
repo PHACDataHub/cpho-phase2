@@ -59,6 +59,45 @@ Since there are dependencies between resources, the above command must be execut
 - `cnpg-system`: Cloud-Native Postgres crds and configurations.
 - `server`: Application and PostgresDB Cluster manifests
 
+# Postgres Cluster Backup and Recovery
+> **Note:** Except for `./server/postgres/backup/scheduled.yaml`, none of the other resources linked in this section are synced with flux.
+
+## Backup
+
+There are two ways to back up the cluster:
+
+- Scheduled
+  - [Spec](https://github.com/PHACDataHub/cpho-phase2/blob/main/k8s/server/postgres/backup/scheduled.yaml)
+    
+    This is done automatically as per `0 0 0 * * *` cron schedule and is synced with flux.
+  - [Official Doc](https://cloudnative-pg.io/documentation/1.21/backup/#scheduled-backups)
+
+- On-demand
+  - [Spec](https://github.com/PHACDataHub/cpho-phase2/blob/main/k8s/server/postgres/backup/on-demand.yaml)
+    
+    This can applied to the cluster like any other k8s resource with:
+    ```sh
+    kubectl apply -f k8s/server/postgres/backup/on-demand.yaml
+    ```
+  - [Official doc](https://cloudnative-pg.io/documentation/1.21/backup/#on-demand-backups)
+
+## Recovery
+
+There are three ways to do this:
+- From object storage
+  
+  This uses a K8 service account with `metadata.name` to recover the data. Ensure that the `workloadIdentityUser` role is assigned to the cloud service account with the right namespace and K8s service account name.
+  - [Spec](https://github.com/PHACDataHub/cpho-phase2/blob/main/k8s/server/postgres/restore/restore-from-object-storage.yaml)
+  - [Official doc](https://cloudnative-pg.io/documentation/1.21/recovery/#recovery-from-an-object-store)
+
+- From K8s backup resource
+  - [Spec](https://github.com/PHACDataHub/cpho-phase2/blob/main/k8s/server/postgres/restore/restore-from-k8s-backup-object.yaml)
+  - [Official doc](https://cloudnative-pg.io/documentation/1.21/recovery/#recovery-from-a-backup-object)
+
+- From live cluster
+  - [Spec](https://github.com/PHACDataHub/cpho-phase2/blob/main/k8s/server/postgres/restore/restore-from-live-cluster.yaml)
+  - [Official doc](https://cloudnative-pg.io/documentation/1.21/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup)
+
 # Architecture (WIP):
 
 ![draft architecture](../architecture-diagram/architecture-k8s.svg)

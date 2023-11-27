@@ -1,10 +1,11 @@
+# Ref: https://cloudnative-pg.io/documentation/1.21/recovery/#recovery-from-a-backup-object
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cpho-postgres14-cluster-backup
+  name: cpho-postgres14-cluster-restore
   namespace: server
   labels:
-    app: postgres14-cluster-backup
+    app: postgres14-cluster
   annotations:
     proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 
@@ -43,7 +44,7 @@ spec:
   bootstrap:
     recovery:
       backup:
-        name: postgres14-cluster-backup
+        name: postgres14-cluster-backup # change this to desired backup k8s name
       owner: cpho-phase2_db_user
       database: cpho-phase2_db
 
@@ -58,7 +59,8 @@ spec:
   serviceAccountTemplate:
     metadata:
       annotations:
-        # insert the service account token
+        # k8s service account is created with the same as `metadata.name` above
+        # ensure an appropriate storage role(s) and workload identity is assigned: https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity
         iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
 
   backup:

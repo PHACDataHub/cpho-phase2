@@ -1,10 +1,13 @@
+# Ref: https://cloudnative-pg.io/documentation/1.21/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cpho-postgres14-cluster
+  name: cpho-postgres14-cluster-restore
   namespace: server
   labels:
     app: postgres14-cluster
+  annotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:14.9
   instances: 3
@@ -37,40 +40,44 @@ spec:
 
 
   bootstrap:
-    initdb:
-      database: cpho-phase2_db
-      owner: cpho-phase2_db_user
+    pg_basebackup:
+      source: cpho-postgres14-cluster
 
   storage:
     storageClass: standard
     size: 2Gi
 
-  nodeMaintenanceWindow:
-    inProgress: false
-    reusePVC: false
-  
+  replica:
+    enabled: true
+    source: cpho-postgres14-cluster
+
   serviceAccountTemplate:
     metadata:
       annotations:
         # k8s service account is created with the same as `metadata.name` above
         # ensure an appropriate storage role(s) and workload identity is assigned: https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity
-        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
+        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com	
 
-  # info: https://cloudnative-pg.io/documentation/1.21/appendixes/object_stores/#running-inside-google-kubernetes-engine
   backup:
     barmanObjectStore:
       destinationPath: gs://hopic-dev-postgres-backup
       googleCredentials:
         gkeEnvironment: true
-    retentionPolicy: "30d"
+    retentionPolicy: "30d"	
 
-  inheritedMetadata:
-    annotations:
-      proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
-      sidecar.istio.io/proxyCPU: 50m
-      sidecar.istio.io/proxyMemory: 112Mi
-
-  resources:
-    requests:
-      cpu: 450m
-      memory: 1926Mi
+  externalClusters:
+  - name: cpho-postgres14-cluster
+    connectionParameters:
+      host: cpho-postgres14-cluster-rw.server.svc
+      user: streaming_replica
+      sslmode: verify-full
+      dbname: cpho-phase2_db
+    sslKey:
+      name: cpho-postgres14-cluster-replication
+      key: tls.key
+    sslCert:
+      name: cpho-postgres14-cluster-replication
+      key: tls.crt
+    sslRootCert:
+      name: cpho-postgres14-cluster-ca
+      key: ca.crt

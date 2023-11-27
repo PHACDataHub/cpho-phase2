@@ -1,14 +1,7 @@
 from django.urls import reverse
 
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
-from cpho.models import (
-    Benchmarking,
-    Countries,
-    DimensionType,
-    DimensionValue,
-    IndicatorDatum,
-    Period,
-)
+from cpho.models import Benchmarking, Countries
 
 from .utils_for_tests import patch_rules
 

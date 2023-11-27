@@ -5,17 +5,7 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from cpho.models import (
-    Countries,
-    DimensionType,
-    DimensionValue,
-    Indicator,
-    IndicatorDatum,
-    Period,
-    PHACOrg,
-    PhacOrgRole,
-    User,
-)
+from cpho.models import Benchmarking, Countries
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -61,25 +51,15 @@ def seed_countries(mode):
     """Seed programs based on options (upsert, reset, insert_ignore)"""
     # TODO: Currently only supports "reset" and wipe
     if mode in ["reset", "wipe"]:
+        # truncate Benchmarking before truncating Countries
+        Benchmarking.objects.all().delete()
         Countries.objects.all().delete()
-        # IndicatorDatum.objects.all().delete()
-        # Indicator.objects.all().delete()
-        # # Remove existing programs
-        # PhacOrgRole.objects.all().delete()
-        # PHACOrg.objects.all().delete()
-        # print("PHAC orgs wiped")
         if mode == "wipe":
             return
     create_countries(mode)
 
 
 def create_countries(mode="reset"):
-    # IndicatorDatum.objects.all().delete()
-    # Indicator.objects.all().delete()
-    # if mode == "reset":
-    # PhacOrgRole.objects.all().delete()
-    # PHACOrg.objects.all().delete()
-
     updated_count = 0
     inserted_count = 0
     skipped_count = 0

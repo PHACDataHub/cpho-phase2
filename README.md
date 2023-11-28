@@ -48,6 +48,10 @@ dropdb -U cpho_db_user cpho_test_db
 ```
 
 
+## Using SQlite
+
+Note: if you set USE_SQLITE=True in your .env file, you don't need to set any of the DB-related environment variables and the app will use sqlite instead of postgres. This is useful for testing/development, especially on the PHAC workstations. Note that changelogs won't work with sqlite, so those tests will always fail.
+
 ## Remote DB manipulation
 
 To connect to the remote DB from your local machine, download, chmod and ensure the cloud-sql-proxy is in your path, then run `source deploy/connect_cloud_sql_proxy.sh`. In a different shell, you can now run `./manage.py` commands directly against the remote DB. Be careful and make sure you close the script process when you're done.

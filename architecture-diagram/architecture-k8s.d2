@@ -33,7 +33,7 @@ gcp: Google Cloud {
     fill: "#f1f3f4"
   }
 
-  scc: Security Command Center {
+  scc: All project logs/events also\nvisible in the GCP org-level\n Security Command Center {
     icon: ./icons/gcp/security_command_center.svg
     shape: image
   }
@@ -300,13 +300,11 @@ gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.stan
 gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg -> gcp.project.vpc.fw.cloudstorage: "Manual / Scheduled backups at 0 0 * * * *"
+gcp.project.vpc.fw.k8s.server.pg -> gcp.project.vpc.fw.cloudstorage: "Scheduled (nightly) and manual\nDB dumps, via HTTPS"
 
 # gcp entities
-gcp.project.vpc.fw.k8s.server.django -> slack: Error log alerts
-gcp.project.vpc.fw.k8s.flux_system.flux -> gh: Pull based deployment via https
-gcp.project.vpc.fw.k8s -> gcp.project.vpc.fw.ci_cd.registry: Pull images via https
-gcp.project.vpc.fw.clouddns <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: least priviledge service account via https
+gcp.project.vpc.fw.k8s.server.django -> slack: Application error\nalerts, via HTTPS
+gcp.project.vpc.fw.k8s.flux_system.flux -> gh: Pull based cluster configuration\nreconcilliation, via HTTPS
+gcp.project.vpc.fw.k8s -> gcp.project.vpc.fw.ci_cd.registry: Pull app images as triggered by\nFlux-manaed configuration\nchanges, via HTTPS
+gcp.project.vpc.fw.clouddns <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: Least priviledge service\naccount manages DNS records,\nvia HTTPS
 gcp.project.vpc.fw.clouddns <-> letsencrypt: ACME
-
-gcp.project -> gcp.scc: All project logs/events visible in Security Command Center

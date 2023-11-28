@@ -12,6 +12,7 @@ from server.model_util import (
 
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.text import tdt
+from cpho.util import get_lang_code
 
 
 @add_to_admin
@@ -341,6 +342,52 @@ class IndicatorDatum(models.Model):
             return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
 
         return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+
+
+class BenchmarkingManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+
+@add_to_admin
+@track_versions_with_editor
+class Benchmarking(models.Model):
+    class Meta:
+        unique_together = [
+            (
+                "indicator",
+                "oecd_country",
+                "is_deleted",
+                "deletion_time",
+            ),
+        ]
+
+    objects = models.Manager()
+    active_objects = BenchmarkingManager()
+    indicator = fields.ForeignKey(
+        Indicator, on_delete=models.RESTRICT, related_name="benchmarking"
+    )
+    oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
+    value = fields.FloatField(max_length=50)
+    year = fields.IntegerField()
+    standard_deviation = fields.FloatField()
+
+    COMPARISON_CHOICES = [
+        ("", "--"),
+        ("better", tdt("Better")),
+        ("similar", tdt("Similar")),
+        ("worse", tdt("Worse")),
+        ("outlier", tdt("Outlier")),
+    ]
+    comparison_to_oecd_avg = fields.CharField(max_length=50)
+    labels = fields.CharField(max_length=50, null=True, blank=True)
+    is_deleted = fields.BooleanField(default=False)
+    deletion_time = fields.CharField(
+        max_length=50, blank=True, null=True, default=""
+    )
+
+    def __str__(self):
+        return str(self.indicator) + " : " + str(self.oecd_country)
 
 
 # the following commented-out models don't really do anything yet,

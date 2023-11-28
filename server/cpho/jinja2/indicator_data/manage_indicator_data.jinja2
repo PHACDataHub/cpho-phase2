@@ -195,7 +195,6 @@
   // this approach is documented here https://www.brennantymrak.com/articles/django-dynamic-formsets-javascript
   // changed a few things, like using an empty-form template
   let addButton = document.querySelector("#add-form")
-
   addButton.addEventListener('click', addForm)
 
   function addForm(e){
@@ -210,12 +209,9 @@
       let formTemplateNode = document.querySelector(".age-group-empty-form-container")
       let container = document.querySelector(".age-group-form-list")
       let totalFormsInput = document.querySelector("#id_agegroup-TOTAL_FORMS") //management form inputs
-
       e.preventDefault()
-
       let formRegex = RegExp(`agegroup-__prefix__-`,'g')
       let newFormHtml = formTemplateNode.innerHTML.replace(formRegex, `agegroup-${newFormIndex}-`)
-
       let newForm = document.createElement("tr")
       newForm.classList.add("age-group-form")
       newForm.innerHTML = newFormHtml;

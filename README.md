@@ -29,6 +29,7 @@ Note: run all this in the repo's root directory
         python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
         python ./manage.py loaddata cpho/fixtures/periods.yaml
         python -m manage seed_programs --mode reset --yes
+        python -m manage seed_countries --mode reset --yes
         python ./manage.py runscript cpho.scripts.dev
         ```
 10. `python manage.py runserver`

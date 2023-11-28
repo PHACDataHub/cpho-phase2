@@ -1,0 +1,91 @@
+{% extends 'base.jinja2' %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(view.indicator) }}
+  {{ bc.item(tdt("Benchmarking") , None, True) }}
+{% endblock %}
+
+
+{% macro benchmarking_form(form) %}
+  <tr class="benchmarking-form">
+    <td>{{ form.oecd_country }}</td>
+    <td>{{ form.value }}</td>
+    <td>{{ form.year }}</td>
+    <td>{{ form.standard_deviation }}</td>
+    <td>{{ form.comparison_to_oecd_avg }}</td>
+    <td>{{ form.labels }}</td>
+    <td>
+      {{ form.is_deleted }}
+      {{ form.id }}
+    </td>
+  </tr>
+{% endmacro %}
+
+{% block content %}
+
+  <div class="h2">{{ tdt("Benchmarking data for: ") }} {{ indicator.name }}</div>
+
+  <table class="d-none benchmarking-empty-form-container">
+    {{ benchmarking_form(benchmarking_formset.empty_form) }}
+  </table>
+
+  <form action="." method="post">
+    {{ benchmarking_formset.management_form }}
+    {{ csrf_input }}
+
+    <table class="table mt-3"
+           id="benchmarking-table"
+           style="overflow-x:auto;
+                  display:block">
+      <thead>
+        <tr>
+          <th>{{ tdt("Oecd Country") }}</th>
+          <th>{{ tdt("Value") }}</th>
+          <th>{{ tdt("Year") }}</th>
+          <th>{{ tdt("Standard Deviation") }}</th>
+          <th>{{ tdt("Comparison to Oecd Average") }}</th>
+          <th>{{ tdt("Labels") }}</th>
+          <th>{{ tdt("Delete") }}</th>
+        </tr>
+      </thead>
+      <tbody id="benchmarking-table-body"
+             class="text-center benchmarking-form-list">
+        {% for form in benchmarking_formset %}{{ benchmarking_form(form) }}{% endfor %}
+      </tbody>
+    </table>
+    <div class="text-center py-1">
+      <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add Data") }}</button>
+    </div>
+    <input type="submit"
+           class="btn btn-primary float-end my-3"
+           value="{{ tdt("Save") }}">
+  </form>
+
+  <script>
+    let addButton = document.querySelector("#add-form");
+    addButton.addEventListener('click', addForm);
+
+    function addForm(e) {
+      let forms = document.querySelectorAll(".benchmarking-form-list > .benchmarking-form");
+      let newFormIndex = forms.length;
+      let numForms = forms.length + 1;
+      let formTemplateNode = document.querySelector(".benchmarking-empty-form-container");
+      let container = document.querySelector(".benchmarking-form-list");
+      let totalFormsInput = document.querySelector("#id_benchmarking-TOTAL_FORMS"); //management form inputs
+
+      e.preventDefault();
+      let formRegex = RegExp(`benchmarking-__prefix__-`,'g')
+      console.log(formRegex);
+      let newFormHtml = formTemplateNode.innerHTML.replace(formRegex, `benchmarking-${newFormIndex}-`)
+
+      let newForm = document.createElement("tr")
+      newForm.classList.add("benchmarking-form")
+      newForm.innerHTML = newFormHtml;
+      container.appendChild(newForm)
+      totalFormsInput.setAttribute('value', `${numForms}`)
+    }
+  </script>
+
+{% endblock %}

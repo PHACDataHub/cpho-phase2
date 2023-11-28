@@ -7,7 +7,11 @@ from django.views.generic import TemplateView
 from cpho import models
 from cpho.util import flatten
 
-changelog_models = [models.Indicator, models.IndicatorDatum]
+changelog_models = [
+    models.Indicator,
+    models.IndicatorDatum,
+    models.Benchmarking,
+]
 
 from versionator.changelog.consecutive_versions_fetcher import (
     ConsecutiveVersionsFetcher,
@@ -105,7 +109,7 @@ class UserScopedChangelog(ChangelogView):
                 return history_model.objects.filter(edited_by_id=user_id).all()
 
         return create_simple_changelog(
-            [models.Indicator, models.IndicatorDatum],
+            [models.Indicator, models.IndicatorDatum, models.Benchmarking],
             fetcher_class=UserScopedFetcher,
             page_size=self.get_page_size(),
         )

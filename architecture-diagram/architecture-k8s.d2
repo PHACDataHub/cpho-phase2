@@ -26,26 +26,31 @@ letsencrypt: Let's Encrypt {
   shape: image
 }
 
-gcp: Google Cloud {
+gcp: PHAC Google Cloud Org {
   icon: ./icons/gcp/logo.svg
   style: {
     stroke: "#000000"
     fill: "#f1f3f4"
   }
 
-  scc: All project logs/events also\nvisible in the GCP org-level\n Security Command Center {
-    icon: ./icons/gcp/security_command_center.svg
-    shape: image
-  }
-
-  project: Project {
+  project: HoPiC Google Cloud Project {
     icon: ./icons/general/folder.svg
     style: {
       stroke: "#ffffff"
       fill: "#e1f6fe"
     }
 
-    vpc: Default VPC - 10.162.0.0/20 {
+    clouddns: Cloud DNS {
+      icon: ./icons/gcp/cloud_dns.svg
+      shape: image
+    }
+
+    cloudstorage: Cloud Storage {
+      icon: ./icons/gcp/cloud_storage.svg
+      shape: image
+    }
+
+    vpc: VPC - 10.162.0.0/20 {
       icon: ./icons/gcp/virtual_private_cloud.svg
       style: {
         stroke: blue
@@ -63,35 +68,7 @@ gcp: Google Cloud {
           fill: transparent
         }
 
-        clouddns: Cloud DNS {
-          icon: ./icons/gcp/cloud_dns.svg
-          shape: image
-        }
-
-        cloudstorage: Cloud Storage {
-          icon: ./icons/gcp/cloud_storage.svg
-          shape: image
-        }
-
-        ci_cd: CI/CD {
-          style: {
-            stroke: blue
-            font-color: blue
-            fill: transparent
-          }
-
-          cloud_build: Cloud Build {
-            icon: ./icons/gcp/cloud_build.svg
-            shape: image
-          }
-
-          registry: Artifact Registry {
-            icon: ./icons/gcp/artifact_registry.svg
-            shape: image
-          }
-        }
-
-        k8s: GKE Autopilot Cluster/Managed PaaS with ASM {
+        k8s: Google Kubernetes Engine Autopilot Cluster/Managed PaaS with ASM {
           icon: ./icons/gcp/anthos_service_mesh.svg
           style: {
             stroke: blue
@@ -129,7 +106,7 @@ gcp: Google Cloud {
             }
           }
 
-          server: server {
+          server: Application functional component namespace (server) {
             icon: ./icons/kubernetes/ns.svg
             style: {
               stroke: brown
@@ -167,11 +144,11 @@ gcp: Google Cloud {
                   stroke-dash: 3
                   fill: transparent
                 }
-                pod1: {
+                pod1: App pod 1 {
                   icon: ./icons/kubernetes/pod.svg
                   shape: image
                 }
-                pod2: {
+                pod2: App pod 2, etc. {
                   icon: ./icons/kubernetes/pod.svg
                   shape: image
                 }
@@ -270,41 +247,90 @@ gcp: Google Cloud {
         }
       }
     }
+
+    observability: Observability Solutions\n(destinations for all project logs, events, and security posture info) {
+      style: {
+        stroke: blue
+        font-color: blue
+        fill: transparent
+      }
+
+      project-logs: Cloud Logging {
+        icon: ./icons/gcp/cloud_logging.svg
+        shape: image
+      }
+
+      project-trace: Cloud Trace {
+        icon: ./icons/gcp/trace.svg
+        shape: image
+      }
+
+      project-scc: Security Command Center {
+        icon: ./icons/gcp/security_command_center.svg
+        shape: image
+      }
+    }
+
+    ci_cd: "" {
+      style: {
+        stroke: transparent
+        fill: transparent
+      }
+
+      cloud_build: Cloud Build {
+        icon: ./icons/gcp/cloud_build.svg
+        shape: image
+      }
+
+      registry: Artifact Registry {
+        icon: ./icons/gcp/artifact_registry.svg
+        shape: image
+      }
+    }
+  }
+
+  org-scc: Org-level Security\nCommand Center\n(receives relevant project\nlogs, events, and\nsecurity posture info) {
+    icon: ./icons/gcp/security_command_center.svg
+    shape: image
   }
 }
 
-# external entities
-devs <-> gh
-slack -> devs
-internet -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: HTTPS
-letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME
-
 # ci / cd
-gh -> gcp.project.vpc.fw.ci_cd.cloud_build: Cloud Build trigger\non "main" branch
-gcp.project.vpc.fw.ci_cd.cloud_build -> gcp.project.vpc.fw.ci_cd.registry: Push image
+devs <-> gh
+gh -> gcp.project.ci_cd.cloud_build: Cloud Build trigger\non "main" branch
+gcp.project.ci_cd.cloud_build -> gcp.project.ci_cd.registry: Push image
+gcp.project.vpc.fw.k8s.flux_system.flux -> gh: Pull based cluster configuration\nreconcilliation, via HTTPS
+gcp.project.vpc.fw.k8s.server.django -> gcp.project.ci_cd.registry: Pull app images as triggered by\nFlux-manaed configuration\nchanges, via HTTPS
 
-# mtls
+# dev notifications
+slack -> devs
+gcp.project.vpc.fw.k8s.server.django -> slack: Application error\nalerts, via HTTPS
+gcp.project.vpc.fw.k8s.flux_system.flux -> slack: Flux system and\ncluster status\nnotifications,\nvia HTTPS
+
+# app usage flow
+internet -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: HTTPS
 gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django: mTLS
 gcp.project.vpc.fw.k8s.server.django -> gcp.project.vpc.fw.k8s.server.pg: mTLS
 
-# django
+# django pod management
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.deploy
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.hpa
 gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: "Based on metrics server"
 gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods
 
-# postgres
+# postgres pod management
 gcp.project.vpc.fw.k8s.cnpg_system.cnpg_op -> gcp.project.vpc.fw.k8s.server.pg: "Provisions and manages"
 gcp.project.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg -> gcp.project.vpc.fw.cloudstorage: "Scheduled (nightly) and manual\nDB dumps, via HTTPS"
+gcp.project.vpc.fw.k8s.server.pg -> gcp.project.cloudstorage: "Scheduled (nightly) and manual\nDB dumps, via HTTPS"
 
-# gcp entities
-gcp.project.vpc.fw.k8s.server.django -> slack: Application error\nalerts, via HTTPS
-gcp.project.vpc.fw.k8s.flux_system.flux -> gh: Pull based cluster configuration\nreconcilliation, via HTTPS
-gcp.project.vpc.fw.k8s -> gcp.project.vpc.fw.ci_cd.registry: Pull app images as triggered by\nFlux-manaed configuration\nchanges, via HTTPS
-gcp.project.vpc.fw.clouddns <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: Least priviledge service\naccount manages DNS records,\nvia HTTPS
-gcp.project.vpc.fw.clouddns <-> letsencrypt: ACME
+# cert management
+letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME
+gcp.project.clouddns <-> letsencrypt: ACME
+gcp.project.clouddns <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: Least priviledge service\naccount manages DNS records,\nvia HTTPS
+
+# observability
+devs -> gcp.project.observability: Read access via the Google Cloud Console

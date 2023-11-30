@@ -142,6 +142,11 @@ gcp: PHAC Google Cloud Org {
                 shape: image
               }
 
+              app-secrets: App Secrets,\ninjected in containers\nas env vars at run-time {
+                icon: ./icons/kubernetes/secret.svg
+                shape: image
+              }
+
               pods: Pods {
                 style: {
                   stroke: blue
@@ -229,7 +234,7 @@ gcp: PHAC Google Cloud Org {
               fill: transparent
             }
 
-            flux: Flux GitOps operator,\nreconciles cluster\nconfiguration to\nsource of truth (GitHub) {
+            flux: Flux GitOps operators,\nreconcile cluster\nconfiguration to\nsource of truth (GitHub) {
               icon: ./icons/flux/logo.svg
               shape: image
             }
@@ -303,7 +308,7 @@ devs <-> gh
 gh -> gcp.project.cloud_build: Cloud Build trigger\non "main" branch
 gcp.project.cloud_build -> gcp.project.registry: Push image
 gcp.project.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration via HTTPS
-gcp.project.vpc.fw.k8s.server.django -> gcp.project.registry: Pull app images as triggered by\nFlux-managed configuration\nchanges, via HTTPS
+gcp.project.vpc.fw.k8s.server.django.pods -> gcp.project.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges, via HTTPS
 
 # dev notifications
 slack -> devs
@@ -322,6 +327,7 @@ gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.hpa
 gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Based on metrics server
 gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods
+gcp.project.vpc.fw.k8s.server.django.app-secrets -> gcp.project.vpc.fw.k8s.server.django.pods
 
 # postgres pod management
 gcp.project.vpc.fw.k8s.cnpg_system.cnpg_op -> gcp.project.vpc.fw.k8s.server.pg: Provisions and manages

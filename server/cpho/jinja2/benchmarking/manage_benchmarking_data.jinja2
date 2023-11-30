@@ -10,7 +10,14 @@
 
 {% macro benchmarking_form(form) %}
   <tr class="benchmarking-form">
-    <td>{{ form.oecd_country }}</td>
+    <td>
+      {{ form.oecd_country }}
+      {% if form.errors.oecd_country %}
+        <div class="error-display">
+          {% for error in form.oecd_country.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
     <td>
       {{ form.value }}
       {% if form.errors.value %}
@@ -19,7 +26,7 @@
         </div>
       {% endif %}
     </td>
-    <<td>
+    <td>
       {{ form.year }}
       {% if form.errors.year %}
         <div class="error-display">
@@ -27,7 +34,7 @@
         </div>
       {% endif %}
     </td>
-    <<td>
+    <td>
       {{ form.standard_deviation }}
       {% if form.errors.standard_deviation %}
         <div class="error-display">
@@ -35,7 +42,14 @@
         </div>
       {% endif %}
     </td>
-    <td>{{ form.comparison_to_oecd_avg }}</td>
+    <td>
+      {{ form.comparison_to_oecd_avg }}
+      {% if form.errors.comparison_to_oecd_avg %}
+        <div class="error-display">
+          {% for error in form.comparison_to_oecd_avg.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+        </div>
+      {% endif %}
+    </td>
     <td>{{ form.labels }}</td>
     <td>
       {{ form.is_deleted }}

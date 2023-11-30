@@ -60,13 +60,13 @@ class BenchmarkingForm(ModelForm):
     )
 
     value = forms.FloatField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tdt("Value")}
         ),
     )
     year = forms.IntegerField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -74,7 +74,7 @@ class BenchmarkingForm(ModelForm):
         ),
     )
     standard_deviation = forms.FloatField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -82,7 +82,7 @@ class BenchmarkingForm(ModelForm):
         ),
     )
     comparison_to_oecd_avg = forms.ChoiceField(
-        required=False,
+        required=True,
         choices=Benchmarking.COMPARISON_CHOICES,
         widget=forms.Select(
             attrs={
@@ -109,6 +109,19 @@ class BenchmarkingForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+
+        comparison_to_oecd_avg = cleaned_data.get("comparison_to_oecd_avg")
+        oecd_country = cleaned_data.get("oecd_country")
+
+        if not comparison_to_oecd_avg:
+            self.add_error(
+                "comparison_to_oecd_avg",
+                tdt("Please select a comparison option"),
+            )
+
+        if not oecd_country:
+            self.add_error("oecd_country", tdt("Please select a country"))
+
         return cleaned_data
 
     def clean_value(self):
@@ -134,7 +147,7 @@ class BenchmarkingForm(ModelForm):
             except ValueError:
                 self.add_error(
                     "year",
-                    tdt("Yearmust be a valid number"),
+                    tdt("Year must be a valid number"),
                 )
 
         return year

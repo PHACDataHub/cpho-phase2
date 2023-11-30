@@ -1,0 +1,111 @@
+direction: down
+
+internet: The Internet {
+  icon: ./icons/gcp/my_cloud.svg
+  shape: image
+}
+
+active-directory: Health Canada's\nAzure Active Directory {
+  icon: ./icons/general/Azure-Active-Directory.svg
+  shape: image
+}
+
+gcp: PHAC Google Cloud Org {
+  icon: ./icons/gcp/logo.svg
+  style: {
+    stroke: "#000000"
+    fill: "#f1f3f4"
+  }
+
+  project: HoPiC Google Cloud Project {
+    icon: ./icons/general/folder.svg
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+
+    loadbalancer: Target-pool\nNetwork Load\nBalancer {
+      icon: ./icons/gcp/cloud_load_balancer.svg
+      shape: image
+    }
+
+    vpc: VPC - 10.162.0.0/20 {
+      icon: ./icons/gcp/virtual_private_cloud.svg
+      style: {
+        stroke: blue
+        font-color: blue
+        stroke-dash: 3
+        fill: transparent
+      }
+
+      fw: Firewall {
+        icon: ./icons/gcp/cloud_firewall_rules.svg
+        style: {
+          stroke: black
+          font-color: black
+          stroke-dash: 3
+          fill: transparent
+        }
+
+        k8s: Google Kubernetes Engine Autopilot Cluster (Managed PaaS) {
+          icon: ./icons/gcp/anthos_service_mesh.svg
+          style: {
+            stroke: blue
+            font-color: blue
+            fill: transparent
+          }
+
+          istio_ingress: istio-ingress {
+            icon: ./icons/kubernetes/ns.svg
+            style: {
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
+              fill: transparent
+            }
+
+            ingress: Cluster Ingress Gateway,\nterminates client TLS,\nswitches to cluster internal\nmutual TLS network {
+              icon: ./icons/kubernetes/pod.svg
+              shape: image
+            }
+          }
+
+          server: server {
+            icon: ./icons/kubernetes/ns.svg
+            style: {
+              stroke: brown
+              stroke-dash: 10
+              font-color: blue
+              fill: transparent
+            }
+
+            app-secrets: App Secrets,\ninjected in containers\nas env vars at run-time {
+              icon: ./icons/kubernetes/secret.svg
+              shape: image
+            }
+
+            django: Django App Container(s) {
+              icon: ./icons/kubernetes/pod.svg
+              shape: image
+            }
+
+            pg: PostgreSQL DB Cluster {
+              icon: ./icons/kubernetes/pod.svg
+              shape: image
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# app usage flow
+internet -> gcp.project.loadbalancer: Client request\n(HTTPS)
+gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: Client request\n(HTTPS)
+gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django: Client request\n(HTTPS)
+gcp.project.vpc.fw.k8s.server.django -> active-directory: oAuth redirect\nfor SSO (HTTPS)
+active-directory -> gcp.project.loadbalancer: oAuth return\nredirect (HTTPS)
+gcp.project.vpc.fw.k8s.server.django -> gcp.project.vpc.fw.k8s.server.pg: PostgreSQL protocol (TCP/IP + mutual TLS)
+
+gcp.project.vpc.fw.k8s.server.app-secrets -> gcp.project.vpc.fw.k8s.server.django

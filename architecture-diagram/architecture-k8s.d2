@@ -1,6 +1,21 @@
 # ref: https://github.com/sleepycat/diagrams/blob/main/deployment.d2
 direction: down
 
+internet: The Internet {
+  icon: ./icons/gcp/my_cloud.svg
+  shape: image
+}
+
+letsencrypt: Let's Encrypt {
+  icon: ./icons/letsencrypt/logo.svg
+  shape: image
+}
+
+active-directory: Health Canada's\nAzure Active Directory {
+  icon: ./icons/general/Azure-Active-Directory.svg
+  shape: image
+}
+
 slack: Slack alerts\nchannel {
   icon: ./icons/general/Slack_icon_2019.svg
   shape: image
@@ -13,16 +28,6 @@ devs: Developers {
 
 gh: GitHub {
   icon: ./icons/github/logo.svg
-  shape: image
-}
-
-internet: The Internet {
-  icon: ./icons/gcp/my_cloud.svg
-  shape: image
-}
-
-letsencrypt: Let's Encrypt {
-  icon: ./icons/letsencrypt/logo.svg
   shape: image
 }
 
@@ -45,7 +50,7 @@ gcp: PHAC Google Cloud Org {
       shape: image
     }
 
-    loadbalancer: Target-pool Network Load Balancer {
+    loadbalancer: Target-pool\nNetwork Load\nBalancer {
       icon: ./icons/gcp/cloud_load_balancer.svg
       shape: image
     }
@@ -105,7 +110,7 @@ gcp: PHAC Google Cloud Org {
               shape: image
             }
 
-            ingress: Cluster Ingress Gateway,\nterminates client HTTPS,\nroutes over mutual TLS {
+            ingress: Cluster Ingress Gateway,\nterminates client TLS,\nswitches to cluster internal\nmutual TLS network {
               icon: ./icons/kubernetes/pod.svg
               shape: image
             }
@@ -127,7 +132,7 @@ gcp: PHAC Google Cloud Org {
                 fill: transparent
               }
 
-              svc: SVC {
+              svc: App Service\n(pod load balancer) {
                 icon: ./icons/kubernetes/svc.svg
                 shape: image
               }
@@ -137,7 +142,7 @@ gcp: PHAC Google Cloud Org {
                 shape: image
               }
 
-              hpa: HPA (65% Mem / 64% CPU) {
+              hpa: Horizontal Pod Autoscaler\n(65% Mem / 64% CPU) {
                 icon: ./icons/kubernetes/hpa.svg
                 shape: image
               }
@@ -158,7 +163,7 @@ gcp: PHAC Google Cloud Org {
                   icon: ./icons/kubernetes/pod.svg
                   shape: image
                 }
-                pod2: App pod 2, etc. {
+                podN: App pod N {
                   icon: ./icons/kubernetes/pod.svg
                   shape: image
                 }
@@ -249,7 +254,7 @@ gcp: PHAC Google Cloud Org {
               fill: transparent
             }
 
-            cnpg_op: Cloudnative-PG Operator {
+            cnpg_op: Cloudnative-PG Operator,\nprovisions and manages\ncluster postgres {
               icon: ./icons/cloudnativepg/logo.svg
               shape: image
             }
@@ -263,7 +268,7 @@ gcp: PHAC Google Cloud Org {
       shape: image
     }
 
-    observability: Observability Solutions\n(receive all component logs, events, and security posture info) {
+    observability: Observability Solutions\n(all project logs, events, and security posture alerts) {
       style: {
         stroke: transparent
         fill: transparent
@@ -286,64 +291,64 @@ gcp: PHAC Google Cloud Org {
       }
     }
 
-    cloud_build: Cloud Build {
-      icon: ./icons/gcp/cloud_build.svg
-      shape: image
-    }
-
     registry: Artifact Registry {
       icon: ./icons/gcp/artifact_registry.svg
       shape: image
     }
+
+    cloud_build: Cloud Build {
+      icon: ./icons/gcp/cloud_build.svg
+      shape: image
+    }
   }
 
-  org-scc: Org-level Security\nCommand Center\n(receives relevant project\nlogs, events, and\nsecurity posture info) {
+  org-scc: Org-level Security\nCommand Center\n(relevant project\nlogs, events, and\nsecurity posture alerts) {
     icon: ./icons/gcp/security_command_center.svg
     shape: image
   }
 }
 
-# ci / cd
-devs <-> gh
-gh -> gcp.project.cloud_build: Cloud Build trigger\non "main" branch
-gcp.project.cloud_build -> gcp.project.registry: Push image
-gcp.project.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration via HTTPS
-gcp.project.vpc.fw.k8s.server.django.pods -> gcp.project.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges, via HTTPS
-
-# dev notifications
-slack -> devs
-gcp.project.vpc.fw.k8s.server.django -> slack: Application error\nalerts, via HTTPS
-gcp.project.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications,\nvia HTTPS
+# cert management
+letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: \n\nACME over HTTPS
+letsencrypt -> gcp.project.clouddns: ACME over HTTPS
+gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS)
+gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate
+gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret
 
 # app usage flow
-internet -> gcp.project.clouddns: DNS
-internet -> gcp.project.loadbalancer: HTTPS
-gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: HTTPS
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django: mTLS
-gcp.project.vpc.fw.k8s.server.django -> gcp.project.vpc.fw.k8s.server.pg: mTLS
+internet -> gcp.project.clouddns: Client DNS\nlookup
+internet -> gcp.project.loadbalancer: Client request\n(HTTPS)
+gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: Client request\n(HTTPS)
+gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: Client request\n(HTTPS)
+gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: Client request\n(HTTPS)
+gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS)
+active-directory -> gcp.project.loadbalancer: oAuth return\nredirect (HTTPS)
+gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS
 
 # django pod management
-gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.deploy
-gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.hpa
-gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Based on metrics server
-gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods
+gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics
+gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods: Scaling and pod\navailability management
 gcp.project.vpc.fw.k8s.server.django.app-secrets -> gcp.project.vpc.fw.k8s.server.django.pods
 
 # postgres pod management
-gcp.project.vpc.fw.k8s.cnpg_system.cnpg_op -> gcp.project.vpc.fw.k8s.server.pg: Provisions and manages
 gcp.project.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
 gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg -> gcp.project.cloudstorage: Scheduled (nightly) and manual\nDB dumps, via HTTPS
+gcp.project.vpc.fw.k8s.server.pg -> gcp.project.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS)
 
-# cert management
-letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME
-gcp.project.clouddns <-> letsencrypt: ACME
-gcp.project.clouddns -> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification, via HTTPS
-gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret
+# dev notifications
+slack -> devs
+gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> slack: Application error\nalerts (HTTPS)
+gcp.project.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications\n (HTTPS)
+
+# ci / cd
+gcp.project.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS)
+gcp.project.vpc.fw.k8s.server.django.pods -> gcp.project.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges (HTTPS)
+devs <-> gh
+gh -> gcp.project.cloud_build: Cloud Build trigger\non "main" branch (HTTPS)
+gcp.project.cloud_build -> gcp.project.registry: Push built app\nimage (HTTPS)
 
 # observability
 devs -> gcp.project.observability: Read access via the Google Cloud Console

@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.db import models
 
+from ckeditor.fields import RichTextField
 from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
@@ -70,6 +71,10 @@ class Indicator(models.Model):
         "cpho.DimensionType",
         blank=True,
         related_name="indicators",
+    )
+
+    general_footnotes = RichTextField(
+        config_name="notes", null=True, blank=True
     )
 
     def __str__(self):

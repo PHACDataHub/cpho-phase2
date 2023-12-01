@@ -153,6 +153,7 @@ INSTALLED_APPS = configure_apps(
             else []
         ),
         "rules.apps.AutodiscoverRulesConfig",
+        "ckeditor",
     ]
 )
 
@@ -266,6 +267,20 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+CKEDITOR_CONFIGS = {
+    "notes": {
+        "toolbar": "Custom",
+        "toolbar_Custom": [
+            ["Bold", "BGColor"],
+            ["NumberedList", "BulletedList"],
+            ["Link", "Source"],
+        ],
+        "height": 200,
+        "width": 600,
+        "shouldNotGroupWhenFull": "false",
+    },
+}
 
 
 # Internationalization

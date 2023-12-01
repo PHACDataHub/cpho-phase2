@@ -1,3 +1,9 @@
+{# Scripts needed for CKEditor's rich text editor #}
+<script type="text/javascript"
+        src="{{ static ('ckeditor/ckeditor-init.js') }}"></script>
+<script type="text/javascript"
+        src="{{ static ('ckeditor/ckeditor/ckeditor.js') }}"></script>
+
 
 <form method="POST" action=".">
   {{ csrf_input }}
@@ -42,6 +48,13 @@
       <div class="row">{{ form.relevant_dimensions.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
     </div>
     <div class="col-lg-10">{{ form.relevant_dimensions }}</div>
+  </div>
+  <div class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">{{ form.general_footnotes.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+    </div>
+    {# mark as safe for rich text editor to render #}
+    <div class="col-lg-10">{{ form.general_footnotes|safe }}</div>
   </div>
   <input type="submit"
          class="btn btn-primary mt-4 float-end"

@@ -1,31 +1,23 @@
 direction: down
 
-user: User's\nBrowser {
-  icon: ./icons/general/laptop.svg
+unauthed-traffic: Unauthenticated\napp traffic {
+  icon: ./icons/general/person.svg
+  shape: image
   style: {
-    stroke: blue
-    fill: "#e1f6fe"
+    font-color: red
   }
+}
 
-  unauthed-traffic: Unauthenticated\napp traffic {
-    icon: ./icons/general/person.svg
-    shape: image
-    style: {
-      font-color: red
-    }
-  }
+active-directory: Health Canada's\nAzure Active Directory\nsign in page {
+  icon: ./icons/general/Azure-Active-Directory.svg
+  shape: image
+}
 
-  active-directory: Health Canada's\nAzure Active Directory\nsign in page {
-    icon: ./icons/general/Azure-Active-Directory.svg
-    shape: image
-  }
-
-  authed-traffic: Authenticated\napp traffic {
-    icon: ./icons/general/person.svg
-    shape: image
-    style: {
-      font-color: green
-    }
+authed-traffic: Authenticated\napp traffic {
+  icon: ./icons/general/person.svg
+  shape: image
+  style: {
+    font-color: green
   }
 }
 
@@ -326,18 +318,17 @@ gcp: PHAC Google Cloud Org {
   }
 }
 
-user -> gcp.project.clouddns: Client DNS\nlookup
-
 # unauthed traffic flow
-user.unauthed-traffic -> gcp.project.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
+unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
+unauthed-traffic -> gcp.project.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
 gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
 gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: "" {style: {stroke: red}}
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: red}}
-gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> user.active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
-user.active-directory -> user.authed-traffic: oAuth return\nredirect (HTTPS) {style: {stroke: red}}
+gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
+active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stroke: red}}
 
 # authed traffic flow
-user.authed-traffic -> gcp.project.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
+authed-traffic -> gcp.project.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
 gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
 gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: "" {style: {stroke: green}}
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
@@ -347,8 +338,8 @@ gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.vpc.fw.k8s.server.
 letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME over HTTPS {style: {stroke: orange}}
 letsencrypt -> gcp.project.clouddns: ACME over HTTPS {style: {stroke: orange}}
 gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS) {style: {stroke: orange}}
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret {style: {stroke: orange}}
 gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate {style: {stroke: orange}}
+gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret {style: {stroke: orange}}
 
 # django pod management
 gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics {style: {stroke: grey}}

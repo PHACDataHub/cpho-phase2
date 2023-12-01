@@ -307,13 +307,6 @@ gcp: PHAC Google Cloud Org {
   }
 }
 
-# cert management
-letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: \n\nACME over HTTPS
-letsencrypt -> gcp.project.clouddns: ACME over HTTPS
-gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS)
-gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret
-
 # app usage flow
 internet -> gcp.project.clouddns: Client DNS\nlookup
 internet -> gcp.project.loadbalancer: Client request\n(HTTPS)
@@ -324,30 +317,37 @@ gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redire
 active-directory -> gcp.project.loadbalancer: oAuth return\nredirect (HTTPS)
 gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS
 
+# cert management
+letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: \n\nACME over HTTPS {style: {stroke: orange}}
+letsencrypt -> gcp.project.clouddns: ACME over HTTPS {style: {stroke: orange}}
+gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS) {style: {stroke: orange}}
+gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate {style: {stroke: orange}}
+gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret {style: {stroke: orange}}
+
 # django pod management
-gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics
-gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods: Scaling and pod\navailability management
-gcp.project.vpc.fw.k8s.server.django.app-secrets -> gcp.project.vpc.fw.k8s.server.django.pods
+gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics {style: {stroke: grey}}
+gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods: Scaling and pod\navailability management {style: {stroke: grey}}
+gcp.project.vpc.fw.k8s.server.django.app-secrets -> gcp.project.vpc.fw.k8s.server.django.pods: "" {style: {stroke: grey}}
 
 # postgres pod management
-gcp.project.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod
-gcp.project.vpc.fw.k8s.server.pg -> gcp.project.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS)
+gcp.project.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod: "" {style: {stroke: black}}
+gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
+gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod: "" {style: {stroke: black}}
+gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
+gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
+gcp.project.vpc.fw.k8s.server.pg -> gcp.project.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS) {style: {stroke: black}}
 
 # dev notifications
-slack -> devs
-gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> slack: Application error\nalerts (HTTPS)
-gcp.project.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications\n (HTTPS)
+slack -> devs: "" {style: {stroke: gold}}
+gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> slack: Application error\nalerts (HTTPS) {style: {stroke: gold}}
+gcp.project.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications\n (HTTPS) {style: {stroke: gold}}
 
 # ci / cd
-gcp.project.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS)
-gcp.project.vpc.fw.k8s.server.django.pods -> gcp.project.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges (HTTPS)
-devs <-> gh
-gh -> gcp.project.cloud_build: Cloud Build trigger\non "main" branch (HTTPS)
-gcp.project.cloud_build -> gcp.project.registry: Push built app\nimage (HTTPS)
+gcp.project.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS) {style: {stroke: green}}
+gcp.project.vpc.fw.k8s.server.django.pods -> gcp.project.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges (HTTPS) {style: {stroke: green}}
+devs <-> gh: "" {style: {stroke: green}}
+gh -> gcp.project.cloud_build: Cloud Build trigger\non "main" branch (HTTPS) {style: {stroke: green}}
+gcp.project.cloud_build -> gcp.project.registry: Push built app\nimage (HTTPS) {style: {stroke: green}}
 
 # observability
-devs -> gcp.project.observability: Read access via the Google Cloud Console
+devs -> gcp.project.observability: Read access via the Google Cloud Console {style: {stroke: red}}

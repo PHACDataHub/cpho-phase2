@@ -41,6 +41,7 @@ class BenchmarkingForm(ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
+            "unit",
             "oecd_country",
             "value",
             "year",
@@ -49,6 +50,7 @@ class BenchmarkingForm(ModelForm):
             "labels",
             "is_deleted",
         ]
+
     unit = forms.ChoiceField(
         required=False,
         choices=Benchmarking.UNIT_CHOICES,

@@ -394,7 +394,7 @@ class Benchmarking(models.Model):
         ("total_deaths_per_1M", tdt("Total deaths per 1 million")),
         ("total_per_100K_persons", tdt("Total per 100 000 persons"))
     ]
-    unit = fields.CharField(max_length=50, null=True)
+    unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
     year = fields.IntegerField()
@@ -407,7 +407,7 @@ class Benchmarking(models.Model):
         ("worse", tdt("Worse")),
         ("outlier", tdt("Outlier")),
     ]
-    comparison_to_oecd_avg = fields.CharField(max_length=50)
+    comparison_to_oecd_avg = fields.CharField(max_length=50, choices=COMPARISON_CHOICES)
 
     LABEL_CHOICES = [
         ("", "--"),
@@ -416,7 +416,7 @@ class Benchmarking(models.Model):
         ("women", tdt("Women")),
         ("men", tdt("Men")),
     ]
-    labels = fields.CharField(max_length=50, null=True)
+    labels = fields.CharField(max_length=50, null=True,choices=LABEL_CHOICES)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""

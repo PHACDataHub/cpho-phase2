@@ -11,6 +11,8 @@ from django.views.generic import (
     UpdateView,
 )
 
+from ckeditor.widgets import CKEditorWidget
+
 from server.rules_framework import test_rule
 
 from cpho.models import DimensionType, Indicator, Period, PHACOrg
@@ -43,6 +45,7 @@ class IndicatorForm(ModelForm):
             "sub_indicator_measurement",
             "PHACOrg",
             "relevant_dimensions",
+            "general_footnotes",
         ]
 
     name = forms.CharField(
@@ -82,6 +85,10 @@ class IndicatorForm(ModelForm):
                 "class": "form-select",
             }
         ),
+    )
+
+    general_footnotes = forms.CharField(
+        required=False, widget=CKEditorWidget(config_name="notes")
     )
 
     # make it display name_en attribute of DimensionType model

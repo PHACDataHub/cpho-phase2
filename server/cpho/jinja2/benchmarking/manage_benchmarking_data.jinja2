@@ -7,7 +7,6 @@
   {{ bc.item(tdt("Benchmarking") , None, True) }}
 {% endblock %}
 
-
 {% macro benchmarking_form(form) %}
   <tr class="benchmarking-form">
     <td>{{ form.oecd_country }}</td>
@@ -24,8 +23,10 @@
 {% endmacro %}
 
 {% block content %}
-
   <div class="h2">{{ tdt("Benchmarking data for: ") }} {{ indicator.name }}</div>
+
+  <a class="btn btn-primary"
+     href="{{ url('export_benchmarking', args=[indicator.id]) }}">Export Benchmarking</a>
 
   <table class="d-none benchmarking-empty-form-container">
     {{ benchmarking_form(benchmarking_formset.empty_form) }}

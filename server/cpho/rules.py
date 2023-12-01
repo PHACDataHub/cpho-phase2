@@ -141,3 +141,7 @@ def can_export_indicator(user, indicator):
     if indicator:
         return can_view_indicator(user, indicator)
     return can_upload_indicator(user)
+
+@auto_rule
+def can_export_benchmarking(user, indicator):
+    return is_admin_or_hso(user)

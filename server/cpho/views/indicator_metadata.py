@@ -49,7 +49,15 @@ class BenchmarkingForm(ModelForm):
             "labels",
             "is_deleted",
         ]
-
+    unit = forms.ChoiceField(
+        required=False,
+        choices=Benchmarking.UNIT_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+    )
     oecd_country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
         widget=forms.Select(
@@ -92,11 +100,12 @@ class BenchmarkingForm(ModelForm):
             }
         ),
     )
-    labels = forms.CharField(
+    labels = forms.ChoiceField(
         required=False,
-        widget=forms.TextInput(
+        choices=Benchmarking.LABEL_CHOICES,
+        widget=forms.Select(
             attrs={
-                "class": "form-control",
+                "class": "form-select",
             }
         ),
     )

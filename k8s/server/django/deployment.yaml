@@ -30,7 +30,7 @@ spec:
       - name: server
         securityContext:
           runAsUser: 5678
-        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-1f888019-1701973403 # {"$imagepolicy": "flux-system:server"}
+        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:a11y-testing-b627c606-1702064694 # {"$imagepolicy": "flux-system:server"}
         env:
         - name: IS_K8S
           value: "true"

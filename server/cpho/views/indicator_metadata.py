@@ -107,22 +107,22 @@ class BenchmarkingForm(ModelForm):
         ),
     )
 
-    def clean(self):
-        cleaned_data = super().clean()
-
-        comparison_to_oecd_avg = cleaned_data.get("comparison_to_oecd_avg")
-        oecd_country = cleaned_data.get("oecd_country")
-
+    def clean_comparison_to_oecd_avg(self):
+        comparison_to_oecd_avg = self.cleaned_data["comparison_to_oecd_avg"]
         if not comparison_to_oecd_avg:
             self.add_error(
                 "comparison_to_oecd_avg",
                 tdt("Please select a comparison option"),
             )
 
+        return comparison_to_oecd_avg
+
+    def clean_oecd_country(self):
+        oecd_country = self.cleaned_data["oecd_country"]
         if not oecd_country:
             self.add_error("oecd_country", tdt("Please select a country"))
 
-        return cleaned_data
+        return oecd_country
 
     def clean_value(self):
         value = self.cleaned_data["value"]

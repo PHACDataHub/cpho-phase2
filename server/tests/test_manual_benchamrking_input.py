@@ -27,10 +27,20 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-0-value": 1,
         "benchmarking-0-year": 2020,
         "benchmarking-0-standard_deviation": 0.1,
+        "benchmarking-0-comparison_to_oecd_avg": Benchmarking.COMPARISON_CHOICES[
+            1
+        ][
+            0
+        ],
         "benchmarking-1-oecd_country": canada.id,
         "benchmarking-1-value": 2,
         "benchmarking-1-year": 2020,
         "benchmarking-1-standard_deviation": 0.2,
+        "benchmarking-1-comparison_to_oecd_avg": Benchmarking.COMPARISON_CHOICES[
+            1
+        ][
+            0
+        ],
     }
 
     with patch_rules(can_edit_indicator_data=True):
@@ -62,11 +72,21 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-0-value": 1.1,  # change value
         "benchmarking-0-year": 2020,
         "benchmarking-0-standard_deviation": 0.1,
+        "benchmarking-0-comparison_to_oecd_avg": Benchmarking.COMPARISON_CHOICES[
+            1
+        ][
+            0
+        ],
         "benchmarking-1-id": canada_data.id,
         "benchmarking-1-oecd_country": canada.id,
         "benchmarking-1-value": 2,
         "benchmarking-1-year": 2020,
         "benchmarking-1-standard_deviation": 0.2,
+        "benchmarking-1-comparison_to_oecd_avg": Benchmarking.COMPARISON_CHOICES[
+            1
+        ][
+            0
+        ],
         "benchmarking-1-is_deleted": "on",  # delete canada
     }
 

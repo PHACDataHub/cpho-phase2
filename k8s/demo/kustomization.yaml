@@ -4,3 +4,4 @@ resources:
 - ns.yaml
 - secret.enc.yaml
 - secrets.enc.yaml
+- alert-secrets.enc.yaml

@@ -44,6 +44,8 @@ spec:
     name: flux-system
   dependsOn:
     - name: server-postgres
+  decryption:
+    provider: sops
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository

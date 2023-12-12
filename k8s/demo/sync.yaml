@@ -25,3 +25,5 @@ spec:
     name: demo
     namespace: flux-system
   wait: true
+  decryption:
+    provider: sops

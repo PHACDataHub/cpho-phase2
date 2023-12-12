@@ -23,4 +23,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: demo
+    namespace: flux-system
   wait: true

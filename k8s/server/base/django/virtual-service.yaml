@@ -2,7 +2,6 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: server-virtual-service
-  namespace: server
 spec:
   hosts:
   - "*"

@@ -6,3 +6,4 @@ resources:
 - service.yaml
 - hpa.yaml
 - virtual-service.yaml
+namespace: server

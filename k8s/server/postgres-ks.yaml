@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
+    app: server
     istio.io/rev: asm-managed
   name: server
 spec: {}
@@ -11,7 +12,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   labels:
-    app: postgres14-cluster
+    app: server
   name: cpho-postgres14-cluster
   namespace: server
 spec:

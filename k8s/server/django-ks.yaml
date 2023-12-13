@@ -3,6 +3,8 @@ data:
   secret-key: ENC[AES256_GCM,data:+3TMLnB3aGzyUPKqkjFY2W+MEErKppfBdMpn4LZ7cFKMfPpYmWQO8YLb4iaw3oXDpQMNVrM6zfx7EojCJkL3+RYL+LJrl7Ya,iv:AEEjGHRdwd1ASlwy+12yEkec3mSSkM9wMTJDqoAxbhg=,tag:QEzr7j6wRCa0aZyc0JJDpg==,type:str]
 kind: Secret
 metadata:
+  labels:
+    app: server
   name: django-secret-key
   namespace: server
 sops:
@@ -28,6 +30,8 @@ data:
   microsoft-tenant: ENC[AES256_GCM,data:URjlYy/5Xxo15WpbrrkLVb2qDgDiYHsZeFZgmJR7CO9O7oSIYzu+/YauBqfmoZo1,iv:1izXDyxhHwS0sBGsaFjEcWkTdFlRsnLN9QrU0EjvvJ4=,tag:DMMdilfBGAgPBBnB1U44Hw==,type:str]
 kind: Secret
 metadata:
+  labels:
+    app: server
   name: phac-aspc-oauth-config
   namespace: server
 sops:
@@ -51,6 +55,8 @@ data:
   token: ENC[AES256_GCM,data:hhRznkudQpslHS4MC5vgudW3sh1FWGqWqalWFDtJErdodBygEKWxtZu/bNhC/Dk+JwAdfVmXdqQdd5/XubgVo5NjjCae0e7RedTV+g==,iv:EsoHxaT1gs+mk1XR/G7Ha5wIi1pbh01E/yTxhSgqaek=,tag:wUrpWDtPUrcdamePJo7WtQ==,type:str]
 kind: Secret
 metadata:
+  labels:
+    app: server
   name: slack-alerting-app-token
   namespace: server
 sops:
@@ -74,6 +80,8 @@ data:
   slack-url: ENC[AES256_GCM,data:Z2syNF1WYnSAkdjokPsYZK4nUS2vVynVneHWX8JFTw3UxXO8dZ9uqBwXuqZIocmmDrfWqokjqXL8TOFWwyRmpp15GoEXnUxSQD/gq2jamzMyo1cjdCDZ7YCmqK4RQXg/VwpmPmQCtsbkvWIR,iv:MHBR+/phj8I9CgXGmkRglC6vBXD8ZtM7GSB12lc9DP0=,tag:zeXn9c7ZiZ0gZa6TKOdehQ==,type:str]
 kind: Secret
 metadata:
+  labels:
+    app: server
   name: slack-webhook-url
   namespace: server
 sops:
@@ -238,6 +246,8 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
+  labels:
+    app: server
   name: server-virtual-service
   namespace: server
 spec:

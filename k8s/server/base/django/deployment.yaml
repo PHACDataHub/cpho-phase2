@@ -1,18 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: server
   name: server
 spec:
-  selector:
-    matchLabels:
-      app: server
   strategy: {}
   template:
     metadata:
-      labels:
-        app: server
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "false"
     spec:

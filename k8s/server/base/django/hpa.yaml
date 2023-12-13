@@ -1,8 +1,6 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  labels:
-    app: server
   name: server
 spec:
   maxReplicas: 8

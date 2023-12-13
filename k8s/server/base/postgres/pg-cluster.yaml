@@ -5,9 +5,6 @@ metadata:
   namespace: server
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:14.9
-  instances: 3
-  startDelay: 900
-  stopDelay: 900
   primaryUpdateStrategy: unsupervised
 
 # PostGres Best Practices for the Logging 
@@ -30,45 +27,14 @@ spec:
       log_connections: "on"
       log_disconnections: "on"
       log_hostname: "on"
-    pg_hba:
-      - host all all all md5
-
-
-  bootstrap:
-    initdb:
-      database: cpho-phase2_db
-      owner: cpho-phase2_db_user
-
-  storage:
-    storageClass: standard
-    size: 2Gi
 
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: false
   
-  serviceAccountTemplate:
-    metadata:
-      annotations:
-        # k8s service account is created with the same as `metadata.name` above
-        # ensure an appropriate storage role(s) and workload identity is assigned: https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity
-        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
-
-  # info: https://cloudnative-pg.io/documentation/1.21/appendixes/object_stores/#running-inside-google-kubernetes-engine
-  backup:
-    barmanObjectStore:
-      destinationPath: gs://hopic-dev-postgres-backup
-      googleCredentials:
-        gkeEnvironment: true
-    retentionPolicy: "30d"
-
   inheritedMetadata:
     annotations:
       proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
       sidecar.istio.io/proxyCPU: 50m
       sidecar.istio.io/proxyMemory: 112Mi
 
-  resources:
-    requests:
-      cpu: 450m
-      memory: 1926Mi

@@ -3,6 +3,8 @@ kind: Cluster
 metadata:
   name: cpho-postgres14-cluster
   namespace: server
+  labels:
+    app: postgres14-cluster
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:14.9
   instances: 3

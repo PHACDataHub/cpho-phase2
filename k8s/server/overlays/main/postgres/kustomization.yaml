@@ -6,6 +6,9 @@ resources:
 
 namespace: server
 
+patches:
+  - path: pg-cluster.yaml
+
 # commonLabels are also applied to selector fields in the service and deployment
 # selector.matchLabels is immutable so changes to commonLabels need to be handled carefully
 # use a labelTransformer directive if you need to propagate a label only to the label field

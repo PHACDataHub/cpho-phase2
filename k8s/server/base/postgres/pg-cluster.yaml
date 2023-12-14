@@ -2,7 +2,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: cpho-postgres14-cluster
-  namespace: server
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:14.9
   primaryUpdateStrategy: unsupervised

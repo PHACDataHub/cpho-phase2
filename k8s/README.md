@@ -35,7 +35,7 @@ sops -e <path/to/secret.yaml> > <path/to/encrypted/secret.yaml>
 
 To decrypt use:
 
-```
+```sh
 sops -d <path/to/encrypted/secret.yaml>
 ```
 

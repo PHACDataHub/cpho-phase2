@@ -33,7 +33,8 @@ We use [SOPS](https://github.com/getsops/sops) with [GCP KMS](https://cloud.goog
 sops -e <path/to/secret.yaml> > <path/to/encrypted/secret.yaml>
 ```
 
-and can be decypted with:
+To decrypt use:
+
 ```
 sops -d <path/to/encrypted/secret.yaml>
 ```

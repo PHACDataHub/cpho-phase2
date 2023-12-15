@@ -25,23 +25,26 @@ This will install flux on your cluster and, at some point during the process, wi
 
 The above command installs all manifests under `k8s/flux-system` directory.
 
-## Sealing secrets
+## Encrypting secrets
 
-Once `flux-system` is ready, a public key from the sealed-secrets-controller (installed with the previous step) can be extracted with:
-```
-kubeseal --fetch-cert \
---controller-name=sealed-secrets-controller \
---controller-namespace=flux-system \
-> k8s/flux-system/pub-sealed-secrets.pem
+We use [SOPS](https://github.com/getsops/sops) with [GCP KMS](https://cloud.google.com/kms/docs#docs) to encrypt secrets and store them in git. The workflow then is to [create a kubernetes secret definition](https://kubernetes.io/docs/concepts/configuration/secret/#creating-a-secret) and encrypt it with:
+
+```sh
+sops -e <path/to/secret.yaml> > <path/to/encrypted/secret.yaml>
 ```
 
-> Note: Above command requires the [kubeseal](https://github.com/bitnami-labs/sealed-secrets#kubeseal) binary.
+and can be decypted with:
+```
+sops -d <path/to/encrypted/secret.yaml>
+```
 
-This writes (or overwrites) the public key file at `k8s/flux-system/pub-sealed-secrets.pem` to work against the controller configuration of the cluster. Commit and push this change to the remote repo.
+> Note: You'll need the [SOPS CLI](https://github.com/getsops/sops?tab=readme-ov-file#11stable-release) binary to run the above commands.
 
-Now, kubernetes secrets can be sealed and stored in git by following the instructions [here](https://fluxcd.io/flux/guides/sealed-secrets/#encrypt-secrets).
+The `kustomize-controller` pod is [configured to automatically depcrypt](https://fluxcd.io/flux/guides/mozilla-sops/#google-cloud) an encrypted kubernetes secret when it gets reconciled with flux. However, note that it can only decrypt secrets when the flux kustomization sync manifest has `spec.decryption.provider` set to `sops` (See [this](https://github.com/PHACDataHub/cpho-phase2/blob/main/k8s/flux-system/gotk-sync.yaml#L16-L30) for an example).
 
-More information about sealed-secrets + flux setup can be found [here](https://fluxcd.io/flux/guides/sealed-secrets/).
+> Note: Currently, only the `server-django` and `flux-system` kustomization resources have `spec.decryption.provider` set.
+
+Information such as which key / method to use during encryption comes from the `.sops.yaml` file at the root of this repo. Moreover, instead of the full manifest only `data` / `stringData` fields of the kubernetes secret should be encrypted. `.sops.yaml` automatically takes care of this via it's `encrypted_secret` field when you run the above commands from the root of this repo.
 
 ## Installing other resources
 

@@ -45,7 +45,7 @@ The `kustomize-controller` pod is [configured to automatically depcrypt](https:/
 
 > Note: Currently, only the `server-django` and `flux-system` kustomization resources have `spec.decryption.provider` set.
 
-Information such as which key / method to use during encryption comes from the `.sops.yaml` file at the root of this repo. Moreover, instead of the full manifest only `data` / `stringData` fields of the kubernetes secret should be encrypted. `.sops.yaml` automatically takes care of this via it's `encrypted_secret` field when you run the above commands from the root of this repo.
+Information such as which key / method to use during encryption / decryption comes from the `.sops.yaml` file at the root of this repo. Moreover, instead of the full manifest only `data` / `stringData` fields of the kubernetes secret should be encrypted. `.sops.yaml` automatically takes care of this via it's `encrypted_secret` field when you run the above commands from the root of this repo.
 
 ## Installing other resources
 

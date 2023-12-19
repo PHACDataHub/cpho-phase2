@@ -4,7 +4,6 @@ resources:
 - gotk-components.yaml
 - gotk-sync.yaml
 - gcr-sync.yaml
-- sealed-secrets.yaml
 - alert-secrets.enc.yaml
 - alerts.yaml
 

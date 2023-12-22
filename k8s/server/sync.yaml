@@ -1,17 +1,4 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: "a11y-testing"
-  namespace: flux-system
-spec:
-  interval: 1m0s
-  ref:
-    branch: "a11y-testing"
-  secretRef:
-    name: flux-system
-  url: ssh://git@github.com/PHACDataHub/cpho-phase2
----
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -23,7 +10,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: "a11y-testing"
+    name: flux-system
   wait: true
   dependsOn:
     - name: cnpg-system
@@ -39,7 +26,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: "a11y-testing"
+    name: flux-system
   dependsOn:
     - name: server-postgres
 ---
@@ -54,7 +41,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: "a11y-testing"
+    name: flux-system
   dependsOn:
     - name: server-postgres
   decryption:
@@ -94,7 +81,7 @@ metadata:
 spec:
   sourceRef:
     kind: GitRepository
-    name: "a11y-testing"
+    name: flux-system
   interval: 5m
   update:
     strategy: Setters

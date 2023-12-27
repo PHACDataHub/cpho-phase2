@@ -28,8 +28,6 @@ roleRef:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  annotations:
-    iam.gke.io/gcp-service-account: gcr-credentials-sync@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
   name: gcr-credentials-sync
   namespace: flux-system
 ---

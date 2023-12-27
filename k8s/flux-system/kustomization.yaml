@@ -4,8 +4,6 @@ resources:
 - gotk-components.yaml
 - gotk-sync.yaml
 - gcr-sync.yaml
-- alert-secrets.enc.yaml
-- alerts.yaml
 
 patches:
   # enable istio injection for the namespace

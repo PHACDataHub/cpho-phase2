@@ -48,3 +48,74 @@ patches:
     target:
       kind: ServiceAccount
       name: gcr-credentials-sync
+  # Use chainguard images
+  - target:
+      kind: Deployment
+      name: "kustomize-controller"
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: kustomize-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                image: cgr.dev/chainguard/flux-kustomize-controller:latest
+  - target:
+      kind: Deployment
+      name: "image-automation-controller"
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "image-automation-controller"
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                image: cgr.dev/chainguard/flux-image-automation-controller:latest
+  - target:
+      kind: Deployment
+      name: "image-reflector-controller"
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "image-reflector-controller"
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                image: cgr.dev/chainguard/flux-image-reflector-controller:latest
+  - target:
+      kind: Deployment
+      name: "source-controller"
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "source-controller"
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                image: cgr.dev/chainguard/flux-source-controller:latest
+  - target:
+      kind: Deployment
+      name: "notification-controller"
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "notification-controller"
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                image: cgr.dev/chainguard/flux-notification-controller:latest

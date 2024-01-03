@@ -3,18 +3,7 @@ kind: Kustomization
 resources:
   - issuers.yaml
   - certificate.yaml
-patches:
-- target:
-    group: cert-manager.io
-    version: v1
-    kind: Certificate
-    name: ingress-cert
-    namespace: istio-system
-  patch: |-
-    - op: add
-      path: /spec/dnsNames/-
-      value: hopic-sdpac.phac-aspc.alpha.canada.ca
-      
+patches:     
 - target:
     group: cert-manager.io
     version: v1

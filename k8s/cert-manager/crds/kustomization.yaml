@@ -21,9 +21,6 @@ patches:
       name: cert-manager
       namespace: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/image
-        value: cgr.dev/chainguard/cert-manager-controller:latest
       - op: add
         # args/0 would prepend to the array, args/- appends
         path: /spec/template/spec/containers/0/args
@@ -48,9 +45,6 @@ patches:
       name: cert-manager-cainjector
       namespace: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/image
-        value: cgr.dev/chainguard/cert-manager-cainjector:latest
       - op: add
         path: /spec/template/spec/containers/0/args
         value:
@@ -71,9 +65,6 @@ patches:
       name: cert-manager-webhook
       namespace: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/image
-        value: cgr.dev/chainguard/cert-manager-webhook:latest
       - op: add
         path: /spec/template/spec/containers/0/resources
         value:

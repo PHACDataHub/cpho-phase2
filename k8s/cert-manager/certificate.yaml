@@ -2,10 +2,9 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: ingress-cert
-  namespace: istio-ingress
+  namespace: istio-system
 spec:
-  dnsNames:
-    - hopic-sdpac.phac-aspc.alpha.canada.ca
+  dnsNames: []
   issuerRef:
     kind: Issuer
     # name: letsencrypt-staging

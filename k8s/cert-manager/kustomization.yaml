@@ -3,3 +3,40 @@ kind: Kustomization
 resources:
   - issuers.yaml
   - certificate.yaml
+patches:
+- target:
+    group: cert-manager.io
+    version: v1
+    kind: Certificate
+    name: ingress-cert
+    namespace: istio-system
+  patch: |-
+    - op: add
+      path: /spec/dnsNames/-
+      value: hopic-sdpac.phac-aspc.alpha.canada.ca
+      
+- target:
+    group: cert-manager.io
+    version: v1
+    kind: Issuer
+    name: letsencrypt
+    namespace: istio-system
+  patch: |-
+    - op: add
+      path: /spec/acme/solvers/-
+      value:
+        selector: {}
+        dns01:
+          cloudDNS:
+            project: pht-01hhjj7tt0m
+
+- target:
+    group: cert-manager.io
+    version: v1
+    kind: Issuer
+    name: letsencrypt
+    namespace: istio-system
+  patch: |-
+    - op: add
+      path: /spec/acme/email
+      value: simardeep.singh@phac-aspc.gc.ca

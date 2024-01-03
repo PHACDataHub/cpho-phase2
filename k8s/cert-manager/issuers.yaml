@@ -5,61 +5,12 @@ metadata:
   name: letsencrypt
   # (Optional) Metadata
   # namespace: your-namespace
-  namespace: istio-ingress
+  namespace: istio-system
 spec:
   acme:
-    # Configure your email here
-    email: simardeep.singh@phac-aspc.gc.ca
+    solvers: []
     preferredChain: ""
     # Letsencrypt Production
     privateKeySecretRef:
       name: letsencrypt-prod
     server: https://acme-v02.api.letsencrypt.org/directory
-    solvers:
-      - dns01:
-          cloudDNS:
-            # The ID of the GCP project
-            project: phx-01h4rr1468rj3v5k60b1vserd3
-        selector: {}
-status: {}
-
-
----
-# Letsencrypt Staging
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: letsencrypt-staging
-  # (Optional) Metadata
-  # namespace: your-namespace
-  namespace: istio-ingress
-spec:
-  acme:
-    # Configure your email here...
-    email: simardeep.singh@phac-aspc.gc.ca
-    preferredChain: ""
-    # Letsencrypt Statging
-    privateKeySecretRef:
-      name: letsencrypt-staging
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    solvers:
-      - dns01:
-          cloudDNS:
-            # The ID of the GCP project
-            project: phx-01h4rr1468rj3v5k60b1vserd3
-        selector: {}
-status: {}
-
-
----
-# Self-Signed Certificates
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  # (Optional) Metadata
-  name: selfsigned
-  # namespace: your-namespace
-  namespace: istio-ingress
-spec:
-  selfSigned: {}
-status: {}

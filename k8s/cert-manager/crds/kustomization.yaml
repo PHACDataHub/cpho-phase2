@@ -80,42 +80,15 @@ patches:
           requests:
             cpu: 250m
             memory: 512Mi
+
+
   - target:
-      kind: Role
-      name: cert-manager:leaderelection
+      kind: "(Role|RoleBinding)"
+      name: "(cert-manager:leaderelection|cert-manager-cainjector:leaderelection)"
     patch: |-
       - op: replace
         path: /metadata/namespace
         value: cert-manager
-  - target:
-      kind: Role
-      name: cert-manager-cainjector:leaderelection
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: cert-manager
-  - target:
-      kind: RoleBinding
-      name: cert-manager:leaderelection
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: cert-manager
-  - target:
-      kind: RoleBinding
-      name: cert-manager-cainjector:leaderelection
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: cert-manager
-  # to avoid "doc is missing path" error in the later patch
-  - target:
-      kind: Namespace
-      name: cert-manager
-    patch: |-
-      - op: add
-        path: /metadata/labels
-        value: {}
 
   # Patch the cert-manager service account so that it has permissions to use Cloud DNS:
   # https://cert-manager.io/docs/configuration/acme/dns01/google/#link-ksa-to-gsa-in-kubernetes

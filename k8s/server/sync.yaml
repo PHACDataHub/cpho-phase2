@@ -66,7 +66,7 @@ metadata:
 spec:
   filterTags:
     extract: $ts
-    pattern: ^a11y-testing-[a-fA-F0-9]+-(?P<ts>.*)
+    pattern: ^main-[a-fA-F0-9]+-(?P<ts>.*)
   imageRepositoryRef:
     name: server
   policy:
@@ -89,11 +89,11 @@ spec:
   git:
     checkout:
       ref:
-        branch: "a11y-testing"
+        branch: "main"
     commit:
       author:
         name: fluxbot
         email: fluxcd@users.noreply.github.com
       messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
     push:
-      branch: "a11y-testing"
+      branch: "main"

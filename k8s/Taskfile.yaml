@@ -1,0 +1,34 @@
+version: '3'
+
+vars:
+  PROJECT_ID: pht-01hhjj7tt0m
+  REGION: northamerica-northeast1
+  NAME: hopic
+  FLEET_HOST_PROJECT_NUMBER: 305495415810
+  FLEET_HOST_PROJECT_ID: php-fleet-monitoring
+
+
+tasks:
+  install-asm:
+    desc: Install and configure ASM
+    cmds:
+      - |
+        # Since the current cluster belongs to a fleet in the php-fleet-monitoring project, access to that project is required.
+        gcloud container fleet mesh update \
+         --management automatic \
+         --memberships hopic \
+         --project {{.FLEET_HOST_PROJECT_ID}} \
+         --location {{.REGION}}
+      - watch gcloud container fleet mesh describe --project {{.FLEET_HOST_PROJECT_ID}}
+
+  install-flux:
+    desc: Install and configure Flux
+    cmds:
+      - |
+        flux bootstrap git \
+          --url=ssh://git@github.com/PHACDataHub/cpho-phase2 \
+          --branch=upgrade-flux \
+          --path=./k8s/ \
+          --components="source-controller,kustomize-controller,notification-controller" \
+          --components-extra="image-reflector-controller,image-automation-controller"
+

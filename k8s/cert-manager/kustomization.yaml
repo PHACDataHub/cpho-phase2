@@ -8,7 +8,6 @@ patches:
     version: v1
     kind: ClusterIssuer
     name: letsencrypt
-    namespace: istio-system
   patch: |-
     - op: add
       path: /spec/acme/solvers/-

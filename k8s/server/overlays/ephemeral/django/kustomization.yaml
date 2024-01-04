@@ -3,13 +3,12 @@ kind: Kustomization
 resources:
   - ../../../base/django/
   - secrets.enc.yaml
-  # - virtual-service.yaml
+  - virtual-service.yaml
 
 patches:
   - path: deployment.yaml
 
-# namespace: ${BRANCH_NAME}
-namespace: ephemeral
+namespace: ${BRANCH_NAME}
 
 # commonLabels are also applied to selector fields in the service and deployment
 # selector.matchLabels is immutable so changes to commonLabels need to be handled carefully
@@ -17,4 +16,4 @@ namespace: ephemeral
 # see https://github.com/kubernetes-sigs/kustomize/blob/master/examples/transformerconfigs/README.md#labels-transformer
 commonLabels:
   app: ephemeral
-  # branch: ${BRANCH_NAME}
+  branch: ${BRANCH_NAME}

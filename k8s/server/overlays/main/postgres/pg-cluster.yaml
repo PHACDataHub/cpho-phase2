@@ -2,7 +2,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: cpho-postgres14-cluster
-  namespace: server
 spec:
   instances: 3
   startDelay: 900

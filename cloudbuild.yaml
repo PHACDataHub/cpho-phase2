@@ -152,9 +152,13 @@ steps:
       echo "Get cloud build environment variables"
       source .env.cloud_build
 
-      echo "Build a new application run time image"
-      docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+      if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
+        echo "Build a new application run time image"
+        docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
 
-      docker push "${IMAGE_NAME_FOR_RUN}"
-      echo "Push the new image to the project's artifact registry"
+        echo "Push the new image to the project's artifact registry"
+        docker push "${IMAGE_NAME_FOR_RUN}"
+       else
+        echo "pass"
+      fi
 # [END django_cloudbuild]

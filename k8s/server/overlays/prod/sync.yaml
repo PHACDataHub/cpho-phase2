@@ -5,7 +5,7 @@ metadata:
   name: server-postgres
   namespace: flux-system
 spec:
-  path: ./k8s/server/overlays/main/postgres
+  path: ./k8s/server/overlays/prod/postgres
   interval: 2m0s
   prune: true
   sourceRef:
@@ -22,7 +22,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 2m0s
-  path: ./k8s/server/overlays/main/postgres/backup
+  path: ./k8s/server/overlays/prod/postgres/backup
   prune: true
   sourceRef:
     kind: GitRepository
@@ -37,7 +37,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 2m0s
-  path: ./k8s/server/overlays/main/django
+  path: ./k8s/server/overlays/prod/django
   prune: true
   sourceRef:
     kind: GitRepository

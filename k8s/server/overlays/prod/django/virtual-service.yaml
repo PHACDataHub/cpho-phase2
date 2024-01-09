@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: server-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-ingress/public-gateway
+  http:
+  - name: gateway-to-server
+    match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: server.server.svc.cluster.local

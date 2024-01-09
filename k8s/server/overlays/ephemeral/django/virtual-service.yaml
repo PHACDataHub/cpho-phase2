@@ -2,10 +2,9 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: server-virtual-service
-  namespace: server
 spec:
   hosts:
-  - "*"
+    - ${BRANCH_NAME}.dev.hopic-sdpac.phac-aspc.alpha.canada.ca
   gateways:
   - istio-ingress/public-gateway
   http:
@@ -15,4 +14,4 @@ spec:
         prefix: /
     route:
     - destination:
-        host: server.server.svc.cluster.local
+        host: server.${BRANCH_NAME}.svc.cluster.local

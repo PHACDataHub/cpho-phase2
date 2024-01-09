@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - scheduled.yaml
+
+# commonLabels are also applied to selector fields in the service and deployment
+# selector.matchLabels is immutable so changes to commonLabels need to be handled carefully
+# use a labelTransformer directive if you need to propagate a label only to the label field
+# see https://github.com/kubernetes-sigs/kustomize/blob/master/examples/transformerconfigs/README.md#labels-transformer
+commonLabels:
+  app: server

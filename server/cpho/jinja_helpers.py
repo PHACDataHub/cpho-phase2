@@ -1,3 +1,4 @@
+import os
 from urllib.parse import quote, urlencode, urlparse, urlunparse
 
 from django.conf import settings
@@ -25,18 +26,26 @@ def convert_url_other_lang(url_str):
     path = parsed_url.path
     query = parsed_url.query
 
+    # SCRIPT_NAME must be set as an os env so gunicorn also sees it. Could
+    # access via config(), but don't want to imply it could be set via a .env
+    app_root_path = os.getenv("SCRIPT_NAME", "")
+
     if "fr-ca" in path:
-        new_path = path.replace("/fr-ca", "")
+        new_path = path.replace("/fr-ca", "", 1)
     else:
-        new_path = "/fr-ca" + path
+        new_path = path.replace(app_root_path, app_root_path + "/fr-ca", 1)
 
     new_url = parsed_url._replace(path=new_path)
 
     if "login" in path and "next" in query:
         if "fr-ca" in path:
-            new_query = query.replace("next=/fr-ca", "next=")
+            new_query = query.replace(
+                "next=" + app_root_path + "/fr-ca", "next=" + app_root_path, 1
+            )
         else:
-            new_query = query.replace("next=", "next=/fr-ca")
+            new_query = query.replace(
+                "next=" + app_root_path, "next=" + app_root_path + "/fr-ca", 1
+            )
     else:
         new_query = query
 

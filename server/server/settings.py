@@ -106,16 +106,44 @@ if not IS_DEV:
     CSRF_COOKIE_SECURE = True
 
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images) and Whitenoise
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "/static/"
+# RE: the SCRIPT_NAME env var, poorly named and underdocumented so I'm going to write a bunch here
+#   1) SCRIPT_NAME is a convention followed by many servers/server gateway interfaces (like gunicorn),
+#     and it's also understood by Django. The variable's name comes from its legacy of use with CGI scripts.
+#     What's important here is that it is how gunicorn + django support hosting an app _from_ a sub-resource
+#     of a domain, e.g. hosting the app from example.com/dev/ rather than from example.com. We'll be using
+#     this for the "ephemeral" dev branch deployments. All django app routes are then resolved/reverse-resolved
+#     relative to that base URL. Prod won't set a SCRIPT_NAME so none of this applies there.
+#   2) All URLs from urlpatterns will work relative to it out of the box, but the configuration of the
+#     static content needs extra care (which is why this is surfacing here), and any code directly inspecting/
+#     modifying the path will need to check for SCRIPT_NAME account for it... Shouldn't have much code doing
+#     this since it's hacky and full of assumptions about the URL construction, but the code for generating
+#     other-lang URLs is one instance where this is common for us.
+#   3) SCRIPT_NAME won't/shouldn't be set via an env file, it needs to be in an os env var so that
+#     gunicorn also picks up on it. Accessing it via os.getenv() below, rather than config(), to
+#     hammer that home.
+#   4) Not supported when using `.manage.py runserver`, use gunicorn to test locally.
+#   5) Slightly weird behaviour to be aware of, specific to our gunicorn + django configuration. Neither
+#    unicorn nor django end up caring about any path components in between the domain itself and the
+#    first occurence of SCRIPT_NAME. This means that both example.com/<SCRIPT_NAME>/<app routes> and
+#    example.com/whatever/something/<SCRIPT_NAME>/<app routes> work the same in practice. Strange to see
+#    but not actually a problem and will only occur on the ephermeral builds.
+
+# Django's assumption is that you don't want to serve static resources relative to the SCRIPT_NAME path,
+# but we _do_ because we are using this for deploying ephemeral dev builds and don't want their cached
+# resources overlapping
+STATIC_URL = os.getenv("SCRIPT_NAME", "") + "/static/"
+# by default, whitenoise uses the STATIC_URL value for it's STATIC_PREFIX value, but it ALSO prepends SCRIPT_NAME
+# internally, so we need to explicitly set WHITENOISE_STATIC_PREFIX to be STATIC_URL _without_ SCRIPT_NAME
+WHITENOISE_STATIC_PREFIX = "/static/"
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-# whitenoise configuration
 if config(
     "FORCE_WHITENOISE_PROD_BEHAVIOUR", cast=bool, default=(not IS_LOCAL)
 ):

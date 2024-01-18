@@ -21,9 +21,6 @@ patches:
       name: cert-manager
       namespace: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/image
-        value: cgr.dev/chainguard/cert-manager-controller:latest
       - op: add
         # args/0 would prepend to the array, args/- appends
         path: /spec/template/spec/containers/0/args
@@ -48,9 +45,6 @@ patches:
       name: cert-manager-cainjector
       namespace: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/image
-        value: cgr.dev/chainguard/cert-manager-cainjector:latest
       - op: add
         path: /spec/template/spec/containers/0/args
         value:
@@ -71,9 +65,6 @@ patches:
       name: cert-manager-webhook
       namespace: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/image
-        value: cgr.dev/chainguard/cert-manager-webhook:latest
       - op: add
         path: /spec/template/spec/containers/0/resources
         value:
@@ -102,4 +93,4 @@ patches:
       - op: add
         path: "/metadata/annotations"
         value:
-          iam.gke.io/gcp-service-account: dns01-solver@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
+          iam.gke.io/gcp-service-account: dns01-solver@pht-01hhjj7tt0m.iam.gserviceaccount.com

@@ -127,7 +127,6 @@ class BenchmarkingForm(ModelForm):
     def clean_value(self):
         value = self.cleaned_data["value"]
         if value and value < 0:
-            print("invalid")
             self.add_error("value", tdt("Value cannot be negative"))
         return value
 

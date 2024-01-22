@@ -43,7 +43,7 @@ patches:
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: kustomize-controller
+        name: image-reflector-controller
         namespace: flux-system
         annotations:
           iam.gke.io/gcp-service-account: gcr-credentials-sync@pht-01hhjj7tt0m.iam.gserviceaccount.com

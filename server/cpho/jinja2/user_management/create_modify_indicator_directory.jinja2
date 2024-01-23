@@ -1,0 +1,16 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display %}
+
+{% block content %}
+  <a href="{{ url("manage_users") }}" class="btn btn-warning">{{ tdt("Back") }}</a>
+
+  <form method="post">
+
+    {% include '_standard_form.jinja2' %}
+
+    <div class="text-end">
+
+      <input type="submit" value="{{ tdt("Save") }}" class="btn btn-success" />
+    </div>
+  </form>
+{% endblock %}

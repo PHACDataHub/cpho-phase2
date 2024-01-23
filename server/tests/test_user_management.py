@@ -1,6 +1,13 @@
 from django.urls import reverse
 
-from cpho.models import PhacOrgRole, User
+from cpho.model_factories import IndicatorFactory
+from cpho.models import (
+    IndicatorDirectory,
+    IndicatorDirectoryLink,
+    IndicatorDirectoryUserAccess,
+    PhacOrgRole,
+    User,
+)
 from cpho.util import GroupFetcher
 
 from .utils_for_tests import patch_rules
@@ -72,3 +79,85 @@ def test_create_user(vanilla_user_client, cdsb_org, emb_org):
         cdsb_org,
     }
     assert set(user.groups.all()) == {GroupFetcher.hso_group}
+
+
+def test_create_indicator_directory(vanilla_user_client):
+    i1 = IndicatorFactory()
+    i2 = IndicatorFactory()
+    i3 = IndicatorFactory()
+    u1 = User.objects.create(username="test1")
+    u2 = User.objects.create(username="test2")
+    u3 = User.objects.create(username="test3")
+
+    url = reverse("create_indicator_directory")
+
+    unauth_resp = vanilla_user_client.get(url)
+    assert unauth_resp.status_code == 403
+
+    with patch_rules(can_manage_users=True):
+        resp = vanilla_user_client.get(url)
+    assert resp.status_code == 200
+
+    data = {
+        "name": "test directory",
+        "description": "test description",
+        "indicators": [i1.id, i2.id],
+        "users": [u1.id, u2.id],
+    }
+    with patch_rules(can_manage_users=True):
+        resp = vanilla_user_client.post(url, data=data)
+
+    assert resp.status_code == 302
+    assert resp.url == reverse("root")
+
+    directory = IndicatorDirectory.objects.get(name="test directory")
+    assert set(directory.users.all()) == {u1, u2}
+    assert set(directory.indicators.all()) == {i1, i2}
+
+    assert IndicatorDirectoryUserAccess.objects.all().count() == 2
+    assert IndicatorDirectoryLink.objects.all().count() == 2
+
+
+def test_edit_indicator_directory(vanilla_user_client):
+    i1 = IndicatorFactory()
+    i2 = IndicatorFactory()
+    i3 = IndicatorFactory()
+    u1 = User.objects.create(username="test1")
+    u2 = User.objects.create(username="test2")
+    u3 = User.objects.create(username="test3")
+
+    directory = IndicatorDirectory.objects.create(
+        name="test directory", description="test description"
+    )
+    directory.users.add(u1)
+    directory.users.add(u2)
+    directory.indicators.add(i1)
+    directory.indicators.add(i2)
+
+    url = reverse("edit_indicator_directory", args=[directory.id])
+
+    unauth_resp = vanilla_user_client.get(url)
+    assert unauth_resp.status_code == 403
+
+    with patch_rules(can_manage_users=True):
+        resp = vanilla_user_client.get(url)
+    assert resp.status_code == 200
+
+    data = {
+        "name": "new name",
+        "description": "new description",
+        "indicators": [i1.id, i3.id],
+        "users": [u1.id, u3.id],
+    }
+    with patch_rules(can_manage_users=True):
+        resp = vanilla_user_client.post(url, data=data)
+
+    assert resp.status_code == 302
+    assert resp.url == reverse("root")
+
+    directory.refresh_from_db()
+    assert directory.name == "new name"
+    assert directory.description == "new description"
+
+    assert set(directory.users.all()) == {u1, u3}
+    assert set(directory.indicators.all()) == {i1, i3}

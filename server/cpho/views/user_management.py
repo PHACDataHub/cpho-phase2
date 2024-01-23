@@ -5,17 +5,27 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView
+from django.utils.functional import cached_property
+from django.views.generic import (
+    CreateView,
+    FormView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 
 from autocomplete import HTMXAutoComplete
 from autocomplete import widgets as ac_widgets
 
+from server.form_util import StandardFormMixin
 from server.rules_framework import test_rule
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
+from cpho.forms import MultiIndicatorAutocomplete, MultiUserAutocomplete
 from cpho.models import (
     DimensionType,
     Indicator,
+    IndicatorDirectory,
     Period,
     PHACOrg,
     PhacOrgRole,
@@ -57,9 +67,16 @@ class ManageUsers(CanManageUsersMixin, TemplateView):
                 )
             user_metadata[user] = role_metadata
 
+        indicator_directories = (
+            IndicatorDirectory.objects.all().prefetch_related(
+                "users", "indicators"
+            )
+        )
+
         return {
             **super().get_context_data(**kwargs),
             "user_metadata": user_metadata,
+            "indicator_directories": indicator_directories,
         }
 
 
@@ -244,3 +261,62 @@ class ModifyUser(UserFormView, CanManageUsersMixin):
             **super().get_context_data(**kwargs),
             "user_to_be_modified": User.objects.get(id=self.kwargs["user_id"]),
         }
+
+
+class IndicatorDirectoryForm(forms.ModelForm, StandardFormMixin):
+    class Meta:
+        model = IndicatorDirectory
+        fields = ["name", "description", "indicators", "users"]
+
+    indicators = forms.ModelMultipleChoiceField(
+        queryset=Indicator.objects.all(),
+        required=False,
+        widget=ac_widgets.Autocomplete(
+            use_ac=MultiIndicatorAutocomplete,
+            attrs={
+                "id": "indicators__textinput",
+            },
+        ),
+        label=tdt("indicators"),
+    )
+
+    users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=ac_widgets.Autocomplete(
+            use_ac=MultiUserAutocomplete,
+            attrs={
+                "id": "users__textinput",
+            },
+        ),
+        label=tdt("users"),
+    )
+
+
+class IndicatorDirectoryMixin(FormView):
+    form_class = IndicatorDirectoryForm
+    template_name = "user_management/create_modify_indicator_directory.jinja2"
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs["instance"] = self.directory_object
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("root")
+
+
+class CreateIndicatorDirectory(CanManageUsersMixin, IndicatorDirectoryMixin):
+    @cached_property
+    def directory_object(self):
+        return IndicatorDirectory()
+
+
+class EditIndicatorDirectory(CanManageUsersMixin, IndicatorDirectoryMixin):
+    @cached_property
+    def directory_object(self):
+        return IndicatorDirectory.objects.get(id=self.kwargs["pk"])

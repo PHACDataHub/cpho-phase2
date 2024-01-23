@@ -11,7 +11,7 @@ def test_benchmarking(vanilla_user_client):
     ind.save()
     url = reverse("manage_benchmarking_data", args=[ind.id])
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
@@ -33,7 +33,7 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-1-standard_deviation": 0.2,
     }
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -48,7 +48,7 @@ def test_benchmarking(vanilla_user_client):
     assert canada_data.year == 2020
     assert canada_data.standard_deviation == 0.2
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
@@ -70,7 +70,7 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-1-is_deleted": "on",  # delete canada
     }
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 

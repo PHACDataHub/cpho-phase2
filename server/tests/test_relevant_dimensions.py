@@ -21,7 +21,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
     # removing sex from relevant dimensions
     # sex dimension should not be visible anywhere
     url_view_period = reverse("view_indicator_for_period", args=[ind.id, p.id])
-    with patch_rules(can_view_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url_view_period)
         assert resp.status_code == 200
         page_data = str(resp.content)
@@ -29,7 +29,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in page_data
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
         page_data = str(resp.content)
@@ -37,7 +37,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in page_data
 
     url_review_data = reverse("review_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.get(url_review_data)
         assert resp.status_code == 200
         page_data = str(resp.content)
@@ -64,7 +64,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
     # sex data should show up in all views
     # although it is not in relevant dimensions as it has data for period
     url_view_period = reverse("view_indicator_for_period", args=[ind.id, p.id])
-    with patch_rules(can_view_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url_view_period)
         assert resp.status_code == 200
         page_data = str(resp.content)
@@ -72,7 +72,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in page_data
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
         page_data = str(resp.content)
@@ -80,7 +80,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in page_data
 
     url_review_data = reverse("review_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.get(url_review_data)
         assert resp.status_code == 200
         page_data = str(resp.content)

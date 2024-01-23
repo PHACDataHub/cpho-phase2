@@ -44,7 +44,7 @@ def seed_core_data(globally_scoped_fixture_helper):
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
     seed_programs(mode="reset")
     seed_countries(mode="reset")
-    create_users()
+    # create_users()
     # ensure groups created (caching groups break accross tests if not pre-created)
     GroupFetcher.hso_group
     GroupFetcher.admin_group
@@ -79,9 +79,12 @@ def oae_lead():
 
 @pytest.fixture
 def hso_user():
-    u = User.objects.get(username="hso")
-    u.groups.add(GroupFetcher.hso_group)
-    return u
+    hso = User.objects.create_user(
+        username="hso",
+        password="hso",
+    )
+    hso.groups.add(GroupFetcher.hso_group)
+    return hso
 
 
 @pytest.fixture

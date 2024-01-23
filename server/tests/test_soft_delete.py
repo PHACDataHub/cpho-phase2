@@ -65,7 +65,7 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
         args=[indicator.id, period.id, age_dim_type.pk],
     )
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -96,7 +96,7 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
 
     # submit all data as program including deleted data
     url = reverse("submit_indicator_data_all", args=[indicator_id, period.id])
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "program"})
         assert resp.status_code == 302
 
@@ -111,7 +111,7 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
     }
 
     url = reverse("submit_indicator_data_all", args=[indicator_id, period.id])
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "hso"})
         assert resp.status_code == 302
 
@@ -178,7 +178,7 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
         args=[indicator.id, period.id, age_dim_type.pk],
     )
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -205,7 +205,7 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
 
     # submit the change (deletion of all data) as program
     url = reverse("submit_indicator_data_all", args=[indicator_id, period.id])
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "program"})
         assert resp.status_code == 302
 

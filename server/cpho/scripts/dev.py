@@ -84,21 +84,20 @@ def create_data():
     indicators = []
     users = User.objects.all()
     for user in users:
-        if test_rule("is_branch_lead", user):
-            for phac_org_role in user.phac_org_roles.all():
-                phac_org = phac_org_role.phac_org
-                for i in range(3):
-                    indicator = IndicatorFactory(
-                        PHACOrg=phac_org,
-                    )
-                    new_name = phac_org.acronym_en + " : " + indicator.name
-                    if len(new_name) > 50:
-                        new_name = new_name[:50]
-                        new_name = new_name.rsplit(" ", maxsplit=1)[0]
+        for phac_org_role in user.phac_org_roles.all():
+            phac_org = phac_org_role.phac_org
+            for i in range(3):
+                indicator = IndicatorFactory(
+                    PHACOrg=phac_org,
+                )
+                new_name = phac_org.acronym_en + " : " + indicator.name
+                if len(new_name) > 50:
+                    new_name = new_name[:50]
+                    new_name = new_name.rsplit(" ", maxsplit=1)[0]
 
-                    indicator.name = new_name
-                    indicator.save()
-                    indicators.append(indicator)
+                indicator.name = new_name
+                indicator.save()
+                indicators.append(indicator)
 
     for dimension in DimensionType.objects.all():
         if not dimension.is_literal:

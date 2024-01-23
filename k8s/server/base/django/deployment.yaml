@@ -1,36 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: server
   name: server
-  namespace: server
 spec:
-  selector:
-    matchLabels:
-      app: server
   strategy: {}
   template:
     metadata:
-      labels:
-        app: server
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "false"
     spec:
       containers:
       - name: istio-proxy
         image: auto
-        # istio-proxies are injected by anthos, see `istio.io/rev: asm-managed` in ../namespace.yaml
-        # these are overrides for the default configuration of those injected proxy sidecars
-        resources:
-          requests:
-            # Experiment: using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
-            cpu: 50m # + `server` container = 250m
-            memory: 112Mi # + `server` container = 512MiB
       - name: server
         securityContext:
           runAsUser: 5678
-        image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2:main-5903c67f-1701406163 # {"$imagepolicy": "flux-system:server"}
         env:
         - name: IS_K8S
           value: "true"
@@ -81,12 +65,6 @@ spec:
               key: microsoft-tenant
         - name: ENABLE_LEGACY_LOG_IN # TODO temporary for dev purposes, not to be used in final prod
           value: "true"
-        resources:
-          # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)
-          requests:
-            # Experiment: using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
-            cpu: 200m # + `isito-proxy` container = 250m
-            memory: 400Mi # + `isito-proxy` container = 512MiB
         readinessProbe:
           httpGet:
             path: /healthcheck

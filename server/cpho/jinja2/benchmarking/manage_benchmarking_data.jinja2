@@ -7,14 +7,23 @@
   {{ bc.item(tdt("Benchmarking") , None, True) }}
 {% endblock %}
 
+{% macro benchmarking_form_field_with_errors(field) %}
+  {{ field }}
+  {% if field.errors %}
+    <div class="error-display">
+      {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
 {% macro benchmarking_form(form) %}
   <tr class="benchmarking-form">
-    <td>{{ form.oecd_country }}</td>
-    <td>{{ form.value }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form.oecd_country) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form.value) }}</td>
     <td>{{ form.unit }}</td>
-    <td>{{ form.year }}</td>
-    <td>{{ form.standard_deviation }}</td>
-    <td>{{ form.comparison_to_oecd_avg }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form.year) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form.comparison_to_oecd_avg) }}</td>
     <td>{{ form.labels }}</td>
     <td>
       {{ form.is_deleted }}

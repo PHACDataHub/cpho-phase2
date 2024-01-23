@@ -1,9 +1,4 @@
-{# Scripts needed for CKEditor's rich text editor #}
-<script type="text/javascript"
-        src="{{ static ('ckeditor/ckeditor-init.js') }}"></script>
-<script type="text/javascript"
-        src="{{ static ('ckeditor/ckeditor/ckeditor.js') }}"></script>
-
+{{ form.media }}
 
 <form method="POST" action=".">
   {{ csrf_input }}

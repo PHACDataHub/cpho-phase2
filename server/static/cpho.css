@@ -52,6 +52,11 @@ td:has(>.error-display)>input {
 
 }
 
+td:has(>.error-display)>select {
+    border: 2px solid #75070c;
+
+}
+
 div.error-preview {
     background: #ffe0e2;
     color: #842029;

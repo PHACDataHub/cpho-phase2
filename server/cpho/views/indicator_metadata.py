@@ -70,15 +70,13 @@ class BenchmarkingForm(ModelForm):
     )
 
     value = forms.FloatField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-            }
+            attrs={"class": "form-control", "placeholder": tdt("Value")}
         ),
     )
     year = forms.IntegerField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -86,7 +84,7 @@ class BenchmarkingForm(ModelForm):
         ),
     )
     standard_deviation = forms.FloatField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -94,7 +92,7 @@ class BenchmarkingForm(ModelForm):
         ),
     )
     comparison_to_oecd_avg = forms.ChoiceField(
-        required=False,
+        required=True,
         choices=Benchmarking.COMPARISON_CHOICES,
         widget=forms.Select(
             attrs={
@@ -119,6 +117,66 @@ class BenchmarkingForm(ModelForm):
             }
         ),
     )
+
+    def clean_comparison_to_oecd_avg(self):
+        comparison_to_oecd_avg = self.cleaned_data["comparison_to_oecd_avg"]
+        if not comparison_to_oecd_avg:
+            self.add_error(
+                "comparison_to_oecd_avg",
+                tdt("Please select a comparison option"),
+            )
+
+        return comparison_to_oecd_avg
+
+    def clean_oecd_country(self):
+        oecd_country = self.cleaned_data["oecd_country"]
+        if not oecd_country:
+            self.add_error("oecd_country", tdt("Please select a country"))
+
+        return oecd_country
+
+    def clean_value(self):
+        value = self.cleaned_data["value"]
+        if value and value < 0:
+            self.add_error("value", tdt("Value cannot be negative"))
+        return value
+
+    def clean_year(self):
+        year = self.cleaned_data["year"]
+
+        if year is None or year == "":
+            return None
+
+        if year:
+            try:
+                if not (int(year) >= 2000 and int(year) <= 2050):
+                    self.add_error(
+                        "year",
+                        tdt("Year must be between the years 2000 and 2050"),
+                    )
+            except ValueError:
+                self.add_error(
+                    "year",
+                    tdt("Year must be a valid number"),
+                )
+
+        return year
+
+    def clean_standard_deviation(self):
+        standard_deviation = self.cleaned_data["standard_deviation"]
+
+        if standard_deviation is not None:
+            if standard_deviation < -3000 or standard_deviation > 1000:
+                self.add_error(
+                    "standard_deviation",
+                    tdt("Standard deviation must be a valid number"),
+                )
+        else:
+            self.add_error(
+                "standard_deviation", tdt("Standard deviation cannot be null")
+            )
+
+        return standard_deviation
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

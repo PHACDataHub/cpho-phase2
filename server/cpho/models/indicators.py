@@ -364,6 +364,7 @@ class Benchmarking(models.Model):
                 "oecd_country",
                 "is_deleted",
                 "deletion_time",
+                "labels",
             ),
         ]
 
@@ -372,10 +373,49 @@ class Benchmarking(models.Model):
     indicator = fields.ForeignKey(
         Indicator, on_delete=models.RESTRICT, related_name="benchmarking"
     )
+    UNIT_CHOICES = [
+        ("", "--"),
+        (
+            "age_standard_rate_per_100K",
+            tdt("Age standardized rates per 100 000 population"),
+        ),
+        ("age_standard_percentage", tdt("Age-standardized percentage")),
+        ("ddd_per_1000_per_day", tdt("DDD per 1000 population per day")),
+        (
+            "deaths_per_million_inhabitants",
+            tdt("Deaths per million inhabitants"),
+        ),
+        ("incidence_100K_population", tdt("Incidence per 100 000 population")),
+        ("litres_per_capita", tdt("Litres per Capita")),
+        ("percent", tdt("Percent")),
+        ("percent_children", tdt("Percent of children")),
+        (
+            "percent_births_below_2500_grams",
+            tdt("Percent of live births below 2500 grams"),
+        ),
+        (
+            "percent_people_fully_vaccinated",
+            tdt("Percent of people fully vaccinated"),
+        ),
+        ("percent_population", tdt("Percent of population")),
+        (
+            "percent_population_health_good_or_very_good",
+            tdt(
+                "Percent of population that rate their health as good or very good"
+            ),
+        ),
+        ("percentage_value", tdt("Percentage value")),
+        ("rate_per_100K", tdt("Rate per 100 000")),
+        ("rate_per_100K_population", tdt("Rate per 100 000 population")),
+        ("rate_per_1000_population", tdt("Rate per 1000 population")),
+        ("total_deaths_per_1M", tdt("Total deaths per 1 million")),
+        ("total_per_100K_persons", tdt("Total per 100 000 persons")),
+    ]
+    unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
     year = fields.IntegerField()
-    standard_deviation = fields.FloatField()
+    standard_deviation = fields.FloatField(null=True)
 
     COMPARISON_CHOICES = [
         ("", "--"),
@@ -384,8 +424,18 @@ class Benchmarking(models.Model):
         ("worse", tdt("Worse")),
         ("outlier", tdt("Outlier")),
     ]
-    comparison_to_oecd_avg = fields.CharField(max_length=50)
-    labels = fields.CharField(max_length=50, null=True, blank=True)
+    comparison_to_oecd_avg = fields.CharField(
+        max_length=50, choices=COMPARISON_CHOICES
+    )
+
+    LABEL_CHOICES = [
+        ("", "--"),
+        ("anxiety", tdt("Anxiety")),
+        ("depression", tdt("Depression")),
+        ("women", tdt("Women")),
+        ("men", tdt("Men")),
+    ]
+    labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""

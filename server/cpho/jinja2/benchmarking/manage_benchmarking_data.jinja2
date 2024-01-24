@@ -20,8 +20,9 @@
   <tr class="benchmarking-form">
     <td>{{ benchmarking_form_field_with_errors(form.oecd_country) }}</td>
     <td>{{ benchmarking_form_field_with_errors(form.value) }}</td>
+    <td>{{ form.unit }}</td>
     <td>{{ benchmarking_form_field_with_errors(form.year) }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td>
+    {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
     <td>{{ benchmarking_form_field_with_errors(form.comparison_to_oecd_avg) }}</td>
     <td>{{ form.labels }}</td>
     <td>
@@ -32,8 +33,10 @@
 {% endmacro %}
 
 {% block content %}
-
   <div class="h2">{{ tdt("Benchmarking data for: ") }} {{ indicator.name }}</div>
+
+  <a class="btn btn-primary"
+     href="{{ url('export_benchmarking', args=[indicator.id]) }}">Export Benchmarking</a>
 
   <table class="d-none benchmarking-empty-form-container">
     {{ benchmarking_form(benchmarking_formset.empty_form) }}
@@ -51,8 +54,9 @@
         <tr>
           <th>{{ tdt("Oecd Country") }}</th>
           <th>{{ tdt("Value") }}</th>
+          <th>{{ tdt("Unit") }}</th>
           <th>{{ tdt("Year") }}</th>
-          <th>{{ tdt("Standard Deviation") }}</th>
+          {# <th>{{ tdt("Standard Deviation") }}</th> #}
           <th>{{ tdt("Comparison to Oecd Average") }}</th>
           <th>{{ tdt("Labels") }}</th>
           <th>{{ tdt("Delete") }}</th>

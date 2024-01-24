@@ -41,15 +41,25 @@ class BenchmarkingForm(ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
+            "unit",
             "oecd_country",
             "value",
             "year",
-            "standard_deviation",
+            # "standard_deviation",
             "comparison_to_oecd_avg",
             "labels",
             "is_deleted",
         ]
 
+    unit = forms.ChoiceField(
+        required=False,
+        choices=Benchmarking.UNIT_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+    )
     oecd_country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
         widget=forms.Select(
@@ -73,14 +83,14 @@ class BenchmarkingForm(ModelForm):
             }
         ),
     )
-    standard_deviation = forms.FloatField(
-        required=True,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-            }
-        ),
-    )
+    # standard_deviation = forms.FloatField(
+    #     required=True,
+    #     widget=forms.NumberInput(
+    #         attrs={
+    #             "class": "form-control",
+    #         }
+    #     ),
+    # )
     comparison_to_oecd_avg = forms.ChoiceField(
         required=True,
         choices=Benchmarking.COMPARISON_CHOICES,
@@ -90,11 +100,12 @@ class BenchmarkingForm(ModelForm):
             }
         ),
     )
-    labels = forms.CharField(
+    labels = forms.ChoiceField(
         required=False,
-        widget=forms.TextInput(
+        choices=Benchmarking.LABEL_CHOICES,
+        widget=forms.Select(
             attrs={
-                "class": "form-control",
+                "class": "form-select",
             }
         ),
     )
@@ -151,21 +162,21 @@ class BenchmarkingForm(ModelForm):
 
         return year
 
-    def clean_standard_deviation(self):
-        standard_deviation = self.cleaned_data["standard_deviation"]
+    # def clean_standard_deviation(self):
+    #     standard_deviation = self.cleaned_data["standard_deviation"]
 
-        if standard_deviation is not None:
-            if standard_deviation < -3000 or standard_deviation > 1000:
-                self.add_error(
-                    "standard_deviation",
-                    tdt("Standard deviation must be a valid number"),
-                )
-        else:
-            self.add_error(
-                "standard_deviation", tdt("Standard deviation cannot be null")
-            )
+    #     if standard_deviation is not None:
+    #         if standard_deviation < -3000 or standard_deviation > 1000:
+    #             self.add_error(
+    #                 "standard_deviation",
+    #                 tdt("Standard deviation must be a valid number"),
+    #             )
+    #     else:
+    #         self.add_error(
+    #             "standard_deviation", tdt("Standard deviation cannot be null")
+    #         )
 
-        return standard_deviation
+    #     return standard_deviation
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

@@ -1,5 +1,6 @@
 from server.rules_framework import add_rule, auto_rule
 
+from cpho.models import IndicatorDirectoryUserAccess
 from cpho.queries import get_indicators_for_user
 
 
@@ -21,6 +22,16 @@ def is_hso(user):
 @auto_rule
 def is_admin_or_hso(user):
     return is_admin(user) or is_hso(user)
+
+
+@auto_rule
+def can_access_indicator_directory(user, indicator_directory_id):
+    if is_admin_or_hso(user):
+        return True
+
+    return IndicatorDirectoryUserAccess.objects.filter(
+        user=user, directory_id=indicator_directory_id
+    ).exists()
 
 
 @auto_rule

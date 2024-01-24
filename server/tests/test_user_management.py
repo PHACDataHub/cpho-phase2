@@ -150,3 +150,45 @@ def test_edit_indicator_directory(vanilla_user_client):
 
     assert set(directory.users.all()) == {u1, u3}
     assert set(directory.indicators.all()) == {i1, i3}
+
+
+def test_indicator_directory_home(vanilla_user, vanilla_user_client):
+    i1 = IndicatorFactory()
+    dir = IndicatorDirectory.objects.create(
+        name="test directory", description="test description"
+    )
+    dir.indicators.add(i1)
+
+    url = reverse("indicator_directory_home", args=[dir.id])
+    assert vanilla_user_client.get(url).status_code == 403
+
+    dir.users.add(vanilla_user)
+    assert vanilla_user_client.get(url).status_code == 200
+
+    # now try adding new users
+
+    # 1. an invalid email
+    resp = vanilla_user_client.post(url, data={"email": "invalid@xyz.com"})
+    assert resp.status_code == 200
+    assert "email" in resp.context["form"].errors
+
+    # 2. a brand new user
+    resp = vanilla_user_client.post(
+        url,
+        data={
+            "email": "billy.bob@phac-aspc.gc.ca",
+            "email_confirmation": "billy.bob@phac-aspc.gc.ca",
+        },
+    )
+    assert resp.status_code == 302
+    assert resp.url == reverse("indicator_directory_home", args=[dir.id])
+    assert dir.users.filter(email="billy.bob@phac-aspc.gc.ca").exists()
+
+    # 3. an existing user
+    new_user = User.objects.create(email="testy.testerton@phac-aspc.gc.ca")
+    resp = vanilla_user_client.post(
+        url,
+        data={"email": new_user.email, "email_confirmation": new_user.email},
+    )
+    assert resp.status_code == 302
+    assert dir.users.filter(email="testy.testerton@phac-aspc.gc.ca").exists()

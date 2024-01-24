@@ -1,6 +1,7 @@
+from django.urls import reverse
+
 from cpho.model_factories import IndicatorFactory
 from cpho.models import Indicator
-from django.urls import reverse
 
 from .utils_for_tests import patch_rules
 

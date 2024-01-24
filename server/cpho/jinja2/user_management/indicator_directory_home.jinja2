@@ -1,0 +1,65 @@
+{% extends 'base.jinja2' %}
+{% from 'generic_macros.jinja2' import date_display %}
+
+{% block content %}
+  <a href="{{ url("root") }}" class="btn btn-warning">{{ tdt("Back") }}</a>
+
+  <h1>{{ tdt("Indicator group") }}: {{ indicator_directory.name }}</h1>
+  <div>
+    <p>
+      {{ tdt("You are part of this indicator group. You can view, modify and submit the below indicators, and so can every other user in the group. You can add new users to this group. Please contact HSO if users need to be removed") }}
+    </p>
+  </div>
+
+
+  <div class="my-4">
+    {% if indicator_directory.description %}
+      <div>{{ tdt("group description") }} : {{ indicator_directory.description }}</div>
+    {% endif %}
+
+    <p class="h5">{{ tdt("indicators") }}</p>
+    <ul>
+      {% for indicator in indicator_directory.indicators.all() %}
+        <li>
+          <a href="{{ url('view_indicator',args=[indicator.pk]) }}">{{ indicator }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+
+    <p class="h5">{{ tdt("users") }}</p>
+    <table class="table table-striped">
+      <thead>
+        <th>{{ tdt("User") }}</th>
+        <th>{{ tdt("last login") }}</th>
+      </thead>
+      <tbody>
+        {% for user in indicator_directory.users.all() %}
+          <tr>
+            <td>{{ user }}</td>
+            <td>
+              {% if user.last_login %}
+                {{ date_display(user.last_login) }}
+              {% else %}
+                {{ tdt("Never") }}
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <details class="border rounded p-3" {% if form.errors %}open{% endif %}>
+    <summary class="fw-bold">{{ tdt("Add a new user") }}</summary>
+    <form method="post">
+      {% include '_standard_form.jinja2' %}
+
+      <div class="text-end">
+
+        <input type="submit" value="{{ tdt("Save") }}" class="btn btn-success" />
+      </div>
+    </form>
+  </details>
+
+{% endblock %}

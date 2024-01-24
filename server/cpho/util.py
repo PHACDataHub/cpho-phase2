@@ -2,6 +2,7 @@ from collections import defaultdict
 from functools import lru_cache
 
 from django.contrib.auth.models import Group
+from django.db.models import Q
 from django.utils.translation import get_language
 
 import pytz
@@ -43,3 +44,15 @@ class GroupFetcher:
     @lru_cache
     def hso_group(cls):
         return Group.objects.get_or_create(name=HSO_GROUP_NAME)[0]
+
+
+def get_or_create_user_by_email(email: str):
+    from cpho.models import User
+
+    if not email.endswith("@phac-aspc.gc.ca"):
+        raise Exception("Only PHAC emails can be used to register")
+
+    user = User.objects.filter(Q(email__iexact=email)).first()
+    if not user:
+        user = User.objects.create_user(username=email, email=email)
+    return user

@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -29,8 +29,8 @@ from cpho.models import (
     Period,
     User,
 )
-from cpho.text import tdt
-from cpho.util import GroupFetcher, get_lang_code
+from cpho.text import tdt, tm
+from cpho.util import GroupFetcher, get_lang_code, get_or_create_user_by_email
 
 from .view_util import MustPassAuthCheckMixin
 
@@ -223,7 +223,7 @@ class IndicatorDirectoryForm(forms.ModelForm, StandardFormMixin):
     )
 
 
-class IndicatorDirectoryMixin(FormView):
+class IndicatorDirectoryFormMixin(FormView):
     form_class = IndicatorDirectoryForm
     template_name = "user_management/create_modify_indicator_directory.jinja2"
 
@@ -240,13 +240,97 @@ class IndicatorDirectoryMixin(FormView):
         return reverse("root")
 
 
-class CreateIndicatorDirectory(CanManageUsersMixin, IndicatorDirectoryMixin):
+class CreateIndicatorDirectory(
+    CanManageUsersMixin, IndicatorDirectoryFormMixin
+):
     @cached_property
     def directory_object(self):
         return IndicatorDirectory()
 
 
-class EditIndicatorDirectory(CanManageUsersMixin, IndicatorDirectoryMixin):
+class EditIndicatorDirectory(CanManageUsersMixin, IndicatorDirectoryFormMixin):
     @cached_property
     def directory_object(self):
         return IndicatorDirectory.objects.get(id=self.kwargs["pk"])
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                # Only allow emails ending in @*.gc.ca or @canada.ca
+                "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
+                "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
+                "oninput": "setCustomValidity('')",
+                "class": "form-control",
+            }
+        ),
+    )
+    email_confirmation = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                # Only allow emails ending in @*.gc.ca or @canada.ca
+                "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
+                "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
+                "oninput": "setCustomValidity('')",
+                "class": "form-control",
+            }
+        ),
+    )
+
+    def clean_email(self):
+        # force only lowercase emails, safer to compare that way
+        email = self.cleaned_data["email"].lower()
+        if not email.endswith("phac-aspc.gc.ca"):
+            raise ValidationError(tdt("email_exception"))
+
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        email_confirmation = cleaned_data.get("email_confirmation")
+
+        if email != email_confirmation:
+            raise ValidationError(tm("email_confirmation_exception"))
+
+        return cleaned_data
+
+
+class IndicatorDirectoryHome(FormView):
+    form_class = EmailForm
+    template_name = "user_management/indicator_directory_home.jinja2"
+
+    def get_context_data(self, **kwargs: Any):
+        return {
+            **super().get_context_data(**kwargs),
+            "indicator_directory": self.indicator_directory,
+        }
+
+    @cached_property
+    def indicator_directory(self):
+        return IndicatorDirectory.objects.get(id=self.kwargs["pk"])
+
+    def dispatch(self, request, *args, **kwargs):
+        if not test_rule(
+            "can_access_indicator_directory",
+            request.user,
+            self.indicator_directory.id,
+        ):
+            raise PermissionDenied()
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        email = form.cleaned_data["email"]
+        user = get_or_create_user_by_email(email)
+        self.indicator_directory.users.add(user)
+        messages.success(
+            self.request, tdt("user added to indicator directory")
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("indicator_directory_home", args=[self.kwargs["pk"]])

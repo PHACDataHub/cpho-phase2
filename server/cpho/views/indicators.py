@@ -20,6 +20,7 @@ from server.rules_framework import test_rule
 
 from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import (
+    get_indicator_directories_for_user,
     get_indicators_for_user,
     get_submission_statuses,
     relevant_dimension_types_for_period,
@@ -107,6 +108,9 @@ class ListIndicators(ListView):
     def get_context_data(self, **kwargs):
         return {
             **super().get_context_data(**kwargs),
+            "user_indicator_directories": get_indicator_directories_for_user(
+                self.request.user.id
+            ),
         }
 
 

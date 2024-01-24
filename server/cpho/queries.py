@@ -116,3 +116,10 @@ def get_indicators_for_user(user_id):
         all_indicators.update(indicators)
 
     return all_indicators
+
+
+def get_indicator_directories_for_user(user_id):
+    directory_access_links = IndicatorDirectoryUserAccess.objects.filter(
+        user_id=user_id
+    ).prefetch_related("directory")
+    return [link.directory for link in directory_access_links]

@@ -125,4 +125,9 @@ urlpatterns = [
         views.ManageBenchmarkingData.as_view(),
         name="manage_benchmarking_data",
     ),
+    path(
+        "indicators/<int:indicator_id>/trend_analysis/",
+        views.ManageTrendAnalysisData.as_view(),
+        name="manage_trend_analysis_data",
+    ),
 ]

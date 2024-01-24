@@ -45,7 +45,7 @@ class BenchmarkingForm(ModelForm):
             "oecd_country",
             "value",
             "year",
-            "standard_deviation",
+            # "standard_deviation",
             "comparison_to_oecd_avg",
             "labels",
             "is_deleted",
@@ -83,14 +83,14 @@ class BenchmarkingForm(ModelForm):
             }
         ),
     )
-    standard_deviation = forms.FloatField(
-        required=True,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-            }
-        ),
-    )
+    # standard_deviation = forms.FloatField(
+    #     required=True,
+    #     widget=forms.NumberInput(
+    #         attrs={
+    #             "class": "form-control",
+    #         }
+    #     ),
+    # )
     comparison_to_oecd_avg = forms.ChoiceField(
         required=True,
         choices=Benchmarking.COMPARISON_CHOICES,
@@ -162,21 +162,21 @@ class BenchmarkingForm(ModelForm):
 
         return year
 
-    def clean_standard_deviation(self):
-        standard_deviation = self.cleaned_data["standard_deviation"]
+    # def clean_standard_deviation(self):
+    #     standard_deviation = self.cleaned_data["standard_deviation"]
 
-        if standard_deviation is not None:
-            if standard_deviation < -3000 or standard_deviation > 1000:
-                self.add_error(
-                    "standard_deviation",
-                    tdt("Standard deviation must be a valid number"),
-                )
-        else:
-            self.add_error(
-                "standard_deviation", tdt("Standard deviation cannot be null")
-            )
+    #     if standard_deviation is not None:
+    #         if standard_deviation < -3000 or standard_deviation > 1000:
+    #             self.add_error(
+    #                 "standard_deviation",
+    #                 tdt("Standard deviation must be a valid number"),
+    #             )
+    #     else:
+    #         self.add_error(
+    #             "standard_deviation", tdt("Standard deviation cannot be null")
+    #         )
 
-        return standard_deviation
+    #     return standard_deviation
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

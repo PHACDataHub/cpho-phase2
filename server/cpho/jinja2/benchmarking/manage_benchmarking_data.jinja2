@@ -22,7 +22,7 @@
     <td>{{ benchmarking_form_field_with_errors(form.value) }}</td>
     <td>{{ form.unit }}</td>
     <td>{{ benchmarking_form_field_with_errors(form.year) }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td>
+    {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
     <td>{{ benchmarking_form_field_with_errors(form.comparison_to_oecd_avg) }}</td>
     <td>{{ form.labels }}</td>
     <td>
@@ -56,7 +56,7 @@
           <th>{{ tdt("Value") }}</th>
           <th>{{ tdt("Unit") }}</th>
           <th>{{ tdt("Year") }}</th>
-          <th>{{ tdt("Standard Deviation") }}</th>
+          {# <th>{{ tdt("Standard Deviation") }}</th> #}
           <th>{{ tdt("Comparison to Oecd Average") }}</th>
           <th>{{ tdt("Labels") }}</th>
           <th>{{ tdt("Delete") }}</th>

@@ -55,111 +55,97 @@
       document.body.addEventListener('htmx:configRequest', (event) => {
         event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
       })
-    </script>
-    {% block nav_container %}
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <div class="container">
-          {{ phac_aspc.phac_aspc_inline_svg("phac_aspc_helpers/phac_logos/" + ("en" if get_lang_code() == "en-ca" else "fr") + "__dark.svg", style="height: 2rem; padding-right: 2rem;") }}
-          {% block available_apps %}{% endblock %}
-          <h1 class="nav-header">
-            <a href="{{ url("list_indicators") }}"
-               class="text-reset text-decoration-none">
-              {% block nav_header_text %}
-                <abbr title="{{ tdt("Health of People In Canada") }}">{{ tdt("HoPiC") }}</abbr>
-              {% endblock %}
-            </a>
-          </h1>
-          <button class="navbar-toggler"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#navbarSupportedContent"
-                  aria-controls="navbarSupportedContent"
-                  aria-expanded="false"
-                  aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            {% block header_menu %}<!-- This block will be replaced by per-page overrides -->{% endblock %}
-            <ul class="navbar-nav flex-fill justify-content-end">
-              <li class="nav-item">
-                <a class="nav-link text-white" href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
-              </li>
-              {% if user.is_authenticated %}
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle text-white"
-                     href="#"
-                     id="navbarDropdown"
-                     role="button"
-                     data-bs-toggle="dropdown"
-                     aria-haspopup="true"
-                     aria-expanded="false">{{ request.user }}</a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url("logout") }}">
-                      <span aria-hidden="true" class="bi bi-power"></span>
-                      {{ tm("logout") }}
-                    </a>
-                    <a class="dropdown-item"
-                       href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
-                      <span aria-hidden="true" class="bi bi-file-diff"></span>
-                      {{ tdt("View your own changes") }}
-                    </a>
-                    {% if respects_rule('can_manage_users') %}
-                      <a class="dropdown-item" href="{{ url("manage_users") }}">
-                        <span aria-hidden="true" class="bi bi-people"></span>
-                        {{ tdt("Manage Users") }}
-                      </a>
-                    {% endif %}
-                    <a class="dropdown-item" href="{{ url("global_changelog") }}">
-                      <span aria-hidden="true" class="bi bi-file-diff"></span>
-                      {{ tdt("changelog") }}
-                    </a>
-                  </div>
-                </li>
-              {% endif %}
-            </ul>
-          </div>
-        </div>
-      </nav>
-    {% endblock %}
-    <main class="pb-5">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-      <div>
-        <div id="content" class='container'>
-          {% block content_breadcrumbs_container %}
-            {# this is just here so templates can opt-out from breadcrumbs #}
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                {% block content_breadcrumbs %}
-                {% endblock content_breadcrumbs %}
-              </ol>
-            </nav>
-          {% endblock  content_breadcrumbs_container %}
-          {% block content %}{% endblock %}
-        </div>
-        <div id="content-fluid" class='container-fluid p-0'>
-          <div class='ms-5 me-5'>
-            {% block content_fluid %}{% endblock %}
-          </div>
-        </div>
-      </div>
-    </main>
-    <div id="modal" class="modal fade" tabindex="-1">
-      <div id="dialog" class="modal-dialog" hx-target="this"></div>
-    </div>
-    <footer class="d-print-none goc-footer bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col"></div>
-          <div class="col-auto">
-            <object type="image/svg+xml" tabindex="-1" role="img" data="{{ static("third_party/img/wmms-blk.svg") }}" aria-label="Symbol of the Government of Canada" style="height: 2rem; margin: 1rem 0;"></object>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script src="{{ static('third_party/js/bootstrap.bundle.min.js') }}"></script>
-  </body>
+</script>
+{% block nav_container %}
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<div class="container">
+{{ phac_aspc.phac_aspc_inline_svg("phac_aspc_helpers/phac_logos/" + ("en" if get_lang_code() == "en-ca" else "fr") + "__dark.svg", style="height: 2rem; padding-right: 2rem;") }}
+{% block available_apps %}{% endblock %}
+<h1 class="nav-header">
+<a href="{{ url("list_indicators") }}" class="text-reset text-decoration-none">
+{% block nav_header_text %}
+<abbr title="{{ tdt("Health of People In Canada") }}">{{ tdt("HoPiC") }}</abbr>
+{% endblock %}
+</a>
+</h1>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+{% block header_menu %}<!-- This block will be replaced by per-page overrides -->{% endblock %}
+<ul class="navbar-nav flex-fill justify-content-end">
+<li class="nav-item">
+<a class="nav-link text-white" href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
+</li>
+{% if user.is_authenticated %}
+<li class="nav-item dropdown">
+<a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ request.user }}</a>
+<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+<a class="dropdown-item" href="{{ url("logout") }}">
+<span aria-hidden="true" class="bi bi-power"></span>
+{{ tm("logout") }}
+</a>
+<a class="dropdown-item" href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
+<span aria-hidden="true" class="bi bi-file-diff"></span>
+{{ tdt("View your own changes") }}
+</a>
+{% if respects_rule('can_manage_users') %}
+<a class="dropdown-item" href="{{ url("manage_users") }}">
+<span aria-hidden="true" class="bi bi-people"></span>
+{{ tdt("Manage Users") }}
+</a>
+{% endif %}
+<a class="dropdown-item" href="{{ url("global_changelog") }}">
+<span aria-hidden="true" class="bi bi-file-diff"></span>
+{{ tdt("changelog") }}
+</a>
+</div>
+</li>
+{% endif %}
+</ul>
+</div>
+</div>
+</nav>
+{% endblock %}
+<main class="pb-5">
+{% if messages %}
+{% for message in messages %}
+<div class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+<div>
+<div id="content" class='container'>
+{% block content_breadcrumbs_container %}
+{# this is just here so templates can opt-out from breadcrumbs #}
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb">
+{% block content_breadcrumbs %}
+{% endblock content_breadcrumbs %}
+</ol>
+</nav>
+{% endblock  content_breadcrumbs_container %}
+{% block content %}{% endblock %}
+</div>
+<div id="content-fluid" class='container-fluid p-0'>
+<div class='ms-5 me-5'>
+{% block content_fluid %}{% endblock %}
+</div>
+</div>
+</div>
+</main>
+<div id="modal" class="modal fade" tabindex="-1">
+<div id="dialog" class="modal-dialog" hx-target="this"></div>
+</div>
+<footer class="d-print-none goc-footer bg-light">
+<div class="container">
+<div class="row">
+<div class="col"></div>
+<div class="col-auto">
+<object type="image/svg+xml" tabindex="-1" role="img" data="{{ static("third_party/img/wmms-blk.svg") }}" aria-label="Symbol of the Government of Canada" style="height: 2rem; margin: 1rem 0;"></object>
+</div>
+</div>
+</div>
+</footer>
+<script src="{{ static('third_party/js/bootstrap.bundle.min.js') }}"></script>
+</body>
 </html>

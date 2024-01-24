@@ -1,246 +1,246 @@
 <div class="modal fade modal-xl"
-       id="expectedColumnModal"
-       tabindex="-1"
-       aria-labelledby="expectedColumnModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog" style="max-width: 90%;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="expectedColumnModalLabel">{{ tdt("Expected column names") }}</h5>
-          <button type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"></button>
-        </div>
-        <div class="modal-body" style="overflow-x:auto">
-          <p>
-            {{ tdt("Please upload a .csv file containing the following column names. Note that the column names are case sensitive") }}
-          </p>
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>{{ tdt("Expected column names") }}</th>
-                <th>{{ tdt("Descriptions") }}</th>
-                <th>{{ tdt("Possible values") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ tdt("Indicator") }}</td>
-                <td>{{ tdt("Indicator name") }}</td>
-                <td>{{ tdt("Open text field") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Detailed Indicator") }}</td>
-                <td>{{ tdt("Detailed indicator name") }}</td>
-                <td>{{ tdt("Open text field") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Sub_Indicator_Measurement") }}</td>
-                <td>{{ tdt("Sub indicator measurement") }}</td>
-                <td>{{ tdt("Open text field") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Category") }}</td>
-                <td>{{ tdt("Category") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["category_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Topic") }}</td>
-                <td>{{ tdt("Topic") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["topic_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Data_Quality") }}</td>
-                <td>{{ tdt("Quality of data") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["data_quality_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Value") }}</td>
-                <td>{{ tdt("Vlue Recorded") }}</td>
-                <td>{{ tdt("Open number field (allows decimals)") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Value_LowerCI") }}</td>
-                <td>{{ tdt("Vlue lower bound") }}</td>
-                <td>{{ tdt("Open number field (allows decimals)") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Value_UpperCI") }}</td>
-                <td>{{ tdt("Vlue upper bound") }}</td>
-                <td>{{ tdt("Open number field (allows decimals)") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("SingleYear_TimeFrame") }}</td>
-                <td>{{ tdt("Single Year Timeframe") }}</td>
-                <td>{{ tdt("Open text field YYYY") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("MultiYear_TimeFrame") }}</td>
-                <td>{{ tdt("Multi Year TimeFrame") }}</td>
-                <td>{{ tdt("Open text field YYYY-YYYY") }}</td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Value_Unit") }}</td>
-                <td>{{ tdt("Value unit") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["value_unit_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Value_Displayed") }}</td>
-                <td>{{ tdt("Value Displayed") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["value_displayed_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Reason_for_Null_Data") }}</td>
-                <td>{{ tdt("Reason for null Data. Deafult is empty") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["reason_for_null_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Dimension_Type") }}</td>
-                <td>{{ tdt("Dimension of data recorded") }}</td>
-                <td>
-                  <ul>
-                    {% for key in mapper["dimension_type_mapper"] %}
-                      {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ tdt("Dimension_Value") }}</td>
-                <td>{{ tdt("Specification of dimension recorded") }}</td>
-                <td>
-                  <div class="d-flex flex-row bd-highlight mb-3">
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Province:") }}</span>
-                      <hr>
-                      <ul>
-                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                          {% if key[0] == "Province" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
-                        {% endfor %}
-                      </ul>
-                    </div>
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Gender:") }}</span>
-                      <hr>
-                      <ul>
-                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                          {% if key[0] == "Gender" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
-                        {% endfor %}
-                      </ul>
-                    </div>
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Region:") }}</span>
-                      <hr>
-                      <ul>
-                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                          {% if key[0] == "Region" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
-                        {% endfor %}
-                      </ul>
-                    </div>
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Sex:") }}</span>
-                      <hr>
-                      <ul>
-                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                          {% if key[0] == "Sex" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
-                        {% endfor %}
-                      </ul>
-                    </div>
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Canada:") }}</span>
-                      <hr>
-                      <ul>
-                        <li>{{ tdt("CANADA") }}</li>
-                      </ul>
-                    </div>
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Age Group:") }}</span>
-                      <hr>
-                      <ul>
-                        <li>{{ tdt("Open Text Field") }}</li>
-                      </ul>
-                    </div>
-                    <div class="p-2 border">
-                      <span class="fw-bold">{{ tdt("Living Arrangement:") }}</span>
-                      <hr>
-                      <ul>
-                        {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                          {% if key[0] == "Living Arrangement" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  </td>
-                </div>
-              </tr>
-              <tr>
-                <td>{{ tdt("Period") }}</td>
-                <td>{{ tdt("Period to which the data belongs") }}</td>
-                <td>
-                  <div class="row">
-                    <div class="col-4">
-                      <ul>
-                        {% for key in mapper["period_mapper"] %}<li>{{ tdt(key) }}</li>{% endfor %}
-                      </ul>
-                    </div>
-                    <div class="col-8">
-                      <span class="fw-bold">{{ tdt("Legend:") }}</span>
-                      <ul class="mt-0 mb-2">
-                        <li>{{ tdt("FY: Fiscal Year") }}</li>
-                        <li>{{ tdt("CY: Calendar Year") }}</li>
-                        <li>{{ tdt("Q: Quarter (1-4)") }}</li>
-                      </ul>
-                      <span class="fw-bold">{{ tdt("Note: ") }}</span>
-                      <ul class="mt-0 mb-2">
-                        <li>{{ tdt("Quarters are only valid for fiscal years") }}</li>
-                        {# <li>{{ tdt("Indicators uploaded with blank period column will default to the current calendar year") }}</li> #}
-                      </ul>
-                    </div>
+     id="expectedColumnModal"
+     tabindex="-1"
+     aria-labelledby="expectedColumnModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" style="max-width: 90%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="expectedColumnModalLabel">{{ tdt("Expected column names") }}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="overflow-x:auto">
+        <p>
+          {{ tdt("Please upload a .csv file containing the following column names. Note that the column names are case sensitive") }}
+        </p>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>{{ tdt("Expected column names") }}</th>
+              <th>{{ tdt("Descriptions") }}</th>
+              <th>{{ tdt("Possible values") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ tdt("Indicator") }}</td>
+              <td>{{ tdt("Indicator name") }}</td>
+              <td>{{ tdt("Open text field") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Detailed Indicator") }}</td>
+              <td>{{ tdt("Detailed indicator name") }}</td>
+              <td>{{ tdt("Open text field") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Sub_Indicator_Measurement") }}</td>
+              <td>{{ tdt("Sub indicator measurement") }}</td>
+              <td>{{ tdt("Open text field") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Category") }}</td>
+              <td>{{ tdt("Category") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["category_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Topic") }}</td>
+              <td>{{ tdt("Topic") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["topic_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Data_Quality") }}</td>
+              <td>{{ tdt("Quality of data") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["data_quality_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Value") }}</td>
+              <td>{{ tdt("Vlue Recorded") }}</td>
+              <td>{{ tdt("Open number field (allows decimals)") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Value_LowerCI") }}</td>
+              <td>{{ tdt("Vlue lower bound") }}</td>
+              <td>{{ tdt("Open number field (allows decimals)") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Value_UpperCI") }}</td>
+              <td>{{ tdt("Vlue upper bound") }}</td>
+              <td>{{ tdt("Open number field (allows decimals)") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("SingleYear_TimeFrame") }}</td>
+              <td>{{ tdt("Single Year Timeframe") }}</td>
+              <td>{{ tdt("Open text field YYYY") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("MultiYear_TimeFrame") }}</td>
+              <td>{{ tdt("Multi Year TimeFrame") }}</td>
+              <td>{{ tdt("Open text field YYYY-YYYY") }}</td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Value_Unit") }}</td>
+              <td>{{ tdt("Value unit") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["value_unit_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Value_Displayed") }}</td>
+              <td>{{ tdt("Value Displayed") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["value_displayed_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Reason_for_Null_Data") }}</td>
+              <td>{{ tdt("Reason for null Data. Deafult is empty") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["reason_for_null_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Dimension_Type") }}</td>
+              <td>{{ tdt("Dimension of data recorded") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["dimension_type_mapper"] %}
+                    {% if key != "" %}<li>{{ tdt(key) }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ tdt("Dimension_Value") }}</td>
+              <td>{{ tdt("Specification of dimension recorded") }}</td>
+              <td>
+                <div class="d-flex flex-row bd-highlight mb-3">
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Province:") }}</span>
+                    <hr>
+                    <ul>
+                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                        {% if key[0] == "Province" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Gender:") }}</span>
+                    <hr>
+                    <ul>
+                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                        {% if key[0] == "Gender" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Region:") }}</span>
+                    <hr>
+                    <ul>
+                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                        {% if key[0] == "Region" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Sex:") }}</span>
+                    <hr>
+                    <ul>
+                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                        {% if key[0] == "Sex" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Canada:") }}</span>
+                    <hr>
+                    <ul>
+                      <li>{{ tdt("CANADA") }}</li>
+                    </ul>
+                  </div>
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Age Group:") }}</span>
+                    <hr>
+                    <ul>
+                      <li>{{ tdt("Open Text Field") }}</li>
+                    </ul>
+                  </div>
+                  <div class="p-2 border">
+                    <span class="fw-bold">{{ tdt("Living Arrangement:") }}</span>
+                    <hr>
+                    <ul>
+                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
+                        {% if key[0] == "Living Arrangement" %}<li>{{ tdt(key[1]) }}</li>{% endif %}
+                      {% endfor %}
+                    </ul>
                   </div>
                 </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
+              </div>
+            </tr>
+            <tr>
+              <td>{{ tdt("Period") }}</td>
+              <td>{{ tdt("Period to which the data belongs") }}</td>
+              <td>
+                <div class="row">
+                  <div class="col-4">
+                    <ul>
+                      {% for key in mapper["period_mapper"] %}<li>{{ tdt(key) }}</li>{% endfor %}
+                    </ul>
+                  </div>
+                  <div class="col-8">
+                    <span class="fw-bold">{{ tdt("Legend:") }}</span>
+                    <ul class="mt-0 mb-2">
+                      <li>{{ tdt("FY: Fiscal Year") }}</li>
+                      <li>{{ tdt("CY: Calendar Year") }}</li>
+                      <li>{{ tdt("Q: Quarter (1-4)") }}</li>
+                    </ul>
+                    <span class="fw-bold">{{ tdt("Note: ") }}</span>
+                    <ul class="mt-0 mb-2">
+                      <li>{{ tdt("Quarters are only valid for fiscal years") }}</li>
+                      {# <li>{{ tdt("Indicators uploaded with blank period column will default to the current calendar year") }}</li> #}
+                    </ul>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>

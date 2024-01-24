@@ -7,8 +7,6 @@ from cpho.models import Indicator, IndicatorDirectory, User
 
 
 class MultiIndicatorAutocomplete(HTMXAutoComplete):
-    """Autocomplete component to select phacOrgs"""
-
     name = "indicators"
     multiselect = True
     minimum_search_length = 0

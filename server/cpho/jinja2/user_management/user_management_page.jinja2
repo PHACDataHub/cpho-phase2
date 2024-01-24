@@ -7,36 +7,21 @@
     <thead>
       <tr>
         <th>{{ tdt("Username") }}</th>
+        <th>{{ tdt("Special roles") }}</th>
         <th>{{ tdt("Last login") }}</th>
-        <th>
-          <div class="row">
-            <div class='col-8'>{{ tdt("PHAC Organisation") }}</div>
-            <div class='col-4'>{{ tdt("Branch Role") }}</div>
-          </div>
-        </th>
         <th>{{ tdt("Modify") }}</th>
       </tr>
     </thead>
     <tbody>
-      {% for user in user_metadata %}
+      {% for user in all_users %}
         <tr>
           <td>{{ user }}</td>
           <td>
-            {% if user.last_login %}{{ date_display(user.last_login) }}{% endif %}
+            {% if user.is_admin %}{{ tdt("Admin") }}{% endif %}
+            {% if user.is_hso %}{{ tdt("HSO") }}{% endif %}
           </td>
           <td>
-            {% for role in user_metadata[user] %}
-              <div class="row">
-                <div class='col-8'>{{ role.phac_org_name }}</div>
-                <div class='col-4'>
-                  {% if role.is_lead %}
-                    {{ tdt("Branch lead") }}
-                  {% else %}
-                    {{ tdt("Branch user") }}
-                  {% endif %}
-                </div>
-              </div>
-            {% endfor %}
+            {% if user.last_login %}{{ date_display(user.last_login) }}{% endif %}
           </td>
           <td>
             <a href="{{ url("modify_user", args=[user.pk]) }}">{{ tdt("Modify") }}</a>

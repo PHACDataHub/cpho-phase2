@@ -18,7 +18,7 @@ from ckeditor.widgets import CKEditorWidget
 
 from server.rules_framework import test_rule
 
-from cpho.models import DimensionType, Indicator, Period, PHACOrg
+from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import (
     get_indicators_for_user,
     get_submission_statuses,
@@ -47,7 +47,6 @@ class IndicatorForm(ModelForm):
             "topic",
             "detailed_indicator",
             "sub_indicator_measurement",
-            "PHACOrg",
             "relevant_dimensions",
             "general_footnotes",
         ]
@@ -79,16 +78,6 @@ class IndicatorForm(ModelForm):
     )
     sub_indicator_measurement = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-
-    PHACOrg = forms.ModelChoiceField(
-        required=False,
-        queryset=PHACOrg.branches(),
-        widget=forms.Select(
-            attrs={
-                "class": "form-select",
-            }
-        ),
     )
 
     general_footnotes = forms.CharField(

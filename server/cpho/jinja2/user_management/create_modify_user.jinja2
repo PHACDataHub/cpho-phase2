@@ -31,10 +31,6 @@
         </label>
       </div>
     {% endif %}
-    <div class="my-3">
-      {{ form.phac_org_multi.label_tag() }}
-      {{ form.phac_org_multi }}
-    </div>
 
     <input class="btn btn-primary" type="submit" value="{{ tdt("save") }}">
     <a class="btn btn-secondary" href="{{ url("manage_users") }}">{{ tdt("cancel") }}</a>

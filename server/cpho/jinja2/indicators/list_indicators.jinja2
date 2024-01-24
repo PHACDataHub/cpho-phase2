@@ -16,7 +16,6 @@
           <th>{{ tdt("Indicator Name") }}</th>
           <th>{{ tdt("Category") }}</th>
           <th>{{ tdt("Topic") }}</th>
-          <th>{{ tdt("Lead Program") }}</th>
           <th width="15%">{{ tdt("Actions") }}</th>
         </tr>
       </thead>
@@ -27,7 +26,6 @@
               <td>{{ indicator.name }}</td>
               <td>{{ indicator.get_category_display() }}</td>
               <td>{{ indicator.get_topic_display() }}</td>
-              <td>{{ indicator.PHACOrg }}</td>
               <td>
                 <a class="btn btn-outline-dark"
                    href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ tdt("View indicator") }}</a>

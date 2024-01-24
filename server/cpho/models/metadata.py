@@ -31,17 +31,6 @@ class IndicatorDataSubmission(models.Model):
 
 
 @add_to_admin
-class PhacOrgRole(models.Model):
-    user = fields.ForeignKey(
-        "cpho.User", on_delete=models.CASCADE, related_name="phac_org_roles"
-    )
-    phac_org = fields.ForeignKey(
-        "cpho.PHACOrg", on_delete=models.CASCADE, related_name="phac_org_roles"
-    )
-    is_phac_org_lead = models.BooleanField(default=False)
-
-
-@add_to_admin
 class IndicatorDirectory(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)

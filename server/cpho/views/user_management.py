@@ -27,8 +27,6 @@ from cpho.models import (
     Indicator,
     IndicatorDirectory,
     Period,
-    PHACOrg,
-    PhacOrgRole,
     User,
 )
 from cpho.text import tdt
@@ -49,23 +47,7 @@ class ManageUsers(CanManageUsersMixin, TemplateView):
     template_name = "user_management/user_management_page.jinja2"
 
     def get_context_data(self, **kwargs):
-        user_metadata = {}
         all_users = User.objects.all()
-
-        for user in all_users:
-            user_phac_org_roles = PhacOrgRole.objects.filter(user=user)
-            role_metadata = []
-            for roles in user_phac_org_roles:
-                role_metadata.append(
-                    {
-                        "phac_org_obj": roles.phac_org,
-                        "phac_org_name": roles.phac_org.name_en
-                        if get_lang_code() == "en"
-                        else roles.phac_org.name_fr,
-                        "is_lead": roles.is_phac_org_lead,
-                    }
-                )
-            user_metadata[user] = role_metadata
 
         indicator_directories = (
             IndicatorDirectory.objects.all().prefetch_related(
@@ -75,39 +57,9 @@ class ManageUsers(CanManageUsersMixin, TemplateView):
 
         return {
             **super().get_context_data(**kwargs),
-            "user_metadata": user_metadata,
+            "all_users": all_users,
             "indicator_directories": indicator_directories,
         }
-
-
-class MultiPhacOrgAutocomplete(HTMXAutoComplete):
-    """Autocomplete component to select phacOrgs"""
-
-    name = "phac_org_multi"
-    multiselect = True
-    minimum_search_length = 0
-    model = PHACOrg
-
-    def get_items(self, search=None, values=None):
-        data = PHACOrg.branches().select_related(
-            "parent", "parent__parent", "parent__parent__parent"
-        )
-        if search is not None:
-            items = [
-                {"label": str(x), "value": str(x.id)}
-                for x in data
-                if search == "" or str(search).upper() in f"{x}".upper()
-            ]
-            return items
-        if values is not None:
-            items = [
-                {"label": str(x), "value": str(x.id)}
-                for x in data
-                if str(x.id) in values
-            ]
-            return items
-
-        return []
 
 
 class UserForm(forms.Form):
@@ -128,18 +80,6 @@ class UserForm(forms.Form):
                 "class": "form-check-input",
             }
         ),
-    )
-
-    phac_org_multi = forms.ModelMultipleChoiceField(
-        queryset=PHACOrg.branches(),
-        required=False,
-        widget=ac_widgets.Autocomplete(
-            use_ac=MultiPhacOrgAutocomplete,
-            attrs={
-                "id": "phac_org_multi__textinput",
-            },
-        ),
-        label=tdt("phac_org_multi"),
     )
 
 
@@ -189,16 +129,7 @@ class UserFormView(FormView, CanManageUsersMixin):
     def save_form(self, form):
         with transaction.atomic():
             user = self.get_or_create_user(form)
-            self.assign_orgs(user, form)
             self.assign_groups(user, form)
-
-    def assign_orgs(self, user, form):
-        user.phac_org_roles.all().delete()
-        for org in form.cleaned_data["phac_org_multi"]:
-            # TODO: if we keep branch leads, split this out into 2 fields, branches_lead and branches_read_only
-            PhacOrgRole.objects.create(
-                user=user, phac_org=org, is_phac_org_lead=True
-            )
 
     def assign_groups(self, user, form):
         user.groups.remove(
@@ -246,7 +177,6 @@ class ModifyUser(UserFormView, CanManageUsersMixin):
         initial = {
             "is_admin": user.is_admin,
             "is_hso": user.is_hso,
-            "phac_org_multi": [r.phac_org for r in user.phac_org_roles.all()],
         }
         return initial
 

@@ -60,13 +60,6 @@ class Indicator(models.Model):
 
     sub_indicator_measurement = fields.CharField(max_length=150)
 
-    PHACOrg = fields.ForeignKey(
-        "cpho.PHACOrg",
-        null=True,
-        blank=True,
-        on_delete=models.RESTRICT,
-    )
-
     relevant_dimensions = fields.ManyToManyField(
         "cpho.DimensionType",
         blank=True,

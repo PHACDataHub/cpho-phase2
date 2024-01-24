@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
-- gcr-sync.yaml
 
 patches:
 # Using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
@@ -37,14 +36,17 @@ patches:
     target:
       kind: ServiceAccount
       name: kustomize-controller
+
+  # patch image-reflector-controller service account to access artifact registry
+  # See https://fluxcd.io/flux/components/image/imagerepositories/#provider
   - patch: |
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: gcr-credentials-sync
+        name: image-reflector-controller
         namespace: flux-system
         annotations:
           iam.gke.io/gcp-service-account: gcr-credentials-sync@pht-01hhjj7tt0m.iam.gserviceaccount.com
     target:
       kind: ServiceAccount
-      name: gcr-credentials-sync
+      name: image-reflector-controller

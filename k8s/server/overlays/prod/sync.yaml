@@ -47,7 +47,7 @@ spec:
   decryption:
     provider: sops
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta1
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
   name: server
@@ -55,8 +55,7 @@ metadata:
 spec:
   image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2
   interval: 1m0s
-  secretRef:
-    name: gcr-credentials
+  provider: gcp
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy

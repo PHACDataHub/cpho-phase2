@@ -194,7 +194,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_edit_indicator_data", self.request.user, self.indicator
+            "can_edit_benchmarking", self.request.user, self.indicator
         )
 
     def benchmarking_formset(self):
@@ -405,15 +405,13 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_edit_indicator_data", self.request.user, self.indicator
+            "can_edit_trend_analysis", self.request.user, self.indicator
         )
 
     def trend_analysis_formset(self):
         existing_data = TrendAnalysis.active_objects.filter(
             indicator=self.indicator
         ).order_by("year")
-
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>", existing_data)
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,

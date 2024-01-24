@@ -142,6 +142,18 @@ def can_export_indicator(user, indicator):
         return can_view_indicator(user, indicator)
     return can_upload_indicator(user)
 
+
 @auto_rule
 def can_export_benchmarking(user, indicator):
+    # TODO: need to update this
     return is_admin_or_hso(user)
+
+
+@auto_rule
+def can_edit_benchmarking(user, indicator):
+    return can_edit_indicator(user, indicator)
+
+
+@auto_rule
+def can_edit_trend_analysis(user, indicator):
+    return can_edit_indicator(user, indicator)

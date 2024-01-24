@@ -59,6 +59,7 @@ def test_create_user(vanilla_user_client):
     email = "testy@phac-aspc.gc.ca"
     data = {
         "email": email,
+        "email_confirmation": email,
         "is_hso": True,
     }
     with patch_rules(can_manage_users=True):

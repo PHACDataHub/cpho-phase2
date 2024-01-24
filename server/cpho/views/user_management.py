@@ -30,7 +30,12 @@ from cpho.models import (
     User,
 )
 from cpho.text import tdt, tm
-from cpho.util import GroupFetcher, get_lang_code, get_or_create_user_by_email
+from cpho.util import (
+    GroupFetcher,
+    get_lang_code,
+    get_or_create_user_by_email,
+    phac_email_widget_attrs,
+)
 
 from .view_util import MustPassAuthCheckMixin
 
@@ -86,27 +91,33 @@ class UserForm(forms.Form):
 class CreateUserForm(UserForm):
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(
-            attrs={
-                # Only allow emails ending in @*.gc.ca or @canada.ca
-                "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
-                "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
-                "oninput": "setCustomValidity('')",
-                "class": "form-control",
-            }
-        ),
+        widget=forms.EmailInput(attrs={**phac_email_widget_attrs}),
+    )
+    email_confirmation = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={**phac_email_widget_attrs}),
     )
 
     def clean_email(self):
         # force only lowercase emails, safer to compare that way
         email = self.cleaned_data["email"].lower()
-        if not (email.endswith("@canada.ca") or email.endswith(".gc.ca")):
+        if not email.endswith("phac-aspc.gc.ca"):
             raise ValidationError(tdt("email_exception"))
 
         if User.objects.filter(email__icontains=email).exists():
             raise ValidationError(tdt("account_for_email_already_exists"))
 
         return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        email_confirmation = cleaned_data.get("email_confirmation")
+
+        if email != email_confirmation:
+            raise ValidationError(tm("email_confirmation_exception"))
+
+        return cleaned_data
 
 
 class UserFormView(FormView, CanManageUsersMixin):
@@ -259,25 +270,13 @@ class EmailForm(forms.Form):
         required=True,
         widget=forms.EmailInput(
             attrs={
-                # Only allow emails ending in @*.gc.ca or @canada.ca
-                "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
-                "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
-                "oninput": "setCustomValidity('')",
-                "class": "form-control",
+                **phac_email_widget_attrs,
             }
         ),
     )
     email_confirmation = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(
-            attrs={
-                # Only allow emails ending in @*.gc.ca or @canada.ca
-                "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
-                "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
-                "oninput": "setCustomValidity('')",
-                "class": "form-control",
-            }
-        ),
+        widget=forms.EmailInput(attrs={**phac_email_widget_attrs}),
     )
 
     def clean_email(self):

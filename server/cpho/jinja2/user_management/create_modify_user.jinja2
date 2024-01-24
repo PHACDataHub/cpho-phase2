@@ -12,6 +12,8 @@
       {% if form.email %}
         <label class="required" for="id_email">{{ form.email.label }} ({{ tdt("required") }})</label>
         {{ form.email }}
+        <label class="required" for="id_email_confirmation">{{ form.email_confirmation.label }} ({{ tdt("required") }})</label>
+        {{ form.email_confirmation }}
       {% elif user_to_be_modified %}
         <label class="required" for="id_email">{{ tdt("email") }}</label>
         <input disabled id="id_email"  value="{{ user_to_be_modified.email }}">

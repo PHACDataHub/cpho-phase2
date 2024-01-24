@@ -8,6 +8,7 @@ from django.utils.translation import get_language
 import pytz
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
+from cpho.text import tdt
 
 eastern_timezone = pytz.timezone("Canada/Eastern")
 
@@ -56,3 +57,12 @@ def get_or_create_user_by_email(email: str):
     if not user:
         user = User.objects.create_user(username=email, email=email)
     return user
+
+
+phac_email_widget_attrs = {
+    # Only allow emails ending in @*.gc.ca or @canada.ca
+    "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
+    "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
+    "oninput": "setCustomValidity('')",
+    "class": "form-control",
+}

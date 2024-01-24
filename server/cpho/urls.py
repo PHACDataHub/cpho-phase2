@@ -140,4 +140,9 @@ urlpatterns = [
         views.ManageBenchmarkingData.as_view(),
         name="manage_benchmarking_data",
     ),
+    path(
+        "indicators/export_benchmarking/<int:indicator_id>",
+        views.ExportBenchmarking.as_view(),
+        name="export_benchmarking",
+    ),
 ]

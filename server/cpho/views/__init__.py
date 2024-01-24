@@ -7,3 +7,4 @@ from .submission import *
 from .upload_indicators import *
 from .user_management import *
 from .view_util import *
+from .export_metadata import *

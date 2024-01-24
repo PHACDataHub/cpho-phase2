@@ -54,7 +54,7 @@ class ExportBenchmarking(MustPassAuthCheckMixin, View):
             "OECD_Country",
             "Value",
             "Year",
-            "Standard_Deviation",
+            # "Standard_Deviation",
             "Comparison_to_OECD_average",
             "Labels (multiple graphs only)",
         ]
@@ -70,7 +70,7 @@ class ExportBenchmarking(MustPassAuthCheckMixin, View):
                     benchmarking_data.oecd_country,
                     benchmarking_data.value,
                     benchmarking_data.year,
-                    benchmarking_data.standard_deviation,
+                    # benchmarking_data.standard_deviation,
                     benchmarking_data.comparison_to_oecd_avg,
                     benchmarking_data.labels,
                 ]

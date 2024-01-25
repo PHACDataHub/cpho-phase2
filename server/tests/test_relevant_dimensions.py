@@ -29,7 +29,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in page_data
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_access_indicator=True):
+    with patch_rules(can_edit_indicator_data=True):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
         page_data = str(resp.content)
@@ -72,7 +72,7 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in page_data
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_access_indicator=True):
+    with patch_rules(can_edit_indicator_data=True):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
         page_data = str(resp.content)

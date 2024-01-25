@@ -380,7 +380,7 @@ class ManageIndicatorData(
 
     def check_rule(self):
         return test_rule(
-            "can_access_indicator", self.request.user, self.indicator
+            "can_edit_indicator_data", self.request.user, self.indicator
         )
 
     def post(self, *args, **kwargs):

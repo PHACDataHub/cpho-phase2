@@ -11,7 +11,7 @@ def test_benchmarking(vanilla_user_client):
     ind.save()
     url = reverse("manage_benchmarking_data", args=[ind.id])
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_edit_benchmarking=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
@@ -43,7 +43,7 @@ def test_benchmarking(vanilla_user_client):
         ],
     }
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_edit_benchmarking=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -58,7 +58,7 @@ def test_benchmarking(vanilla_user_client):
     assert canada_data.year == 2020
     # assert canada_data.standard_deviation == 0.2
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_edit_benchmarking=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
@@ -90,7 +90,7 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-1-is_deleted": "on",  # delete canada
     }
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(can_edit_benchmarking=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -100,8 +100,8 @@ def test_benchmarking(vanilla_user_client):
     aus_data = created_data.get(oecd_country=aus)
     assert aus_data.value == 1.1
 
-    deleted_data = Benchmarking.objects.filter(indicator=ind)
-    assert deleted_data.count() == 2
-    canada_data = deleted_data.get(oecd_country=canada)
+    all_data = Benchmarking.objects.filter(indicator=ind)
+    assert all_data.count() == 2
+    canada_data = all_data.get(oecd_country=canada)
     assert canada_data.is_deleted == True
     assert canada_data.deletion_time is not None

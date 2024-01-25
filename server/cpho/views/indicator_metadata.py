@@ -193,7 +193,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_access_indicator", self.request.user, self.indicator
+            "can_edit_benchmarking", self.request.user, self.indicator
         )
 
     def benchmarking_formset(self):

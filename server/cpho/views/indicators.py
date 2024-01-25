@@ -242,7 +242,7 @@ class EditIndicator(MustPassAuthCheckMixin, UpdateView):
 
     def check_rule(self):
         return test_rule(
-            "can_access_indicator",
+            "can_edit_indicator",
             self.request.user,
             self.indicator,
         )

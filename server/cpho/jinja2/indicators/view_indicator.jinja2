@@ -12,7 +12,7 @@
       <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
       <div class="col-md-2 mt-4">
         <div>
-          {% if respects_rule('can_access_indicator', indicator) %}
+          {% if respects_rule('can_edit_indicator', indicator) %}
             <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true" class="bi bi-pen"></span>
@@ -45,7 +45,7 @@
         </div>
 
         <div>
-          {% if respects_rule('can_access_indicator', indicator) %}
+          {% if respects_rule('can_edit_benchmarking', indicator) %}
             <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true" class="bi bi-clipboard-data"></span>

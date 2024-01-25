@@ -22,7 +22,8 @@ from server.config_util import get_project_config, is_running_tests
 
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 config = get_project_config()
 
@@ -251,21 +252,28 @@ WSGI_APPLICATION = "server.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-        #   'OPTIONS': {'sslmode': 'require'},
+USE_SQLITE = config("USE_SQLITE", default=False, cast=bool)
+# Note that sqlite breaks the changelog
+if USE_SQLITE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
-if IS_RUNNING_TESTS:
-    DATABASES["default"]["TEST"] = {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("TEST_DB_NAME"),
+
+
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST"),
+            "PORT": config("DB_PORT"),
+            "TEST": {"NAME": config("TEST_DB_NAME", default="cpho_test_db")},
+        }
     }
 
 

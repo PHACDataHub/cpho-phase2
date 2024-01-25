@@ -32,3 +32,6 @@ server/postgres.env
 
 # Pulumi deploy scripts
 **/node_modules
+
+
+db.sqlite3

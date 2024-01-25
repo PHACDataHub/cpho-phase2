@@ -95,12 +95,15 @@ def get_submission_statuses(indicator, period):
 
 
 def relevant_dimension_types_for_period(indicator, period):
-    data = (
+    ids_of_dimensions_with_data = (
         indicator.data.filter(period=period)
-        .prefetch_related("dimension_type")
-        .distinct("dimension_type")
+        .values("dimension_type_id")
+        .distinct()
     )
-    dimension_types = {d.dimension_type for d in data}.union(
+    dimensions_with_data = DimensionType.objects.filter(
+        id__in=ids_of_dimensions_with_data
+    )
+    dimension_types = set(dimensions_with_data).union(
         indicator.relevant_dimensions.all()
     )
     return list(dimension_types)

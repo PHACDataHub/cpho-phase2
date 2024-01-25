@@ -2,27 +2,40 @@ from typing import Any, Dict
 
 from django import forms
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView
+from django.utils.functional import cached_property
+from django.views.generic import (
+    CreateView,
+    FormView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 
 from autocomplete import HTMXAutoComplete
 from autocomplete import widgets as ac_widgets
 
+from server.form_util import StandardFormMixin
 from server.rules_framework import test_rule
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
+from cpho.forms import MultiIndicatorAutocomplete, MultiUserAutocomplete
 from cpho.models import (
     DimensionType,
     Indicator,
+    IndicatorDirectory,
     Period,
-    PHACOrg,
-    PhacOrgRole,
     User,
 )
-from cpho.text import tdt
-from cpho.util import GroupFetcher, get_lang_code
+from cpho.text import tdt, tm
+from cpho.util import (
+    GroupFetcher,
+    get_lang_code,
+    get_or_create_user_by_email,
+    phac_email_widget_attrs,
+)
 
 from .view_util import MustPassAuthCheckMixin
 
@@ -39,58 +52,19 @@ class ManageUsers(CanManageUsersMixin, TemplateView):
     template_name = "user_management/user_management_page.jinja2"
 
     def get_context_data(self, **kwargs):
-        user_metadata = {}
         all_users = User.objects.all()
 
-        for user in all_users:
-            user_phac_org_roles = PhacOrgRole.objects.filter(user=user)
-            role_metadata = []
-            for roles in user_phac_org_roles:
-                role_metadata.append(
-                    {
-                        "phac_org_obj": roles.phac_org,
-                        "phac_org_name": roles.phac_org.name_en
-                        if get_lang_code() == "en"
-                        else roles.phac_org.name_fr,
-                        "is_lead": roles.is_phac_org_lead,
-                    }
-                )
-            user_metadata[user] = role_metadata
+        indicator_directories = (
+            IndicatorDirectory.objects.all().prefetch_related(
+                "users", "indicators"
+            )
+        )
 
         return {
             **super().get_context_data(**kwargs),
-            "user_metadata": user_metadata,
+            "all_users": all_users,
+            "indicator_directories": indicator_directories,
         }
-
-
-class MultiPhacOrgAutocomplete(HTMXAutoComplete):
-    """Autocomplete component to select phacOrgs"""
-
-    name = "phac_org_multi"
-    multiselect = True
-    minimum_search_length = 0
-    model = PHACOrg
-
-    def get_items(self, search=None, values=None):
-        data = PHACOrg.branches().select_related(
-            "parent", "parent__parent", "parent__parent__parent"
-        )
-        if search is not None:
-            items = [
-                {"label": str(x), "value": str(x.id)}
-                for x in data
-                if search == "" or str(search).upper() in f"{x}".upper()
-            ]
-            return items
-        if values is not None:
-            items = [
-                {"label": str(x), "value": str(x.id)}
-                for x in data
-                if str(x.id) in values
-            ]
-            return items
-
-        return []
 
 
 class UserForm(forms.Form):
@@ -113,43 +87,37 @@ class UserForm(forms.Form):
         ),
     )
 
-    phac_org_multi = forms.ModelMultipleChoiceField(
-        queryset=PHACOrg.branches(),
-        required=False,
-        widget=ac_widgets.Autocomplete(
-            use_ac=MultiPhacOrgAutocomplete,
-            attrs={
-                "id": "phac_org_multi__textinput",
-            },
-        ),
-        label=tdt("phac_org_multi"),
-    )
-
 
 class CreateUserForm(UserForm):
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(
-            attrs={
-                # Only allow emails ending in @*.gc.ca or @canada.ca
-                "pattern": r"^[a-zA-Z0-9_.+\-]+@([a-zA-Z0-9\-]+\.gc\.ca|canada\.ca)$",
-                "oninvalid": f"setCustomValidity('{tdt('invalid email use phac-aspc.gc.ca or canada.ca')}')",
-                "oninput": "setCustomValidity('')",
-                "class": "form-control",
-            }
-        ),
+        widget=forms.EmailInput(attrs={**phac_email_widget_attrs}),
+    )
+    email_confirmation = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={**phac_email_widget_attrs}),
     )
 
     def clean_email(self):
         # force only lowercase emails, safer to compare that way
         email = self.cleaned_data["email"].lower()
-        if not (email.endswith("@canada.ca") or email.endswith(".gc.ca")):
+        if not email.endswith("phac-aspc.gc.ca"):
             raise ValidationError(tdt("email_exception"))
 
         if User.objects.filter(email__icontains=email).exists():
             raise ValidationError(tdt("account_for_email_already_exists"))
 
         return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        email_confirmation = cleaned_data.get("email_confirmation")
+
+        if email != email_confirmation:
+            raise ValidationError(tm("email_confirmation_exception"))
+
+        return cleaned_data
 
 
 class UserFormView(FormView, CanManageUsersMixin):
@@ -172,16 +140,7 @@ class UserFormView(FormView, CanManageUsersMixin):
     def save_form(self, form):
         with transaction.atomic():
             user = self.get_or_create_user(form)
-            self.assign_orgs(user, form)
             self.assign_groups(user, form)
-
-    def assign_orgs(self, user, form):
-        user.phac_org_roles.all().delete()
-        for org in form.cleaned_data["phac_org_multi"]:
-            # TODO: if we keep branch leads, split this out into 2 fields, branches_lead and branches_read_only
-            PhacOrgRole.objects.create(
-                user=user, phac_org=org, is_phac_org_lead=True
-            )
 
     def assign_groups(self, user, form):
         user.groups.remove(
@@ -229,7 +188,6 @@ class ModifyUser(UserFormView, CanManageUsersMixin):
         initial = {
             "is_admin": user.is_admin,
             "is_hso": user.is_hso,
-            "phac_org_multi": [r.phac_org for r in user.phac_org_roles.all()],
         }
         return initial
 
@@ -244,3 +202,134 @@ class ModifyUser(UserFormView, CanManageUsersMixin):
             **super().get_context_data(**kwargs),
             "user_to_be_modified": User.objects.get(id=self.kwargs["user_id"]),
         }
+
+
+class IndicatorDirectoryForm(forms.ModelForm, StandardFormMixin):
+    class Meta:
+        model = IndicatorDirectory
+        fields = ["name", "description", "indicators", "users"]
+
+    indicators = forms.ModelMultipleChoiceField(
+        queryset=Indicator.objects.all(),
+        required=False,
+        widget=ac_widgets.Autocomplete(
+            use_ac=MultiIndicatorAutocomplete,
+            attrs={
+                "id": "indicators__textinput",
+            },
+        ),
+        label=tdt("indicators"),
+    )
+
+    users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=ac_widgets.Autocomplete(
+            use_ac=MultiUserAutocomplete,
+            attrs={
+                "id": "users__textinput",
+            },
+        ),
+        label=tdt("users"),
+    )
+
+
+class IndicatorDirectoryFormMixin(FormView):
+    form_class = IndicatorDirectoryForm
+    template_name = "user_management/create_modify_indicator_directory.jinja2"
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs["instance"] = self.directory_object
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("root")
+
+
+class CreateIndicatorDirectory(
+    CanManageUsersMixin, IndicatorDirectoryFormMixin
+):
+    @cached_property
+    def directory_object(self):
+        return IndicatorDirectory()
+
+
+class EditIndicatorDirectory(CanManageUsersMixin, IndicatorDirectoryFormMixin):
+    @cached_property
+    def directory_object(self):
+        return IndicatorDirectory.objects.get(id=self.kwargs["pk"])
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                **phac_email_widget_attrs,
+            }
+        ),
+    )
+    email_confirmation = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={**phac_email_widget_attrs}),
+    )
+
+    def clean_email(self):
+        # force only lowercase emails, safer to compare that way
+        email = self.cleaned_data["email"].lower()
+        if not email.endswith("phac-aspc.gc.ca"):
+            raise ValidationError(tdt("email_exception"))
+
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        email_confirmation = cleaned_data.get("email_confirmation")
+
+        if email != email_confirmation:
+            raise ValidationError(tm("email_confirmation_exception"))
+
+        return cleaned_data
+
+
+class IndicatorDirectoryHome(FormView):
+    form_class = EmailForm
+    template_name = "user_management/indicator_directory_home.jinja2"
+
+    def get_context_data(self, **kwargs: Any):
+        return {
+            **super().get_context_data(**kwargs),
+            "indicator_directory": self.indicator_directory,
+        }
+
+    @cached_property
+    def indicator_directory(self):
+        return IndicatorDirectory.objects.get(id=self.kwargs["pk"])
+
+    def dispatch(self, request, *args, **kwargs):
+        if not test_rule(
+            "can_access_indicator_directory",
+            request.user,
+            self.indicator_directory.id,
+        ):
+            raise PermissionDenied()
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        email = form.cleaned_data["email"]
+        user = get_or_create_user_by_email(email)
+        self.indicator_directory.users.add(user)
+        messages.success(
+            self.request, tdt("user added to indicator directory")
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("indicator_directory_home", args=[self.kwargs["pk"]])

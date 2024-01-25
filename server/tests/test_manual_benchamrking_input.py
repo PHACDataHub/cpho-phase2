@@ -11,6 +11,10 @@ def test_benchmarking(vanilla_user_client):
     ind.save()
     url = reverse("manage_benchmarking_data", args=[ind.id])
 
+    with patch_rules(can_access_indicator=True, can_edit_benchmarking=False):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 403
+
     with patch_rules(can_edit_benchmarking=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200

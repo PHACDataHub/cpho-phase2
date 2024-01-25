@@ -168,7 +168,7 @@ class UploadForm(forms.Form):
                 )
 
             if indicator_obj is not None and not test_rule(
-                "can_edit_indicator_data", self.user, indicator_obj
+                "can_access_indicator", self.user, indicator_obj
             ):
                 data_row["errors"]["Indicator"] = tdt(
                     f"You do not have permission to edit data for Indicator: {indicator_obj.name}"
@@ -188,7 +188,7 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
 
     def check_rule(self):
         return test_rule(
-            "can_upload_indicator",
+            "can_use_indicator_upload",
             self.request.user,
         )
 
@@ -233,7 +233,7 @@ class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_upload_indicator",
+            "can_use_indicator_upload",
             self.request.user,
         )
 
@@ -269,7 +269,7 @@ class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
 class SaveUpload(MustPassAuthCheckMixin, View):
     def check_rule(self):
         return test_rule(
-            "can_upload_indicator",
+            "can_use_indicator_upload",
             self.request.user,
         )
 
@@ -307,7 +307,7 @@ class SaveUpload(MustPassAuthCheckMixin, View):
         period_val = mapper["period_mapper"][datum["Period"]]
 
         if not test_rule(
-            "can_edit_indicator_data", self.request.user, indicator_obj
+            "can_access_indicator", self.request.user, indicator_obj
         ):
             return None
 

@@ -13,6 +13,21 @@ urlpatterns = [
         name="modify_user",
     ),
     path(
+        "indicator_directories/create/",
+        views.CreateIndicatorDirectory.as_view(),
+        name="create_indicator_directory",
+    ),
+    path(
+        "indicator_directories/<int:pk>/edit/",
+        views.EditIndicatorDirectory.as_view(),
+        name="edit_indicator_directory",
+    ),
+    path(
+        "indicator_directories/<int:pk>/",
+        views.IndicatorDirectoryHome.as_view(),
+        name="indicator_directory_home",
+    ),
+    path(
         "indicators/", views.ListIndicators.as_view(), name="list_indicators"
     ),
     path(

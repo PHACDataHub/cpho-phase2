@@ -4,6 +4,8 @@ from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import DimensionType, DimensionValue
 from cpho.util import group_by
 
+from .models import IndicatorDirectoryUserAccess
+
 
 def is_submission_out_of_date(indicator_datum):
     return
@@ -102,3 +104,22 @@ def relevant_dimension_types_for_period(indicator, period):
         indicator.relevant_dimensions.all()
     )
     return list(dimension_types)
+
+
+def get_indicators_for_user(user_id):
+    directory_access_links = IndicatorDirectoryUserAccess.objects.filter(
+        user_id=user_id
+    ).prefetch_related("directory__indicators")
+    all_indicators = set()
+    for link in directory_access_links:
+        indicators = set(link.directory.indicators.all())
+        all_indicators.update(indicators)
+
+    return all_indicators
+
+
+def get_indicator_directories_for_user(user_id):
+    directory_access_links = IndicatorDirectoryUserAccess.objects.filter(
+        user_id=user_id
+    ).prefetch_related("directory")
+    return [link.directory for link in directory_access_links]

@@ -17,7 +17,7 @@ def test_import(hso_client):
     )
     data["csv_file"].name = "test.csv"
     url = reverse("upload_indicator")
-    with patch_rules(can_upload_indicator=True):
+    with patch_rules(can_use_indicator_upload=True):
         response = hso_client.post(
             url,
             data=data,
@@ -26,7 +26,7 @@ def test_import(hso_client):
     assert response["Content-Type"] == "text/html; charset=utf-8"
 
     url = reverse("save_upload")
-    with patch_rules(can_upload_indicator=True):
+    with patch_rules(can_use_indicator_upload=True):
         response = hso_client.post(
             url,
         )

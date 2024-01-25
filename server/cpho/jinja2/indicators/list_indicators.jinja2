@@ -5,10 +5,23 @@
     {% if respects_rule('can_create_indicator') %}
       <a href='{{ url("create_indicator") }}' class="btn btn-primary">{{ tdt("Create new indicator") }}</a>
     {% endif %}
-    {% if respects_rule('can_upload_indicator') %}
+    {% if respects_rule('can_use_indicator_upload') %}
       <a href='{{ url("upload_indicator") }}' class="btn btn-primary">{{ tdt("Upload Indicator") }}</a>
     {% endif %}
   </div>
+  {% if user_indicator_directories %}
+    <div class="alert alert-info my-4">
+      <p class="h3">{{ tdt("Indicator groups") }}</p>
+      <p>{{ tdt("You have access to the following indicator groups") }}</p>
+      <ul>
+        {% for directory in user_indicator_directories %}
+          <li>
+            <a href='{{ url("indicator_directory_home", args=[directory.pk]) }}'>{{ directory.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
   <div>
     <table class="table table-hover">
       <thead>
@@ -16,18 +29,16 @@
           <th>{{ tdt("Indicator Name") }}</th>
           <th>{{ tdt("Category") }}</th>
           <th>{{ tdt("Topic") }}</th>
-          <th>{{ tdt("Lead Program") }}</th>
           <th width="15%">{{ tdt("Actions") }}</th>
         </tr>
       </thead>
       <tbody>
         {% for indicator in object_list %}
-          {% if respects_rule('can_view_indicator', indicator) %}
+          {% if respects_rule('can_access_indicator', indicator) %}
             <tr>
               <td>{{ indicator.name }}</td>
               <td>{{ indicator.get_category_display() }}</td>
               <td>{{ indicator.get_topic_display() }}</td>
-              <td>{{ indicator.PHACOrg }}</td>
               <td>
                 <a class="btn btn-outline-dark"
                    href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ tdt("View indicator") }}</a>

@@ -256,6 +256,7 @@ def export_mapper():
 
     return export_mapping
 
+
 def metadata_mapper():
     all_dimensions = DimensionType.objects.all()
     all_dimension_dict = {
@@ -273,7 +274,7 @@ def metadata_mapper():
             "similar": "Similar",
             "better": "Better",
             "worse": "Worse",
-            "outlier": "Outlier"
+            "outlier": "Outlier",
         },
         "labels_mapper": {
             "": "",

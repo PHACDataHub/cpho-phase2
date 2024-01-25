@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.db import models
 
+from ckeditor.fields import RichTextField
 from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
@@ -59,17 +60,14 @@ class Indicator(models.Model):
 
     sub_indicator_measurement = fields.CharField(max_length=150)
 
-    PHACOrg = fields.ForeignKey(
-        "cpho.PHACOrg",
-        null=True,
-        blank=True,
-        on_delete=models.RESTRICT,
-    )
-
     relevant_dimensions = fields.ManyToManyField(
         "cpho.DimensionType",
         blank=True,
         related_name="indicators",
+    )
+
+    general_footnotes = RichTextField(
+        config_name="notes", null=True, blank=True
     )
 
     def __str__(self):
@@ -359,6 +357,7 @@ class Benchmarking(models.Model):
                 "oecd_country",
                 "is_deleted",
                 "deletion_time",
+                "labels",
             ),
         ]
 
@@ -367,10 +366,49 @@ class Benchmarking(models.Model):
     indicator = fields.ForeignKey(
         Indicator, on_delete=models.RESTRICT, related_name="benchmarking"
     )
+    UNIT_CHOICES = [
+        ("", "--"),
+        (
+            "age_standard_rate_per_100K",
+            tdt("Age standardized rates per 100 000 population"),
+        ),
+        ("age_standard_percentage", tdt("Age-standardized percentage")),
+        ("ddd_per_1000_per_day", tdt("DDD per 1000 population per day")),
+        (
+            "deaths_per_million_inhabitants",
+            tdt("Deaths per million inhabitants"),
+        ),
+        ("incidence_100K_population", tdt("Incidence per 100 000 population")),
+        ("litres_per_capita", tdt("Litres per Capita")),
+        ("percent", tdt("Percent")),
+        ("percent_children", tdt("Percent of children")),
+        (
+            "percent_births_below_2500_grams",
+            tdt("Percent of live births below 2500 grams"),
+        ),
+        (
+            "percent_people_fully_vaccinated",
+            tdt("Percent of people fully vaccinated"),
+        ),
+        ("percent_population", tdt("Percent of population")),
+        (
+            "percent_population_health_good_or_very_good",
+            tdt(
+                "Percent of population that rate their health as good or very good"
+            ),
+        ),
+        ("percentage_value", tdt("Percentage value")),
+        ("rate_per_100K", tdt("Rate per 100 000")),
+        ("rate_per_100K_population", tdt("Rate per 100 000 population")),
+        ("rate_per_1000_population", tdt("Rate per 1000 population")),
+        ("total_deaths_per_1M", tdt("Total deaths per 1 million")),
+        ("total_per_100K_persons", tdt("Total per 100 000 persons")),
+    ]
+    unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
     year = fields.IntegerField()
-    standard_deviation = fields.FloatField()
+    standard_deviation = fields.FloatField(null=True)
 
     COMPARISON_CHOICES = [
         ("", "--"),
@@ -379,8 +417,18 @@ class Benchmarking(models.Model):
         ("worse", tdt("Worse")),
         ("outlier", tdt("Outlier")),
     ]
-    comparison_to_oecd_avg = fields.CharField(max_length=50)
-    labels = fields.CharField(max_length=50, null=True, blank=True)
+    comparison_to_oecd_avg = fields.CharField(
+        max_length=50, choices=COMPARISON_CHOICES
+    )
+
+    LABEL_CHOICES = [
+        ("", "--"),
+        ("anxiety", tdt("Anxiety")),
+        ("depression", tdt("Depression")),
+        ("women", tdt("Women")),
+        ("men", tdt("Men")),
+    ]
+    labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""
@@ -388,6 +436,51 @@ class Benchmarking(models.Model):
 
     def __str__(self):
         return str(self.indicator) + " : " + str(self.oecd_country)
+
+
+class TrendAnalysisManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+
+@add_to_admin
+@track_versions_with_editor
+class TrendAnalysis(models.Model):
+    class Meta:
+        unique_together = [
+            (
+                "indicator",
+                "year",
+                "is_deleted",
+                "deletion_time",
+            ),
+        ]
+
+    objects = models.Manager()
+    active_objects = TrendAnalysisManager()
+    indicator = fields.ForeignKey(
+        Indicator, on_delete=models.RESTRICT, related_name="trend_analysis"
+    )
+    year = fields.CharField(max_length=50)
+    year_range = fields.CharField(max_length=50, null=True, blank=True)
+    data_point = fields.FloatField()
+    line_of_best_fit_point = fields.FloatField(null=True, blank=True)
+    trend_segment = fields.CharField(max_length=50, null=True, blank=True)
+
+    TREND_CHOICES = [
+        ("", "--"),
+        ("stable", tdt("Stable")),
+        ("increasing", tdt("Increasing")),
+        ("decreasing", tdt("Decreasing")),
+    ]
+    trend = fields.CharField(max_length=50, null=True, blank=True)
+    is_deleted = fields.BooleanField(default=False)
+    deletion_time = fields.CharField(
+        max_length=50, blank=True, null=True, default=""
+    )
+
+    def __str__(self):
+        return "Trend: " + str(self.indicator) + " : " + str(self.year)
 
 
 # the following commented-out models don't really do anything yet,

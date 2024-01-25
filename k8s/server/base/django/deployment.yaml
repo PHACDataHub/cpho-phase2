@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "false"
+    spec:
+      containers:
+      - name: istio-proxy
+        image: auto
+      - name: server
+        securityContext:
+          runAsUser: 5678
+        env:
+        - name: IS_K8S
+          value: "true"
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: django-secret-key
+              key: secret-key
+        - name: ALLOWED_HOSTS
+          value: "hopic-sdpac.phac-aspc.alpha.canada.ca,34.149.100.163,localhost,34.152.0.41,41.0.152.34.bc.googleusercontent.com"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack-webhook-url
+              key: slack-url
+        - name: DB_NAME
+          value: "cpho-phase2_db"
+        - name: DB_HOST
+          value: "cpho-postgres14-cluster-rw"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: cpho-postgres14-cluster-app
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cpho-postgres14-cluster-app
+              key: password
+        - name: PHAC_ASPC_OAUTH_PROVIDER
+          value: "microsoft"
+        - name: PHAC_ASPC_OAUTH_APP_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: phac-aspc-oauth-config
+              key: client-id
+        - name: PHAC_ASPC_OAUTH_APP_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: phac-aspc-oauth-config
+              key: client-secret
+        - name: PHAC_ASPC_OAUTH_MICROSOFT_TENANT
+          valueFrom:
+            secretKeyRef:
+              name: phac-aspc-oauth-config
+              key: microsoft-tenant
+        - name: ENABLE_LEGACY_LOG_IN # TODO temporary for dev purposes, not to be used in final prod
+          value: "true"
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+            httpHeaders:
+            - name: Host
+              value: hopic-sdpac.phac-aspc.alpha.canada.ca
+          initialDelaySeconds: 35
+          periodSeconds: 10
+          timeoutSeconds: 3
+status: {}

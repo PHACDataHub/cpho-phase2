@@ -1,5 +1,8 @@
+from typing import Any
+
 from django import forms
 from django.contrib import messages
+from django.db.models.query import QuerySet
 from django.forms.models import ModelForm
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -11,10 +14,14 @@ from django.views.generic import (
     UpdateView,
 )
 
+from ckeditor.widgets import CKEditorWidget
+
 from server.rules_framework import test_rule
 
-from cpho.models import DimensionType, Indicator, Period, PHACOrg
+from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import (
+    get_indicator_directories_for_user,
+    get_indicators_for_user,
     get_submission_statuses,
     relevant_dimension_types_for_period,
 )
@@ -41,8 +48,8 @@ class IndicatorForm(ModelForm):
             "topic",
             "detailed_indicator",
             "sub_indicator_measurement",
-            "PHACOrg",
             "relevant_dimensions",
+            "general_footnotes",
         ]
 
     name = forms.CharField(
@@ -74,14 +81,8 @@ class IndicatorForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
-    PHACOrg = forms.ModelChoiceField(
-        required=False,
-        queryset=PHACOrg.branches(),
-        widget=forms.Select(
-            attrs={
-                "class": "form-select",
-            }
-        ),
+    general_footnotes = forms.CharField(
+        required=False, widget=CKEditorWidget(config_name="notes")
     )
 
     # make it display name_en attribute of DimensionType model
@@ -97,9 +98,19 @@ class ListIndicators(ListView):
     model = Indicator
     template_name = "indicators/list_indicators.jinja2"
 
+    def get_queryset(self):
+        if test_rule("is_admin_or_hso", self.request.user):
+            return Indicator.objects.all()
+
+        else:
+            return get_indicators_for_user(self.request.user.id)
+
     def get_context_data(self, **kwargs):
         return {
             **super().get_context_data(**kwargs),
+            "user_indicator_directories": get_indicator_directories_for_user(
+                self.request.user.id
+            ),
         }
 
 
@@ -109,7 +120,7 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_view_indicator_data",
+            "can_access_indicator",
             self.request.user,
             self.indicator,
         )
@@ -189,7 +200,7 @@ class ViewIndicatorForPeriod(
 
     def check_rule(self):
         return test_rule(
-            "can_view_indicator_data",
+            "can_access_indicator",
             self.request.user,
             self.indicator,
         )

@@ -20,7 +20,7 @@ class GroupPrefetcherManager(UserManager):
         return (
             super(GroupPrefetcherManager, self)
             .get_queryset()
-            .prefetch_related(models.Prefetch("groups", to_attr="group_list"))
+            .prefetch_related("groups")
         )
 
 

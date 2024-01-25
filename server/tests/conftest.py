@@ -7,9 +7,7 @@ from jinja2 import Template as Jinja2Template
 from phac_aspc.django.settings.utils import configure_settings_for_tests
 
 from cpho.management.commands.seed_countries import seed_countries
-from cpho.management.commands.seed_programs import seed_programs
-from cpho.models import PHACOrg, User
-from cpho.scripts.dev import create_users
+from cpho.models import User
 from cpho.util import GroupFetcher
 
 # Modify django settings to skip axes authentication backend
@@ -42,9 +40,7 @@ def globally_scoped_fixture_helper(django_db_setup, django_db_blocker):
 def seed_core_data(globally_scoped_fixture_helper):
     call_command("loaddata", "cpho/fixtures/periods.yaml")
     call_command("loaddata", "cpho/fixtures/dimension_lookups.yaml")
-    seed_programs(mode="reset")
     seed_countries(mode="reset")
-    create_users()
     # ensure groups created (caching groups break accross tests if not pre-created)
     GroupFetcher.hso_group
     GroupFetcher.admin_group
@@ -63,49 +59,13 @@ def vanilla_user_client(vanilla_user):
 
 
 @pytest.fixture
-def cdsb_user():
-    return User.objects.get(username="cdsb_user")
-
-
-@pytest.fixture
-def cdsb_lead():
-    return User.objects.get(username="cdsb_lead")
-
-
-@pytest.fixture
-def oae_lead():
-    return User.objects.get(username="oae_lead")
-
-
-@pytest.fixture
 def hso_user():
-    u = User.objects.get(username="hso")
-    u.groups.add(GroupFetcher.hso_group)
-    return u
-
-
-@pytest.fixture
-def cdsb_org():
-    return PHACOrg.objects.get(acronym_en="CDSB")
-
-
-@pytest.fixture
-def emb_org():
-    return PHACOrg.objects.get(acronym_en="EMB")
-
-
-@pytest.fixture
-def cdsb_lead_client(cdsb_lead):
-    client = Client()
-    client.force_login(cdsb_lead)
-    return client
-
-
-@pytest.fixture
-def cdsb_user_client(cdsb_user):
-    client = Client()
-    client.force_login(cdsb_user)
-    return client
+    hso = User.objects.create_user(
+        username="hso",
+        password="hso",
+    )
+    hso.groups.add(GroupFetcher.hso_group)
+    return hso
 
 
 @pytest.fixture

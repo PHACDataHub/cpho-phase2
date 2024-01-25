@@ -23,7 +23,7 @@ def check_preview(val_dict, hso_client, fieldname=None, num_errors=1):
     data["csv_file"].name = "test.csv"
 
     url = reverse("upload_indicator")
-    with patch_rules(can_upload_indicator=True):
+    with patch_rules(can_use_indicator_upload=True):
         response = hso_client.post(
             url,
             data=data,

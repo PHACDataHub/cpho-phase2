@@ -84,4 +84,8 @@ translation_entries = {
         "translated_using": "To continue, please sign in with Microsoft using your PHAC credentials.",
         "fr_auto": "Pour continuer, veuillez vous connecter avec Microsoft en utilisant vos identifiants de l'ASPC.",
     },
+    "email_confirmation_exception": {
+        "en": "Emails do not match",
+        "fr": "Les courriels doivent être identiques",
+    },
 }

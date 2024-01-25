@@ -20,6 +20,7 @@ pytz==2022.2.1
 requests==2.31.0
 whitenoise==6.4.0
 rules==3.3
+django-ckeditor==6.5.1
 
 # opentelemetry
 opentelemetry-sdk==1.19.0

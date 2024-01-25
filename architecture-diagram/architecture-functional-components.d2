@@ -1,0 +1,72 @@
+direction: right
+
+user: User's\nBrowser {
+  icon: ./icons/general/laptop.svg
+  style: {
+    stroke: blue
+    fill: "#e1f6fe"
+  }
+  unauthed-traffic: Unauthenticated\nsession {
+    icon: ./icons/general/person.svg
+    shape: image
+    style: {
+      font-color: red
+    }
+  }
+
+  authed-traffic: Authenticated\nsession {
+    icon: ./icons/general/person.svg
+    shape: image
+    style: {
+      font-color: green
+    }
+  }
+}
+
+active-directory: Health Canada's\nAzure Active Directory\nsign in page {
+  icon: ./icons/general/Azure-Active-Directory.svg
+  shape: image
+}
+
+gcp: PHAC Google Cloud Org {
+  icon: ./icons/gcp/logo.svg
+  style: {
+    stroke: "#000000"
+    fill: "#f1f3f4"
+  }
+
+  project: HoPiC GCP Project {
+    icon: ./icons/general/folder.svg
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+
+    app-secrets: App Secrets,\ninjected in containers\nas env vars at run-time {
+      icon: ./icons/kubernetes/secret.svg
+      shape: image
+    }
+
+    django: Django App Container(s) {
+      icon: ./icons/kubernetes/pod.svg
+      shape: image
+    }
+
+    pg: PostgreSQL DB Cluster {
+      icon: ./icons/kubernetes/pod.svg
+      shape: image
+    }
+  }
+}
+
+# unauthed traffic flow
+user.unauthed-traffic -> gcp.project.django: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
+gcp.project.django -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
+active-directory -> user.authed-traffic: oAuth return\nredirect (HTTPS) {style: {stroke: red}}
+
+# authed traffic flow
+user.authed-traffic -> gcp.project.django: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
+gcp.project.django -> gcp.project.pg: PostgreSQL protocol\nover TLS {style: {stroke: green}}
+
+# django pod management
+gcp.project.app-secrets -> gcp.project.django: "" {style: {stroke: grey}}

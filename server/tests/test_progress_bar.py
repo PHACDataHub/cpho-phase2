@@ -10,7 +10,7 @@ from .utils_for_tests import patch_rules
 
 def progress_bar_percent(ind, period, vanilla_user_client, precent_list):
     url = reverse("view_indicator_for_period", args=[ind.id, period.id])
-    with patch_rules(can_view_indicator_data=True):
+    with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url)
     assert resp.status_code == 200
     html_content = resp.content.decode("utf-8")
@@ -50,13 +50,13 @@ def test_progress_bar(vanilla_user, vanilla_user_client):
     progress_bar_percent(ind, period, vanilla_user_client, [100, 0, 0])
 
     url = reverse("submit_indicator_data_all", args=[ind.id, period.id])
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "program"})
         assert resp.status_code == 302
 
     progress_bar_percent(ind, period, vanilla_user_client, [100, 100, 0])
 
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "hso"})
         assert resp.status_code == 302
 

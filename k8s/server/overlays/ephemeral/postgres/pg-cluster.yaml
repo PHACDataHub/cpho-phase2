@@ -1,0 +1,20 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cpho-postgres14-cluster
+spec:
+  instances: 1
+  resources:
+    requests:
+      cpu: 450m
+      memory: 1926Mi
+  postgresql:
+    pg_hba:
+      - host all all all md5
+  bootstrap:
+    initdb:
+      database: cpho-phase2_db
+      owner: cpho-phase2_db_user
+  storage:
+    storageClass: standard
+    size: 2Gi

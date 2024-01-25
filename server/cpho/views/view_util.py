@@ -257,6 +257,59 @@ def export_mapper():
     return export_mapping
 
 
+def metadata_mapper():
+    all_dimensions = DimensionType.objects.all()
+    all_dimension_dict = {
+        dimension.code: dimension for dimension in all_dimensions
+    }
+    all_dimension_vals = DimensionValue.objects.all()
+    all_dimension_val_dict = {
+        dimension_val.value: dimension_val
+        for dimension_val in all_dimension_vals
+    }
+    all_period_dict = {period.code: period for period in Period.objects.all()}
+    return {
+        "comparison_mapper": {
+            "": "",
+            "similar": "Similar",
+            "better": "Better",
+            "worse": "Worse",
+            "outlier": "Outlier",
+        },
+        "labels_mapper": {
+            "": "",
+            "anxiety": "Anxiety",
+            "depression": "Depression",
+            "women": "Women",
+            "men": "Men",
+        },
+        "unit_mapper": {
+            "": "",
+            "AGE-STANDARDIZED RATE": "age_rate",
+            "CRUDE RATE": "crude_rate",
+            "DEFINED DAILY DOSE/1,000 CENSUS INHABITANTS": "daily_dose_per_1k_census",
+            "PERCENTAGE": "percentage",
+            "PERCENTAGE (CRUDE RATE)": "percentage_crude_rate",
+            "RATE PER 10,000 PATIENT DAYS": "rate_per_10k_patient",
+            "RATE PER 100,000": "rate_per_100k",
+            "RATE PER 100,000 (CRUDE RATE)": "rate_per_100k_crude",
+            "RATE PER 100,000 LIVE BIRTHS": "rate_per_100k_live_births",
+            "YEARS": "years",
+            "OTHER": "other",
+        },
+        "value_displayed_mapper": {
+            "": "",
+            "%": "%",
+            "PER 100,000": "per_100k",
+            "YEARS": "years",
+            "PER 1,000 CENSUS INHABITANTS": "per_1k_census",
+            "PER 10,000 PATIENT DAYS": "per_10k_patient",
+            "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
+            "OTHER": "other",
+        },
+    }
+
+
 # def deduce_dimension_type(record, csv_line_number):
 #     dimension_deduced_bool = False
 #     dimension_deduced = None

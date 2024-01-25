@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cpho-postgres14-cluster
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.9
+  primaryUpdateStrategy: unsupervised
+
+# PostGres Best Practices for the Logging 
+  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
+  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+      pgaudit.log: "all, -misc"
+      pgaudit.log_catalog: "off"
+      pgaudit.log_parameter: "on"
+      pgaudit.log_relation: "on"
+      log_min_messages: "error"
+      log_checkpoints: "on" 
+      log_lock_waits: "on"
+      log_temp_files: "0"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_hostname: "on"
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+  
+  inheritedMetadata:
+    annotations:
+      proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+      sidecar.istio.io/proxyCPU: 50m
+      sidecar.istio.io/proxyMemory: 112Mi
+

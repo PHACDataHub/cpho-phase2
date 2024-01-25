@@ -13,6 +13,21 @@ urlpatterns = [
         name="modify_user",
     ),
     path(
+        "indicator_directories/create/",
+        views.CreateIndicatorDirectory.as_view(),
+        name="create_indicator_directory",
+    ),
+    path(
+        "indicator_directories/<int:pk>/edit/",
+        views.EditIndicatorDirectory.as_view(),
+        name="edit_indicator_directory",
+    ),
+    path(
+        "indicator_directories/<int:pk>/",
+        views.IndicatorDirectoryHome.as_view(),
+        name="indicator_directory_home",
+    ),
+    path(
         "indicators/", views.ListIndicators.as_view(), name="list_indicators"
     ),
     path(
@@ -124,5 +139,15 @@ urlpatterns = [
         "indicators/<int:indicator_id>/benchmarking/",
         views.ManageBenchmarkingData.as_view(),
         name="manage_benchmarking_data",
+    ),
+    path(
+        "indicators/<int:indicator_id>/trend_analysis/",
+        views.ManageTrendAnalysisData.as_view(),
+        name="manage_trend_analysis_data",
+    ),
+    path(
+        "indicators/export_benchmarking/<int:indicator_id>",
+        views.ExportBenchmarking.as_view(),
+        name="export_benchmarking",
     ),
 ]

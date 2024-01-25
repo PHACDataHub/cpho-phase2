@@ -438,6 +438,51 @@ class Benchmarking(models.Model):
         return str(self.indicator) + " : " + str(self.oecd_country)
 
 
+class TrendAnalysisManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+
+@add_to_admin
+@track_versions_with_editor
+class TrendAnalysis(models.Model):
+    class Meta:
+        unique_together = [
+            (
+                "indicator",
+                "year",
+                "is_deleted",
+                "deletion_time",
+            ),
+        ]
+
+    objects = models.Manager()
+    active_objects = TrendAnalysisManager()
+    indicator = fields.ForeignKey(
+        Indicator, on_delete=models.RESTRICT, related_name="trend_analysis"
+    )
+    year = fields.CharField(max_length=50)
+    year_range = fields.CharField(max_length=50, null=True, blank=True)
+    data_point = fields.FloatField()
+    line_of_best_fit_point = fields.FloatField(null=True, blank=True)
+    trend_segment = fields.CharField(max_length=50, null=True, blank=True)
+
+    TREND_CHOICES = [
+        ("", "--"),
+        ("stable", tdt("Stable")),
+        ("increasing", tdt("Increasing")),
+        ("decreasing", tdt("Decreasing")),
+    ]
+    trend = fields.CharField(max_length=50, null=True, blank=True)
+    is_deleted = fields.BooleanField(default=False)
+    deletion_time = fields.CharField(
+        max_length=50, blank=True, null=True, default=""
+    )
+
+    def __str__(self):
+        return "Trend: " + str(self.indicator) + " : " + str(self.year)
+
+
 # the following commented-out models don't really do anything yet,
 
 # class Benchmarking(models.Model):

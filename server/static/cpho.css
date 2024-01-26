@@ -95,3 +95,7 @@ span.new-ind-tag {
     margin: 1px;
     font-size: 90%;
 }
+
+.django-ckeditor-widget {
+    width: 100%;
+}

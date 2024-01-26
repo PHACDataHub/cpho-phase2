@@ -2,49 +2,321 @@
 
 <form method="POST" action=".">
   {{ csrf_input }}
-  <div class="row g-3 form-group mb-3 mt-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.name.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Indicator Information") }}</h5>
+    <div class="card-body">
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.name.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.name }}</div>
+      </div>
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.category.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.category }}</div>
+      </div>
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.topic.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.topic }}</div>
+      </div>
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.detailed_indicator.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.detailed_indicator }}</div>
+      </div>
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.sub_indicator_measurement.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.sub_indicator_measurement }}</div>
+      </div>
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.relevant_dimensions.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.relevant_dimensions }}</div>
+      </div>
+ 
     </div>
-    <div class="col-lg-10">{{ form.name }}</div>
   </div>
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.category.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+ 
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("General Metadata") }}</h5>
+    <div class="card-body">
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.measure_text.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.measure_text }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.impact_text.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.impact_text }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_overall.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_overall }}</div>
+      </div>
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.general_footnotes.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        {# mark as safe for rich text editor to render #}
+        <div class="col-lg-10">{{ form.general_footnotes|safe }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.main_source_english.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        {# mark as safe for rich text editor to render #}
+        <div class="col-lg-10">{{ form.main_source_english|safe }}</div>
+      </div>
+ 
     </div>
-    <div class="col-lg-10">{{ form.category }}</div>
   </div>
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.topic.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Sex Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_sex.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_sex }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_sex.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_sex }}</div>
+      </div>
+
     </div>
-    <div class="col-lg-10">{{ form.topic }}</div>
   </div>
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.detailed_indicator.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Age Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_age.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_age }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_age.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_age }}</div>
+      </div>
+
     </div>
-    <div class="col-lg-10">{{ form.detailed_indicator }}</div>
   </div>
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.sub_indicator_measurement.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Province Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_province_territory.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_province_territory }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_province_territory.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_province_territory }}</div>
+      </div>
+
     </div>
-    <div class="col-lg-10">{{ form.sub_indicator_measurement }}</div>
   </div>
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.relevant_dimensions.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Living Arrangement Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_living_arrangement.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_living_arrangement }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_living_arrangement.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_living_arrangement }}</div>
+      </div>
+
     </div>
-    <div class="col-lg-10">{{ form.relevant_dimensions }}</div>
   </div>
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
-      <div class="row">{{ form.general_footnotes.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Education Household Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_education_household.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_education_household }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_education_household.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_education_household }}</div>
+      </div>
+
     </div>
-    {# mark as safe for rich text editor to render #}
-    <div class="col-lg-10">{{ form.general_footnotes|safe }}</div>
   </div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Income Quintiles Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_income_quintiles.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_income_quintiles }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_income_quintiles.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_income_quintiles }}</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Trend Analysis Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_trend.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_trend }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_trend.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_trend }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.visual_description_trend.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.visual_description_trend }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.x_axis_trend.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.x_axis_trend }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.y_axis_trend.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.y_axis_trend }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.trend_footnotes.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        {# mark as safe for rich text editor to render #}
+        <div class="col-lg-10">{{ form.trend_footnotes|safe }}</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Benchmarking Metadata") }}</h5>
+    <div class="card-body">
+ 
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.title_benchmark.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.title_benchmark }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.table_title_benchmark.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.table_title_benchmark }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.benchmarking_legend.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.benchmarking_legend }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.x_axis_benchmark.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        <div class="col-lg-10">{{ form.x_axis_benchmark }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.benchmarking_footnotes.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        {# mark as safe for rich text editor to render #}
+        <div class="col-lg-10">{{ form.benchmarking_footnotes|safe }}</div>
+      </div>
+
+      <div class="row g-3 form-group mb-3">
+        <div class="col-lg-2">
+          <div class="row">{{ form.benchmarking_sources_english.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+        </div>
+        {# mark as safe for rich text editor to render #}
+        <div class="col-lg-10">{{ form.benchmarking_sources_english|safe }}</div>
+      </div>
+
+    </div>
+  </div>
+ 
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
          value="{{ tdt("Submit") }}" />

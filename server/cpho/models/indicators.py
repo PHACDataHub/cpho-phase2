@@ -66,7 +66,83 @@ class Indicator(models.Model):
         related_name="indicators",
     )
 
+    # GENERAL
+    measure_text = fields.CharField(max_length=300, null=True, blank=True)
+    impact_text = fields.CharField(max_length=300, null=True, blank=True)
+    title_overall = fields.CharField(max_length=300, null=True, blank=True)
     general_footnotes = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    main_source_english = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    other_relevant_sources_english = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
+    # SEX
+    title_sex = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_sex = fields.CharField(max_length=300, null=True, blank=True)
+
+    # AGE
+    title_age = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_age = fields.CharField(max_length=300, null=True, blank=True)
+
+    # PROVINCE/TERRITORY
+    title_province_territory = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_province_territory = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # LIVING ARRANGEMENT
+    title_living_arrangement = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_living_arrangement = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # EDUCATION HOUSEHOLD
+    title_education_household = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_education_household = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # INCOME QUINTILES
+    title_income_quintiles = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_income_quintiles = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # TREND
+    title_trend = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_trend = fields.CharField(max_length=300, null=True, blank=True)
+    visual_description_trend = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    x_axis_trend = fields.CharField(max_length=300, null=True, blank=True)
+    y_axis_trend = fields.CharField(max_length=300, null=True, blank=True)
+    trend_footnotes = RichTextField(config_name="notes", null=True, blank=True)
+
+    # BENCHMARKING
+    benchmarking_legend = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    title_benchmark = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_benchmark = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    x_axis_benchmark = fields.CharField(max_length=300, null=True, blank=True)
+    benchmarking_footnotes = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    benchmarking_sources_english = RichTextField(
         config_name="notes", null=True, blank=True
     )
 

@@ -312,8 +312,8 @@ CKEDITOR_CONFIGS = {
             ["NumberedList", "BulletedList"],
             ["Link", "Source"],
         ],
-        "height": 200,
-        "width": 600,
+        "height": "full",
+        "width": "full",
         "shouldNotGroupWhenFull": "false",
     },
 }

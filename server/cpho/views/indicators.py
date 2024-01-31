@@ -199,6 +199,40 @@ class IndicatorForm(ModelForm):
         ),
     )
 
+    # QUINTILES
+    g1 = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g2_lower = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g2_upper = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g3_lower = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g3_upper = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g4_lower = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g4_upper = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g5 = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
 
 class ListIndicators(ListView):
     model = Indicator

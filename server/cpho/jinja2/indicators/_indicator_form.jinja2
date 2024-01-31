@@ -316,7 +316,57 @@
 
     </div>
   </div>
- 
+
+  <div class="card my-4">
+    <h5 class="card-header">{{ tdt("Quintile Metadata") }}</h5>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ tdt("Quintile") }}:</th>
+            <th class="text-center">{{ tdt("g1") }}</th>
+            <th class="text-center">{{ tdt("g2 Lower") }}</th>
+            <th class="text-center">{{ tdt("g2 Upper") }}</th>
+            <th class="text-center">{{ tdt("g3 Lower") }}</th>
+            <th class="text-center">{{ tdt("g3 Upper") }}</th>
+            <th class="text-center">{{ tdt("g4 Lower") }}</th>
+            <th class="text-center">{{ tdt("g4 Upper") }}</th>
+            <th class="text-center">{{ tdt("g5") }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ tdt("Quintile Values:") }}</td>
+            <td>
+              <div class="form-group mb-3">{{ form.g1 }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g2_lower }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g2_upper }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g3_lower }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g3_upper }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g4_lower }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g4_upper }}</div>
+            </td>
+            <td>
+              <div class="form-group mb-3">{{ form.g5 }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
          value="{{ tdt("Submit") }}" />

@@ -146,6 +146,16 @@ class Indicator(models.Model):
         config_name="notes", null=True, blank=True
     )
 
+    # QUINTILES
+    g1 = fields.FloatField(null=True, blank=True)
+    g2_lower = fields.FloatField(null=True, blank=True)
+    g2_upper = fields.FloatField(null=True, blank=True)
+    g3_lower = fields.FloatField(null=True, blank=True)
+    g3_upper = fields.FloatField(null=True, blank=True)
+    g4_lower = fields.FloatField(null=True, blank=True)
+    g4_upper = fields.FloatField(null=True, blank=True)
+    g5 = fields.FloatField(null=True, blank=True)
+
     def __str__(self):
         return " ".join(
             [

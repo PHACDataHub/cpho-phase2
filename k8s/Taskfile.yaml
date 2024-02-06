@@ -3,23 +3,69 @@ version: '3'
 vars:
   PROJECT_ID: pht-01hhjj7tt0m
   REGION: northamerica-northeast1
-  NAME: hopic
-  FLEET_HOST_PROJECT_NUMBER: 305495415810
+  NAME: hopic2
   FLEET_HOST_PROJECT_ID: php-fleet-monitoring
 
 
 tasks:
+
+  infra-up:
+    desc: Create infrastructure components upto the cluster-level
+    cmds:
+      - gcloud services enable container.googleapis.com --project={{.PROJECT_ID}}
+      - gcloud services enable mesh.googleapis.com --project={{.PROJECT_ID}}
+      - |
+        gcloud compute networks create {{.NAME}}-net --subnet-mode=custom \
+          --bgp-routing-mode=regional --mtu=1460 --project={{.PROJECT_ID}}
+      - |
+        gcloud compute networks subnets create {{.NAME}}-subnet --network={{.NAME}}-net \
+          --range=10.162.0.0/20 --region={{.REGION}} --project={{.PROJECT_ID}}
+      - |
+        gcloud container clusters create-auto {{.NAME}} --location={{.REGION}} \
+          --network={{.NAME}}-net --subnetwork={{.NAME}}-subnet --project={{.PROJECT_ID}}
+      - |
+        gcloud iam service-accounts create {{.NAME}}-provisioner --project {{.PROJECT_ID}}
+      - |
+        gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \
+          --member="serviceAccount:{{.NAME}}-provisioner@{{.PROJECT_ID}}.iam.gserviceaccount.com" \
+          --role="roles/owner"
+      - |
+        gcloud iam service-accounts add-iam-policy-binding \
+          {{.NAME}}-provisioner@{{.PROJECT_ID}}.iam.gserviceaccount.com \
+          --member="serviceAccount:{{.PROJECT_ID}}.svc.id.goog[cnrm-system/cnrm-controller-manager-NAMESPACE]" \
+          --role="roles/iam.workloadIdentityUser" --project {{.PROJECT_ID}}
+      - |
+        gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \
+          --member="serviceAccount:{{.NAME}}-provisioner@{{.PROJECT_ID}}.iam.gserviceaccount.com" \
+          --role="roles/monitoring.metricWriter"
+
   install-asm:
-    desc: Install and configure ASM
+    desc: Install and configure ASM. See https://cloud.google.com/service-mesh/docs/managed/provision-managed-anthos-service-mesh for details
     cmds:
       - |
-        # Since the current cluster belongs to a fleet in the php-fleet-monitoring project, access to that project is required.
+        gcloud projects add-iam-policy-binding {{.FLEET_HOST_PROJECT_ID}} \
+          --member "serviceAccount:service-{{.FLEET_HOST_PROJECT_NUMBER}}@gcp-sa-gkehub.iam.gserviceaccount.com" \
+          --role roles/gkehub.serviceAgent
+      - |
+        gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \
+          --member "serviceAccount:service-{{.FLEET_HOST_PROJECT_NUMBER}}@gcp-sa-gkehub.iam.gserviceaccount.com" \
+          --role roles/gkehub.serviceAgent
+      - |
+        gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \
+          --member "serviceAccount:service-{{.FLEET_HOST_PROJECT_NUMBER}}@gcp-sa-gkehub.iam.gserviceaccount.com" \
+          --role roles/gkehub.crossProjectServiceAgent
+      - |
+        gcloud container clusters update {{.NAME}} --location={{.REGION}} \
+          --fleet-project={{.FLEET_HOST_PROJECT_ID}} --project={{.PROJECT_ID}}
+      - |
         gcloud container fleet mesh update \
          --management automatic \
-         --memberships hopic \
+         --memberships {{.NAME}} \
          --project {{.FLEET_HOST_PROJECT_ID}} \
          --location {{.REGION}}
-      - watch gcloud container fleet mesh describe --project {{.FLEET_HOST_PROJECT_ID}}
+    vars:
+      FLEET_HOST_PROJECT_NUMBER:
+        sh: gcloud projects describe {{.FLEET_HOST_PROJECT_ID}} --format "value(projectNumber)"
 
   install-flux:
     desc: Install and configure Flux

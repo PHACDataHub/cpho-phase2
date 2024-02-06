@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ns.yaml
+  - context.yaml
+
+patches:
+- target:
+    group: core.cnrm.cloud.google.com
+    version: v1beta1
+    kind: ConfigConnectorContext
+    name: configconnectorcontext.core.cnrm.cloud.google.com
+    namespace: cnrm-system
+  patch: |-
+    - op: add
+      path: /spec/googleServiceAccount
+      value: hopic2-provisioner@pht-01hhjj7tt0m.iam.gserviceaccount.com

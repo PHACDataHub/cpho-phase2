@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cnrm-system
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./k8s/cnrm-system/
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  wait: true
+  dependsOn:
+    - name: configconnector-operator-system

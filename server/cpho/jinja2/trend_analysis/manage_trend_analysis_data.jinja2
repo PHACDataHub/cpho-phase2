@@ -24,6 +24,9 @@
     <td>{{ trend_analysis_form_field_with_errors(form.line_of_best_fit_point) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.trend_segment) }}</td>
     <td>{{ form.trend }}</td>
+    <td>{{ form.data_quality }}</td>
+    <td>{{ form.data_point_lower_ci }}</td>
+    <td>{{ form.data_point_upper_ci }}</td>
     <td>
       {{ form.is_deleted }}
       {{ form.id }}
@@ -55,6 +58,9 @@
           <th>{{ tdt("Line Of Best Fit Point") }}</th>
           <th>{{ tdt("Trend Segment") }}</th>
           <th>{{ tdt("Trend") }}</th>
+          <th>{{ tdt("Data Quality") }}</th>
+          <th>{{ tdt("Data Upper CI") }}</th>
+          <th>{{ tdt("Data Lower CI") }}</th>
           <th>{{ tdt("Delete") }}</th>
         </tr>
       </thead>

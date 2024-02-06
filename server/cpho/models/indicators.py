@@ -66,9 +66,105 @@ class Indicator(models.Model):
         related_name="indicators",
     )
 
+    # GENERAL
+    measure_text = fields.CharField(max_length=300, null=True, blank=True)
+    impact_text = fields.CharField(max_length=300, null=True, blank=True)
+    title_overall = fields.CharField(max_length=300, null=True, blank=True)
     general_footnotes = RichTextField(
         config_name="notes", null=True, blank=True
     )
+    main_source_english = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    other_relevant_sources_english = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
+    # SEX
+    title_sex = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_sex = fields.CharField(max_length=300, null=True, blank=True)
+    title_sex_2 = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_sex_2 = fields.CharField(max_length=300, null=True, blank=True)
+
+    # AGE
+    title_age = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_age = fields.CharField(max_length=300, null=True, blank=True)
+    title_age_2 = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_age_2 = fields.CharField(max_length=300, null=True, blank=True)
+
+    # PROVINCE/TERRITORY
+    title_province_territory = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_province_territory = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    title_province_territory_2 = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_province_territory_2 = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # LIVING ARRANGEMENT
+    title_living_arrangement = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_living_arrangement = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # EDUCATION HOUSEHOLD
+    title_education_household = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_education_household = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # INCOME QUINTILES
+    title_income_quintiles = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_income_quintiles = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+
+    # TREND
+    title_trend = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_trend = fields.CharField(max_length=300, null=True, blank=True)
+    visual_description_trend = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    x_axis_trend = fields.CharField(max_length=300, null=True, blank=True)
+    y_axis_trend = fields.CharField(max_length=300, null=True, blank=True)
+    trend_footnotes = RichTextField(config_name="notes", null=True, blank=True)
+
+    # BENCHMARKING
+    # benchmarking_legend = fields.CharField(
+    #     max_length=300, null=True, blank=True
+    # )
+    title_benchmark = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_benchmark = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    x_axis_benchmark = fields.CharField(max_length=300, null=True, blank=True)
+    benchmarking_footnotes = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    benchmarking_sources_english = RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
+    # QUINTILES
+    g1 = fields.FloatField(null=True, blank=True)
+    g2_lower = fields.FloatField(null=True, blank=True)
+    g2_upper = fields.FloatField(null=True, blank=True)
+    g3_lower = fields.FloatField(null=True, blank=True)
+    g3_upper = fields.FloatField(null=True, blank=True)
+    g4_lower = fields.FloatField(null=True, blank=True)
+    g4_upper = fields.FloatField(null=True, blank=True)
+    g5 = fields.FloatField(null=True, blank=True)
 
     def __str__(self):
         return " ".join(
@@ -408,7 +504,7 @@ class Benchmarking(models.Model):
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
     year = fields.IntegerField()
-    standard_deviation = fields.FloatField(null=True)
+    # standard_deviation = fields.FloatField(null=True)
 
     COMPARISON_CHOICES = [
         ("", "--"),
@@ -473,7 +569,23 @@ class TrendAnalysis(models.Model):
         ("increasing", tdt("Increasing")),
         ("decreasing", tdt("Decreasing")),
     ]
-    trend = fields.CharField(max_length=50, null=True, blank=True)
+    trend = fields.CharField(
+        max_length=50, choices=TREND_CHOICES, null=True, blank=True
+    )
+    DATA_QUALITY_CHOICES = [
+        ("", "--"),
+        ("good", tdt("Good")),
+        ("very_good", tdt("Very Good")),
+        ("excellent", tdt("Excellent")),
+    ]
+    data_quality = fields.CharField(
+        max_length=50,
+        choices=DATA_QUALITY_CHOICES,
+        null=True,
+        blank=True,
+    )
+    data_point_lower_ci = fields.FloatField(null=True, blank=True)
+    data_point_upper_ci = fields.FloatField(null=True, blank=True)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""

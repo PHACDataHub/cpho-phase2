@@ -9,10 +9,12 @@ from cpho.model_factories import (
     IndicatorFactory,
 )
 from cpho.models import (
+    Benchmarking,
     DimensionType,
     DimensionValue,
     IndicatorDirectory,
     Period,
+    TrendAnalysis,
     User,
 )
 from cpho.util import GroupFetcher
@@ -46,6 +48,8 @@ NUM_USERS_PER_DIR = 4
 
 def create_data():
     User.objects.filter(username__startswith="person").delete()
+    Benchmarking.objects.all().delete()
+    TrendAnalysis.objects.all().delete()
     IndicatorDirectory.objects.all().delete()
     IndicatorDatum.objects.all().delete()
     Indicator.objects.all().delete()

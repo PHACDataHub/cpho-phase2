@@ -38,6 +38,7 @@
       {{ form_field(form.title_overall) }}
       {{ form_field(form.general_footnotes, rich=true) }}
       {{ form_field(form.main_source_english, rich=true) }}
+      {{ form_field(form.other_relevant_sources_english, rich=true) }}
     </div>
   </div>
 
@@ -46,6 +47,8 @@
     <div class="card-body">
       {{ form_field(form.title_sex) }}
       {{ form_field(form.table_title_sex) }}
+      {{ form_field(form.title_sex_2) }}
+      {{ form_field(form.table_title_sex_2) }}
     </div>
   </div>
 
@@ -54,6 +57,8 @@
     <div class="card-body">
       {{ form_field(form.title_age) }}
       {{ form_field(form.table_title_age) }}
+      {{ form_field(form.title_age_2) }}
+      {{ form_field(form.table_title_age_2) }}
     </div>
   </div>
 
@@ -62,6 +67,8 @@
     <div class="card-body">
       {{ form_field(form.title_province_territory) }}
       {{ form_field(form.table_title_province_territory) }}
+      {{ form_field(form.title_province_territory_2) }}
+      {{ form_field(form.table_title_province_territory_2) }}
     </div>
   </div>
 
@@ -106,7 +113,7 @@
     <div class="card-body">
       {{ form_field(form.title_benchmark) }}
       {{ form_field(form.table_title_benchmark) }}
-      {{ form_field(form.benchmarking_legend) }}
+      {# {{ form_field(form.benchmarking_legend) }} #}
       {{ form_field(form.x_axis_benchmark) }}
       {{ form_field(form.benchmarking_footnotes, rich=true) }}
       {{ form_field(form.benchmarking_sources_english, rich=true) }}

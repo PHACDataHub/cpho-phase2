@@ -116,11 +116,23 @@ class IndicatorForm(ModelForm):
     table_title_sex = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
+    title_sex_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_sex_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
     # AGE
     title_age = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     table_title_age = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    title_age_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_age_2 = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     # PROVINCE/TERRITORY
@@ -130,6 +142,13 @@ class IndicatorForm(ModelForm):
     table_title_province_territory = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
+    title_province_territory_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_province_territory_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
     # LIVING ARRANGEMENT
     title_living_arrangement = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
@@ -180,9 +199,9 @@ class IndicatorForm(ModelForm):
     table_title_benchmark = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    benchmarking_legend = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
+    # benchmarking_legend = forms.CharField(
+    #     required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    # )
     x_axis_benchmark = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )

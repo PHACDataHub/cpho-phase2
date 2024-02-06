@@ -83,16 +83,26 @@ class Indicator(models.Model):
     # SEX
     title_sex = fields.CharField(max_length=300, null=True, blank=True)
     table_title_sex = fields.CharField(max_length=300, null=True, blank=True)
+    title_sex_2 = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_sex_2 = fields.CharField(max_length=300, null=True, blank=True)
 
     # AGE
     title_age = fields.CharField(max_length=300, null=True, blank=True)
     table_title_age = fields.CharField(max_length=300, null=True, blank=True)
+    title_age_2 = fields.CharField(max_length=300, null=True, blank=True)
+    table_title_age_2 = fields.CharField(max_length=300, null=True, blank=True)
 
     # PROVINCE/TERRITORY
     title_province_territory = fields.CharField(
         max_length=300, null=True, blank=True
     )
     table_title_province_territory = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    title_province_territory_2 = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
+    table_title_province_territory_2 = fields.CharField(
         max_length=300, null=True, blank=True
     )
 
@@ -131,9 +141,9 @@ class Indicator(models.Model):
     trend_footnotes = RichTextField(config_name="notes", null=True, blank=True)
 
     # BENCHMARKING
-    benchmarking_legend = fields.CharField(
-        max_length=300, null=True, blank=True
-    )
+    # benchmarking_legend = fields.CharField(
+    #     max_length=300, null=True, blank=True
+    # )
     title_benchmark = fields.CharField(max_length=300, null=True, blank=True)
     table_title_benchmark = fields.CharField(
         max_length=300, null=True, blank=True
@@ -494,7 +504,7 @@ class Benchmarking(models.Model):
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
     year = fields.IntegerField()
-    standard_deviation = fields.FloatField(null=True)
+    # standard_deviation = fields.FloatField(null=True)
 
     COMPARISON_CHOICES = [
         ("", "--"),
@@ -559,7 +569,23 @@ class TrendAnalysis(models.Model):
         ("increasing", tdt("Increasing")),
         ("decreasing", tdt("Decreasing")),
     ]
-    trend = fields.CharField(max_length=50, null=True, blank=True)
+    trend = fields.CharField(
+        max_length=50, choices=TREND_CHOICES, null=True, blank=True
+    )
+    DATA_QUALITY_CHOICES = [
+        ("", "--"),
+        ("good", tdt("Good")),
+        ("very_good", tdt("Very Good")),
+        ("excellent", tdt("Excellent")),
+    ]
+    data_quality = fields.CharField(
+        max_length=50,
+        choices=DATA_QUALITY_CHOICES,
+        null=True,
+        blank=True,
+    )
+    data_point_lower_ci = fields.FloatField(null=True, blank=True)
+    data_point_upper_ci = fields.FloatField(null=True, blank=True)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""

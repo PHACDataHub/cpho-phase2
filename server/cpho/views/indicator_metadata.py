@@ -263,6 +263,9 @@ class TrendAnalysisForm(ModelForm):
             "trend_segment",
             "trend",
             "is_deleted",
+            "data_quality",
+            "data_point_lower_ci",
+            "data_point_upper_ci",
         ]
 
     year = forms.IntegerField(
@@ -310,6 +313,34 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.Select(
             attrs={
                 "class": "form-select",
+            }
+        ),
+    )
+
+    data_quality = forms.ChoiceField(
+        required=False,
+        choices=TrendAnalysis.DATA_QUALITY_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+    )
+
+    data_point_lower_ci = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+
+    data_point_upper_ci = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
             }
         ),
     )

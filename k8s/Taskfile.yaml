@@ -14,6 +14,7 @@ tasks:
     cmds:
       - gcloud services enable container.googleapis.com --project={{.PROJECT_ID}}
       - gcloud services enable mesh.googleapis.com --project={{.PROJECT_ID}}
+      - gcloud services enable serviceusage.googleapis.com --project={{.PROJECT_ID}}
       - |
         gcloud compute networks create {{.NAME}}-net --subnet-mode=custom \
           --bgp-routing-mode=regional --mtu=1460 --project={{.PROJECT_ID}}

@@ -15,7 +15,7 @@ patches:
         selector: {}
         dns01:
           cloudDNS:
-            project: pht-01hhjj7tt0m
+            project: pht-01hp04dtnkf
 
 - target:
     group: cert-manager.io

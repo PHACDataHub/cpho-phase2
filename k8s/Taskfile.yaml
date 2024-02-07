@@ -3,7 +3,7 @@ version: '3'
 vars:
   PROJECT_ID: pht-01hp04dtnkf
   REGION: northamerica-northeast1
-  NAME: hopic2
+  NAME: hopic
   FLEET_HOST_PROJECT_ID: php-fleet-monitoring
 
 
@@ -32,7 +32,7 @@ tasks:
       - |
         gcloud iam service-accounts add-iam-policy-binding \
           {{.NAME}}-provisioner@{{.PROJECT_ID}}.iam.gserviceaccount.com \
-          --member="serviceAccount:{{.PROJECT_ID}}.svc.id.goog[cnrm-system/cnrm-controller-manager-NAMESPACE]" \
+          --member="serviceAccount:{{.PROJECT_ID}}.svc.id.goog[cnrm-system/cnrm-controller-manager-cnrm-system]" \
           --role="roles/iam.workloadIdentityUser" --project {{.PROJECT_ID}}
       - |
         gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \
@@ -73,7 +73,7 @@ tasks:
       - |
         flux bootstrap git \
           --url=ssh://git@github.com/PHACDataHub/cpho-phase2 \
-          --branch=upgrade-flux \
+          --branch=configure-infra \
           --path=./k8s/ \
           --components="source-controller,kustomize-controller,notification-controller" \
           --components-extra="image-reflector-controller,image-automation-controller"

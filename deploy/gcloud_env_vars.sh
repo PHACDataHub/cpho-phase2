@@ -21,7 +21,7 @@ export BUILD_GITHUB_REPO_OWNER=PHACDataHub
 
 export GITHUB_MAIN_BRANCH_NAME=main
 
-export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports
+export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports-01hp04dtnkf
 export TEST_COVERAGE_THRESHOLD=77.5 # set just below current coverage, consider increasing in time
 export TEST_DELTA_THRESHOLD=-2  # % value, threshold for current commit test coverage minus last commit on main's coverage
 

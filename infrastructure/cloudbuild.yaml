@@ -3,9 +3,6 @@ kind: CloudBuildTrigger
 metadata:
   name: hopic-cloudbuild-trigger
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   description: Cloud Build Trigger for building docker images from GitHub repository at https://github.com/PHACDataHub/cpho-phase2/
   disabled: true

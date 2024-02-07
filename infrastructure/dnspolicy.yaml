@@ -3,9 +3,6 @@ kind: DNSPolicy
 metadata:
   name: hopic-net-dnspolicy
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic"
-    classification: ucll
 spec:
   description: "Enables DNS logging for the hopic-net VPC"
   enableLogging: true

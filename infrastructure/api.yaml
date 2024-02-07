@@ -3,9 +3,6 @@ kind: Service
 metadata:
   name: cloudtrace
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:
@@ -18,9 +15,6 @@ kind: Service
 metadata:
   name: containerscannning
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:
@@ -33,9 +27,6 @@ kind: Service
 metadata:
   name: cloudbuild
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:
@@ -48,9 +39,6 @@ kind: Service
 metadata:
   name: cloudkms
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:
@@ -63,9 +51,6 @@ kind: Service
 metadata:
   name: artifactregistry
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:
@@ -78,9 +63,6 @@ kind: Service
 metadata:
   name: cloudresourcemanager
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:
@@ -93,9 +75,6 @@ kind: Service
 metadata:
   name: secretmanager
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
   annotations:
     cnrm.cloud.google.com/disable-dependent-services: "false"
 spec:

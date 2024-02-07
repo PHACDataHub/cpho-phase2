@@ -6,9 +6,6 @@ metadata:
   namespace: cnrm-system
   annotations:
     cnrm.cloud.google.com/force-destroy: "false"
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   location: northamerica-northeast1
   versioning:
@@ -24,9 +21,6 @@ metadata:
   namespace: cnrm-system
   annotations:
     cnrm.cloud.google.com/force-destroy: "false"
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   location: northamerica-northeast1
   versioning:

@@ -4,9 +4,6 @@ kind: IAMPartialPolicy
 metadata:
   name: project-iampolicy
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   bindings:
     - members:
@@ -44,9 +41,6 @@ kind: IAMPartialPolicy
 metadata:
   name: hopic-postgres-backup-iam
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   bindings:
     - members:
@@ -64,9 +58,6 @@ kind: IAMPartialPolicy
 metadata:
   name: hopic-test-coverage-reports-iam
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   bindings:
     - members:
@@ -86,9 +77,6 @@ kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-gcr-credentials-sync
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll
 spec:
   bindings:
     - members:
@@ -104,9 +92,6 @@ kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-dns01-solver
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic"
-    classification: ucll
 spec:
   bindings:
     - members:
@@ -122,9 +107,6 @@ kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-sops-kms
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic"
-    classification: ucll
 spec:
   bindings:
     - members:
@@ -140,9 +122,6 @@ kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-backup
   namespace: "cnrm-system"
-  labels:
-    vanity-name: "pht-hopic"
-    classification: ucll
 spec:
   bindings:
     - members:

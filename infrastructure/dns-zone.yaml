@@ -3,9 +3,6 @@ kind: DNSManagedZone
 metadata:
   name: hopic-managed-zone
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   cloudLoggingConfig:
     enableLogging: true
@@ -18,9 +15,6 @@ kind: DNSRecordSet
 metadata:
   name: hopic-dns-record-set
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   name: "hopic-sdpac.phac-aspc.alpha.canada.ca."
   type: A
@@ -36,9 +30,6 @@ kind: ComputeAddress
 metadata:
   name: hopic-external-ip
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   addressType: EXTERNAL
   description: HoPiC external ip address for ingress gateway

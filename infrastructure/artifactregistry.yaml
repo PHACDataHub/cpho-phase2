@@ -3,9 +3,6 @@ kind: ArtifactRegistryRepository
 metadata:
   name: hopic-k8s-images
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic" 
-    classification: ucll 
 spec:
   description: Artifact registry for HoPiC docker images
   format: DOCKER

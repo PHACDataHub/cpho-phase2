@@ -3,9 +3,6 @@ kind: KMSCryptoKey
 metadata:
   name: sops-flux-key
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic"
-    classification: ucll
 spec:
   keyRingRef:
     name: sops
@@ -15,8 +12,5 @@ kind: KMSKeyRing
 metadata:
   name: sops
   namespace: cnrm-system
-  labels:
-    vanity-name: "pht-hopic"
-    classification: ucll
 spec:
   location: northamerica-northeast1

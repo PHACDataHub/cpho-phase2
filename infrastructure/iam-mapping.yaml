@@ -42,7 +42,7 @@ spec:
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
-  name: hopic-bucket-iam
+  name: hopic-postgres-backup-iam
   namespace: "cnrm-system"
   labels:
     vanity-name: "pht-hopic" 
@@ -57,7 +57,28 @@ spec:
   resourceRef:
     apiVersion: storage.cnrm.cloud.google.com/v1beta1
     kind: StorageBucket
-    name: hopic-postgres-backup
+    name: hopic-postgres-backup-01hp04dtnkf
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-test-coverage-reports-iam
+  namespace: "cnrm-system"
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:791221659942@cloudbuild.gserviceaccount.com
+      role: roles/storage.objectCreator
+    - members:
+        - member: serviceAccount:791221659942@cloudbuild.gserviceaccount.com
+      role: roles/storage.legacyBucketReader
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: hopic-test-coverage-reports-01hp04dtnkf
 ---
 # service account bindings
 apiVersion: iam.cnrm.cloud.google.com/v1beta1

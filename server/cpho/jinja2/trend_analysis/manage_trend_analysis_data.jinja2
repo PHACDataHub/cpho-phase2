@@ -1,0 +1,104 @@
+{% extends 'base.jinja2' %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.indicator(view.indicator) }}
+  {{ bc.item(tdt("Trend Analysis") , None, True) }}
+{% endblock %}
+
+{% macro trend_analysis_form_field_with_errors(field) %}
+  {{ field }}
+  {% if field.errors %}
+    <div class="error-display">
+      {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro trend_analysis_form(form) %}
+  <tr class="trend-analysis-form">
+    <td>{{ trend_analysis_form_field_with_errors(form.year) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.year_range) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.line_of_best_fit_point) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.trend_segment) }}</td>
+    <td>{{ form.trend }}</td>
+    <td>{{ form.data_quality }}</td>
+    <td>{{ form.data_point_lower_ci }}</td>
+    <td>{{ form.data_point_upper_ci }}</td>
+    <td>
+      {{ form.is_deleted }}
+      {{ form.id }}
+    </td>
+  </tr>
+{% endmacro %}
+
+{% block content %}
+
+  <div class="h2">{{ tdt("Trend analysis data for: ") }} {{ indicator.name }}</div>
+
+  <table class="d-none trend-analysis-empty-form-container">
+    {{ trend_analysis_form(trend_analysis_formset.empty_form) }}
+  </table>
+
+  <form action="." method="post">
+    {{ trend_analysis_formset.management_form }}
+    {{ csrf_input }}
+
+    <table class="table mt-3"
+           id="trend_analysis-table"
+           style="overflow-x:auto;
+                  display:block">
+      <thead>
+        <tr>
+          <th>{{ tdt("Year") }}</th>
+          <th>{{ tdt("Year Range") }}</th>
+          <th>{{ tdt("Data Point") }}</th>
+          <th>{{ tdt("Line Of Best Fit Point") }}</th>
+          <th>{{ tdt("Trend Segment") }}</th>
+          <th>{{ tdt("Trend") }}</th>
+          <th>{{ tdt("Data Quality") }}</th>
+          <th>{{ tdt("Data Upper CI") }}</th>
+          <th>{{ tdt("Data Lower CI") }}</th>
+          <th>{{ tdt("Delete") }}</th>
+        </tr>
+      </thead>
+      <tbody id="trend-analysis-table-body"
+             class="text-center trend-analysis-form-list">
+        {% for form in trend_analysis_formset %}{{ trend_analysis_form(form) }}{% endfor %}
+      </tbody>
+    </table>
+    <div class="text-center py-1">
+      <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add Data") }}</button>
+    </div>
+    <input type="submit"
+           class="btn btn-primary float-end my-3"
+           value="{{ tdt("Save") }}">
+  </form>
+  <script>
+    let addButton = document.querySelector("#add-form");
+    addButton.addEventListener('click', addForm);
+
+    function addForm(e) {
+      let forms = document.querySelectorAll(".trend-analysis-form-list > .trend-analysis-form");
+      let newFormIndex = forms.length;
+      let numForms = forms.length + 1;
+      let formTemplateNode = document.querySelector(".trend-analysis-empty-form-container");
+      let container = document.querySelector(".trend-analysis-form-list");
+      let totalFormsInput = document.querySelector("#id_trend_analysis-TOTAL_FORMS"); //management form inputs
+
+      e.preventDefault();
+      let formRegex = RegExp(`trend_analysis-__prefix__-`,'g')
+      console.log(formRegex);
+      let newFormHtml = formTemplateNode.innerHTML.replace(formRegex, `trend_analysis-${newFormIndex}-`)
+
+      let newForm = document.createElement("tr")
+      newForm.classList.add("trend-analysis-form")
+      newForm.innerHTML = newFormHtml;
+      container.appendChild(newForm)
+      totalFormsInput.setAttribute('value', `${numForms}`)
+    }
+  </script>
+
+{% endblock %}

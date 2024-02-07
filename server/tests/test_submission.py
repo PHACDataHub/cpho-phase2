@@ -55,10 +55,10 @@ def test_submit_all_dimensions(vanilla_user, vanilla_user_client):
     }
     url = reverse("submit_indicator_data_all", args=[ind.id, period.id])
 
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "program"})
         assert resp.status_code == 302
-    with patch_rules(can_submit_as_hso_or_program=False):
+    with patch_rules(can_submit_indicator=False):
         resp = vanilla_user_client.post(url, {"submission_type": "program"})
         assert resp.status_code == 403
 
@@ -74,10 +74,10 @@ def test_submit_all_dimensions(vanilla_user, vanilla_user_client):
     assert canada_record.versions.last().is_program_submitted
     assert not canada_record.versions.last().is_hso_submitted
 
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.post(url, {"submission_type": "hso"})
         assert resp.status_code == 302
-    with patch_rules(can_submit_as_hso_or_program=False):
+    with patch_rules(can_submit_indicator=False):
         resp = vanilla_user_client.post(url, {"submission_type": "hso"})
         assert resp.status_code == 403
     assert female_record.versions.last().is_hso_submitted
@@ -117,10 +117,10 @@ def test_review_page(vanilla_user, vanilla_user_client):
     sex_url = reverse(
         "review_indicator_data", args=[ind.id, period.id, sex_cat.id]
     )
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         assert vanilla_user_client.get(global_url).status_code == 200
         assert vanilla_user_client.get(sex_url).status_code == 200
-    with patch_rules(can_submit_as_hso_or_program=False):
+    with patch_rules(can_submit_indicator=False):
         assert vanilla_user_client.get(global_url).status_code == 403
         assert vanilla_user_client.get(sex_url).status_code == 403
 
@@ -129,20 +129,20 @@ def test_review_page(vanilla_user, vanilla_user_client):
         ind, period, sex_cat, "program", vanilla_user
     ).perform()
 
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         assert vanilla_user_client.get(global_url).status_code == 200
         assert vanilla_user_client.get(sex_url).status_code == 200
-    with patch_rules(can_submit_as_hso_or_program=False):
+    with patch_rules(can_submit_indicator=False):
         assert vanilla_user_client.get(global_url).status_code == 403
         assert vanilla_user_client.get(sex_url).status_code == 403
 
     SubmitIndicatorDataService(
         ind, period, sex_cat, "hso", vanilla_user
     ).perform()
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         assert vanilla_user_client.get(global_url).status_code == 200
         assert vanilla_user_client.get(sex_url).status_code == 200
-    with patch_rules(can_submit_as_hso_or_program=False):
+    with patch_rules(can_submit_indicator=False):
         assert vanilla_user_client.get(global_url).status_code == 403
         assert vanilla_user_client.get(sex_url).status_code == 403
 
@@ -150,9 +150,9 @@ def test_review_page(vanilla_user, vanilla_user_client):
     female_record.reset_version_attrs()
     female_record.value = 3.0
     female_record.save()
-    with patch_rules(can_submit_as_hso_or_program=True):
+    with patch_rules(can_submit_indicator=True):
         assert vanilla_user_client.get(global_url).status_code == 200
         assert vanilla_user_client.get(sex_url).status_code == 200
-    with patch_rules(can_submit_as_hso_or_program=False):
+    with patch_rules(can_submit_indicator=False):
         assert vanilla_user_client.get(global_url).status_code == 403
         assert vanilla_user_client.get(sex_url).status_code == 403

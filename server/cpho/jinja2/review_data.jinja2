@@ -67,7 +67,7 @@
                    name="submission_type"
                    id="submissionType1"
                    value="program"
-                   {% if respects_rule("is_program") or respects_rule("is_admin") %}checked{% endif %}>
+                   {% if respects_rule("is_inputting_user") %}checked{% endif %}>
             <label for="html">Surveillance program submission</label>
             <br>
             <input type="radio"

@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from django.conf import settings
 from django.urls import reverse
 
 from cpho.model_factories import IndicatorFactory
@@ -60,6 +61,10 @@ def create_versions():
 def test_changelog(vanilla_user_client):
     create_versions()
 
+    if settings.USE_SQLITE:
+        print("skipping changelog test because sqlite is used")
+        return
+
     with patch(
         "cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2
     ):
@@ -81,6 +86,10 @@ def test_changelog(vanilla_user_client):
 def test_indicator_changelog(vanilla_user_client):
     create_versions()
     i1 = Indicator.objects.first()
+
+    if settings.USE_SQLITE:
+        print("skipping changelog test because sqlite is used")
+        return
 
     with patch(
         "cpho.views.changelog.ChangelogView.get_page_size",
@@ -118,6 +127,10 @@ def test_user_scoped_changelog(vanilla_user, vanilla_user_client):
     IndicatorDatumHistory.objects.filter(indicator__name="i1").update(
         edited_by_id=u_id
     )
+
+    if settings.USE_SQLITE:
+        print("skipping changelog test because sqlite is used")
+        return
 
     with patch(
         "cpho.views.changelog.ChangelogView.get_page_size",

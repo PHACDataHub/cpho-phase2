@@ -1,0 +1,22 @@
+
+{{ csrf_input }}
+
+{% if form.non_field_errors() %}
+  <div class="alert alert-danger">
+    {% for error in form.non_field_errors() %}{{ error }}{% endfor %}
+  </div>
+{% endif %}
+
+{% for field in form.hidden_fields() %}{{ field }}{% endfor %}
+
+
+{% for field in form.visible_fields() %}
+  <div class="form-field-container my-4">
+    {% if field.errors %}<div class="alert alert-danger">{{ field.errors }}</div>{% endif %}
+    <div class="row">
+      <div class="col-sm-3">{{ field.label_tag() }}</div>
+      <div class="col-sm-9">{{ field }}</div>
+    </div>
+  </div>
+
+{% endfor %}

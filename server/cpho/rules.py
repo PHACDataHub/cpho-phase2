@@ -1,5 +1,13 @@
 from server.rules_framework import add_rule, auto_rule
 
+from cpho.models import IndicatorDirectoryUserAccess
+from cpho.queries import get_indicators_for_user
+
+
+@auto_rule
+def is_inputting_user(user):
+    return len(get_indicators_for_user(user.id)) > 0
+
 
 @auto_rule
 def is_admin(user):
@@ -17,40 +25,22 @@ def is_admin_or_hso(user):
 
 
 @auto_rule
-def is_program(user):
-    return (not is_admin_or_hso(user)) and user.phac_org_roles.exists()
+def can_access_indicator_directory(user, indicator_directory_id):
+    if is_admin_or_hso(user):
+        return True
+
+    return IndicatorDirectoryUserAccess.objects.filter(
+        user=user, directory_id=indicator_directory_id
+    ).exists()
 
 
 @auto_rule
-def is_branch_lead(user):
-    return user.phac_org_roles.filter(is_phac_org_lead=True).exists()
+def can_access_indicator(user, indicator):
+    if is_admin_or_hso(user):
+        return True
 
-
-@auto_rule
-def is_branch_user(user):
-    return not is_branch_lead(user)
-
-
-@auto_rule
-def is_branch_lead_or_user(user):
-    return is_branch_user(user) or is_branch_lead(user)
-
-
-# TODO: REMOVE THIS
-@auto_rule
-def is_indicator_lead(user, indicator):
-    return True
-
-
-# TODO: Check THIS
-@auto_rule
-def indicator_of_users_branch(user, indicator):
-    # print(indicator.PHACOrg)
-    # for phac_org_role in user.phac_org_roles.all():
-    #     print(phac_org_role.phac_org)
-    #     # if phac_org_role.phac_org == indicator.PHACOrg:
-    # return True
-    return user.phac_org_roles.filter(phac_org=indicator.PHACOrg).exists()
+    allowed_indicators = get_indicators_for_user(user.id)
+    return indicator in allowed_indicators
 
 
 @auto_rule
@@ -59,59 +49,18 @@ def can_create_indicator(user):
 
 
 @auto_rule
-def can_upload_indicator(user):
-    return is_admin_or_hso(user) or is_branch_lead(user)
-
-
-@auto_rule
 def can_edit_indicator(user, indicator):
-    # return (
-    #     is_admin(user)
-    #     or is_hso(user)
-    #     or (is_program(user) and is_indicator_lead(user, indicator))
-    #     or (
-    #         is_program(user)
-    #         and is_branch_lead(user)
-    #         and indicator_of_users_branch(user, indicator)
-    #     )
-    # )
     return is_admin_or_hso(user)
 
 
 @auto_rule
 def can_edit_indicator_data(user, indicator):
-    return is_admin_or_hso(user) or (
-        indicator_of_users_branch(user, indicator) and is_branch_lead(user)
-    )
+    return can_access_indicator(user, indicator)
 
 
 @auto_rule
-def can_view_indicator(user, indicator):
-    return is_admin_or_hso(user) or indicator_of_users_branch(user, indicator)
-
-
-@auto_rule
-def can_view_indicator_data(user, indicator):
-    # return can_view_indicator(user, indicator)
-    return is_admin_or_hso(user) or indicator_of_users_branch(user, indicator)
-
-
-@auto_rule
-def can_submit_as_program(user, indicator):
-    return (
-        # is_admin(user)
-        # or is_hso(user)
-        # or (is_program(user) and is_indicator_lead(user, indicator))
-        # or (
-        #     is_program(user)
-        #     and is_branch_lead(user)
-        #     and indicator_of_users_branch(user, indicator)
-        # )
-        is_admin(user)
-        or (
-            indicator_of_users_branch(user, indicator) and is_branch_lead(user)
-        )
-    )
+def can_use_indicator_upload(user):
+    return is_admin_or_hso(user) or is_inputting_user(user)
 
 
 @auto_rule
@@ -125,19 +74,29 @@ def can_submit_as_hso(user, indicator):
 
 
 @auto_rule
-def can_submit_as_hso_or_program(user, indicator):
-    # return can_submit_as_hso(user, indicator) or can_submit_as_program(
-    #     user, indicator
-    # )
-    return (
-        is_admin(user)
-        or (is_hso(user) and can_submit_as_hso(user, indicator))
-        or (is_program(user) and can_submit_as_program(user, indicator))
-    )
+def can_submit_indicator(user, indicator):
+    return can_access_indicator(user, indicator)
 
 
 @auto_rule
 def can_export_indicator(user, indicator):
     if indicator:
-        return can_view_indicator(user, indicator)
-    return can_upload_indicator(user)
+        return can_access_indicator(user, indicator)
+
+    return can_use_indicator_upload(user)
+
+
+@auto_rule
+def can_export_benchmarking(user, indicator):
+    # TODO: need to update this
+    return is_admin_or_hso(user)
+
+
+@auto_rule
+def can_edit_benchmarking(user, indicator):
+    return can_edit_indicator(user, indicator)
+
+
+@auto_rule
+def can_edit_trend_analysis(user, indicator):
+    return can_edit_indicator(user, indicator)

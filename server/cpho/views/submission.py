@@ -47,7 +47,7 @@ class SubmitIndicatorData(
 
     def check_rule(self):
         return test_rule(
-            "can_submit_as_hso_or_program",
+            "can_submit_indicator",
             self.request.user,
             self.indicator,
         )
@@ -141,7 +141,7 @@ class ReviewData(
 
     def check_rule(self):
         return test_rule(
-            "can_submit_as_hso_or_program",
+            "can_submit_indicator",
             self.request.user,
             self.indicator,
         )

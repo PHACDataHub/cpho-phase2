@@ -28,7 +28,6 @@ Note: run all this in the repo's root directory
         python ./manage.py migrate
         python ./manage.py loaddata cpho/fixtures/dimension_lookups.yaml
         python ./manage.py loaddata cpho/fixtures/periods.yaml
-        python -m manage seed_programs --mode reset --yes
         python -m manage seed_countries --mode reset --yes
         python ./manage.py runscript cpho.scripts.dev
         ```
@@ -47,6 +46,10 @@ Resetting test db (useful when migrations get in the way of running tests)
 dropdb -U cpho_db_user cpho_test_db
 ```
 
+
+## Using SQlite
+
+Note: if you set USE_SQLITE=True in your .env file, you don't need to set any of the DB-related environment variables and the app will use sqlite instead of postgres. This is useful for testing/development, especially on the PHAC workstations. Note that changelogs won't work with sqlite, so those tests will always fail.
 
 ## Remote DB manipulation
 

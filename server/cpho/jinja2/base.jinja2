@@ -48,10 +48,8 @@
       });
     </script>
     <script>
-      {# 
-        include csrf tokens in htmx request, see https://www.mattlayman.com/blog/2021/how-to-htmx-django/
-        included below because body needs to exist 
-      #}
+      {# include csrf tokens in htmx request,included below because body needs to exist #}
+      {# see https://www.mattlayman.com/blog/2021/how-to-htmx-django/  #}
       document.body.addEventListener('htmx:configRequest', (event) => {
         event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
       })
@@ -94,10 +92,7 @@
                      aria-haspopup="true"
                      aria-expanded="false">{{ request.user }}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url("logout") }}">
-                      <span aria-hidden="true" class="bi bi-power"></span>
-                      {{ tm("logout") }}
-                    </a>
+                    <a class="dropdown-item" href="{{ url("logout") }}"> <span aria-hidden="true" class="bi bi-power"></span> {{ tm("logout") }} </a>
                     <a class="dropdown-item"
                        href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
                       <span aria-hidden="true" class="bi bi-file-diff"></span>

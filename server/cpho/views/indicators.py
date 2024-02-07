@@ -1,5 +1,8 @@
+from typing import Any
+
 from django import forms
 from django.contrib import messages
+from django.db.models.query import QuerySet
 from django.forms.models import ModelForm
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -15,8 +18,10 @@ from ckeditor.widgets import CKEditorWidget
 
 from server.rules_framework import test_rule
 
-from cpho.models import DimensionType, Indicator, Period, PHACOrg
+from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import (
+    get_indicator_directories_for_user,
+    get_indicators_for_user,
     get_submission_statuses,
     relevant_dimension_types_for_period,
 )
@@ -37,16 +42,7 @@ class RelevantDimensionChoiceMultiCheckbox(forms.ModelMultipleChoiceField):
 class IndicatorForm(ModelForm):
     class Meta:
         model = Indicator
-        fields = [
-            "name",
-            "category",
-            "topic",
-            "detailed_indicator",
-            "sub_indicator_measurement",
-            "PHACOrg",
-            "relevant_dimensions",
-            "general_footnotes",
-        ]
+        fields = "__all__"
 
     name = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
@@ -77,20 +73,6 @@ class IndicatorForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
-    PHACOrg = forms.ModelChoiceField(
-        required=False,
-        queryset=PHACOrg.branches(),
-        widget=forms.Select(
-            attrs={
-                "class": "form-select",
-            }
-        ),
-    )
-
-    general_footnotes = forms.CharField(
-        required=False, widget=CKEditorWidget(config_name="notes")
-    )
-
     # make it display name_en attribute of DimensionType model
     relevant_dimensions = RelevantDimensionChoiceMultiCheckbox(
         required=False,
@@ -99,14 +81,195 @@ class IndicatorForm(ModelForm):
         initial=DimensionType.objects.all(),
     )
 
+    # GENERAL
+    measure_text = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    impact_text = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    title_overall = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    general_footnotes = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+    )
+    main_source_english = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+    )
+    other_relevant_sources_english = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+    )
+    # SEX
+    title_sex = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_sex = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    title_sex_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_sex_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    # AGE
+    title_age = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_age = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    title_age_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_age_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    # PROVINCE/TERRITORY
+    title_province_territory = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_province_territory = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    title_province_territory_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_province_territory_2 = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    # LIVING ARRANGEMENT
+    title_living_arrangement = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_living_arrangement = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    # EDUCATION HOUSEHOLD
+    title_education_household = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_education_household = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    # INCOME QUINTILES
+    title_income_quintiles = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_income_quintiles = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    # TREND
+    title_trend = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_trend = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    visual_description_trend = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    x_axis_trend = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    y_axis_trend = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    trend_footnotes = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+    )
+    # BENCHMARKING
+    title_benchmark = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_benchmark = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    # benchmarking_legend = forms.CharField(
+    #     required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    # )
+    x_axis_benchmark = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    benchmarking_footnotes = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+    )
+    benchmarking_sources_english = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+    )
+
+    # QUINTILES
+    g1 = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g2_lower = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g2_upper = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g3_lower = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g3_upper = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g4_lower = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g4_upper = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    g5 = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
 
 class ListIndicators(ListView):
     model = Indicator
     template_name = "indicators/list_indicators.jinja2"
 
+    def get_queryset(self):
+        if test_rule("is_admin_or_hso", self.request.user):
+            return Indicator.objects.all()
+
+        else:
+            return get_indicators_for_user(self.request.user.id)
+
     def get_context_data(self, **kwargs):
         return {
             **super().get_context_data(**kwargs),
+            "user_indicator_directories": get_indicator_directories_for_user(
+                self.request.user.id
+            ),
         }
 
 
@@ -116,7 +279,7 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_view_indicator_data",
+            "can_access_indicator",
             self.request.user,
             self.indicator,
         )
@@ -196,7 +359,7 @@ class ViewIndicatorForPeriod(
 
     def check_rule(self):
         return test_rule(
-            "can_view_indicator_data",
+            "can_access_indicator",
             self.request.user,
             self.indicator,
         )

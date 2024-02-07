@@ -1,0 +1,13 @@
+apiVersion: artifactregistry.cnrm.cloud.google.com/v1beta1
+kind: ArtifactRegistryRepository
+metadata:
+  name: hopic
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+spec:
+  description: Artifact registry for HoPiC docker images
+  format: DOCKER
+  location: northamerica-northeast1
+  mode: STANDARD_REPOSITORY

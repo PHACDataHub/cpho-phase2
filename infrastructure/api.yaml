@@ -1,0 +1,104 @@
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: cloudtrace
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: cloudtrace.googleapis.com
+---
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: containerscannning
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: containerscanning.googleapis.com
+---
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: cloudbuild
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: cloudbuild.googleapis.com
+---
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: cloudkms
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: cloudkms.googleapis.com
+---
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: artifactregistry
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: artifactregistry.googleapis.com
+---
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: cloudresourcemanager
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: cloudresourcemanager.googleapis.com
+---
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: secretmanager
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+  annotations:
+    cnrm.cloud.google.com/disable-dependent-services: "false"
+spec:
+  projectRef:
+    external: projects/pht-01hp04dtnkf
+  resourceID: secretmanager.googleapis.com

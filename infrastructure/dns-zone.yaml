@@ -1,0 +1,45 @@
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSManagedZone
+metadata:
+  name: hopic
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+spec:
+  cloudLoggingConfig:
+    enableLogging: true
+  description: HoPiC DNS Zone for alpha DNS
+  dnsName: hopic-sdpac.phac-aspc.alpha.canada.ca.
+  visibility: public
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: hopic
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+spec:
+  name: "hopic-sdpac.phac-aspc.alpha.canada.ca."
+  type: A
+  ttl: 300
+  managedZoneRef:
+    name: hopic
+  rrdatasRefs:
+    - name: hopic
+      kind: ComputeAddress
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeAddress
+metadata:
+  name: hopic
+  namespace: cnrm-system
+  labels:
+    vanity-name: "pht-hopic" 
+    classification: ucll 
+spec:
+  addressType: EXTERNAL
+  description: HoPiC external ip address for ingress gateway
+  location: northamerica-northeast1

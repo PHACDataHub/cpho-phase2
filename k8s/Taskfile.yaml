@@ -21,8 +21,10 @@ tasks:
         gcloud compute networks subnets create {{.NAME}}-subnet --network={{.NAME}}-net \
           --range=10.162.0.0/20 --region={{.REGION}} --project={{.PROJECT_ID}}
       - |
-        gcloud container clusters create-auto {{.NAME}} --location={{.REGION}} \
-          --network={{.NAME}}-net --subnetwork={{.NAME}}-subnet --project={{.PROJECT_ID}}
+        gcloud beta container --project={{.PROJECT_ID}} clusters create-auto {{.NAME}} \
+          --region={{.REGION}} --release-channel "regular" \
+          --network="projects/{{.PROJECT_ID}}/global/networks/{{.NAME}}-net" \
+          --subnetwork="projects/{{.PROJECT_ID}}/regions/northamerica-northeast1/subnetworks/{{.NAME}}-subnet"
       - |
         gcloud iam service-accounts create {{.NAME}}-provisioner --project {{.PROJECT_ID}}
       - |
@@ -42,6 +44,10 @@ tasks:
   install-asm:
     desc: Install and configure ASM. See https://cloud.google.com/service-mesh/docs/managed/provision-managed-anthos-service-mesh for details
     cmds:
+      - |
+        gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \
+          --member "serviceAccount:service-{{.FLEET_HOST_PROJECT_NUMBER}}@gcp-sa-servicemesh.iam.gserviceaccount.com" \
+          --role roles/anthosservicemesh.serviceAgent
       - |
         gcloud projects add-iam-policy-binding {{.FLEET_HOST_PROJECT_ID}} \
           --member "serviceAccount:service-{{.FLEET_HOST_PROJECT_NUMBER}}@gcp-sa-gkehub.iam.gserviceaccount.com" \

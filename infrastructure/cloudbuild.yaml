@@ -1,13 +1,13 @@
 apiVersion: cloudbuild.cnrm.cloud.google.com/v1beta1
 kind: CloudBuildTrigger
 metadata:
-  name: hopic-main
+  name: hopic-cloudbuild-trigger
   namespace: cnrm-system
   labels:
     vanity-name: "pht-hopic" 
     classification: ucll 
 spec:
-  description: Cloud Build Trigger for building the master branch of the GitHub repository at https://github.com/PHACDataHub/cpho-phase2/
+  description: Cloud Build Trigger for building docker images from GitHub repository at https://github.com/PHACDataHub/cpho-phase2/
   disabled: true
   location: northamerica-northeast1
   includeBuildLogs: INCLUDE_BUILD_LOGS_WITH_STATUS

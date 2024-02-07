@@ -1,7 +1,7 @@
 apiVersion: artifactregistry.cnrm.cloud.google.com/v1beta1
 kind: ArtifactRegistryRepository
 metadata:
-  name: hopic
+  name: hopic-k8s-images
   namespace: cnrm-system
   labels:
     vanity-name: "pht-hopic" 

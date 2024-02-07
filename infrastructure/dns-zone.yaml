@@ -1,7 +1,7 @@
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSManagedZone
 metadata:
-  name: hopic
+  name: hopic-managed-zone
   namespace: cnrm-system
   labels:
     vanity-name: "pht-hopic" 
@@ -16,7 +16,7 @@ spec:
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSRecordSet
 metadata:
-  name: hopic
+  name: hopic-dns-record-set
   namespace: cnrm-system
   labels:
     vanity-name: "pht-hopic" 
@@ -28,13 +28,13 @@ spec:
   managedZoneRef:
     name: hopic
   rrdatasRefs:
-    - name: hopic
+    - name: hopic-external-ip
       kind: ComputeAddress
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeAddress
 metadata:
-  name: hopic
+  name: hopic-external-ip
   namespace: cnrm-system
   labels:
     vanity-name: "pht-hopic" 

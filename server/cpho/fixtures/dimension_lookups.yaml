@@ -62,13 +62,9 @@
     code: income_quintiles
     is_literal: false
 
-# dimension values
-
-
-
-
+# dimension value for Sex
 - model: cpho.dimensionvalue
-  pk: 2
+  pk: 1
   fields:
     dimension_type: 1
     name_en: Male
@@ -76,7 +72,7 @@
     value: m
     order: 0.0
 - model: cpho.dimensionvalue
-  pk: 3
+  pk: 2
   fields:
     dimension_type: 1
     name_en: Female
@@ -84,171 +80,131 @@
     value: f
     order: 1.0
 
+# dimension value for Province
 - model: cpho.dimensionvalue
-  pk: 4
+  pk: 3
   fields:
     dimension_type: 2
     name_en: Newfoundland and Labrador
     name_fr: Terre-Neuve-et-Labrador
     value: nl
     order: 0.0
-
 - model: cpho.dimensionvalue
-  pk: 5
+  pk: 4
   fields:
     dimension_type: 2
     name_en: Prince Edward Island
     name_fr: Île-du-Prince-Édouard
     value: pe
     order: 1.0
-
 - model: cpho.dimensionvalue
-  pk: 6
+  pk: 5
   fields:
     dimension_type: 2
     name_en: Nova Scotia
     name_fr: Nouvelle-Écosse
     value: ns
     order: 2.0
-
 - model: cpho.dimensionvalue
-  pk: 7
+  pk: 6
   fields:
     dimension_type: 2
     name_en: New Brunswick
     name_fr: Nouveau-Brunswick
     value: nb
     order: 3.0
-
 - model: cpho.dimensionvalue
-  pk: 8
+  pk: 7
   fields:
     dimension_type: 2
     name_en: Quebec
     name_fr: Québec
     value: qc
     order: 4.0
-
 - model: cpho.dimensionvalue
-  pk: 9
+  pk: 8
   fields:
     dimension_type: 2
     name_en: Ontario
     name_fr: Ontario
     value: 'on'
     order: 5.0
-
 - model: cpho.dimensionvalue
-  pk: 10
+  pk: 9
   fields:
     dimension_type: 2
     name_en: Manitoba
     name_fr: Manitoba
     value: mb
-    order: 6.0
-  
+    order: 6.0 
 - model: cpho.dimensionvalue
-  pk: 11
+  pk: 10
   fields:
     dimension_type: 2
     name_en: Saskatchewan
     name_fr: Saskatchewan
     value: sk
     order: 7.0
-
-
 - model: cpho.dimensionvalue
-  pk: 12
+  pk: 11
   fields:
     dimension_type: 2
     name_en: Alberta
     name_fr: Alberta
     value: ab
     order: 8.0
-
 - model: cpho.dimensionvalue
-  pk: 13
+  pk: 12
   fields:
     dimension_type: 2
     name_en: British Columbia
     name_fr: Colombie-Britannique
     value: bc
     order: 9.0
-
 - model: cpho.dimensionvalue 
-  pk: 14
+  pk: 13
   fields:
     dimension_type: 2
     name_en: Yukon
     name_fr: Yukon
     value: yt
     order: 10.0
-
 - model: cpho.dimensionvalue
-  pk: 15
+  pk: 14
   fields:
     dimension_type: 2
     name_en: Northwest Territories
     name_fr: Territoires du Nord-Ouest
     value: nt
     order: 11.0
-
 - model: cpho.dimensionvalue
-  pk: 16
+  pk: 15
   fields:
     dimension_type: 2
     name_en: Nunavut
     name_fr: Nunavut
     value: nu
     order: 12.0
-
+  
+# dimension value for Region
 - model: cpho.dimensionvalue
-  pk: 17
+  pk: 16
   fields:
     dimension_type: 3
     name_en: Atlantic
     name_fr: Atlantique
     value: atlantic
     order: 0.0
-
-# - model: cpho.dimensionvalue
-#   pk: 18
-#   fields:
-#     dimension_type: 3
-#     name_en: Quebec
-#     name_fr: Québec
-#     value: quebec
-#     order: 1.0
-
-# - model: cpho.dimensionvalue
-#   pk: 19
-#   fields:
-#     dimension_type: 3
-#     name_en: Ontario
-#     name_fr: Ontario
-#     value: ontario
-#     order: 2.0
-
 - model: cpho.dimensionvalue
-  pk: 20
+  pk: 17
   fields:
     dimension_type: 3
     name_en: Prairies
     name_fr: Prairies
     value: prairies
     order: 3.0
-
-# - model: cpho.dimensionvalue
-#   pk: 21
-#   fields:
-#     dimension_type: 3
-#     name_en: British Columbia
-#     name_fr: Colombie-Britannique
-#     value: british_columbia
-#     order: 4.0
-
 - model: cpho.dimensionvalue
-  pk: 22
+  pk: 18
   fields:
     dimension_type: 3
     name_en: Territories
@@ -256,9 +212,9 @@
     value: territories
     order: 5.0
 
-
+# dimension value for Country
 - model: cpho.dimensionvalue
-  pk: 23
+  pk: 19
   fields:
     dimension_type: 4
     name_en: Canada
@@ -266,8 +222,9 @@
     value: canada
     order: 0.0
 
+# dimension value for Gender
 - model: cpho.dimensionvalue
-  pk: 24
+  pk: 20
   fields:
     dimension_type: 6
     name_en: Men
@@ -275,7 +232,7 @@
     value: men
     order: 0.0
 - model: cpho.dimensionvalue
-  pk: 25
+  pk: 21
   fields:
     dimension_type: 6
     name_en: Women
@@ -283,7 +240,7 @@
     value: women
     order: 1.0
 - model: cpho.dimensionvalue
-  pk: 26
+  pk: 22
   fields:
     dimension_type: 6
     name_en: Boys
@@ -291,7 +248,7 @@
     value: boys
     order: 2.0
 - model: cpho.dimensionvalue
-  pk: 27
+  pk: 23
   fields:
     dimension_type: 6
     name_en: Girls
@@ -299,183 +256,395 @@
     value: girls
     order: 4.0
 
-- model: cpho.dimensionvalue
-  pk: 28
-  fields:
-    dimension_type: 7
-    name_en: Male Living Alone
-    name_fr: Homme vivant seul
-    value: male_alone
-    order: 0.0
+# dimension value for Living Arrangement
 - model: cpho.dimensionvalue
   pk: 29
   fields:
     dimension_type: 7
-    name_en: Female Living Alone
-    name_fr: Femme vivant seule
-    value: female_alone
-    order: 1.0
+    name_en: "Males: Living alone"
+    name_fr: "Hommes : Vivre seul"
+    value: male_alone
+    order: 0.0
 - model: cpho.dimensionvalue
   pk: 30
   fields:
     dimension_type: 7
-    name_en: Couple no children
-    name_fr: Couple sans enfant
-    value: couple_no_children
-    order: 2.0
+    name_en: "Males: In single-parent family"
+    name_fr: "Hommes : Dans une famille monoparentale"
+    value: male_single_parent_family
+    order: 1.0
 - model: cpho.dimensionvalue
   pk: 31
   fields:
     dimension_type: 7
-    name_en: Couple with child(ren) less than 18 years old
-    name_fr: Couple avec enfant(s) de moins de 18 ans
-    value: couple_with_childrenU18
-    order: 3.0
+    name_en: "Males: Living with others or other arrangements"
+    name_fr: "Hommes : Vivre avec d'autres personnes ou d'autres arrangements"
+    value: male_other
+    order: 2.0
 - model: cpho.dimensionvalue
   pk: 32
   fields:
     dimension_type: 7
-    name_en: Female lone parent with child(ren) less than 18 years old
-    name_fr: Femme parent isolé avec enfant(s) de moins de 18 ans
-    value: female_with_childrenU18
-    order: 4.0
+    name_en: "Males: Couple with children"
+    name_fr: "Hommes : Couple avec enfants"
+    value: male_couple_with_children
+    order: 3.0
 - model: cpho.dimensionvalue
   pk: 33
   fields:
     dimension_type: 7
-    name_en: Male lone parent with child(ren) less than 18 years old
-    name_fr: Homme parent isolé avec enfant(s) de moins de 18 ans
-    value: male_with_childrenU18
-    order: 5.0
+    name_en: "Males: Couple without children"
+    name_fr: "Hommes : Couple sans enfant"
+    value: male_couple_no_children
+    order: 4.0
 - model: cpho.dimensionvalue
   pk: 34
   fields:
     dimension_type: 7
-    name_en: Other living arrangements
-    name_fr: Autres conditions de vie
-    value: other_living_arrangements
-    order: 6.0
+    name_en: "Females: Living alone"
+    name_fr: "Les femmes : Vivant seules"
+    value: female_alone
+    order: 5.0
 - model: cpho.dimensionvalue
   pk: 35
   fields:
-    dimension_type: 8
-    name_en: Less than high school
-    name_fr: Moins que le secondaire
-    value: less_than_high_school
-    order: 0.0
+    dimension_type: 7
+    name_en: "Females: In single-parent family"
+    name_fr: "Les femmes : Dans une famille monoparentale"
+    value: female_single_parent_family
+    order: 6.0
 - model: cpho.dimensionvalue
   pk: 36
   fields:
-    dimension_type: 8
-    name_en: High School Graduate
-    name_fr: Diplôme d'études secondaires
-    value: high_school_graduate
-    order: 1.0
+    dimension_type: 7
+    name_en: "Females: Living with others or other arrangements"
+    name_fr: "Les femmes : Vivre avec d'autres personnes ou d'autres arrangements"
+    value: female_other
+    order: 7.0
 - model: cpho.dimensionvalue
   pk: 37
   fields:
-    dimension_type: 8
-    name_en: Community college/Technical school/University Certificate
-    name_fr: Collège communautaire/École technique/Certificat universitaire
-    value: community_technical_certificate
-    order: 2.0
+    dimension_type: 7
+    name_en: "Females: Couple with children"
+    name_fr: "Les femmes : Couple avec enfants"
+    value: female_couple_with_children
+    order: 8.0
 - model: cpho.dimensionvalue
   pk: 38
   fields:
-    dimension_type: 8
-    name_en: University Graduate
-    name_fr: Diplômé de l'université
-    value: university_graduate
-    order: 3.0
+    dimension_type: 7
+    name_en: "Females: Couple without children"
+    name_fr: "Les femmes : Couple sans enfant"
+    value: female_couple_no_children
+    order: 9.0
 - model: cpho.dimensionvalue
   pk: 39
   fields:
-    dimension_type: 8
-    name_en: Missing
-    name_fr: Manquant
-    value: missing
-    order: 4.0
+    dimension_type: 7
+    name_en: "Both Sexes: Living alone"
+    name_fr: "Les deux sexes : Vivre seul"
+    value: both_alone
+    order: 10.0
 - model: cpho.dimensionvalue
   pk: 40
   fields:
-    dimension_type: 9
-    name_en: Quintile 1
-    name_fr: Quintile 1
-    value: quintile_one
-    order: 0.0
+    dimension_type: 7
+    name_en: "Both Sexes: In single-parent family"
+    name_fr: "Les deux sexes : Dans les familles monoparentales"
+    value: both_single_parent_family
+    order: 11.0
 - model: cpho.dimensionvalue
   pk: 41
   fields:
-    dimension_type: 9
-    name_en: Quintile 2
-    name_fr: Quintile 2
-    value: quintile_two
-    order: 1.0
+    dimension_type: 7
+    name_en: "Both Sexes: Living with others or other arrangements"
+    name_fr: "Les deux sexes : Vivre avec d'autres personnes ou d'autres arrangements"
+    value: both_other
+    order: 12.0
 - model: cpho.dimensionvalue
   pk: 42
   fields:
-    dimension_type: 9
-    name_en: Quintile 3
-    name_fr: Quintile 3
-    value: quintile_three
-    order: 2.0
+    dimension_type: 7
+    name_en: "Both Sexes: Couple with children"
+    name_fr: "Les deux sexes : Couple avec enfants"
+    value: both_couple_with_children
+    order: 13.0
 - model: cpho.dimensionvalue
   pk: 43
   fields:
-    dimension_type: 9
-    name_en: Quintile 4
-    name_fr: Quintile 4
-    value: quintile_four
-    order: 3.0
+    dimension_type: 7
+    name_en: "Both Sexes: Couple without children"
+    name_fr: "Les deux sexes : Couple sans enfant"
+    value: both_couple_no_children
+    order: 14.0
+
+
+# dimension value for Education Household
 - model: cpho.dimensionvalue
   pk: 44
   fields:
-    dimension_type: 9
-    name_en: Quintile 5
-    name_fr: Quintile 5
-    value: quintile_five
+    dimension_type: 8
+    name_en: "Males: Less than high school"
+    name_fr: "Hommes : Moins d'un an d'études secondaires"
+    value: males_less_than_high_school
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 45
+  fields:
+    dimension_type: 8
+    name_en: "Males: High school graduate"
+    name_fr: "Hommes : Diplômés de l'enseignement secondaire"
+    value: males_high_school_graduate
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 46
+  fields:
+    dimension_type: 8
+    name_en: "Males: Community college/ Technical school/ University certificate"
+    name_fr: "Hommes : Collège communautaire/ École technique/ Certificat universitaire"
+    value: males_certificate
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 47
+  fields:
+    dimension_type: 8
+    name_en: "Males: University graduate"
+    name_fr: "Hommes : Diplôme universitaire"
+    value: males_university_graduate
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 48
+  fields:
+    dimension_type: 8
+    name_en: "Males: Missing"
+    name_fr: "Hommes : Manquant"
+    value: males_living_missing
     order: 4.0
-# - model: cpho.dimensionvalue
-#   pk: 24
-#   fields:deep
-#     dimension_type: 5
-#     name_en: 0-4
-#     name_fr: 0-4
-#     value: 0-4
-#     order: 0.0
+- model: cpho.dimensionvalue
+  pk: 49
+  fields:
+    dimension_type: 8
+    name_en: "Females: Less than high school"
+    name_fr: "Femmes : Moins que l'école secondaire"
+    value: females_less_than_high_school
+    order: 5.0
+- model: cpho.dimensionvalue
+  pk: 50
+  fields:
+    dimension_type: 8
+    name_en: "Females: High school graduate"
+    name_fr: "Femmes : Diplôme d'études secondaires"
+    value: females_high_school_graduate
+    order: 6.0
+- model: cpho.dimensionvalue
+  pk: 51
+  fields:
+    dimension_type: 8
+    name_en: "Females: Community college/ Technical school/ University certificate"
+    name_fr: "Femmes : Collège communautaire/ École technique/ Certificat universitaire"
+    value: females_certificate
+    order: 7.0
+- model: cpho.dimensionvalue
+  pk: 52
+  fields:
+    dimension_type: 8
+    name_en: "Females: University graduate"
+    name_fr: "Femmes : Diplôme universitaire"
+    value: females_university_graduate
+    order: 8.0
+- model: cpho.dimensionvalue
+  pk: 53
+  fields:
+    dimension_type: 8
+    name_en: "Females: Missing"
+    name_fr: "Femmes : Manquant"
+    value: females_living_missing
+    order: 9.0
+- model: cpho.dimensionvalue
+  pk: 54
+  fields:
+    dimension_type: 8
+    name_en: "Both Sexes: Less than high school"
+    name_fr: "Les deux sexes : Moins que l'école secondaire"
+    value: both_less_than_high_school
+    order: 10.0
+- model: cpho.dimensionvalue
+  pk: 55
+  fields:
+    dimension_type: 8
+    name_en: "Both Sexes: High school graduate"
+    name_fr: "Les deux sexes : Diplôme d'études secondaires"
+    value: both_high_school_graduate
+    order: 11.0
+- model: cpho.dimensionvalue
+  pk: 56
+  fields:
+    dimension_type: 8
+    name_en: "Both Sexes: Community college/ Technical school/ University certificate "
+    name_fr: "Les deux sexes : Collège communautaire/ École technique/ Certificat universitaire"
+    value: both_certificate
+    order: 12.0
+- model: cpho.dimensionvalue
+  pk: 57
+  fields:
+    dimension_type: 8
+    name_en: "Both Sexes: University graduate"
+    name_fr: "Les deux sexes : Diplôme universitaire"
+    value: both_university_graduate
+    order: 13.0
+- model: cpho.dimensionvalue
+  pk: 58
+  fields:
+    dimension_type: 8
+    name_en: "Both Sexes: Missing"
+    name_fr: "Les deux sexes : Manquant"
+    value: both_living_missing
+    order: 14.0
 
-# - model: cpho.dimensionvalue
-#   pk: 25
-#   fields:
-#     dimension_type: 5
-#     name_en: 5-9
-#     name_fr: 5-9
-#     value: 5-9
-#     order: 1.0
+# dimension value for Income Quintiles
+- model: cpho.dimensionvalue
+  pk: 59
+  fields:
+    dimension_type: 9
+    name_en: "Males: Quintile 1"
+    name_fr: "Hommes : Quintile 1"
+    value: male_quintile_1
+    order: 0.0
+- model: cpho.dimensionvalue
+  pk: 60
+  fields:
+    dimension_type: 9
+    name_en: "Males: Quintile 2"
+    name_fr: "Hommes : Quintile 2"
+    value: male_quintile_2
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 61
+  fields:
+    dimension_type: 9
+    name_en: "Males: Quintile 3"
+    name_fr: "Hommes : Quintile 3"
+    value: male_quintile_3
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 62
+  fields:
+    dimension_type: 9
+    name_en: "Males: Quintile 4"
+    name_fr: "Hommes : Quintile 4"
+    value: male_quintile_4
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 63
+  fields:
+    dimension_type: 9
+    name_en: "Males: Quintile 5"
+    name_fr: "Hommes : Quintile 5"
+    value: male_quintile_5
+    order: 4.0
+- model: cpho.dimensionvalue
+  pk: 64
+  fields:
+    dimension_type: 9
+    name_en: "Males: Missing"
+    name_fr: "Hommes : Manquant"
+    value: male_quintile_missing
+    order: 5.0
+- model: cpho.dimensionvalue
+  pk: 65
+  fields:
+    dimension_type: 9
+    name_en: "Females: Quintile 1"
+    name_fr: "Femmes : Quintile 1"
+    value: female_quintile_1
+    order: 6.0
+- model: cpho.dimensionvalue
+  pk: 66
+  fields:
+    dimension_type: 9
+    name_en: "Females: Quintile 2"
+    name_fr: "Femmes : Quintile 2"
+    value: female_quintile_2
+    order: 7.0
+- model: cpho.dimensionvalue
+  pk: 67
+  fields:
+    dimension_type: 9
+    name_en: "Females: Quintile 3"
+    name_fr: "Femmes : Quintile 3"
+    value: female_quintile_3
+    order: 8.0
+- model: cpho.dimensionvalue
+  pk: 68
+  fields:
+    dimension_type: 9
+    name_en: "Females: Quintile 4"
+    name_fr: "Femmes : Quintile 4"
+    value: female_quintile_4
+    order: 9.0
+- model: cpho.dimensionvalue
+  pk: 69
+  fields:
+    dimension_type: 9
+    name_en: "Females: Quintile 5"
+    name_fr: "Femmes : Quintile 5"
+    value: female_quintile_5
+    order: 10.0
+- model: cpho.dimensionvalue
+  pk: 70
+  fields:
+    dimension_type: 9
+    name_en: "Females: Missing"
+    name_fr: "Femmes : Manquant"
+    value: female_quintile_missing
+    order: 11.0
+- model: cpho.dimensionvalue
+  pk: 71
+  fields:
+    dimension_type: 9
+    name_en: "Both Sexes: Quintile 1"
+    name_fr: "Les deux sexes : Quintile 1"
+    value: both_quintile_1
+    order: 12.0
+- model: cpho.dimensionvalue
+  pk: 72
+  fields:
+    dimension_type: 9
+    name_en: "Both Sexes: Quintile 2"
+    name_fr: "Les deux sexes : Quintile 2"
+    value: both_quintile_2
+    order: 13.0
+- model: cpho.dimensionvalue
+  pk: 73
+  fields:
+    dimension_type: 9
+    name_en: "Both Sexes: Quintile 3"
+    name_fr: "Les deux sexes : Quintile 3"
+    value: both_quintile_3
+    order: 14.0
+- model: cpho.dimensionvalue
+  pk: 74
+  fields:
+    dimension_type: 9
+    name_en: "Both Sexes: Quintile 4"
+    name_fr: "Les deux sexes : Quintile 4"
+    value: both_quintile_4
+    order: 15.0
+- model: cpho.dimensionvalue
+  pk: 75
+  fields:
+    dimension_type: 9
+    name_en: "Both Sexes: Quintile 5"
+    name_fr: "Les deux sexes : Quintile 5"
+    value: both_quintile_5
+    order: 17.0
+- model: cpho.dimensionvalue
+  pk: 76
+  fields:
+    dimension_type: 9
+    name_en: "Both Sexes: Missing"
+    name_fr: "Les deux sexes : Manquant"
+    value: both_quintile_missing
+    order: 18.0
 
-# - model: cpho.dimensionvalue  
-#   pk: 26
-#   fields:
-#     dimension_type: 5
-#     name_en: 10-14
-#     name_fr: 10-14
-#     value: 10-14
-#     order: 2.0
   
-# - model: cpho.dimensionvalue
-#   pk: 27
-#   fields:
-#     dimension_type: 5
-#     name_en: 15-19
-#     name_fr: 15-19
-#     value: 15-19
-#     order: 3.0
-
-# - model: cpho.dimensionvalue
-#   pk: 28
-#   fields:
-#     dimension_type: 5
-#     name_en: 20-24
-#     name_fr: 20-24
-#     value: 20-24
-#     order: 4.0

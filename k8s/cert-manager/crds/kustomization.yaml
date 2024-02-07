@@ -35,9 +35,7 @@ patches:
           requests:
             cpu: 250m
             memory: 512Mi
-
             
-  # Patch for cert-manager-cainjector with Chainguard image
   - target:
       group: apps
       version: v1
@@ -57,7 +55,6 @@ patches:
             cpu: 250m
             memory: 512Mi
 
-    # Patch for cert-manager-webhook with Chainguard image
   - target:
       group: apps
       version: v1
@@ -71,7 +68,6 @@ patches:
           requests:
             cpu: 250m
             memory: 512Mi
-
 
   - target:
       kind: "(Role|RoleBinding)"

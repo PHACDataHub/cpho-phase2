@@ -14,4 +14,4 @@ patches:
   patch: |-
     - op: add
       path: /spec/googleServiceAccount
-      value: hopic2-provisioner@pht-01hhjj7tt0m.iam.gserviceaccount.com
+      value: hopic-provisioner@pht-01hp04dtnkf.iam.gserviceaccount.com

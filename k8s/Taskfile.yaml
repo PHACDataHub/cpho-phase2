@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  PROJECT_ID: pht-01hhjj7tt0m
+  PROJECT_ID: pht-01hp04dtnkf
   REGION: northamerica-northeast1
   NAME: hopic2
   FLEET_HOST_PROJECT_ID: php-fleet-monitoring

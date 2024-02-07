@@ -5,7 +5,7 @@ metadata:
   namespace: cnrm-system
 spec:
   description: Cloud Build Trigger for building docker images from GitHub repository at https://github.com/PHACDataHub/cpho-phase2/
-  disabled: true
+  disabled: false
   location: northamerica-northeast1
   includeBuildLogs: INCLUDE_BUILD_LOGS_WITH_STATUS
   filename: cloudbuild.yaml

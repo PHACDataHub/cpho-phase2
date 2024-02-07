@@ -32,7 +32,7 @@ patches:
         name: kustomize-controller
         namespace: flux-system
         annotations:
-          iam.gke.io/gcp-service-account: sops-kms@pht-01hhjj7tt0m.iam.gserviceaccount.com      
+          iam.gke.io/gcp-service-account: sops-kms@pht-01hp04dtnkf.iam.gserviceaccount.com      
     target:
       kind: ServiceAccount
       name: kustomize-controller
@@ -46,7 +46,7 @@ patches:
         name: image-reflector-controller
         namespace: flux-system
         annotations:
-          iam.gke.io/gcp-service-account: gcr-credentials-sync@pht-01hhjj7tt0m.iam.gserviceaccount.com
+          iam.gke.io/gcp-service-account: gcr-credentials-sync@pht-01hp04dtnkf.iam.gserviceaccount.com
     target:
       kind: ServiceAccount
       name: image-reflector-controller

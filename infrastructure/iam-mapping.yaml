@@ -1,0 +1,135 @@
+# project iam bindings
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: project-iampolicy
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: gcr-credentials-sync
+      role: roles/artifactregistry.reader
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: dns01-solver
+      role: roles/dns.admin
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: sops-kms
+      role: roles/cloudkms.cryptoKeyEncrypterDecrypter
+    - members:
+        - member: serviceAccount:service-305495415810@gcp-sa-gkehub.iam.gserviceaccount.com
+      role: roles/gkehub.serviceAgent
+    - members:
+        - member: serviceAccount:service-305495415810@gcp-sa-gkehub.iam.gserviceaccount.com
+      role: roles/gkehub.crossProjectServiceAgent
+    - members:
+        - member: serviceAccount:service-305495415810@gcp-sa-servicemesh.iam.gserviceaccount.com
+      role: roles/anthosservicemesh.serviceAgent
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    external: projects/pht-01hp04dtnkf
+    kind: Project
+---
+# bucket iam bindings
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-postgres-backup-iam
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - memberFrom:
+            serviceAccountRef:
+              name: hopic-postgres-backup
+      role: roles/storage.admin
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: hopic-postgres-backup-01hp04dtnkf
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-test-coverage-reports-iam
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:791221659942@cloudbuild.gserviceaccount.com
+      role: roles/storage.objectCreator
+    - members:
+        - member: serviceAccount:791221659942@cloudbuild.gserviceaccount.com
+      role: roles/storage.legacyBucketReader
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: hopic-test-coverage-reports-01hp04dtnkf
+---
+# service account bindings
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-wi-gcr-credentials-sync
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[flux-system/image-reflector-controller]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: gcr-credentials-sync
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-wi-dns01-solver
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[cert-manager/cert-manager]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: dns01-solver
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-wi-sops-kms
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[flux-system/kustomize-controller]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: sops-kms
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-wi-backup
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[server/cpho-postgres14-cluster-backup]
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[server/cpho-postgres14-cluster-restore]
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[server/cpho-postgres14-cluster]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: hopic-postgres-backup

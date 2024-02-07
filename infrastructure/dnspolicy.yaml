@@ -1,0 +1,11 @@
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSPolicy
+metadata:
+  name: hopic-net-dnspolicy
+  namespace: cnrm-system
+spec:
+  description: "Enables DNS logging for the hopic-net VPC"
+  enableLogging: true
+  networks:
+    - networkRef:
+        external: projects/pht-01hp04dtnkf/global/networks/hopic-net

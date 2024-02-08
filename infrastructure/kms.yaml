@@ -6,6 +6,8 @@ metadata:
 spec:
   keyRingRef:
     name: sops
+  # needs to be seconds as per https://cloud.google.com/config-connector/docs/reference/resource-docs/kms/kmscryptokey#spec
+  rotationPeriod: 5184000s # 60days
 ---
 apiVersion: kms.cnrm.cloud.google.com/v1beta1
 kind: KMSKeyRing

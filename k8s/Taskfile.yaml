@@ -20,7 +20,8 @@ tasks:
           --bgp-routing-mode=regional --mtu=1460 --project={{.PROJECT_ID}}
       - |
         gcloud compute networks subnets create {{.NAME}}-subnet --network={{.NAME}}-net \
-          --range=10.162.0.0/20 --region={{.REGION}} --project={{.PROJECT_ID}}
+          --range=10.162.0.0/20 --region={{.REGION}} --enable-flow-logs \
+          --project={{.PROJECT_ID}}
       - |
         gcloud beta container --project={{.PROJECT_ID}} clusters create-auto {{.NAME}} \
           --region={{.REGION}} --release-channel "regular" \

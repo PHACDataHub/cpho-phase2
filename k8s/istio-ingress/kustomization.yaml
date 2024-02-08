@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+- gw-certificate.yaml
 - public-gateway.yaml
 - ingress.yaml
 - namespace.yaml
@@ -11,7 +12,7 @@ patches:
 - patch: |-
     - op: add
       path: /spec/loadBalancerIP
-      value: 34.152.0.41
+      value: 35.203.101.160
   target:
     kind: Service
     name: istio-ingressgateway

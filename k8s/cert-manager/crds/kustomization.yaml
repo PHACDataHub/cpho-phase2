@@ -35,9 +35,7 @@ patches:
           requests:
             cpu: 250m
             memory: 512Mi
-
             
-  # Patch for cert-manager-cainjector with Chainguard image
   - target:
       group: apps
       version: v1
@@ -57,7 +55,6 @@ patches:
             cpu: 250m
             memory: 512Mi
 
-    # Patch for cert-manager-webhook with Chainguard image
   - target:
       group: apps
       version: v1
@@ -71,7 +68,6 @@ patches:
           requests:
             cpu: 250m
             memory: 512Mi
-
 
   - target:
       kind: "(Role|RoleBinding)"
@@ -93,4 +89,4 @@ patches:
       - op: add
         path: "/metadata/annotations"
         value:
-          iam.gke.io/gcp-service-account: dns01-solver@pht-01hhjj7tt0m.iam.gserviceaccount.com
+          iam.gke.io/gcp-service-account: dns01-solver@pht-01hp04dtnkf.iam.gserviceaccount.com

@@ -53,7 +53,7 @@ metadata:
   name: server
   namespace: flux-system
 spec:
-  image: northamerica-northeast1-docker.pkg.dev/phx-01h4rr1468rj3v5k60b1vserd3/cpho-phase2-artifact-registry-for-cloud-run/cpho-phase2
+  image: northamerica-northeast1-docker.pkg.dev/pht-01hp04dtnkf/hopic-k8s-images/cpho-phase2
   interval: 1m0s
   provider: gcp
 ---

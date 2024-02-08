@@ -76,8 +76,7 @@
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto;
-                      display:block">
+               style="overflow-x:auto; display:block">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
@@ -103,15 +102,29 @@
                     <div class="error-display">
                       {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
+                  {% else %}
+                    <label for="{{ form.value.id_for_label }}" class="visually-hidden">
+                      {{ possible_value.name }}, {{ form.value.label }}
+                    </label>
                   {% endif %}
                 </td>
-                <td>{{ form.value_unit }}</td>
+                <td>
+                  {{ form.value_unit }}
+                  <label for="{{ form.value_unit.id_for_label }}" class="visually-hidden">
+                    {{ possible_value.name }}, {{ form.value_unit.label }}
+                  </label>
+                </td>
                 <td>
                   {{ form.value_lower_bound }}
                   {% if form.errors.value_lower_bound %}
                     <div class="error-display">
                       {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
+                  {% else %}
+                    <label for="{{ form.value_lower_bound.id_for_label }}"
+                           class="visually-hidden">
+                      {{ possible_value.name }}, {{ form.value_lower_bound.label }}
+                    </label>
                   {% endif %}
                 </td>
                 <td>
@@ -120,15 +133,30 @@
                     <div class="error-display">
                       {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
+                  {% else %}
+                    <label for="{{ form.value_upper_bound.id_for_label }}"
+                           class="visually-hidden">
+                      {{ possible_value.name }}, {{ form.value_upper_bound.label }}
+                    </label>
                   {% endif %}
                 </td>
-                <td>{{ form.data_quality }}</td>
+                <td>
+                  {{ form.data_quality }}
+                  <label for="{{ form.data_quality.id_for_label }}" class="visually-hidden">
+                    {{ possible_value.name }}, {{ form.data_quality.label }}
+                  </label>
+                </td>
                 <td>
                   {{ form.single_year_timeframe }}
                   {% if form.errors.single_year_timeframe %}
                     <div class="error-display">
                       {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
+                  {% else %}
+                    <label for="{{ form.single_year_timeframe.id_for_label }}"
+                           class="visually-hidden">
+                      {{ possible_value.name }}, {{ form.single_year_timeframe.label }}
+                    </label>
                   {% endif %}
                 </td>
                 <td>
@@ -137,10 +165,25 @@
                     <div class="error-display">
                       {% for error in form.multi_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
+                  {% else %}
+                    <label for="{{ form.multi_year_timeframe.id_for_label }}"
+                           class="visually-hidden">
+                      {{ possible_value.name }}, {{ form.multi_year_timeframe.label }}
+                    </label>
                   {% endif %}
                 </td>
-                <td>{{ form.value_displayed }}</td>
-                <td>{{ form.reason_for_null }}</td>
+                <td>
+                  {{ form.value_displayed }}
+                  <label for="{{ form.value_displayed.id_for_label }}" class="visually-hidden">
+                    {{ possible_value.name }}, {{ form.value_displayed.label }}
+                  </label>
+                </td>
+                <td>
+                  {{ form.reason_for_null }}
+                  <label for="{{ form.reason_for_null.id_for_label }}" class="visually-hidden">
+                    {{ possible_value.name }}, {{ form.reason_for_null.label }}
+                  </label>
+                </td>
               </tr>
             {% endfor %}
 
@@ -151,27 +194,50 @@
     {% if show_age_group %}
       <div class="card mt-5 mb-2">
         <div class="card-header">
-          <div class="h3">{{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}</div>
+          <div class="h3">
+            {{ tdt("Managing data for stratifier: ") }} {{ tdt("Age") }}
+          </div>
         </div>
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto;
-                      display:block">
+               style="overflow-x:auto; display:block">
  
           <thead class="table-light text-center">
             <tr>
-              <th width="9%">{{ tdt("Age") }}</th>
-              <th width="9%">{{ tdt("Value") }}</th>
-              <th width="9%">{{ tdt("Value Unit") }}</th>
-              <th width="9%">{{ tdt("Value Lower Bound") }}</th>
-              <th width="9%">{{ tdt("Value Upper Bound") }}</th>
-              <th width="9%">{{ tdt("Data Quality") }}</th>
-              <th width="9%">{{ tdt("Single Year Timeframe") }}</th>
-              <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
-              <th width="9%">{{ tdt("Value Displayed") }}</th>
-              <th width="9%">{{ tdt("Reason For Null Data") }}</th>
-              <th width="5%">{{ tdt("Delete") }}</th>
+              <th width="9%">
+                {{ tdt("Age") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Value") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Value Unit") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Value Lower Bound") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Value Upper Bound") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Data Quality") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Single Year Timeframe") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Multi Year Timeframe") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Value Displayed") }}
+              </th>
+              <th width="9%">
+                {{ tdt("Reason For Null Data") }}
+              </th>
+              <th width="5%">
+                {{ tdt("Delete") }}
+              </th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body"
@@ -180,7 +246,9 @@
           </tbody>
         </table>
         <div class="text-center py-1">
-          <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add another age group") }}</button>
+          <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">
+            {{ tdt("Add another age group") }}
+          </button>
         </div>
       </div>
     {% endif %}

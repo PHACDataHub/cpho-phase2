@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../../base/django/
+  - configmap.yaml
   - secrets.enc.yaml
   - virtual-service.yaml
 
@@ -15,5 +16,5 @@ namespace: ${BRANCH_NAME}
 # use a labelTransformer directive if you need to propagate a label only to the label field
 # see https://github.com/kubernetes-sigs/kustomize/blob/master/examples/transformerconfigs/README.md#labels-transformer
 commonLabels:
-  app: ephemeral
+  app: server
   branch: ${BRANCH_NAME}

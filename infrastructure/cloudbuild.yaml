@@ -16,3 +16,4 @@ spec:
       branch: .*
   ignoredFiles:
     - "k8s/**"
+    - "infrastructure/**"

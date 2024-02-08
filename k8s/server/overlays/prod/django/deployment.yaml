@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: northamerica-northeast1-docker.pkg.dev/pht-01hp04dtnkf/hopic-k8s-images/cpho-phase2:main-65c9e6b5-1707346051
+        image: northamerica-northeast1-docker.pkg.dev/pht-01hp04dtnkf/hopic-k8s-images/cpho-phase2:main-65c9e6b5-1707346051 # {"$imagepolicy": "flux-system:server"}
         resources:
           # Autopilot only considers requests (see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits)
           requests:

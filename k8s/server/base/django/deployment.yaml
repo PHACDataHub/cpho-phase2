@@ -22,6 +22,8 @@ spec:
       - name: server
         securityContext:
           runAsUser: 5678
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
         env:
         - name: SECRET_KEY
           valueFrom:

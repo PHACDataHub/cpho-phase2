@@ -9,6 +9,8 @@ spec:
       annotations:
         proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
         # istio-proxies are injected by anthos, see `istio.io/rev: asm-managed` in ../namespace.yaml
         # these are overrides for the default configuration of those injected proxy sidecars
@@ -22,6 +24,7 @@ spec:
       - name: server
         securityContext:
           runAsUser: 5678
+          allowPrivilegeEscalation: false
         env:
         - name: SECRET_KEY
           valueFrom:

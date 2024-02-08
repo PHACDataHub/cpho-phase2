@@ -3,7 +3,9 @@ kind: Cluster
 metadata:
   name: cpho-postgres14-cluster
 spec:
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.9
+  # See for info regarding images: https://cloudnative-pg.io/documentation/1.22/#container-images
+  # Images are found here: https://github.com/cloudnative-pg/postgres-containers/pkgs/container/postgresql
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.10
   primaryUpdateStrategy: unsupervised
 
 # PostGres Best Practices for the Logging 

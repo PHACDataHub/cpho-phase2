@@ -236,21 +236,21 @@ def export_mapper():
             all_dimension_val_dict["m"]: "MALES",
             all_dimension_val_dict["f"]: "FEMALES",
             all_dimension_val_dict["canada"]: "CANADA",
-            all_dimension_val_dict["male_alone"]: "MALE LIVING ALONE",
-            all_dimension_val_dict["female_alone"]: "FEMALE LIVING ALONE",
-            all_dimension_val_dict["couple_no_children"]: "COUPLE NO CHILDREN",
-            all_dimension_val_dict[
-                "couple_with_childrenU18"
-            ]: "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            all_dimension_val_dict[
-                "female_with_childrenU18"
-            ]: "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            all_dimension_val_dict[
-                "male_with_childrenU18"
-            ]: "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            all_dimension_val_dict[
-                "other_living_arrangements"
-            ]: "OTHER LIVING ARRANGEMENTS",
+            # all_dimension_val_dict["male_alone"]: "MALE LIVING ALONE",
+            # all_dimension_val_dict["female_alone"]: "FEMALE LIVING ALONE",
+            # all_dimension_val_dict["couple_no_children"]: "COUPLE NO CHILDREN",
+            # all_dimension_val_dict[
+            #     "couple_with_childrenU18"
+            # ]: "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            # all_dimension_val_dict[
+            #     "female_with_childrenU18"
+            # ]: "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            # all_dimension_val_dict[
+            #     "male_with_childrenU18"
+            # ]: "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+            # all_dimension_val_dict[
+            #     "other_living_arrangements"
+            # ]: "OTHER LIVING ARRANGEMENTS",
         },
     }
 

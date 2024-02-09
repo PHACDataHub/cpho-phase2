@@ -35,6 +35,8 @@ patches:
                   requests:
                     cpu: 50m
                     memory: 112Mi   
+                securityContext:
+                  allowPrivilegeEscalation: false
     target:
       kind: Deployment
       name: cnpg-controller-manager

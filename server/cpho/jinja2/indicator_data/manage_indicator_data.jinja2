@@ -18,8 +18,8 @@
 
 {% macro check_display_error(err, field)%}
   {% if err %}
-    <div class="error-display">
-      {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
+    <div class="error-msg">
+      {% for error in field.errors %}{{ error|escape }}{% endfor %}
     </div>
   {% endif %}
 {% endmacro %}
@@ -192,9 +192,7 @@
               <th width="9%">{{ tdt("Single Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Value Displayed") }}</th>
-              <th width="9%">
-                {{ tdt("Reason For Null Data") }}
-              </th>
+              <th width="9%">{{ tdt("Reason For Null Data") }}</th>
               <th width="5%">
                 {{ tdt("Delete") }}
               </th>

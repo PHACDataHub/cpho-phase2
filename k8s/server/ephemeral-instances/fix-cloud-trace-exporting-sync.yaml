@@ -26,6 +26,10 @@ spec:
   wait: true
   dependsOn:
     - name: ephemeral-instances
+  postBuild:
+    substitute:
+      BRANCH_NAME: fix-cloud-trace-exporting
+
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -43,3 +47,6 @@ spec:
     - name: fix-cloud-trace-exporting-postgres
   decryption:
     provider: sops
+  postBuild:
+    substitute:
+      BRANCH_NAME: fix-cloud-trace-exporting

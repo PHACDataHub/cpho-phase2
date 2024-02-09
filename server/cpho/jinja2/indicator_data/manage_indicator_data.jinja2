@@ -98,89 +98,98 @@
                 <td class="fw-bold">{{ possible_value.name }}</td>
                 <td>
                   {{ form.value }}
+                  <label for="{{ form.value.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.value.label }}">
+                    {{ possible_value.name }}, {{ form.value.label }}
+                  </label>
                   {% if form.errors.value %}
                     <div class="error-display">
                       {% for error in form.value.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
-                  {% else %}
-                    <label for="{{ form.value.id_for_label }}" class="visually-hidden">
-                      {{ possible_value.name }}, {{ form.value.label }}
-                    </label>
                   {% endif %}
                 </td>
                 <td>
                   {{ form.value_unit }}
-                  <label for="{{ form.value_unit.id_for_label }}" class="visually-hidden">
+                  <label for="{{ form.value_unit.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.value_unit.label }}">
                     {{ possible_value.name }}, {{ form.value_unit.label }}
                   </label>
                 </td>
                 <td>
                   {{ form.value_lower_bound }}
+                  <label for="{{ form.value_lower_bound.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.value_lower_bound.label }}">
+                    {{ possible_value.name }}, {{ form.value_lower_bound.label }}
+                  </label>
                   {% if form.errors.value_lower_bound %}
                     <div class="error-display">
                       {% for error in form.value_lower_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
-                  {% else %}
-                    <label for="{{ form.value_lower_bound.id_for_label }}"
-                           class="visually-hidden">
-                      {{ possible_value.name }}, {{ form.value_lower_bound.label }}
-                    </label>
                   {% endif %}
                 </td>
                 <td>
                   {{ form.value_upper_bound }}
+                  <label for="{{ form.value_upper_bound.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.value_upper_bound.label }}">
+                    {{ possible_value.name }}, {{ form.value_upper_bound.label }}
+                  </label>
                   {% if form.errors.value_upper_bound %}
                     <div class="error-display">
                       {% for error in form.value_upper_bound.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
-                  {% else %}
-                    <label for="{{ form.value_upper_bound.id_for_label }}"
-                           class="visually-hidden">
-                      {{ possible_value.name }}, {{ form.value_upper_bound.label }}
-                    </label>
                   {% endif %}
                 </td>
                 <td>
                   {{ form.data_quality }}
-                  <label for="{{ form.data_quality.id_for_label }}" class="visually-hidden">
+                  <label for="{{ form.data_quality.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.data_quality.label }}">
                     {{ possible_value.name }}, {{ form.data_quality.label }}
                   </label>
                 </td>
                 <td>
                   {{ form.single_year_timeframe }}
+                  <label for="{{ form.single_year_timeframe.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.single_year_timeframe.label }}">
+                    {{ possible_value.name }}, {{ form.single_year_timeframe.label }}
+                  </label>
                   {% if form.errors.single_year_timeframe %}
                     <div class="error-display">
                       {% for error in form.single_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
-                  {% else %}
-                    <label for="{{ form.single_year_timeframe.id_for_label }}"
-                           class="visually-hidden">
-                      {{ possible_value.name }}, {{ form.single_year_timeframe.label }}
-                    </label>
                   {% endif %}
                 </td>
                 <td>
                   {{ form.multi_year_timeframe }}
+                  <label for="{{ form.multi_year_timeframe.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.multi_year_timeframe.label }}">
+                    {{ possible_value.name }}, {{ form.multi_year_timeframe.label }}
+                  </label>
                   {% if form.errors.multi_year_timeframe %}
                     <div class="error-display">
                       {% for error in form.multi_year_timeframe.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
                     </div>
-                  {% else %}
-                    <label for="{{ form.multi_year_timeframe.id_for_label }}"
-                           class="visually-hidden">
-                      {{ possible_value.name }}, {{ form.multi_year_timeframe.label }}
-                    </label>
                   {% endif %}
                 </td>
                 <td>
                   {{ form.value_displayed }}
-                  <label for="{{ form.value_displayed.id_for_label }}" class="visually-hidden">
+                  <label for="{{ form.value_displayed.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.value_displayed.label }}">
                     {{ possible_value.name }}, {{ form.value_displayed.label }}
                   </label>
                 </td>
                 <td>
                   {{ form.reason_for_null }}
-                  <label for="{{ form.reason_for_null.id_for_label }}" class="visually-hidden">
+                  <label for="{{ form.reason_for_null.id_for_label }}"
+                         class="visually-hidden"
+                         aria-label="{{ possible_value.name }}, {{ form.reason_for_null.label }}">
                     {{ possible_value.name }}, {{ form.reason_for_null.label }}
                   </label>
                 </td>

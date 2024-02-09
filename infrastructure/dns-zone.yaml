@@ -39,7 +39,7 @@ spec:
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSRecordSet
 metadata:
-  name: hopic-dns-record-set
+  name: hopic-ephemeral-dns-record-set
   namespace: cnrm-system
 spec:
   name: "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca."

@@ -1,12 +1,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: ${BRANCH_NAME}
+  name: fix-cloud-trace-exporting
   namespace: flux-system
 spec:
   interval: 1m0s
   ref:
-    branch: ${BRANCH_NAME}
+    branch: fix-cloud-trace-exporting
   secretRef:
     name: flux-system
   url: ssh://git@github.com/PHACDataHub/cpho-phase2
@@ -14,7 +14,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: ${BRANCH_NAME}-server-postgres
+  name: fix-cloud-trace-exporting-postgres
   namespace: flux-system
 spec:
   path: ./k8s/server/overlays/ephemeral/postgres
@@ -22,7 +22,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: ${BRANCH_NAME}
+    name: fix-cloud-trace-exporting
   wait: true
   dependsOn:
     - name: flux-system
@@ -30,7 +30,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: ${BRANCH_NAME}-server-django
+  name: fix-cloud-trace-exporting-django
   namespace: flux-system
 spec:
   interval: 2m0s
@@ -38,8 +38,8 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: ${BRANCH_NAME}
+    name: fix-cloud-trace-exporting
   dependsOn:
-    - name: ${BRANCH_NAME}-server-postgres
+    - name: fix-cloud-trace-exporting-postgres
   decryption:
     provider: sops

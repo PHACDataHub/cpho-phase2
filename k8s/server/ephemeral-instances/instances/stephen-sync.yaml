@@ -1,0 +1,45 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: ${BRANCH_NAME}
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: ${BRANCH_NAME}
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/PHACDataHub/cpho-phase2
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${BRANCH_NAME}-server-postgres
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/postgres
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  wait: true
+  dependsOn:
+    - name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${BRANCH_NAME}-server-django
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/server/overlays/ephemeral/django
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  dependsOn:
+    - name: ${BRANCH_NAME}-server-postgres
+  decryption:
+    provider: sops

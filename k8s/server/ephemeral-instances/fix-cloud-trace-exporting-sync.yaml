@@ -69,3 +69,43 @@ spec:
   postBuild:
     substitute:
       BRANCH_NAME: fix-cloud-trace-exporting
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: fix-cloud-trace-exporting-server
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^fix-cloud-trace-exporting-[a-fA-F0-9]+-(?P<ts>.*)
+  imageRepositoryRef:
+    name: server
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: fix-cloud-trace-exporting-cpho-updater
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: fix-cloud-trace-exporting
+  interval: 5m
+  update:
+    strategy: Setters
+    path: .
+  git:
+    checkout:
+      ref:
+        branch: fix-cloud-trace-exporting
+    commit:
+      author:
+        name: fluxbot
+        email: fluxcd@users.noreply.github.com
+      messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
+    push:
+      branch: fix-cloud-trace-exporting

@@ -1,0 +1,13 @@
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: ${BRANCH_NAME}-hopic-wi
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[${BRANCH_NAME}/cpho-postgres14-cluster]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: hopic-postgres-backup

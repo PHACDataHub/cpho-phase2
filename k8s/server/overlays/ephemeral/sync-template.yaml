@@ -1,0 +1,123 @@
+# This manifest is only meant to be used as a template for defining sync configurations
+# in ./k8s/server/ephemeral-instances/ directory. The ${BRANCH_NAME} must be subsituted
+# with the appropriate branch name.
+
+# It should be not applied directly to the cluster
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: ${BRANCH_NAME}
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: ${BRANCH_NAME}
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/PHACDataHub/cpho-phase2
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${BRANCH_NAME}-infra
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/infrastructure
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  wait: true
+  dependsOn:
+    - name: ephemeral-instances
+  postBuild:
+    substitute:
+      BRANCH_NAME: ${BRANCH_NAME}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${BRANCH_NAME}-postgres
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/postgres
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  wait: true
+  dependsOn:
+    - name: ${BRANCH_NAME}-infra
+  postBuild:
+    substitute:
+      BRANCH_NAME: ${BRANCH_NAME}
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${BRANCH_NAME}-django
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/server/overlays/ephemeral/django
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  dependsOn:
+    - name: ${BRANCH_NAME}-postgres
+  decryption:
+    provider: sops
+  postBuild:
+    substitute:
+      BRANCH_NAME: ${BRANCH_NAME}
+---
+# The following manifests are only required if there's a need to enable automated
+# image updates for ephemeral deployments.
+
+# Note that you'll also need to update the policy name in the `$imagepolicy` comment 
+# next to spec.template.spec.image in your branch's server deployment located
+# at ./k8s/server/overlays/ephemeral/django/deployment.yaml
+# See https://fluxcd.io/flux/guides/image-update/ for details
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: ${BRANCH_NAME}-server
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^${BRANCH_NAME}-[a-fA-F0-9]+-(?P<ts>.*)
+  imageRepositoryRef:
+    name: server
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: ${BRANCH_NAME}-cpho-updater
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  interval: 5m
+  update:
+    strategy: Setters
+    path: .
+  git:
+    checkout:
+      ref:
+        branch: ${BRANCH_NAME}
+    commit:
+      author:
+        name: fluxbot
+        email: fluxcd@users.noreply.github.com
+      messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
+    push:
+      branch: ${BRANCH_NAME}

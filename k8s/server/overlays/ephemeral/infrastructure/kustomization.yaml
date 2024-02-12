@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - iamppolicy.yaml
+
+namespace: cnrm-system
+
+commonLabels:
+  branch: ${BRANCH_NAME}
+  classification: ucll
+  vanity-name: pht-hopic

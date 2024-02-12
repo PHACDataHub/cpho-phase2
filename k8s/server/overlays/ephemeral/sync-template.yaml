@@ -74,3 +74,50 @@ spec:
   postBuild:
     substitute:
       BRANCH_NAME: ${BRANCH_NAME}
+---
+# The following manifests are only required if there's a need to enable automated
+# image updates for ephemeral deployments.
+
+# Note that you'll also need to update the policy name in the `$imagepolicy` comment 
+# next to spec.template.spec.image in your branch's server deployment located
+# at ./k8s/server/overlays/ephemeral/django/deployment.yaml
+# See https://fluxcd.io/flux/guides/image-update/ for details
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: ${BRANCH_NAME}-server
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^${BRANCH_NAME}-[a-fA-F0-9]+-(?P<ts>.*)
+  imageRepositoryRef:
+    name: server
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: ${BRANCH_NAME}-cpho-updater
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: ${BRANCH_NAME}
+  interval: 5m
+  update:
+    strategy: Setters
+    path: .
+  git:
+    checkout:
+      ref:
+        branch: ${BRANCH_NAME}
+    commit:
+      author:
+        name: fluxbot
+        email: fluxcd@users.noreply.github.com
+      messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
+    push:
+      branch: ${BRANCH_NAME}

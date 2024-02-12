@@ -102,8 +102,9 @@ def instrument_app_for_open_telemetry():
         # Manually call detect and merge as needed instead, not a big deal, this only happens once
         # and isn't CPU intensive at all.
         # Note: for merge, the order matters with priority given to preceding resource objects
-        resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
-        resource.merge(ProcessResourceDetector(raise_on_error=True).detect())
+        resource = (
+            GoogleCloudResourceDetector(raise_on_error=True).detect()
+        ).merge(ProcessResourceDetector(raise_on_error=True).detect())
 
     # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())

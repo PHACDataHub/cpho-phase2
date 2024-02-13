@@ -36,6 +36,7 @@ spec:
       name: '*'
   exclusionList:
     - "^Dependencies.*"
+    - "Namespace/cnrm-system configured"
 ---
 #        _ _   _           _
 #   __ _(_) |_| |__  _   _| |__

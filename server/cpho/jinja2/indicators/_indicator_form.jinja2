@@ -15,6 +15,19 @@
   </div>
 {% endmacro %}
 
+{% macro fieldset_field(field) %}
+  <fieldset class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">
+        <legend class="col col-form-label" style="font-size:1rem">
+          {{ field.label }}
+        </legend>
+      </div>
+    </div>
+    <div class="col-lg-10">{{ field }}</div>
+  </fieldset>
+{% endmacro %}
+
 <form method="POST" action=".">
   {{ csrf_input }}
 
@@ -26,7 +39,7 @@
       {{ form_field(form.topic) }}
       {{ form_field(form.detailed_indicator) }}
       {{ form_field(form.sub_indicator_measurement) }}
-      {{ form_field(form.relevant_dimensions) }}
+      {{ fieldset_field(form.relevant_dimensions)}}
     </div>
   </div>
  

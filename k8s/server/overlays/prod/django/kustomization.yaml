@@ -9,6 +9,7 @@ resources:
 
 patches:
   - path: deployment.yaml
+  - path: service-account.yaml
 
 namespace: server
 

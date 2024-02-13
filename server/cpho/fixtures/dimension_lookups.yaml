@@ -136,7 +136,7 @@
     name_en: Manitoba
     name_fr: Manitoba
     value: mb
-    order: 6.0 
+    order: 6.0
 - model: cpho.dimensionvalue
   pk: 10
   fields:
@@ -255,6 +255,22 @@
     name_fr: Filles
     value: girls
     order: 4.0
+- model: cpho.dimensionvalue
+  pk: 24
+  fields:
+    dimension_type: 6
+    name_en: "Men+"
+    name_fr: "Hommes+"
+    value: men_plus
+    order: 5.0
+- model: cpho.dimensionvalue
+  pk: 25
+  fields:
+    dimension_type: 6
+    name_en: "Women+"
+    name_fr: "Femmes+"
+    value: women_plus
+    order: 6.0
 
 # dimension value for Living Arrangement
 - model: cpho.dimensionvalue
@@ -418,7 +434,7 @@
     dimension_type: 8
     name_en: "Males: Missing"
     name_fr: "Hommes : Manquant"
-    value: males_living_missing
+    value: males_education_missing
     order: 4.0
 - model: cpho.dimensionvalue
   pk: 49
@@ -458,7 +474,7 @@
     dimension_type: 8
     name_en: "Females: Missing"
     name_fr: "Femmes : Manquant"
-    value: females_living_missing
+    value: females_education_missing
     order: 9.0
 - model: cpho.dimensionvalue
   pk: 54
@@ -498,7 +514,7 @@
     dimension_type: 8
     name_en: "Both Sexes: Missing"
     name_fr: "Les deux sexes : Manquant"
-    value: both_living_missing
+    value: both_education_missing
     order: 14.0
 
 # dimension value for Income Quintiles

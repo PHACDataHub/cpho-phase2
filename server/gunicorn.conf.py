@@ -1,7 +1,5 @@
 import os
 
-from server.open_telemetry_util import instrument_app_for_open_telemetry
-
 # See https://cloud.google.com/run/docs/tips/python#optimize_gunicorn
 
 PORT = os.getenv("PORT", "8080")

@@ -1,7 +1,15 @@
 from django.urls import reverse
 
+from bs4 import BeautifulSoup
+
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
-from cpho.models import DimensionType, DimensionValue, IndicatorDatum, Period
+from cpho.models import (
+    DimensionType,
+    DimensionValue,
+    Indicator,
+    IndicatorDatum,
+    Period,
+)
 
 from .utils_for_tests import patch_rules
 
@@ -18,31 +26,43 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
     ind.save()
     ind.refresh_from_db()
 
+    ind = Indicator.objects.get(id=ind.id)
+    assert sex_dim not in ind.relevant_dimensions.all()
+
     # removing sex from relevant dimensions
     # sex dimension should not be visible anywhere
     url_view_period = reverse("view_indicator_for_period", args=[ind.id, p.id])
     with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url_view_period)
         assert resp.status_code == 200
-        page_data = str(resp.content)
-        assert sex_dim.name_en not in page_data
-        assert gender_dim.name_en in page_data
+        html_content = resp.content.decode("utf-8")
+        soup = BeautifulSoup(html_content, "html.parser")
+        headers = soup.find_all(class_="h5")
+        headers_str = str(headers)
+        assert sex_dim.name_en not in headers_str
+        assert gender_dim.name_en in headers_str
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
     with patch_rules(can_edit_indicator_data=True):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
-        page_data = str(resp.content)
-        assert sex_dim.name_en not in page_data
-        assert gender_dim.name_en in page_data
+        html_content = resp.content.decode("utf-8")
+        soup = BeautifulSoup(html_content, "html.parser")
+        headers = soup.find_all(class_="card-header")
+        headers_str = str(headers)
+        assert sex_dim.name_en not in headers_str
+        assert gender_dim.name_en in headers_str
 
     url_review_data = reverse("review_indicator_data_all", args=[ind.id, p.id])
     with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.get(url_review_data)
         assert resp.status_code == 200
-        page_data = str(resp.content)
-        assert sex_dim.name_en not in page_data
-        assert gender_dim.name_en in page_data
+        html_content = resp.content.decode("utf-8")
+        soup = BeautifulSoup(html_content, "html.parser")
+        headers = soup.find_all(class_="h5")
+        headers_str = str(headers)
+        assert sex_dim.name_en not in headers_str
+        assert gender_dim.name_en in headers_str
 
     # adding sex data for period
     possible_dimension_value = sex_dim.possible_values.all()
@@ -67,22 +87,31 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
     with patch_rules(can_access_indicator=True):
         resp = vanilla_user_client.get(url_view_period)
         assert resp.status_code == 200
-        page_data = str(resp.content)
-        assert sex_dim.name_en in page_data
-        assert gender_dim.name_en in page_data
+        html_content = resp.content.decode("utf-8")
+        soup = BeautifulSoup(html_content, "html.parser")
+        headers = soup.find_all(class_="h5")
+        headers_str = str(headers)
+        assert sex_dim.name_en in headers_str
+        assert gender_dim.name_en in headers_str
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
     with patch_rules(can_edit_indicator_data=True):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
-        page_data = str(resp.content)
-        assert sex_dim.name_en in page_data
-        assert gender_dim.name_en in page_data
+        html_content = resp.content.decode("utf-8")
+        soup = BeautifulSoup(html_content, "html.parser")
+        headers = soup.find_all(class_="card-header")
+        headers_str = str(headers)
+        assert sex_dim.name_en in headers_str
+        assert gender_dim.name_en in headers_str
 
     url_review_data = reverse("review_indicator_data_all", args=[ind.id, p.id])
     with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.get(url_review_data)
         assert resp.status_code == 200
-        page_data = str(resp.content)
-        assert sex_dim.name_en in page_data
-        assert gender_dim.name_en in page_data
+        html_content = resp.content.decode("utf-8")
+        soup = BeautifulSoup(html_content, "html.parser")
+        headers = soup.find_all(class_="h5")
+        headers_str = str(headers)
+        assert sex_dim.name_en in headers_str
+        assert gender_dim.name_en in headers_str

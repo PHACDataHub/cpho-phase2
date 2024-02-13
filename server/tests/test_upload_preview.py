@@ -65,7 +65,7 @@ def test_preview(hso_client):
         "dimension_value": "MALES",
         "period": "CY2021",
         "reason_for_null": "",
-        "value_units": "PERCENTAGE (CRUDE RATE)",
+        "value_units": "PERCENTAGE",
     }
     check_preview(val_dict, hso_client, "category")
     check_preview(val_dict, hso_client, "topic")

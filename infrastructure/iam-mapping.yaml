@@ -9,6 +9,11 @@ spec:
     - members:
         - memberFrom:
             serviceAccountRef:
+              name: server-deployment
+      role: roles/cloudtrace.agent
+    - members:
+        - memberFrom:
+            serviceAccountRef:
               name: gcr-credentials-sync
       role: roles/artifactregistry.reader
     - members:
@@ -133,3 +138,18 @@ spec:
     apiVersion: iam.cnrm.cloud.google.com/v1beta1
     kind: IAMServiceAccount
     name: hopic-postgres-backup
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: hopic-wi-server
+  namespace: "cnrm-system"
+spec:
+  bindings:
+    - members:
+        - member: serviceAccount:pht-01hp04dtnkf.svc.id.goog[server/server]
+      role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: server-deployment

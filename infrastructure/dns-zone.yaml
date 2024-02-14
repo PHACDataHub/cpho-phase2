@@ -42,7 +42,7 @@ metadata:
   name: hopic-ephemeral-dns-record-set
   namespace: cnrm-system
 spec:
-  name: "*.eph.hopic-sdpac.phac-aspc.alpha.canada.ca."
+  name: "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca."
   type: A
   ttl: 300
   managedZoneRef:

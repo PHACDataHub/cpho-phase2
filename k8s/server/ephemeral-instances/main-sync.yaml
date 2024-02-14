@@ -1,0 +1,110 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: main
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/PHACDataHub/cpho-phase2
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: main-infra
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/infrastructure
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: main
+  wait: true
+  dependsOn:
+    - name: ephemeral-instances
+  postBuild:
+    substitute:
+      BRANCH_NAME: main
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: main-postgres
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/postgres
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: main
+  wait: true
+  dependsOn:
+    - name: main-infra
+  postBuild:
+    substitute:
+      BRANCH_NAME: main
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: main-django
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/server/overlays/ephemeral/django
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: main
+  dependsOn:
+    - name: main-postgres
+  decryption:
+    provider: sops
+  postBuild:
+    substitute:
+      BRANCH_NAME: main
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: main-server
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^main-[a-fA-F0-9]+-(?P<ts>.*)
+  imageRepositoryRef:
+    name: server
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: main-cpho-updater
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: main
+  interval: 5m
+  update:
+    strategy: Setters
+    path: .
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: fluxbot
+        email: fluxcd@users.noreply.github.com
+      messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
+    push:
+      branch: main

@@ -1,5 +1,7 @@
+import logging
 import os
 import sys
+import time
 
 import requests
 from opentelemetry import trace
@@ -25,6 +27,8 @@ from phac_aspc.django.helpers.logging.utils import (
 
 from server.config_util import get_project_config, is_running_tests
 
+logger = logging.getLogger()
+
 
 def instrument_app_for_open_telemetry():
     config = get_project_config()
@@ -47,10 +51,41 @@ def instrument_app_for_open_telemetry():
 
         resource = ProcessResourceDetector(raise_on_error=True).detect()
     else:
-        project_id = requests.get(
-            "http://metadata.google.internal/computeMetadata/v1/project/project-id",
-            headers={"Metadata-Flavor": "Google"},
-        ).text
+        # In Google Cloud, we must request resources information from a metadata server (metadata.google.internal).
+        # In theory this is consistently reachable across GCP solutions (Cloud Run, App Engine, GKE, etc),
+        # but in practice there's a big gotcha in GKE. New pods do not immediately have access to the metadata
+        # server, and may not for a "few seconds" according to the docs linked below.
+        # https://cloud.google.com/kubernetes-engine/docs/concepts/workload-identity#project_metadata
+        #
+        # Open telemetry "resource" information is used to identify the source of a span, and is imutable once
+        # the corresponding trace provider has been initialized... which all needs to happen before the Django server
+        # is initialized. This is all not ideal for cold start times! Not the slowest part though, running collect static
+        # and migrations on pod start is a bigger slow down right now. Retrying the metadata.google.internal request with
+        # a short linear delay is the best solution for now. Don't bother with exponential backoff because we want to know
+        # asap and aren't worried about load on the metadata server (in theory; something to keep an eye on in practice).
+        #
+        # Note: we directly call metadata.google.internal below for the project ID, which _could_ be passed as
+        # an env var, _but_ the GoogleCloudResourceDetector call following that also requires metadata server
+        # access. GoogleCloudResourceDetector doesn't have the logic to wait for the metadata server so we need to
+        # implement logic to wait for metadata.google.internal access our selves either way.
+        retry_limit = 12
+        retry_delay = 0.25
+
+        logger.info("Attempting to connect to Google Cloud metadata server...")
+        for retry_count in range(retry_limit):
+            try:
+                project_id = requests.get(
+                    "http://metadata.google.internal/computeMetadata/v1/project/project-id",
+                    headers={"Metadata-Flavor": "Google"},
+                ).text
+
+                break
+            except requests.ConnectionError as error:
+                if retry_count < retry_limit - 1:
+                    time.sleep(retry_delay)
+                else:
+                    raise error
+        logger.info("Metadata server reachable!")
 
         span_exporter = CloudTraceSpanExporter(
             project_id=project_id,
@@ -67,8 +102,9 @@ def instrument_app_for_open_telemetry():
         # Manually call detect and merge as needed instead, not a big deal, this only happens once
         # and isn't CPU intensive at all.
         # Note: for merge, the order matters with priority given to preceding resource objects
-        resource = GoogleCloudResourceDetector(raise_on_error=True).detect()
-        resource.merge(ProcessResourceDetector(raise_on_error=True).detect())
+        resource = (
+            GoogleCloudResourceDetector(raise_on_error=True).detect()
+        ).merge(ProcessResourceDetector(raise_on_error=True).detect())
 
     # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())

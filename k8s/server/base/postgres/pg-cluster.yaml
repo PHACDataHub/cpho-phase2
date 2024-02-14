@@ -11,23 +11,25 @@ spec:
 # PostGres Best Practices for the Logging 
   #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
   #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
+  #  - PostgreSQL Official Documentation on pg_stat_statements: https://www.postgresql.org/docs/current/pgstatstatements.html
+  #  - pgAudit GitHub Repository: https://github.com/pgaudit/pgaudit
   postgresql:
     parameters:
+      log_min_messages: "warning" # From "error" to "warning" to reduce informational messages
+      pg_stat_statements.track: top # From "all" to "top" to only track top-level statements
+      auto_explain.log_min_duration: '30s' # From "10s" to "30s" to reduce slow query logs
+      pgaudit.log: "ddl, role" # From "all, -misc" to specific events like DDL and role changes
+      log_connections: "off" # Reduced connection logs
+      log_disconnections: "off" # Reduced disconnection logs
+      log_hostname: "off" # Avoided logging hostnames
+      log_temp_files: "1024" # Log temp files larger than 1MB
+      log_lock_waits: "on" # Keep "on" if monitoring for lock waits
+      log_checkpoints: "on" # Keep "on" for checkpointing information
       shared_buffers: 256MB
       pg_stat_statements.max: '10000'
-      pg_stat_statements.track: all
-      auto_explain.log_min_duration: '10s'
-      pgaudit.log: "all, -misc"
       pgaudit.log_catalog: "off"
       pgaudit.log_parameter: "on"
       pgaudit.log_relation: "on"
-      log_min_messages: "error"
-      log_checkpoints: "on" 
-      log_lock_waits: "on"
-      log_temp_files: "0"
-      log_connections: "on"
-      log_disconnections: "on"
-      log_hostname: "on"
 
   nodeMaintenanceWindow:
     inProgress: false

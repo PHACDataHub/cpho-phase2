@@ -9,6 +9,7 @@ resources:
 
 patches:
   - path: deployment.yaml
+  - path: service-account.yaml
 
 namespace: server
 
@@ -18,4 +19,4 @@ namespace: server
 # see https://github.com/kubernetes-sigs/kustomize/blob/master/examples/transformerconfigs/README.md#labels-transformer
 commonLabels:
   app: server
-  branch: main
+  branch: prod

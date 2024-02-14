@@ -9,6 +9,7 @@ spec:
       annotations:
         proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     spec:
+      serviceAccountName: server
       securityContext:
         runAsNonRoot: true
       containers:

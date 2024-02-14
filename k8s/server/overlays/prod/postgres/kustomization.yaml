@@ -15,4 +15,4 @@ patches:
 # see https://github.com/kubernetes-sigs/kustomize/blob/master/examples/transformerconfigs/README.md#labels-transformer
 commonLabels:
   app: database
-  branch: main
+  branch: prod

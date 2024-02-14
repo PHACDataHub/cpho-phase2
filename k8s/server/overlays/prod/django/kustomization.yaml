@@ -19,4 +19,4 @@ namespace: server
 # see https://github.com/kubernetes-sigs/kustomize/blob/master/examples/transformerconfigs/README.md#labels-transformer
 commonLabels:
   app: server
-  branch: main
+  branch: prod

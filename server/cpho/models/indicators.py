@@ -344,15 +344,25 @@ class IndicatorDatum(models.Model):
 
     VALUE_UNIT_CHOICES = [
         ("", tdt("--")),
-        ("age_rate", tdt("Age-Standardized Rate")),
-        ("crude_rate", tdt("Crude Rate")),
-        ("daily_dose_per_1k_census", tdt("Defined Daily Dose/1,000 Census")),
+        ("daily_dose_1k_census", tdt("Defined Daily Dose/1,000 Census")),
         ("percentage", tdt("Percentage")),
-        ("percentage_crude_rate", tdt("Percentage (Crude Rate)")),
-        ("rate_per_10k_patient", tdt("Rate per 10,000 Patient Days")),
-        ("rate_per_100k", tdt("Rate per 100,000")),
-        ("rate_per_100k_crude", tdt("Rate per 100,000 (Crude Rate)")),
-        ("rate_per_100k_live_births", tdt("Rate per 100,000 Live Births")),
+        ("percent_age_standardized", tdt("PERCENTAGE (AGE STANDARDIZED)")),
+        ("percentage_crude", tdt("Percentage (Crude)")),
+        ("rate_10k_patient_days", tdt("Rate per 10,000 Patient Days")),
+        (
+            "rate_100k_age_standardized",
+            tdt("RATE PER 100,000 (AGE STANDARDIZED)"),
+        ),
+        (
+            "rate_100k_age_specific_crude",
+            tdt("RATE PER 100,000 (AGE-SPECIFIC CRUDE)"),
+        ),
+        ("rate_100k_crude", tdt("Rate per 100,000 (Crude)")),
+        ("rate_100k_live_births", tdt("Rate per 100,000 Live Births")),
+        (
+            "rate_100k_population_per_year",
+            tdt("RATE PER 100,000 POPULATION PER YEAR"),
+        ),
         ("years", tdt("years")),
         ("other", tdt("other")),
     ]
@@ -366,10 +376,14 @@ class IndicatorDatum(models.Model):
     VALUE_DISPLAYED_CHOICES = [
         ("", tdt("--")),
         ("%", tdt("%")),
-        ("per_1k_census", tdt("Per 1,000 census inhabitants")),
-        ("per_10k_patient", tdt("Per 10,000 patient days")),
-        ("per_100k", tdt("Per 100,000")),
+        ("per_1k_census", tdt("DDDs Per 1,000 census inhabitants")),
+        ("per_10k_patient_days", tdt("Per 10,000 patient days")),
         ("per_100k_live_births", tdt("Per 100,000 live births")),
+        ("per_100k_population", tdt("Per 100,000 population")),
+        (
+            "per_100k_population_per_year",
+            tdt("Per 100,000 population per year"),
+        ),
         ("years", tdt("years")),
         ("other", tdt("other")),
     ]

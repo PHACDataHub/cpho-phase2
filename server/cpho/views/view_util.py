@@ -93,26 +93,28 @@ def upload_mapper():
         },
         "value_unit_mapper": {
             "": "",
-            "AGE-STANDARDIZED RATE": "age_rate",
-            "CRUDE RATE": "crude_rate",
-            "DEFINED DAILY DOSE/1,000 CENSUS INHABITANTS": "daily_dose_per_1k_census",
+            "DEFINED DAILY DOSE/1,000 CENSUS INHABITANTS": "daily_dose_1k_census",
             "PERCENTAGE": "percentage",
-            "PERCENTAGE (CRUDE RATE)": "percentage_crude_rate",
-            "RATE PER 10,000 PATIENT DAYS": "rate_per_10k_patient",
-            "RATE PER 100,000": "rate_per_100k",
-            "RATE PER 100,000 (CRUDE RATE)": "rate_per_100k_crude",
-            "RATE PER 100,000 LIVE BIRTHS": "rate_per_100k_live_births",
+            "PERCENTAGE (AGE STANDARDIZED)": "percent_age_standardized",
+            "PERCENTAGE (CRUDE)": "percentage_crude",
+            "RATE PER 10,000 PATIENT DAYS": "rate_10k_patient_days",
+            "RATE PER 100,000 (AGE-STANDARDIZED)": "rate_100k_age_standardized",
+            "RATE PER 100,000 (AGE-SPECIFIC CRUDE)": "rate_100k_age_specific_crude",
+            "RATE PER 100,000 (CRUDE)": "rate_100k_crude",
+            "RATE PER 100,000 LIVE BIRTHS": "rate_100k_live_births",
+            "RATE PER 100,000 POPULATION PER YEAR": "rate_100k_population_per_year",
             "YEARS": "years",
             "OTHER": "other",
         },
         "value_displayed_mapper": {
             "": "",
             "%": "%",
-            "PER 100,000": "per_100k",
-            "YEARS": "years",
-            "PER 1,000 CENSUS INHABITANTS": "per_1k_census",
-            "PER 10,000 PATIENT DAYS": "per_10k_patient",
+            "DDDs PER 1,000 CENSUS INHABITANTS": "per_1k_census",
+            "PER 10,000 PATIENT DAYS": "per_10k_patient_days",
             "PER 100,000 LIVE BIRTHS": "per_100k_live_births",
+            "PER 100,000 POPULATION": "per_100k_population",
+            "PER 100,000 POPULATION PER YEAR": "per_100k_population_per_year",
+            "YEARS": "years",
             "OTHER": "other",
         },
         "dimension_type_mapper": {
@@ -123,6 +125,8 @@ def upload_mapper():
             "Region": all_dimension_dict["region"],
             "Gender": all_dimension_dict["gender"],
             "Living Arrangement": all_dimension_dict["living_arrangement"],
+            "Education Household": all_dimension_dict["education_household"],
+            "Income Quintiles": all_dimension_dict["income_quintiles"],
         },
         "period_mapper": all_period_dict,
         "non_literal_dimension_value_mapper": {
@@ -146,37 +150,203 @@ def upload_mapper():
             ("Gender", "WOMEN"): all_dimension_val_dict["women"],
             ("Gender", "BOYS"): all_dimension_val_dict["boys"],
             ("Gender", "GIRLS"): all_dimension_val_dict["girls"],
+            ("Gender", "MEN+"): all_dimension_val_dict["men_plus"],
+            ("Gender", "WOMEN+"): all_dimension_val_dict["women_plus"],
             ("Sex", "MALES"): all_dimension_val_dict["m"],
             ("Sex", "FEMALES"): all_dimension_val_dict["f"],
             ("Canada", "CANADA"): all_dimension_val_dict["canada"],
             (
                 "Living Arrangement",
-                "MALE LIVING ALONE",
+                "MALES LIVING ALONE",
             ): all_dimension_val_dict["male_alone"],
             (
                 "Living Arrangement",
-                "FEMALE LIVING ALONE",
+                "MALES IN SINGLE-PARENT FAMILY",
+            ): all_dimension_val_dict["male_single_parent_family"],
+            (
+                "Living Arrangement",
+                "MALES LIVING WITH OTHERS OR OTHER ARRANGEMENTS",
+            ): all_dimension_val_dict["male_other"],
+            (
+                "Living Arrangement",
+                "MALES COUPLE WITH CHILDREN",
+            ): all_dimension_val_dict["male_couple_with_children"],
+            (
+                "Living Arrangement",
+                "MALES COUPLE WITHOUT CHILDREN",
+            ): all_dimension_val_dict["male_couple_no_children"],
+            (
+                "Living Arrangement",
+                "FEMALES LIVING ALONE",
             ): all_dimension_val_dict["female_alone"],
             (
                 "Living Arrangement",
-                "COUPLE NO CHILDREN",
-            ): all_dimension_val_dict["couple_no_children"],
+                "FEMALES IN SINGLE-PARENT FAMILY",
+            ): all_dimension_val_dict["female_single_parent_family"],
             (
                 "Living Arrangement",
-                "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            ): all_dimension_val_dict["couple_with_childrenU18"],
+                "FEMALES LIVING WITH OTHERS OR OTHER ARRANGEMENTS",
+            ): all_dimension_val_dict["female_other"],
             (
                 "Living Arrangement",
-                "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            ): all_dimension_val_dict["female_with_childrenU18"],
+                "FEMALES COUPLE WITH CHILDREN",
+            ): all_dimension_val_dict["female_couple_with_children"],
             (
                 "Living Arrangement",
-                "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            ): all_dimension_val_dict["male_with_childrenU18"],
+                "FEMALES COUPLE WITHOUT CHILDREN",
+            ): all_dimension_val_dict["female_couple_no_children"],
             (
                 "Living Arrangement",
-                "OTHER LIVING ARRANGEMENTS",
-            ): all_dimension_val_dict["other_living_arrangements"],
+                "BOTH SEXES LIVING ALONE",
+            ): all_dimension_val_dict["both_alone"],
+            (
+                "Living Arrangement",
+                "BOTH SEXES IN SINGLE-PARENT FAMILY",
+            ): all_dimension_val_dict["both_single_parent_family"],
+            (
+                "Living Arrangement",
+                "BOTH SEXES LIVING WITH OTHERS OR OTHER ARRANGEMENTS",
+            ): all_dimension_val_dict["both_other"],
+            (
+                "Living Arrangement",
+                "BOTH SEXES COUPLE WITH CHILDREN",
+            ): all_dimension_val_dict["both_couple_with_children"],
+            (
+                "Living Arrangement",
+                "BOTH SEXES COUPLE WITHOUT CHILDREN",
+            ): all_dimension_val_dict["both_couple_no_children"],
+            (
+                "Education Household",
+                "MALES Less than high school",
+            ): all_dimension_val_dict["males_less_than_high_school"],
+            (
+                "Education Household",
+                "MALES High school graduate",
+            ): all_dimension_val_dict["males_high_school_graduate"],
+            (
+                "Education Household",
+                "MALES Community college/ Technical school/ University certificate",
+            ): all_dimension_val_dict["males_certificate"],
+            (
+                "Education Household",
+                "MALES University graduate",
+            ): all_dimension_val_dict["males_university_graduate"],
+            (
+                "Education Household",
+                "MALES Missing",
+            ): all_dimension_val_dict["males_education_missing"],
+            (
+                "Education Household",
+                "FEMALES Less than high school",
+            ): all_dimension_val_dict["females_less_than_high_school"],
+            (
+                "Education Household",
+                "FEMALES High school graduate",
+            ): all_dimension_val_dict["females_high_school_graduate"],
+            (
+                "Education Household",
+                "FEMALES Community college/ Technical school/ University certificate",
+            ): all_dimension_val_dict["females_certificate"],
+            (
+                "Education Household",
+                "FEMALES University graduate",
+            ): all_dimension_val_dict["females_university_graduate"],
+            (
+                "Education Household",
+                "FEMALES Missing",
+            ): all_dimension_val_dict["females_education_missing"],
+            (
+                "Education Household",
+                "BOTH SEXES Less than high school",
+            ): all_dimension_val_dict["both_less_than_high_school"],
+            (
+                "Education Household",
+                "BOTH SEXES High school graduate",
+            ): all_dimension_val_dict["both_high_school_graduate"],
+            (
+                "Education Household",
+                "BOTH SEXES Community college/ Technical school/ University certificate",
+            ): all_dimension_val_dict["both_certificate"],
+            (
+                "Education Household",
+                "BOTH SEXES University graduate",
+            ): all_dimension_val_dict["both_university_graduate"],
+            (
+                "Education Household",
+                "BOTH SEXES Missing",
+            ): all_dimension_val_dict["both_education_missing"],
+            (
+                "Income Quintiles",
+                "MALES Quintile 1",
+            ): all_dimension_val_dict["male_quintile_1"],
+            (
+                "Income Quintiles",
+                "MALES Quintile 2",
+            ): all_dimension_val_dict["male_quintile_2"],
+            (
+                "Income Quintiles",
+                "MALES Quintile 3",
+            ): all_dimension_val_dict["male_quintile_3"],
+            (
+                "Income Quintiles",
+                "MALES Quintile 4",
+            ): all_dimension_val_dict["male_quintile_4"],
+            (
+                "Income Quintiles",
+                "MALES Quintile 5",
+            ): all_dimension_val_dict["male_quintile_5"],
+            (
+                "Income Quintiles",
+                "MALES Missing",
+            ): all_dimension_val_dict["male_quintile_missing"],
+            (
+                "Income Quintiles",
+                "FEMALES Quintile 1",
+            ): all_dimension_val_dict["female_quintile_1"],
+            (
+                "Income Quintiles",
+                "FEMALES Quintile 2",
+            ): all_dimension_val_dict["female_quintile_2"],
+            (
+                "Income Quintiles",
+                "FEMALES Quintile 3",
+            ): all_dimension_val_dict["female_quintile_3"],
+            (
+                "Income Quintiles",
+                "FEMALES Quintile 4",
+            ): all_dimension_val_dict["female_quintile_4"],
+            (
+                "Income Quintiles",
+                "FEMALES Quintile 5",
+            ): all_dimension_val_dict["female_quintile_5"],
+            (
+                "Income Quintiles",
+                "FEMALES Missing",
+            ): all_dimension_val_dict["female_quintile_missing"],
+            (
+                "Income Quintiles",
+                "BOTH SEXES Quintile 1",
+            ): all_dimension_val_dict["both_quintile_1"],
+            (
+                "Income Quintiles",
+                "BOTH SEXES Quintile 2",
+            ): all_dimension_val_dict["both_quintile_2"],
+            (
+                "Income Quintiles",
+                "BOTH SEXES Quintile 3",
+            ): all_dimension_val_dict["both_quintile_3"],
+            (
+                "Income Quintiles",
+                "BOTH SEXES Quintile 4",
+            ): all_dimension_val_dict["both_quintile_4"],
+            (
+                "Income Quintiles",
+                "BOTH SEXES Quintile 5",
+            ): all_dimension_val_dict["both_quintile_5"],
+            (
+                "Income Quintiles",
+                "BOTH SEXES Missing",
+            ): all_dimension_val_dict["both_quintile_missing"],
         },
     }
 
@@ -213,45 +383,51 @@ def export_mapper():
             v: k for k, v in upload_mapping["dimension_type_mapper"].items()
         },
         "non_literal_dimension_value_mapper": {
-            all_dimension_val_dict["on"]: "ON",
-            all_dimension_val_dict["ab"]: "AB",
-            all_dimension_val_dict["sk"]: "SK",
-            all_dimension_val_dict["mb"]: "MB",
-            all_dimension_val_dict["bc"]: "BC",
-            all_dimension_val_dict["qc"]: "QC",
-            all_dimension_val_dict["nb"]: "NB",
-            all_dimension_val_dict["ns"]: "NS",
-            all_dimension_val_dict["nl"]: "NL",
-            all_dimension_val_dict["pe"]: "PE",
-            all_dimension_val_dict["nu"]: "NU",
-            all_dimension_val_dict["nt"]: "NT",
-            all_dimension_val_dict["yt"]: "YT",
-            all_dimension_val_dict["atlantic"]: "ATLANTIC",
-            all_dimension_val_dict["prairies"]: "PRAIRIE",
-            all_dimension_val_dict["territories"]: "TERRITORIES",
-            all_dimension_val_dict["men"]: "MEN",
-            all_dimension_val_dict["women"]: "WOMEN",
-            all_dimension_val_dict["boys"]: "BOYS",
-            all_dimension_val_dict["girls"]: "GIRLS",
-            all_dimension_val_dict["m"]: "MALES",
-            all_dimension_val_dict["f"]: "FEMALES",
-            all_dimension_val_dict["canada"]: "CANADA",
-            all_dimension_val_dict["male_alone"]: "MALE LIVING ALONE",
-            all_dimension_val_dict["female_alone"]: "FEMALE LIVING ALONE",
-            all_dimension_val_dict["couple_no_children"]: "COUPLE NO CHILDREN",
-            all_dimension_val_dict[
-                "couple_with_childrenU18"
-            ]: "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            all_dimension_val_dict[
-                "female_with_childrenU18"
-            ]: "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            all_dimension_val_dict[
-                "male_with_childrenU18"
-            ]: "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
-            all_dimension_val_dict[
-                "other_living_arrangements"
-            ]: "OTHER LIVING ARRANGEMENTS",
+            v: k[1]
+            for k, v in upload_mapping[
+                "non_literal_dimension_value_mapper"
+            ].items()
         },
+        # "non_literal_dimension_value_mapper": {
+        #     all_dimension_val_dict["on"]: "ON",
+        #     all_dimension_val_dict["ab"]: "AB",
+        #     all_dimension_val_dict["sk"]: "SK",
+        #     all_dimension_val_dict["mb"]: "MB",
+        #     all_dimension_val_dict["bc"]: "BC",
+        #     all_dimension_val_dict["qc"]: "QC",
+        #     all_dimension_val_dict["nb"]: "NB",
+        #     all_dimension_val_dict["ns"]: "NS",
+        #     all_dimension_val_dict["nl"]: "NL",
+        #     all_dimension_val_dict["pe"]: "PE",
+        #     all_dimension_val_dict["nu"]: "NU",
+        #     all_dimension_val_dict["nt"]: "NT",
+        #     all_dimension_val_dict["yt"]: "YT",
+        #     all_dimension_val_dict["atlantic"]: "ATLANTIC",
+        #     all_dimension_val_dict["prairies"]: "PRAIRIE",
+        #     all_dimension_val_dict["territories"]: "TERRITORIES",
+        #     all_dimension_val_dict["men"]: "MEN",
+        #     all_dimension_val_dict["women"]: "WOMEN",
+        #     all_dimension_val_dict["boys"]: "BOYS",
+        #     all_dimension_val_dict["girls"]: "GIRLS",
+        #     all_dimension_val_dict["m"]: "MALES",
+        #     all_dimension_val_dict["f"]: "FEMALES",
+        #     all_dimension_val_dict["canada"]: "CANADA",
+        #     # all_dimension_val_dict["male_alone"]: "MALE LIVING ALONE",
+        #     # all_dimension_val_dict["female_alone"]: "FEMALE LIVING ALONE",
+        #     # all_dimension_val_dict["couple_no_children"]: "COUPLE NO CHILDREN",
+        #     # all_dimension_val_dict[
+        #     #     "couple_with_childrenU18"
+        #     # ]: "COUPLE WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+        #     # all_dimension_val_dict[
+        #     #     "female_with_childrenU18"
+        #     # ]: "FEMALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+        #     # all_dimension_val_dict[
+        #     #     "male_with_childrenU18"
+        #     # ]: "MALE LONE PARENT WITH CHILD(REN) LESS THAN 18 YEARS OLD",
+        #     # all_dimension_val_dict[
+        #     #     "other_living_arrangements"
+        #     # ]: "OTHER LIVING ARRANGEMENTS",
+        # },
     }
 
     return export_mapping

@@ -22,6 +22,8 @@ whitenoise==6.4.0
 rules==3.3
 django-ckeditor==6.5.1
 
+PyYAML==6.0.1 # necessary to apply fixtures in prod
+
 # opentelemetry
 opentelemetry-sdk==1.19.0
 opentelemetry-instrumentation-django==0.40b0

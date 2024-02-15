@@ -1,12 +1,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: main
+  name: dev-test
   namespace: flux-system
 spec:
   interval: 1m0s
   ref:
-    branch: main
+    branch: dev-test
   secretRef:
     name: flux-system
   url: ssh://git@github.com/PHACDataHub/cpho-phase2
@@ -14,7 +14,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: main-infra
+  name: dev-test-infra
   namespace: flux-system
 spec:
   path: ./k8s/server/overlays/ephemeral/infrastructure
@@ -22,18 +22,18 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: main
+    name: dev-test
   wait: true
   dependsOn:
     - name: ephemeral-instances
   postBuild:
     substitute:
-      BRANCH_NAME: main
+      BRANCH_NAME: dev-test
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: main-postgres
+  name: dev-test-postgres
   namespace: flux-system
 spec:
   path: ./k8s/server/overlays/ephemeral/postgres
@@ -41,18 +41,18 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: main
+    name: dev-test
   wait: true
   dependsOn:
-    - name: main-infra
+    - name: dev-test-infra
   postBuild:
     substitute:
-      BRANCH_NAME: main
+      BRANCH_NAME: dev-test
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: main-django
+  name: dev-test-django
   namespace: flux-system
 spec:
   interval: 2m0s
@@ -60,24 +60,24 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: main
+    name: dev-test
   dependsOn:
-    - name: main-postgres
+    - name: dev-test-postgres
   decryption:
     provider: sops
   postBuild:
     substitute:
-      BRANCH_NAME: main
+      BRANCH_NAME: dev-test
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
-  name: main-server
+  name: dev-test-server
   namespace: flux-system
 spec:
   filterTags:
     extract: $ts
-    pattern: ^main-[a-fA-F0-9]+-(?P<ts>.*)
+    pattern: ^dev-test-[a-fA-F0-9]+-(?P<ts>.*)
   imageRepositoryRef:
     name: server
   policy:
@@ -87,12 +87,12 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageUpdateAutomation
 metadata:
-  name: main-cpho-updater
+  name: dev-test-cpho-updater
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
-    name: main
+    name: dev-test
   interval: 5m
   update:
     strategy: Setters
@@ -100,11 +100,11 @@ spec:
   git:
     checkout:
       ref:
-        branch: main
+        branch: dev-test
     commit:
       author:
         name: fluxbot
         email: fluxcd@users.noreply.github.com
       messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
     push:
-      branch: main
+      branch: dev-test

@@ -34,6 +34,7 @@ spec:
   addressType: EXTERNAL
   description: HoPiC external ip address for ingress gateway
   location: northamerica-northeast1
+  networkTier: STANDARD
 ---
 # ephemeral DNS config
 apiVersion: dns.cnrm.cloud.google.com/v1beta1

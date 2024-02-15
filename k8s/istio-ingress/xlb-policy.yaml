@@ -1,0 +1,18 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-ingress
+spec:
+  default:
+    logConfig:
+      enabled: true
+    config:
+      type: HTTP
+      httpHealthCheck:
+        requestPath: /healthz/ready
+        port: 15021
+  targetRef:
+    group: ""
+    kind: Service
+    name: istio-ingressgateway

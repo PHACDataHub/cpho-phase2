@@ -2,6 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+- xlb-gateway.yaml
+- xlb-httproute.yaml
+- xlb-policy.yaml
 - gw-certificate.yaml
 - mesh-gateway.yaml
 - ingress.yaml

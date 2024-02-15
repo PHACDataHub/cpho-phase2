@@ -9,3 +9,17 @@ resources:
 - mesh-gateway.yaml
 - ingress.yaml
 - namespace.yaml
+
+patches:
+- target:
+    group: gateway.networking.k8s.io
+    version: v1beta1
+    kind: Gateway
+    name: xlb-gateway
+    namespace: istio-ingress
+  patch: |-
+    - op: add
+      path: /spec/addresses
+      value:
+        - type: NamedAddress
+          value: hopic-external-ip

@@ -1,0 +1,110 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: dev-test
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: dev-test
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/PHACDataHub/cpho-phase2
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dev-test-infra
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/infrastructure
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: dev-test
+  wait: true
+  dependsOn:
+    - name: ephemeral-instances
+  postBuild:
+    substitute:
+      BRANCH_NAME: dev-test
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dev-test-postgres
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/postgres
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: dev-test
+  wait: true
+  dependsOn:
+    - name: dev-test-infra
+  postBuild:
+    substitute:
+      BRANCH_NAME: dev-test
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dev-test-django
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/server/overlays/ephemeral/django
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: dev-test
+  dependsOn:
+    - name: dev-test-postgres
+  decryption:
+    provider: sops
+  postBuild:
+    substitute:
+      BRANCH_NAME: dev-test
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: dev-test-server
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^dev-test-[a-fA-F0-9]+-(?P<ts>.*)
+  imageRepositoryRef:
+    name: server
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: dev-test-cpho-updater
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: dev-test
+  interval: 5m
+  update:
+    strategy: Setters
+    path: .
+  git:
+    checkout:
+      ref:
+        branch: dev-test
+    commit:
+      author:
+        name: fluxbot
+        email: fluxcd@users.noreply.github.com
+      messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
+    push:
+      branch: dev-test

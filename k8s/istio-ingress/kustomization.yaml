@@ -3,18 +3,6 @@ kind: Kustomization
 
 resources:
 - gw-certificate.yaml
-- public-gateway.yaml
+- mesh-gateway.yaml
 - ingress.yaml
 - namespace.yaml
-
-patches:
-# Patch the Istio ingress service so that our IP is used.
-- patch: |-
-    - op: add
-      path: /spec/loadBalancerIP
-      value: 35.203.101.160
-  target:
-    kind: Service
-    name: istio-ingressgateway
-    namespace: istio-ingress
-    version: v1

@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: public-gateway
+  name: mesh-gateway
   namespace: istio-ingress
 spec:
   selector:

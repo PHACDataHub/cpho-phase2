@@ -11,9 +11,7 @@
 {% macro accessible_label(id_for, row_name, label_text) %}
   <label for="{{ id_for }}"
          class="visually-hidden"
-         aria-label="{{ row_name }}, {{ label_text }}">
-    {{ row_name }}, {{ label_text }}
-  </label>
+         aria-label="{{ row_name }}, {{ label_text }}"></label>
 {% endmacro %}
 
 {% macro check_display_error(err, field)%}

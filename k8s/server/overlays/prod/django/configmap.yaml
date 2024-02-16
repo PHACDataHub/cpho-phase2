@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server
+data:
+  IS_K8S: "true"
+  ALLOWED_HOSTS: "hopic-sdpac.phac-aspc.alpha.canada.ca,34.149.100.163,localhost,34.152.0.41,41.0.152.34.bc.googleusercontent.com"
+  DB_NAME: "cpho-phase2_db"
+  DB_HOST: "cpho-postgres14-cluster-rw"
+  DB_PORT: "5432"
+  PHAC_ASPC_OAUTH_PROVIDER: "microsoft"
+  ENABLE_LEGACY_LOG_IN: "true" # TODO temporary for dev purposes, not to be used in final prod

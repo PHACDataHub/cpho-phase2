@@ -1,0 +1,14 @@
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMAuditConfig
+metadata:
+  name: hopic-iamauditconfig
+  namespace: cnrm-system
+spec:
+  service: allServices
+  auditLogConfigs:
+    - logType: ADMIN_READ
+    - logType: DATA_WRITE
+    - logType: DATA_READ
+  resourceRef:
+    kind: Project
+    external: projects/pht-01hp04dtnkf

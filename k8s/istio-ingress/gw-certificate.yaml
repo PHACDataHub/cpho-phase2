@@ -6,6 +6,7 @@ metadata:
 spec:
   dnsNames:
     - hopic-sdpac.phac-aspc.alpha.canada.ca
+    - "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca"
   issuerRef:
     kind: ClusterIssuer
     # name: letsencrypt-staging

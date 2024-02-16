@@ -7,9 +7,6 @@ spec:
   startDelay: 900
   stopDelay: 900
 
-# PostGres Best Practices for the Logging 
-  #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
-  #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
   postgresql:
     pg_hba:
       - host all all all md5
@@ -28,17 +25,17 @@ spec:
       annotations:
         # k8s service account is created with the same as `metadata.name` above
         # ensure an appropriate storage role(s) and workload identity is assigned: https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity
-        iam.gke.io/gcp-service-account: hopicpostgresbackup@phx-01h4rr1468rj3v5k60b1vserd3.iam.gserviceaccount.com
+        iam.gke.io/gcp-service-account: hopic-postgres-backup@pht-01hp04dtnkf.iam.gserviceaccount.com
 
   # info: https://cloudnative-pg.io/documentation/1.21/appendixes/object_stores/#running-inside-google-kubernetes-engine
   backup:
     barmanObjectStore:
-      destinationPath: gs://hopic-dev-postgres-backup
+      destinationPath: gs://hopic-postgres-backup-01hp04dtnkf
       googleCredentials:
         gkeEnvironment: true
     retentionPolicy: "30d"
 
   resources:
     requests:
-      cpu: 450m
-      memory: 1926Mi
+      cpu: 200m # + `isito-proxy` container = 250m
+      memory: 500Mi # + `isito-proxy` container = 612MiB

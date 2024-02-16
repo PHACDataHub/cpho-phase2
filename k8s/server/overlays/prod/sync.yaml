@@ -65,7 +65,7 @@ metadata:
 spec:
   filterTags:
     extract: $ts
-    pattern: ^main-[a-fA-F0-9]+-(?P<ts>.*)
+    pattern: ^prod-[a-fA-F0-9]+-(?P<ts>.*)
   imageRepositoryRef:
     name: server
   policy:
@@ -88,11 +88,11 @@ spec:
   git:
     checkout:
       ref:
-        branch: "main"
+        branch: "prod"
     commit:
       author:
         name: fluxbot
         email: fluxcd@users.noreply.github.com
       messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
     push:
-      branch: "main"
+      branch: "prod"

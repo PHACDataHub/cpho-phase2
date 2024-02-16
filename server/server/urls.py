@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from api import views as api_views
 from autocomplete import HTMXAutoComplete
 
+from server.middleware import allow_unauthenticated
+
 from cpho.urls import (
     urlpatterns as cpho_urls,  # force an import for runserver's refresh sake
 )
@@ -40,7 +42,11 @@ urlpatterns = i18n_patterns(
     prefix_default_language=False,
 ) + [
     *phac_aspc_helper_urls,
-    path("healthcheck/", lambda r: HttpResponse(), name="simple_healthcheck"),
+    path(
+        "healthcheck/",
+        allow_unauthenticated(lambda r: HttpResponse(status=200)),
+        name="simple_healthcheck",
+    ),
     path(
         "robots.txt",
         lambda r: HttpResponse(

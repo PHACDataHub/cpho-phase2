@@ -51,3 +51,15 @@ spec:
   rrdatasRefs:
     - name: hopic-external-ip
       kind: ComputeAddress
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSManagedZone
+metadata:
+  name: hopic-ops-managed-zone
+  namespace: cnrm-system
+spec:
+  cloudLoggingConfig:
+    enableLogging: true
+  description: HoPiC DNS Zone for alpha DNS
+  dnsName: hopic-sdpac.data-donnes.phac-aspc.gc.ca.
+  visibility: public

@@ -8,9 +8,13 @@ The diagram is generated from [D2](https://d2lang.com/) code to allow versioning
 
 To update the svg, cd in to `./architecture-diagram` and run `d2 --layout dagre <filename>.d2`. Add the `-w` flag for watch mode for a live-updating browser view while editing.
 
-## Functional Component Architecture
+## Functional Architectures
 
+### Application
 ![Functional component architecture](architecture-functional-components.svg)
+
+### Network
+![Functional network architecture](architecture-network.svg)
 
 ## Current k8s Architecture
 

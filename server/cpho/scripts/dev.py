@@ -69,7 +69,7 @@ def create_data():
             )
             directory.users.add(user)
 
-    p2021 = Period.objects.get(year=2021, quarter=None, year_type="calendar")
+    p2022 = Period.objects.get(year=2022, quarter=None, year_type="calendar")
     for dimension in DimensionType.objects.all():
         if not dimension.is_literal:
             for dimension_value in dimension.possible_values.all():
@@ -77,7 +77,7 @@ def create_data():
                     IndicatorDatumFactory(
                         indicator=indicator,
                         dimension_value=dimension_value,
-                        period=p2021,
+                        period=p2022,
                         dimension_type=dimension,
                     )
         else:
@@ -85,6 +85,6 @@ def create_data():
                 for indicator in all_indicators:
                     IndicatorDatumFactory(
                         indicator=indicator,
-                        period=p2021,
+                        period=p2022,
                         dimension_type=dimension,
                     )

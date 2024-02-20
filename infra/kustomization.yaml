@@ -15,3 +15,6 @@ resources:
 commonLabels:
   classification: ucll
   vanity-name: pht-hopic
+
+commonAnnotations:
+  cnrm.cloud.google.com/deletion-policy: abandon

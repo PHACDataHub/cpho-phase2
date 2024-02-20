@@ -20,11 +20,13 @@ spec:
 apiVersion: networking.gke.io/v1
 kind: GCPBackendPolicy
 metadata:
-  name: hopic-waf
+  name: mesh-gateway-policy
   namespace: istio-ingress
 spec:
   default:
-    securityPolicy: hopic-waf
+    logging:
+      enabled: true
+      sampleRate: 1000000
   targetRef:
     group: ""
     kind: Service

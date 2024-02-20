@@ -19,17 +19,17 @@ gcp: PHAC Google Cloud Org {
       fill: "#e1f6fe"
     }
 
-    loadbalancer: Regional External \nLoadBalancer \n (HTTP-HTTPS redirects){
+    loadbalancer: Regional External \nLoadBalancer \n HTTP-HTTPS redirects \n Client TLS Termination{
       icon: ./icons/gcp/cloud_load_balancer.svg
       shape: image
     }
 
-    cloudarmor: Regional Cloud Armor \nSecurity Policies \n(WAF Rules) {
+    cloudarmor: Regional Cloud Armor \nSecurity Policies \nWAF Rules {
       icon: ./icons/gcp/cloud_armor.svg
       shape: image
     }
 
-    vpc: VPC {
+    vpc: VPC (hopic-net) {
       icon: ./icons/gcp/virtual_private_cloud.svg
       style: {
         stroke: blue
@@ -38,7 +38,7 @@ gcp: PHAC Google Cloud Org {
         fill: transparent
       }
 
-      subnet: Regional Subnet (Montreal) {
+      subnet: Regional Subnet (hopic-subnet) {
         icon: ./icons/gcp/virtual_private_cloud.svg
         style: {
           stroke: blue
@@ -69,8 +69,9 @@ gcp: PHAC Google Cloud Org {
 
 client -> gcp.project.loadbalancer: HTTPS {style: {stroke: green}}
 
-gcp.project.cloudarmor -> gcp.project.vpc.subnet.asm_gateway: WAF rules \nfor backend
-gcp.project.loadbalancer -> gcp.project.vpc.subnet.asm_gateway: Terminate Client TLS \nand forward to mesh gateway {style: {stroke: green}}
+gcp.project.loadbalancer -> gcp.project.cloudarmor: HTTP {style: {stroke: green}}
+gcp.project.cloudarmor -> gcp.project.vpc.subnet.asm_gateway: HTTP {style: {stroke: green}}
 
 gcp.project.vpc.subnet.asm_gateway -> gcp.project.vpc.subnet.app: mTLS {style: {stroke: green}}
 gcp.project.vpc.subnet.app -> gcp.project.vpc.subnet.psql: mTLS {style: {stroke: green}}
+gcp.project.vpc.subnet.psql -> gcp.project.vpc.subnet.app: mTLS {style: {stroke: green}}

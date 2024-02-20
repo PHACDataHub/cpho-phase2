@@ -11,6 +11,7 @@ resources:
 - iam-mapping.yaml
 - kms.yaml
 - proxy-subnet.yaml
+- backend-service.yaml
 
 commonLabels:
   classification: ucll

@@ -4,7 +4,7 @@ resources:
 - api.yaml
 - artifactregistry.yaml
 - bucket.yaml
-- cloudbuild.yaml
+# - cloudbuild.yaml
 - dns-zone.yaml
 - dnspolicy.yaml
 - service-account.yaml

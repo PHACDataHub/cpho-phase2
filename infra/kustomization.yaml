@@ -10,7 +10,7 @@ resources:
   - iam-mapping.yaml
   - kms.yaml
   - proxy-subnet.yaml
-  - cloudbuild.yaml
+  - cloudbuildtrigger.yaml
 
 commonLabels:
   classification: ucll

@@ -30,6 +30,7 @@ spec:
       pgaudit.log_catalog: "off"
       pgaudit.log_parameter: "on"
       pgaudit.log_relation: "on"
+      log_statement: 'all' # Added to log all SQL statements, including transactions.
 
   nodeMaintenanceWindow:
     inProgress: false

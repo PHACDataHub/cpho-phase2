@@ -129,5 +129,7 @@ class UserScopedChangelog(ChangelogView):
     def get_context_data(self, **kwargs):
         return {
             **super().get_context_data(**kwargs),
-            "user": models.User.objects.get(id=self.kwargs["user_id"]),
+            "changelog_user": models.User.objects.get(
+                id=self.kwargs["user_id"]
+            ),
         }

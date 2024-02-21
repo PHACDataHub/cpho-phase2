@@ -12,6 +12,7 @@ resources:
   - kms.yaml
   - proxy-subnet.yaml
   - backend-service.yaml
+  - logging-bucket.yaml
 
 commonLabels:
   classification: ucll

@@ -145,8 +145,6 @@ class ReviewIndicatorMetaData(MustPassAuthCheckMixin, TemplateView):
         metadata["benchmarking"] = benchmarking_qs
         metadata["trend"] = trend_qs
 
-        print(metadata)
-
         return metadata
 
     def get_context_data(self, *args, **kwargs):

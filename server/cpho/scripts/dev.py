@@ -3,13 +3,16 @@ from django.db import transaction
 from server.rules_framework import test_rule
 
 from cpho.model_factories import (
+    BenchmarkingFactory,
     Indicator,
     IndicatorDatum,
     IndicatorDatumFactory,
     IndicatorFactory,
+    TrendAnalysisFactory,
 )
 from cpho.models import (
     Benchmarking,
+    Country,
     DimensionType,
     DimensionValue,
     IndicatorDirectory,
@@ -88,3 +91,15 @@ def create_data():
                         period=p2022,
                         dimension_type=dimension,
                     )
+    countries = Country.objects.all().order_by("?")[:5]
+    for indicator in all_indicators:
+        for i in range(2016, 2023):
+            TrendAnalysisFactory(
+                indicator=indicator,
+                year=i,
+            )
+        for country in countries:
+            BenchmarkingFactory(
+                indicator=indicator,
+                oecd_country=country,
+            )

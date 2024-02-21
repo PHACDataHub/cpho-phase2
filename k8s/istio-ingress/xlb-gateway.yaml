@@ -1,4 +1,7 @@
 # Regional XLB configuration
+# 
+# Note: The ./infrastructure/backend-service.yaml must be re-imported if this file is edited. 
+# See https://github.com/PHACDataHub/cpho-phase2/pull/225 for details
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:

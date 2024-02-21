@@ -80,11 +80,11 @@ tasks:
          preconfigured_waf_rules=(
            # opt out of rules for special character limits in cookies (942420, 942421, 942432); lots of false positives from these
            # opt out of rules for SQL injection probing (942330, 942370, 942490); lots of false positives from these
-           "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli', 'owasp-crs-v030301-id942432-sqli', 'owasp-crs-v030301-id942330-sqli', 'owasp-crs-v030301-id942370-sqli', 'owasp-crs-v030301-id942490-sqli']}"
+           "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli', 'owasp-crs-v030301-id942432-sqli', 'owasp-crs-v030301-id942330-sqli', 'owasp-crs-v030301-id942370-sqli', 'owasp-crs-v030301-id942490-sqli', 'owasp-crs-v030301-id942430-sqli', 'owasp-crs-v030301-id942431-sqli']}"
            "'xss-v33-stable'"
            "'lfi-v33-stable'"
            "'rfi-v33-stable'"
-           "'rce-v33-stable'"
+           "'rce-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id932200-rce']}"
            "'methodenforcement-v33-stable'"
            "'scannerdetection-v33-stable'"
            "'protocolattack-v33-stable'"

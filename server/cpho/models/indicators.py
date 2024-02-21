@@ -84,9 +84,31 @@ class SubmissionQueryset(models.QuerySet):
         )
 
 
+class SubmissionHelpersMixin:
+    @property
+    def submission_status(self):
+        try:
+            self.last_version_id
+            self.last_submitted_version_id
+            self.last_program_submitted_version_id
+        except AttributeError:
+            raise Exception("You must add the submission_annotations")
+
+        if not self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+
+        if self.last_version_id == self.last_submitted_version_id:
+            return SUBMISSION_STATUSES.SUBMITTED
+
+        if self.last_version_id == self.last_program_submitted_version_id:
+            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+
+        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
-class Indicator(models.Model):
+class Indicator(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     CATEGORY_CHOICES = [
         ("", "--"),
@@ -235,26 +257,6 @@ class Indicator(models.Model):
     g4_upper = fields.FloatField(null=True, blank=True)
     g5 = fields.FloatField(null=True, blank=True)
 
-    @property
-    def submission_status(self):
-        try:
-            self.last_version_id
-            self.last_submitted_version_id
-            self.last_program_submitted_version_id
-        except AttributeError:
-            raise Exception("You must add the submission_annotations")
-
-        if not self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
-
-        if self.last_version_id == self.last_submitted_version_id:
-            return SUBMISSION_STATUSES.SUBMITTED
-
-        if self.last_version_id == self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
-
-        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
-
     def __str__(self):
         return " ".join(
             [
@@ -290,7 +292,7 @@ class ActiveObjManager(models.Manager):
 
 @add_to_admin
 @track_versions_with_editor_and_submission
-class IndicatorDatum(models.Model):
+class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
     changelog_live_name_loader_class = IndicatorDatumChangelogNameLoader
@@ -450,30 +452,10 @@ class IndicatorDatum(models.Model):
             ]
         )
 
-    @property
-    def submission_status(self):
-        try:
-            self.last_version_id
-            self.last_submitted_version_id
-            self.last_program_submitted_version_id
-        except AttributeError:
-            raise Exception("You must add the submission_annotations")
-
-        if not self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
-
-        if self.last_version_id == self.last_submitted_version_id:
-            return SUBMISSION_STATUSES.SUBMITTED
-
-        if self.last_version_id == self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
-
-        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
-
 
 @add_to_admin
 @track_versions_with_editor_and_submission
-class Benchmarking(models.Model):
+class Benchmarking(models.Model, SubmissionHelpersMixin):
     class Meta:
         unique_together = [
             (
@@ -561,30 +543,10 @@ class Benchmarking(models.Model):
     def __str__(self):
         return str(self.indicator) + " : " + str(self.oecd_country)
 
-    @property
-    def submission_status(self):
-        try:
-            self.last_version_id
-            self.last_submitted_version_id
-            self.last_program_submitted_version_id
-        except AttributeError:
-            raise Exception("You must add the submission_annotations")
-
-        if not self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
-
-        if self.last_version_id == self.last_submitted_version_id:
-            return SUBMISSION_STATUSES.SUBMITTED
-
-        if self.last_version_id == self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
-
-        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
-
 
 @add_to_admin
 @track_versions_with_editor_and_submission
-class TrendAnalysis(models.Model):
+class TrendAnalysis(models.Model, SubmissionHelpersMixin):
     class Meta:
         unique_together = [
             (
@@ -634,26 +596,6 @@ class TrendAnalysis(models.Model):
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""
     )
-
-    @property
-    def submission_status(self):
-        try:
-            self.last_version_id
-            self.last_submitted_version_id
-            self.last_program_submitted_version_id
-        except AttributeError:
-            raise Exception("You must add the submission_annotations")
-
-        if not self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
-
-        if self.last_version_id == self.last_submitted_version_id:
-            return SUBMISSION_STATUSES.SUBMITTED
-
-        if self.last_version_id == self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
-
-        return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
 
     def __str__(self):
         return "Trend: " + str(self.indicator) + " : " + str(self.year)

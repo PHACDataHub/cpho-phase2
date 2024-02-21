@@ -60,12 +60,17 @@ gcp: PHAC Google Cloud Org {
       shape: image
     }
 
-    loadbalancer: Target-pool\nNetwork Load\nBalancer {
+    loadbalancer: HTTPS Application \nLoadBalancer {
       icon: ./icons/gcp/cloud_load_balancer.svg
       shape: image
     }
 
-    vpc: VPC - 10.162.0.0/20 {
+    cloudarmor: Cloud Armor \nWAF {
+      icon: ./icons/gcp/cloud_armor.svg
+      shape: image
+    }
+
+    vpc: VPC / Regional Subnet - 10.162.0.0/20 {
       icon: ./icons/gcp/virtual_private_cloud.svg
       style: {
         stroke: blue
@@ -321,7 +326,8 @@ gcp: PHAC Google Cloud Org {
 # unauthed traffic flow
 unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
 unauthed-traffic -> gcp.project.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
-gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
+gcp.project.loadbalancer -> gcp.project.cloudarmor {style: {stroke: red}}
+gcp.project.cloudarmor -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
 gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: "" {style: {stroke: red}}
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: red}}
 gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
@@ -329,7 +335,8 @@ active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stro
 
 # authed traffic flow
 authed-traffic -> gcp.project.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
-gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
+gcp.project.loadbalancer -> gcp.project.cloudarmor {style: {stroke: green}}
+gcp.project.cloudarmor -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
 gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: "" {style: {stroke: green}}
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
 gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}

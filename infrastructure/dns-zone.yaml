@@ -17,6 +17,8 @@ kind: DNSRecordSet
 metadata:
   name: hopic-dns-record-set
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "hopic-sdpac.phac-aspc.alpha.canada.ca."
   type: A
@@ -46,6 +48,8 @@ kind: DNSRecordSet
 metadata:
   name: hopic-ephemeral-dns-record-set
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca."
   type: A

@@ -4,13 +4,14 @@ resources:
   - api.yaml
   - artifactregistry.yaml
   - bucket.yaml
+  - cloudbuild.yaml
   - dns-zone.yaml
   - dnspolicy.yaml
   - service-account.yaml
   - iam-mapping.yaml
   - kms.yaml
   - proxy-subnet.yaml
-  - cloudbuildtrigger.yaml
+  - backend-service.yaml
 
 commonLabels:
   classification: ucll

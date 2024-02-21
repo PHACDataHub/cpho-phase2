@@ -1,0 +1,28 @@
+# Due to limitations of GKE's Gateway API, a cloud armor security policy for the
+# regional XLB's backend service cannot be configured via the k8s gateway spec.
+# The workaround, therefore, is to add the policy to the backend-service directly by
+# importing the backend service resource into KCC.
+#
+# As mentioned above, this resource was imported via KCC. DO NOT MODIFY DIRECTLY
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeBackendService
+metadata:
+  name: gkegw1-iswp-istio-ingress-istio-ingressgatewa-8443-6xz70r427d78
+  namespace: cnrm-system
+spec:
+  connectionDrainingTimeoutSec: 0
+  healthChecks:
+  - healthCheckRef:
+      external: https://www.googleapis.com/compute/v1/projects/pht-01hp04dtnkf/regions/northamerica-northeast1/healthChecks/gkegw1-iswp-istio-ingress-istio-ingressgatewa-8443-6xz70r427d78
+  loadBalancingScheme: EXTERNAL_MANAGED
+  location: northamerica-northeast1
+  logConfig:
+    enable: true
+    sampleRate: 1
+  portName: http
+  protocol: HTTPS
+  resourceID: gkegw1-iswp-istio-ingress-istio-ingressgatewa-8443-6xz70r427d78
+  securityPolicy: https://www.googleapis.com/compute/beta/projects/pht-01hp04dtnkf/regions/northamerica-northeast1/securityPolicies/hopic-waf
+  sessionAffinity: NONE
+  timeoutSec: 30

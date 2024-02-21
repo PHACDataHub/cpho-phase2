@@ -3,6 +3,8 @@ kind: KMSCryptoKey
 metadata:
   name: sops-flux-key
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   keyRingRef:
     name: sops

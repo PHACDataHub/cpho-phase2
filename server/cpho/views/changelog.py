@@ -4,8 +4,12 @@ from django import forms
 from django.core.exceptions import FieldDoesNotExist, PermissionDenied
 from django.views.generic import TemplateView
 
+from server.rules_framework import test_rule
+
 from cpho import models
 from cpho.util import flatten
+
+from .view_util import MustBeAdminOrHsoMixin, MustPassAuthCheckMixin
 
 changelog_models = [
     models.Indicator,
@@ -47,7 +51,7 @@ class ChangelogView(TemplateView):
         return ctx
 
 
-class GlobalChangelog(ChangelogView):
+class GlobalChangelog(ChangelogView, MustBeAdminOrHsoMixin):
     template_name = "changelog/global_changelog.jinja2"
 
     def get_changelog_object(self):
@@ -56,8 +60,14 @@ class GlobalChangelog(ChangelogView):
         )
 
 
-class IndicatorScopedChangelog(ChangelogView):
+class IndicatorScopedChangelog(ChangelogView, MustPassAuthCheckMixin):
     template_name = "changelog/indicator_scoped_changelog.jinja2"
+
+    def check_rule(self):
+        indicator = models.Indicator.objects.get(
+            id=self.kwargs["indicator_id"]
+        )
+        return test_rule("can_access_indicator", self.request.user, indicator)
 
     def get_changelog_object(self):
         indicator_id = self.kwargs["indicator_id"]
@@ -95,8 +105,10 @@ class UserScopedChangelog(ChangelogView):
     template_name = "changelog/user_scoped_changelog.jinja2"
 
     def dispatch(self, request, *args, **kwargs):
+
         if self.request.user.id != self.kwargs["user_id"]:
-            raise PermissionDenied()
+            if not test_rule("is_admin_or_hso", self.request.user):
+                raise PermissionDenied()
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -117,5 +129,7 @@ class UserScopedChangelog(ChangelogView):
     def get_context_data(self, **kwargs):
         return {
             **super().get_context_data(**kwargs),
-            "user": models.User.objects.get(id=self.kwargs["user_id"]),
+            "changelog_user": models.User.objects.get(
+                id=self.kwargs["user_id"]
+            ),
         }

@@ -209,8 +209,9 @@ MIDDLEWARE = configure_middleware(
     ]
 )
 
-LOGIN_URL = reverse_lazy("login")
+LOGOUT_REDIRECT_URL = LOGIN_URL = reverse_lazy("login")
 LOGIN_REDIRECT_URL = reverse_lazy("list_indicators")
+
 
 ROOT_URLCONF = "server.urls"
 APPEND_SLASH = True

@@ -5,6 +5,7 @@ metadata:
   namespace: cnrm-system
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   keyRingRef:
     name: sops
@@ -16,5 +17,7 @@ kind: KMSKeyRing
 metadata:
   name: sops
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   location: northamerica-northeast1

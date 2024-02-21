@@ -30,6 +30,8 @@ kind: ComputeAddress
 metadata:
   name: hopic-external-ip
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   addressType: EXTERNAL
   description: HoPiC external ip address for ingress gateway

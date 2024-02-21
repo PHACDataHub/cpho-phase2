@@ -3,6 +3,8 @@ kind: DNSManagedZone
 metadata:
   name: hopic-managed-zone
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   cloudLoggingConfig:
     enableLogging: true
@@ -59,6 +61,8 @@ kind: DNSManagedZone
 metadata:
   name: hopic-ops-managed-zone
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   cloudLoggingConfig:
     enableLogging: true

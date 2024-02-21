@@ -3,6 +3,8 @@ kind: ArtifactRegistryRepository
 metadata:
   name: hopic-k8s-images
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   description: Artifact registry for HoPiC docker images
   format: DOCKER

@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 from django.conf import settings
+from django.test.client import Client
 from django.urls import reverse
 
 from cpho.model_factories import IndicatorFactory
@@ -11,7 +12,10 @@ from cpho.models import (
     IndicatorDatumHistory,
     IndicatorHistory,
     Period,
+    User,
 )
+
+from .utils_for_tests import patch_rules
 
 
 def create_versions():
@@ -58,15 +62,20 @@ def create_versions():
     )
 
 
-def test_changelog(vanilla_user_client):
+def test_global_changelog(vanilla_user_client):
     create_versions()
 
     if settings.USE_SQLITE:
         print("skipping changelog test because sqlite is used")
         return
 
-    with patch(
-        "cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2
+    with patch_rules(is_admin_or_hso=False):
+        resp = vanilla_user_client.get(reverse("global_changelog"))
+        assert resp.status_code == 403
+
+    with (
+        patch_rules(is_admin_or_hso=True),
+        patch("cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2),
     ):
         resp = vanilla_user_client.get(reverse("global_changelog"))
         assert resp.status_code == 200
@@ -91,9 +100,20 @@ def test_indicator_changelog(vanilla_user_client):
         print("skipping changelog test because sqlite is used")
         return
 
-    with patch(
-        "cpho.views.changelog.ChangelogView.get_page_size",
-        lambda _: 2,
+    with patch_rules(can_access_indicator=False):
+        resp = vanilla_user_client.get(
+            reverse(
+                "indicator_scoped_changelog", kwargs={"indicator_id": i1.id}
+            )
+        )
+        assert resp.status_code == 403
+
+    with (
+        patch_rules(can_access_indicator=True),
+        patch(
+            "cpho.views.changelog.ChangelogView.get_page_size",
+            lambda _: 2,
+        ),
     ):
         resp = vanilla_user_client.get(
             reverse(
@@ -121,6 +141,11 @@ def test_indicator_changelog(vanilla_user_client):
 
 
 def test_user_scoped_changelog(vanilla_user, vanilla_user_client):
+
+    other_user = User.objects.create(username="other")
+    other_user_client = Client()
+    other_user_client.force_login(other_user)
+
     u_id = vanilla_user.id
     create_versions()
     IndicatorHistory.objects.filter(name="i1").update(edited_by_id=u_id)
@@ -132,6 +157,20 @@ def test_user_scoped_changelog(vanilla_user, vanilla_user_client):
         print("skipping changelog test because sqlite is used")
         return
 
+    # Test that a user can't access another user's changelog
+    resp = vanilla_user_client.get(
+        reverse("user_scoped_changelog", kwargs={"user_id": other_user.id})
+    )
+    assert resp.status_code == 403
+
+    # unless they are super user
+    with patch_rules(is_admin_or_hso=True):
+        resp = vanilla_user_client.get(
+            reverse("user_scoped_changelog", kwargs={"user_id": other_user.id})
+        )
+        assert resp.status_code == 200
+
+    # now test actual behaviour
     with patch(
         "cpho.views.changelog.ChangelogView.get_page_size",
         lambda _: 2,

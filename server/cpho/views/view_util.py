@@ -2,6 +2,8 @@ from django.core.exceptions import PermissionDenied
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
+from server.rules_framework import test_rule
+
 from cpho.models import DimensionType, DimensionValue, Period
 
 
@@ -49,6 +51,11 @@ class MustPassAuthCheckMixin(View):
         if not self.check_rule():
             raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
+
+
+class MustBeAdminOrHsoMixin(MustPassAuthCheckMixin):
+    def check_rule(self):
+        return test_rule("is_admin_or_hso", self.request.user)
 
 
 def upload_mapper():

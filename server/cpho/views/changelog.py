@@ -105,7 +105,6 @@ class UserScopedChangelog(ChangelogView):
     template_name = "changelog/user_scoped_changelog.jinja2"
 
     def dispatch(self, request, *args, **kwargs):
-
         if self.request.user.id != self.kwargs["user_id"]:
             if not test_rule("is_admin_or_hso", self.request.user):
                 raise PermissionDenied()

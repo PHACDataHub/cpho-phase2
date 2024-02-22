@@ -94,9 +94,9 @@ def get_submission_statuses(indicator, period):
         dim_id = dimension_type.id
         data_for_dim = data_by_dimension_type_id[dim_id]
         if not data_for_dim:
-            submission_status_by_dimension_type_id[dim_id] = (
-                SUBMISSION_STATUSES.NO_DATA
-            )
+            submission_status_by_dimension_type_id[
+                dim_id
+            ] = SUBMISSION_STATUSES.NO_DATA
             continue
 
         submission_statuses = [

@@ -22,7 +22,7 @@
             {% if show_user %}
               <td>
                 {% if edit_entry.version.edited_by %}
-                  {{ edit_entry.version.edited_by.username }}
+                  {{ edit_entry.version.edited_by.pretty_name }}
                 {% else %}
                   {{ tdt("N/A") }}
                 {% endif %}
@@ -40,7 +40,7 @@
             {% if show_user %}
               <td>
                 {% if edit_entry.version.edited_by %}
-                  {{ edit_entry.version.edited_by.username }}
+                  {{ edit_entry.version.edited_by.pretty_name }}
                 {% else %}
                   {{ tdt("N/A") }}
                 {% endif %}

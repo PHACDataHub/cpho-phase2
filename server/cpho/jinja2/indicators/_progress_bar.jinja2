@@ -13,6 +13,16 @@
   {% set hso_approved_percent = 100 %}
 {% endif %}
 
+{% if metadata_submission %}
+  {% set data_entered_div_id = indicator.id|string + "-data-entered" %}
+  {% set program_approved_div_id = indicator.id|string + "-program-approved" %}
+  {% set hso_approved_div_id = indicator.id|string + "-hso-approved" %}
+{% else %}
+  {% set data_entered_div_id = indicator.id|string + "-" + period.code|string + "-data-entered" %}
+  {% set program_approved_div_id = indicator.id|string + "-" + period.code|string + "-program-approved" %}
+  {% set hso_approved_div_id = indicator.id|string + "-" + period.code|string + "-hso-approved" %}
+{% endif %}
+
 <div class='row mt-1 gx-2 {% if not progress_in_table %}mb-4{% endif %}'>
   <div class="col-md-4 col-sm-12">
     <div class="progress" style="height:0.75rem">
@@ -22,11 +32,11 @@
            aria-valuenow="{{ data_entered_percent }}"
            aria-valuemin="0"
            aria-valuemax="100"
-           aria-labelledby="{{ indicator.id }}-{{ period.code }}-data-entered">
+           aria-labelledby="{{ data_entered_div_id }}">
       </div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
-      <div id="{{ indicator.id }}-{{ period.code }}-data-entered">{{ tdt("Data entered") }}</div>
+      <div id="{{ data_entered_div_id }}">{{ tdt("Data entered") }}</div>
       {% if not progress_in_table %}
         <div tabindex="0"
              aria-label="{{ tdt('More info') }}"
@@ -46,11 +56,11 @@
            aria-valuenow="{{ program_approved_percent }}"
            aria-valuemin="0"
            aria-valuemax="100"
-           aria-labelledby="{{ indicator.id }}-{{ period.code }}-program-approved">
+           aria-labelledby="{{ program_approved_div_id }}">
       </div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
-      <div id="{{ indicator.id }}-{{ period.code }}-program-approved">{{ tdt("Program Approved") }}</div>
+      <div id="{{ program_approved_div_id }}">{{ tdt("Program approved") }}</div>
       {% if not progress_in_table %}
         <div tabindex="0"
              aria-label="{{ tdt('More info') }}"
@@ -70,11 +80,11 @@
            aria-valuenow="{{ hso_approved_percent }}"
            aria-valuemin="0"
            aria-valuemax="100"
-           aria-labelledby="{{ indicator.id }}-{{ period.code }}-hso-approved">
+           aria-labelledby="{{ hso_approved_div_id }}">
       </div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
-      <div id="{{ indicator.id }}-{{ period.code }}-hso-approved">{{ tdt("HSO approved") }}</div>
+      <div id="{{ hso_approved_div_id }}">{{ tdt("HSO approved") }}</div>
       {% if not progress_in_table %}
         <div tabindex="0"
              aria-label="{{ tdt('More info') }}"

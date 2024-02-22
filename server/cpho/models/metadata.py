@@ -31,6 +31,23 @@ class IndicatorDataSubmission(models.Model):
 
 
 @add_to_admin
+class IndicatorMetaDataSubmission(models.Model):
+    submitted_by = fields.ForeignKey(
+        "User",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    indicator = fields.ForeignKey("cpho.Indicator", on_delete=models.CASCADE)
+    submission_type = models.CharField(
+        max_length=20,
+        choices=[
+            (HSO_SUBMISSION_TYPE, tdt("HSO")),
+            (PROGRAM_SUBMISSION_TYPE, tdt("Surveillance Program")),
+        ],
+    )
+
+
+@add_to_admin
 class IndicatorDirectory(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)

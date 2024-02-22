@@ -12,6 +12,8 @@ from django.db import models
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from phac_aspc.django.fields import CommaSeparatedCharField
+
 migration_ignored_attrs = [
     "help_text",
     "is_searchable",

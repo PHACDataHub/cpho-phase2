@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ view.indicator.name }} {{ view.period }}</div>
+  <div class="h2">{{ tdt("Review indicator data for: ") }} {{ view.indicator.name }} {{ view.period }}</div>
   <div>
     <a type="button"
        data-bs-toggle="modal"
@@ -36,68 +36,12 @@
   </div>
 </div>
 
-<div class="modal fade"
-     id="confirmApproveModal"
-     tabindex="-1"
-     aria-labelledby="confirmApproveModalLabel"
-     aria-hidden="true">
-  <form class="modal-dialog"
-        {% if view.dimension_type %} action="{{ url('submit_indicator_data', args=[view.indicator.id, view.period.id, view.dimension_type.id]) }}" {% else %} action="{{ url('submit_indicator_data_all', args=[view.indicator.id, view.period.id]) }}" {% endif %}
-        method="post">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmApproveModalLabel">{{ tdt("Confirm Data Approval") }}</h5>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>{{ tdt("Placeholder Text: What happens when you submit data") }}</p>
-        {% if respects_rule("is_admin") %}
-          {% set input_class = "border p-2 ps-0" %}
-        {% else %}
-          {% set input_class = "border p-2 ps-0 d-none" %}
-        {% endif %}
+{% if view.dimension_type %}
+  {% set submission_url = url('submit_indicator_data', args=[view.indicator.id, view.period.id, view.dimension_type.id]) %}
+{% else %}
+  {% set submission_url = url('submit_indicator_data_all', args=[view.indicator.id, view.period.id]) %}
+{% endif %}
+{% set modal_title = tdt("Confirm data approval") %}
+{% include 'modals/submission_modal.jinja2' %}
 
-        <div class="{{ input_class }}">
-          <div>TODO: this field will dissapear and be automatically inferred from user type</div>
-          <div>
-            <input type="radio"
-                   name="submission_type"
-                   id="submissionType1"
-                   value="program"
-                   {% if respects_rule("is_inputting_user") %}checked{% endif %}>
-            <label for="html">Surveillance program submission</label>
-            <br>
-            <input type="radio"
-                   name="submission_type"
-                   id="submissionType1"
-                   value="hso"
-                   {% if respects_rule("is_hso") %}checked{% endif %}>
-            <label for="html">HSO submission</label>
-            {{ csrf_input }}
-            <br>
-          </div>
-        </div>
-        <div class="form-check my-3">
-          <input class="form-check-input"
-                 type="checkbox"
-                 id="confirmCheckbox"
-                 required>
-          <label class="form-check-label" for="confirmCheckbox">
-            {{ tdt("Placeholder Text: I confirm data validity and agree to submit") }}
-          </label>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ tdt("Close") }}</button>
-        <input type="submit"
-               id="confirmApproveBtn"
-               class="btn btn-primary float-end my-3"
-               value="{{ tdt("Confirm Approval") }}">
-      </div>
-    </div>
-  </form>
-</div>
 {% endblock %}

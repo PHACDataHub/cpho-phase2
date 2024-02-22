@@ -2,8 +2,19 @@ from django.db.utils import IntegrityError
 
 import pytest
 
-from cpho.model_factories import IndicatorFactory
-from cpho.models import DimensionType, DimensionValue, IndicatorDatum, Period
+from cpho.model_factories import (
+    BenchmarkingFactory,
+    IndicatorFactory,
+    TrendAnalysisFactory,
+)
+from cpho.models import (
+    Benchmarking,
+    Country,
+    DimensionType,
+    DimensionValue,
+    IndicatorDatum,
+    Period,
+)
 
 
 def test_indicator_datum_predefined_dimension_uniqueness():
@@ -42,6 +53,48 @@ def test_indicator_datum_predefined_dimension_uniqueness():
             dimension_type=sex_dim,
             dimension_value=male,
             literal_dimension_val="foo",
+        )
+
+
+def test_benchmarking_uniqueness():
+    ind = IndicatorFactory()
+    australia = Country.objects.get(name_en="Australia")
+
+    BenchmarkingFactory(
+        indicator=ind,
+        oecd_country=australia,
+        labels=Benchmarking.LABEL_CHOICES[0][0],
+    )
+    BenchmarkingFactory(
+        indicator=ind,
+        oecd_country=australia,
+        labels=Benchmarking.LABEL_CHOICES[1][0],
+    )
+
+    with pytest.raises(IntegrityError):
+        BenchmarkingFactory(
+            indicator=ind,
+            oecd_country=australia,
+            labels=Benchmarking.LABEL_CHOICES[0][0],
+        )
+
+
+def test_trend_uniqueness():
+    ind = IndicatorFactory()
+
+    TrendAnalysisFactory(
+        indicator=ind,
+        year=2020,
+    )
+    TrendAnalysisFactory(
+        indicator=ind,
+        year=2021,
+    )
+
+    with pytest.raises(IntegrityError):
+        TrendAnalysisFactory(
+            indicator=ind,
+            year=2021,
         )
 
 
@@ -117,3 +170,24 @@ def test_indicator_datum_version_annotations():
     )
     assert refetched_record.last_version_id == v4.id
     assert refetched_record.last_submitted_version_id == v3.id
+
+
+def test_relevant_periods():
+    i1 = IndicatorFactory()
+
+    assert list(i1.get_relevant_periods()) == list(
+        Period.get_currently_relevant_periods()
+    )
+
+    i2 = IndicatorFactory(relevant_period_types=["fiscal_quarters"])
+
+    assert i2.get_relevant_periods() == [
+        p for p in Period.get_currently_relevant_periods() if p.quarter
+    ]
+
+    i3 = IndicatorFactory(
+        relevant_period_types=["calendar_years", "fiscal_years"]
+    )
+    assert i3.get_relevant_periods() == [
+        p for p in Period.get_currently_relevant_periods() if p.quarter is None
+    ]

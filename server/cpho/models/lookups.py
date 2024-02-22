@@ -115,7 +115,7 @@ class Period(models.Model):
         return s
 
     @staticmethod
-    def relevant_years():
+    def get_currently_relevant_periods():
         return Period.objects.filter(
             year__in=[settings.CURRENT_YEAR - 1, settings.CURRENT_YEAR]
         )

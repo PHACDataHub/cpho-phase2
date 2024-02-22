@@ -1,6 +1,8 @@
 {% extends 'base.jinja2' %}
 
 {% block content %}
+    <h2>Hopic Home</h2>
+
   <div class="my-4">
     {% if respects_rule('can_create_indicator') %}
       <a href='{{ url("create_indicator") }}' class="btn btn-primary">{{ tdt("Create new indicator") }}</a>

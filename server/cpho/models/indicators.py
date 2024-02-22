@@ -133,6 +133,12 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         ("communicable_diseases", tdt("Communicable Diseases")),
     ]
 
+    PERIOD_TYPE_CHOICES = [
+        ("calendar_years", tdt("Calendar Years")),
+        ("fiscal_years", tdt("Fiscal Years")),
+        ("fiscal_quarters", tdt("Fiscal Year Quarters")),
+    ]
+
     name = fields.CharField(max_length=50)
 
     category = fields.CharField(
@@ -155,6 +161,12 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         "cpho.DimensionType",
         blank=True,
         related_name="indicators",
+    )
+
+    relevant_period_types = fields.CommaSeparatedCharField(
+        choices=PERIOD_TYPE_CHOICES,
+        max_length=250,
+        blank=True,
     )
 
     # GENERAL
@@ -263,6 +275,38 @@ class Indicator(models.Model, SubmissionHelpersMixin):
                 str(self.name),
             ]
         )
+
+    def get_relevant_periods(self):
+        # filter Period. to years that have data or have the same type as the indicator's relevant_period_types
+        from .lookups import Period
+
+        globally_relevant = Period.get_currently_relevant_periods()
+
+        # if there isn't a "preference" set, return all relevant periods
+        if not self.relevant_period_types:
+            return globally_relevant
+
+        relevant = []
+        for period in globally_relevant:
+            if (
+                period.quarter
+                and "fiscal_quarters" in self.relevant_period_types
+            ):
+                relevant.append(period)
+            elif (
+                period.year_type == Period.FISCAL_YEAR_TYPE
+                and period.quarter is None
+                and "fiscal_years" in self.relevant_period_types
+            ):
+                relevant.append(period)
+            elif (
+                period.year_type == Period.CALENDAR_YEAR_TYPE
+                and period.quarter is None
+                and "calendar_years" in self.relevant_period_types
+            ):
+                relevant.append(period)
+
+        return relevant
 
 
 class IndicatorDatumChangelogNameLoader(SingletonDataLoader):

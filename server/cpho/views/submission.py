@@ -112,7 +112,6 @@ class SubmitIndicatorMetaData(MustPassAuthCheckMixin, View):
 
 
 class ReviewIndicatorMetaData(MustPassAuthCheckMixin, TemplateView):
-
     template_name = "review_indicator_metadata.jinja2"
 
     @cached_property

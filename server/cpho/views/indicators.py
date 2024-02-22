@@ -44,6 +44,9 @@ class IndicatorForm(ModelForm):
     class Meta:
         model = Indicator
         fields = "__all__"
+        widgets = {
+            "relevant_period_types": forms.CheckboxSelectMultiple,
+        }
 
     name = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
@@ -291,7 +294,7 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         indicator = Indicator.objects.get(pk=self.kwargs["pk"])
-        relevant_periods = Period.relevant_years()
+        relevant_periods = indicator.get_relevant_periods()
 
         data_for_periods = indicator.data.filter(
             period__in=relevant_periods, is_deleted=False

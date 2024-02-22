@@ -99,3 +99,11 @@ span.new-ind-tag {
 .django-ckeditor-widget {
     width: 100%;
 }
+
+.small-text {
+    font-size: 0.8em;
+}
+
+.subtext {
+    opacity: 0.75;
+}

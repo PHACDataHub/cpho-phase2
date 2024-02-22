@@ -11,8 +11,9 @@
             data-bs-toggle="modal"
             data-bs-target="#expectedColumnModal">{{ tdt("View expected column names") }}</button>
  
-  <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tdt("Download a file template") }}</a>
+    <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tdt("Download a file template") }}</a>
   </div>
+  
   <form action="{{ url("upload_indicator") }}"
         method="post"
         enctype="multipart/form-data"

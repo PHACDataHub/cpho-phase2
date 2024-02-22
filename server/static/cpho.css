@@ -99,3 +99,11 @@ span.new-ind-tag {
 .django-ckeditor-widget {
     width: 100%;
 }
+
+.badge.bg-info {
+    color: #000;
+}
+
+.badge.bg-warning {
+    color: #000;
+}

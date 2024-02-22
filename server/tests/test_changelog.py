@@ -141,7 +141,6 @@ def test_indicator_changelog(vanilla_user_client):
 
 
 def test_user_scoped_changelog(vanilla_user, vanilla_user_client):
-
     other_user = User.objects.create(username="other")
     other_user_client = Client()
     other_user_client.force_login(other_user)

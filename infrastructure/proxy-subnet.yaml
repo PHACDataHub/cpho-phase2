@@ -3,6 +3,8 @@ kind: ComputeSubnetwork
 metadata:
   name: proxy-only-subnet
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   ipCidrRange: 10.129.0.0/23
   region: northamerica-northeast1

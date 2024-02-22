@@ -3,6 +3,8 @@ kind: DNSManagedZone
 metadata:
   name: hopic-managed-zone
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   cloudLoggingConfig:
     enableLogging: true
@@ -15,6 +17,8 @@ kind: DNSRecordSet
 metadata:
   name: hopic-dns-record-set
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "hopic-sdpac.phac-aspc.alpha.canada.ca."
   type: A
@@ -30,6 +34,8 @@ kind: ComputeAddress
 metadata:
   name: hopic-external-ip
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   addressType: EXTERNAL
   description: HoPiC external ip address for ingress gateway
@@ -42,6 +48,8 @@ kind: DNSRecordSet
 metadata:
   name: hopic-ephemeral-dns-record-set
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca."
   type: A
@@ -57,6 +65,8 @@ kind: DNSManagedZone
 metadata:
   name: hopic-ops-managed-zone
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   cloudLoggingConfig:
     enableLogging: true

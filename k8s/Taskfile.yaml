@@ -87,7 +87,7 @@ tasks:
            "'rce-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id932200-rce']}"
            "'methodenforcement-v33-stable'"
            "'scannerdetection-v33-stable'"
-           "'protocolattack-v33-stable'"
+           "'protocolattack-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id921170-protocolattack']}"
            "'sessionfixation-v33-stable'"
            # TODO these do not apply, but is there any latency cost to still scanning for them? Maybe enable them anyway
            #"'php-v33-stable'" 

@@ -24,10 +24,14 @@ from cpho.models import (
     IndicatorDatum,
 )
 from cpho.queries import (
+    get_metadata_submission_statuses,
     get_submission_statuses,
     relevant_dimension_types_for_period,
 )
-from cpho.services import SubmitIndicatorDataService
+from cpho.services import (
+    SubmitIndicatorDataService,
+    SubmitIndicatorMetaDataService,
+)
 from cpho.text import tdt, tm
 from cpho.util import group_by
 
@@ -77,13 +81,96 @@ class SubmitIndicatorData(
         )
 
 
+class SubmitIndicatorMetaData(MustPassAuthCheckMixin, View):
+    @cached_property
+    def indicator(self):
+        return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    def check_rule(self):
+        return test_rule(
+            "can_submit_indicator",
+            self.request.user,
+            self.indicator,
+        )
+
+    def post(self, *args, **kwargs):
+        submission_type = self.request.POST["submission_type"]
+        SubmitIndicatorMetaDataService(
+            indicator=self.indicator,
+            submission_type=submission_type,
+            user=self.request.user,
+        ).perform()
+        messages.success(
+            self.request, tdt("Submission successful"), messages.SUCCESS
+        )
+        return redirect(
+            reverse(
+                "review_metadata",
+                args=[self.indicator.id],
+            ),
+        )
+
+
+class ReviewIndicatorMetaData(MustPassAuthCheckMixin, TemplateView):
+
+    template_name = "review_indicator_metadata.jinja2"
+
+    @cached_property
+    def indicator(self):
+        return get_object_or_404(Indicator, pk=self.kwargs["indicator_id"])
+
+    @cached_property
+    def indicator_metadata(self):
+        metadata = {}
+
+        indicator_qs = (
+            Indicator.objects.filter(id=self.indicator.id)
+            .with_submission_annotations()
+            .with_last_version_date()
+        )
+        benchmarking_qs = (
+            self.indicator.benchmarking.filter(is_deleted=False)
+            .with_submission_annotations()
+            .with_last_version_date()
+            .order_by("id")
+        )
+        trend_qs = (
+            self.indicator.trend_analysis.filter(is_deleted=False)
+            .with_submission_annotations()
+            .with_last_version_date()
+            .order_by("id")
+        )
+
+        metadata["indicator"] = indicator_qs
+        metadata["benchmarking"] = benchmarking_qs
+        metadata["trend"] = trend_qs
+
+        return metadata
+
+    def get_context_data(self, *args, **kwargs):
+        return {
+            **super().get_context_data(*args, **kwargs),
+            "metadata": self.indicator_metadata,
+            "submission_statuses": get_metadata_submission_statuses(
+                self.indicator
+            ),
+        }
+
+    def check_rule(self):
+        return test_rule(
+            "can_submit_indicator",
+            self.request.user,
+            self.indicator,
+        )
+
+
 class ReviewData(
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
     DimensionTypeOrAllMixin,
     TemplateView,
 ):
-    model = Indicator
+    # model = Indicator
     template_name = "review_data.jinja2"
 
     @cached_property

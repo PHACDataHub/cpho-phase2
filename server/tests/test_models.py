@@ -2,8 +2,19 @@ from django.db.utils import IntegrityError
 
 import pytest
 
-from cpho.model_factories import IndicatorFactory
-from cpho.models import DimensionType, DimensionValue, IndicatorDatum, Period
+from cpho.model_factories import (
+    BenchmarkingFactory,
+    IndicatorFactory,
+    TrendAnalysisFactory,
+)
+from cpho.models import (
+    Benchmarking,
+    Country,
+    DimensionType,
+    DimensionValue,
+    IndicatorDatum,
+    Period,
+)
 
 
 def test_indicator_datum_predefined_dimension_uniqueness():
@@ -42,6 +53,48 @@ def test_indicator_datum_predefined_dimension_uniqueness():
             dimension_type=sex_dim,
             dimension_value=male,
             literal_dimension_val="foo",
+        )
+
+
+def test_benchmarking_uniqueness():
+    ind = IndicatorFactory()
+    australia = Country.objects.get(name_en="Australia")
+
+    BenchmarkingFactory(
+        indicator=ind,
+        oecd_country=australia,
+        labels=Benchmarking.LABEL_CHOICES[0][0],
+    )
+    BenchmarkingFactory(
+        indicator=ind,
+        oecd_country=australia,
+        labels=Benchmarking.LABEL_CHOICES[1][0],
+    )
+
+    with pytest.raises(IntegrityError):
+        BenchmarkingFactory(
+            indicator=ind,
+            oecd_country=australia,
+            labels=Benchmarking.LABEL_CHOICES[0][0],
+        )
+
+
+def test_trend_uniqueness():
+    ind = IndicatorFactory()
+
+    TrendAnalysisFactory(
+        indicator=ind,
+        year=2020,
+    )
+    TrendAnalysisFactory(
+        indicator=ind,
+        year=2021,
+    )
+
+    with pytest.raises(IntegrityError):
+        TrendAnalysisFactory(
+            indicator=ind,
+            year=2021,
         )
 
 

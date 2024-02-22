@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from cpho.constants import SUBMISSION_STATUSES
-from cpho.models import DimensionType, DimensionValue
+from cpho.models import DimensionType, DimensionValue, Indicator
 from cpho.util import group_by
 
 from .models import IndicatorDirectoryUserAccess
@@ -42,7 +42,40 @@ def aggregate_statuses(statuses):
         raise Exception("Shouldn't get here...")
 
 
+def get_metadata_submission_statuses(indicator):
+    benchmarking_qs = (
+        indicator.benchmarking.all().with_submission_annotations()
+    )
+    trend_analysis_qs = (
+        indicator.trend_analysis.all().with_submission_annotations()
+    )
+    indicator_qs = Indicator.objects.filter(
+        id=indicator.id
+    ).with_submission_annotations()
+
+    submission_status_benchmarking = aggregate_statuses(
+        [d.submission_status for d in benchmarking_qs]
+    )
+    submission_status_trend = aggregate_statuses(
+        [d.submission_status for d in trend_analysis_qs]
+    )
+    global_status = aggregate_statuses(
+        [
+            submission_status_benchmarking,
+            submission_status_trend,
+            indicator_qs[0].submission_status,
+        ]
+    )
+    return {
+        "global_status": global_status,
+        "benchmarking_status": submission_status_benchmarking,
+        "trend_status": submission_status_trend,
+        "indicator_status": indicator_qs[0].submission_status,
+    }
+
+
 def get_submission_statuses(indicator, period):
+    # not filtering by is_deleted as we and to have "modified since last submission" status for deleted data.
     data = (
         indicator.data.filter(period=period)
         .with_submission_annotations()
@@ -61,9 +94,9 @@ def get_submission_statuses(indicator, period):
         dim_id = dimension_type.id
         data_for_dim = data_by_dimension_type_id[dim_id]
         if not data_for_dim:
-            submission_status_by_dimension_type_id[
-                dim_id
-            ] = SUBMISSION_STATUSES.NO_DATA
+            submission_status_by_dimension_type_id[dim_id] = (
+                SUBMISSION_STATUSES.NO_DATA
+            )
             continue
 
         submission_statuses = [

@@ -22,6 +22,7 @@ from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import (
     get_indicator_directories_for_user,
     get_indicators_for_user,
+    get_metadata_submission_statuses,
     get_submission_statuses,
     relevant_dimension_types_for_period,
 )
@@ -315,6 +316,9 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
             "data_counts_by_period": data_counts_by_period,
             "indicator": indicator,
             "submission_statuses_by_period": submission_statuses_by_period,
+            "metadata_submission_statuses": get_metadata_submission_statuses(
+                indicator
+            ),
         }
 
 

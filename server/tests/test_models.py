@@ -170,3 +170,24 @@ def test_indicator_datum_version_annotations():
     )
     assert refetched_record.last_version_id == v4.id
     assert refetched_record.last_submitted_version_id == v3.id
+
+
+def test_relevant_periods():
+    i1 = IndicatorFactory()
+
+    assert list(i1.get_relevant_periods()) == list(
+        Period.get_currently_relevant_periods()
+    )
+
+    i2 = IndicatorFactory(relevant_period_types=["fiscal_quarters"])
+
+    assert i2.get_relevant_periods() == [
+        p for p in Period.get_currently_relevant_periods() if p.quarter
+    ]
+
+    i3 = IndicatorFactory(
+        relevant_period_types=["calendar_years", "fiscal_years"]
+    )
+    assert i3.get_relevant_periods() == [
+        p for p in Period.get_currently_relevant_periods() if p.quarter is None
+    ]

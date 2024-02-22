@@ -1,11 +1,12 @@
 {{ form.media }}
 
-{% macro form_field(field, rich=false) %}
+{% macro form_field(field, rich=false, helptext=None) %}
   <div class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
+    <div class="col-lg-3">
       <div class="row">{{ field.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
+      {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
     </div>
-    <div class="col-lg-10">
+    <div class="col-lg-9">
       {% if rich %}
         {{ field|safe }}
       {% else %}
@@ -26,7 +27,8 @@
       {{ form_field(form.topic) }}
       {{ form_field(form.detailed_indicator) }}
       {{ form_field(form.sub_indicator_measurement) }}
-      {{ form_field(form.relevant_dimensions) }}
+      {{ form_field(form.relevant_dimensions, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
+      {{ form_field(form.relevant_period_types, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
     </div>
   </div>
  

@@ -107,3 +107,11 @@ span.new-ind-tag {
 .badge.bg-warning {
     color: #000;
 }
+
+.small-text {
+    font-size: 0.8em;
+}
+
+.subtext {
+    opacity: 0.75;
+}

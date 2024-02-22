@@ -63,10 +63,30 @@
             </a>
           {% endif %}
         </div>
+ 
+        <div>
+          {% if respects_rule('can_submit_indicator', indicator) %}
+            <a href="{{ url('review_metadata', args=[indicator.id]) }}"
+               class="btn w-100 btn-outline-dark my-1">
+              <span aria-hidden="true" class="bi bi-journal-check"></span>
+              {{ tdt("Review Metadata") }}
+            </a>
+          {% endif %}
+        </div>
 
       </div>
       <div class="col-md-10">
         <div class="mt-4">
+          <div>
+            <div>
+              <div class="h5">{{ tdt("Indicator metadata submission: ") }}</div>
+              {% set submission_statuses = metadata_submission_statuses %}
+              {% set progress_in_table = false %}
+              {% set metadata_submission = true %}
+              {% include 'indicators/_progress_bar.jinja2' %}
+            </div>
+          </div>
+
           {% if respects_rule('can_access_indicator', indicator) %}
             <div class='card my-4'>
               <div class="card-header h3">{{ tdt("Periods with data") }}</div>
@@ -75,8 +95,8 @@
                   <thead>
                     <tr class="text-center">
                       <th width="15%">{{ tdt("Period") }}</th>
-                      <th width="15%">{{ tdt("Data Count") }}</th>
-                      <th width="55%">{{ tdt("Progress") }}</th>
+                      <th width="15%">{{ tdt("Data count") }}</th>
+                      <th width="55%">{{ tdt("Data submission") }}</th>
                       <th width="15%">{{ tdt("Actions") }}</th>
                     </tr>
                   </thead>
@@ -84,7 +104,8 @@
                     {% for period,data_count in data_counts_by_period.items() %}
                       {% if data_count > 0 %}
                         {% set submission_statuses = submission_statuses_by_period[period] %}
-                        {% set progress_in_table = True %}
+                        {% set progress_in_table = true %}
+                        {% set metadata_submission = false %}
                         <tr class="text-center">
                           <th>{{ period }}</th>
                           <td>{{ data_count }}</td>

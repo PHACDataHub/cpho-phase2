@@ -1,0 +1,63 @@
+ 
+<div class="modal fade"
+     id="confirmApproveModal"
+     tabindex="-1"
+     aria-labelledby="confirmApproveModalLabel"
+     aria-hidden="true">
+  <form class="modal-dialog" action="{{ submission_url }}" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmApproveModalLabel">{{ modal_title }}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ tdt("Placeholder Text: What happens when you submit data") }}</p>
+        {% if respects_rule("is_admin") %}
+          {% set input_class = "border p-2 ps-0" %}
+        {% else %}
+          {% set input_class = "border p-2 ps-0 d-none" %}
+        {% endif %}
+
+        <div class="{{ input_class }}">
+          <div>TODO: this field will dissapear and be automatically inferred from user type</div>
+          <div>
+            <input type="radio"
+                   name="submission_type"
+                   id="submission_program"
+                   value="program"
+                   {% if respects_rule("is_inputting_user") %}checked{% endif %}>
+            <label for="submission_program">Surveillance program submission</label>
+            <br>
+            <input type="radio"
+                   name="submission_type"
+                   id="submission_hso"
+                   value="hso"
+                   {% if respects_rule("is_hso") %}checked{% endif %}>
+            <label for="submission_hso">HSO submission</label>
+            {{ csrf_input }}
+            <br>
+          </div>
+        </div>
+        <div class="form-check my-3">
+          <input class="form-check-input"
+                 type="checkbox"
+                 id="confirmCheckbox"
+                 required>
+          <label class="form-check-label" for="confirmCheckbox">
+            {{ tdt("Placeholder Text: I confirm data validity and agree to submit") }}
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ tdt("Close") }}</button>
+        <input type="submit"
+               id="confirmApproveBtn"
+               class="btn btn-primary float-end my-3"
+               value="{{ tdt("Confirm Approval") }}">
+      </div>
+    </div>
+  </form>
+</div>

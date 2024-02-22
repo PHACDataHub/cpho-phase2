@@ -3,17 +3,29 @@ import random
 import factory
 
 from cpho.models import (
+    Benchmarking,
+    Country,
     DimensionType,
     DimensionValue,
     Indicator,
     IndicatorDatum,
     Period,
+    TrendAnalysis,
 )
 
 
 class DimensionTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = DimensionType
+
+    name_en = factory.Faker("bs")
+    name_fr = factory.Faker("bs")
+    code = factory.Faker("bs")
+
+
+class CountryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Country
 
     name_en = factory.Faker("bs")
     name_fr = factory.Faker("bs")
@@ -92,4 +104,63 @@ class IndicatorDatumFactory(factory.django.DjangoModelFactory):
         positive=True,
         min_value=21,
         max_value=79,
+    )
+
+
+class BenchmarkingFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Benchmarking
+
+    indicator = factory.SubFactory(IndicatorFactory)
+    oecd_country = factory.SubFactory(CountryFactory)
+    value = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=21,
+        max_value=79,
+    )
+    unit = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Benchmarking.UNIT_CHOICES])
+    )
+    year = factory.Faker(
+        "pyfloat", positive=True, min_value=2020, max_value=2022
+    )
+    comparison_to_oecd_avg = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Benchmarking.COMPARISON_CHOICES])
+    )
+    labels = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Benchmarking.LABEL_CHOICES])
+    )
+
+
+class TrendAnalysisFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TrendAnalysis
+
+    indicator = factory.SubFactory(IndicatorFactory)
+    year = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=2015,
+        max_value=2022,
+    )
+    data_point = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=21,
+        max_value=79,
+    )
+    line_of_best_fit_point = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=1,
+        max_value=4,
+    )
+    trend = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in TrendAnalysis.TREND_CHOICES])
+    )
+    data_quality = factory.LazyFunction(
+        lambda: random.choice(
+            [p[0] for p in TrendAnalysis.DATA_QUALITY_CHOICES]
+        )
     )

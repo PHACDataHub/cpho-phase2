@@ -82,3 +82,21 @@
     year: 2023
     quarter: 1
     year_type: fiscal
+- model: cpho.period
+  pk: 16
+  fields:
+    year: 2023
+    quarter: 2
+    year_type: fiscal
+- model: cpho.period
+  pk: 17
+  fields:
+    year: 2023
+    quarter: 3
+    year_type: fiscal
+- model: cpho.period
+  pk: 18
+  fields:
+    year: 2023
+    quarter: 4
+    year_type: fiscal

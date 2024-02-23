@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import DetailView, TemplateView, View
 
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho.constants import (
     HSO_SUBMISSION_TYPE,

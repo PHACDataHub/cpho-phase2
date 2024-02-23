@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views.generic import View
 
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho.models import Benchmarking, Indicator
 from cpho.views.view_util import metadata_mapper

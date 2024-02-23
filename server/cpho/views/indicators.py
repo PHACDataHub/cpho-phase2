@@ -378,6 +378,7 @@ class CreateIndicator(MustPassAuthCheckMixin, CreateView):
     template_name = "indicators/create_indicator.jinja2"
 
     def get_success_url(self):
+        messages.success(self.request, tdt("Indicator Successfully Created"))
         return reverse("view_indicator", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):
@@ -398,6 +399,7 @@ class EditIndicator(MustPassAuthCheckMixin, UpdateView):
     template_name = "indicators/edit_indicator.jinja2"
 
     def get_success_url(self):
+        messages.success(self.request, tdt("Indicator Successfully Updated"))
         return reverse("view_indicator", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):

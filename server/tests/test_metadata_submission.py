@@ -1,5 +1,7 @@
 from django.urls import reverse
 
+from phac_aspc.rules import patch_rules
+
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.model_factories import (
     BenchmarkingFactory,
@@ -14,8 +16,6 @@ from cpho.models import (
     TrendAnalysis,
 )
 from cpho.services import SubmitIndicatorMetaDataService
-
-from .utils_for_tests import patch_rules
 
 
 def test_submit_metadata(vanilla_user, vanilla_user_client):

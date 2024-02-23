@@ -16,9 +16,9 @@ from django.views.generic import (
 
 from autocomplete import HTMXAutoComplete
 from autocomplete import widgets as ac_widgets
+from phac_aspc.rules import test_rule
 
 from server.form_util import StandardFormMixin
-from server.rules_framework import test_rule
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
 from cpho.forms import MultiIndicatorAutocomplete, MultiUserAutocomplete

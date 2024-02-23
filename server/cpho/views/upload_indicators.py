@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.generic import FormView, TemplateView, View
 
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho.models import (
     DimensionType,

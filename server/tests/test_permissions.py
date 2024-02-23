@@ -1,7 +1,7 @@
 from django.test.client import Client
 from django.urls import reverse
 
-from server.rules_framework import test_rule as tr
+from phac_aspc.rules import test_rule as tr
 
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
 from cpho.models import (

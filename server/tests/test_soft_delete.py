@@ -3,14 +3,13 @@ from unittest.mock import patch
 from django.urls import reverse
 
 from api.dataloaders import SubmittedDatumByIndicatorYearLoader
+from phac_aspc.rules import patch_rules
 from tests.api.api_test_utils import get_promise_result
 
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.model_factories import IndicatorFactory
 from cpho.models import DimensionType, IndicatorDatum, Period
 from cpho.queries import get_submission_statuses
-
-from .utils_for_tests import patch_rules
 
 
 def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):

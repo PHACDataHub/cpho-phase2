@@ -16,7 +16,7 @@
 
 {% macro check_display_error(err, field)%}
   {% if err %}
-    <div class="error-msg">
+    <div class="error-msg error-display mt-1">
       {% for error in field.errors %}{{ error|escape }}{% endfor %}
     </div>
   {% endif %}

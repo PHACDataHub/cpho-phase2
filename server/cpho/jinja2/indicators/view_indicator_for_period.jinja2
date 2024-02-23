@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="h2">{{ tdt("Indicator Selected: ") }} {{ object.name }} {{ period }}</div>
+  <div class="h2">{{ tdt("Indicator data for: ") }} {{ object.name }} {{ period }}</div>
  
   <div class="my-3">
     {% if respects_rule('can_access_indicator', indicator) %}
@@ -23,8 +23,12 @@
     {% endif %}
   </div>
 
-  <div class="h5 mt-4">{{ tdt("Submission Progress:") }}</div>
-  {% include 'indicators/_progress_bar.jinja2' %}
+  <div>
+    <div class="h5 mt-4">{{ tdt("Data submission progress:") }}</div>
+    {% set metadata_submission = false %}
+    {% set progress_in_table = false %}
+    {% include 'indicators/_progress_bar.jinja2' %}
+  </div>
 
   <div class="mt-4">
     <div class="mt-5">

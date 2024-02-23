@@ -36,6 +36,20 @@ class User(AbstractUser):
 
     name = models.CharField(tm("name"), max_length=300, blank=True)
 
+    @property
+    def pretty_name(self):
+        if not self.name:
+            return self.username
+
+        # attempts to show firstname lastname
+        w_out_phac_suffix = self.name.replace("(PHAC/ASPC)", "").strip()
+
+        if ", " in w_out_phac_suffix:
+            last, first = w_out_phac_suffix.split(", ")
+            return f"{first} {last}"
+
+        return w_out_phac_suffix
+
     @cached_property
     def _all_groups(self):
         return list(self.groups.all())

@@ -90,7 +90,7 @@
                      role="button"
                      data-bs-toggle="dropdown"
                      aria-haspopup="true"
-                     aria-expanded="false">{{ request.user }}</a>
+                     aria-expanded="false">{{ request.user.pretty_name }}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ url("logout") }}"> <span aria-hidden="true" class="bi bi-power"></span> {{ tm("logout") }} </a>
                     <a class="dropdown-item"

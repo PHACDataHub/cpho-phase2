@@ -110,3 +110,11 @@ span.new-ind-tag {
     position: absolute;
     width: 1px;
   }
+
+.small-text {
+    font-size: 0.8em;
+}
+
+.subtext {
+    opacity: 0.75;
+}

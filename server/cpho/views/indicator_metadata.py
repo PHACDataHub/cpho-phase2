@@ -25,10 +25,6 @@ from cpho.models import (
     IndicatorDatum,
     TrendAnalysis,
 )
-from cpho.queries import (
-    get_submission_statuses,
-    relevant_dimension_types_for_period,
-)
 from cpho.text import tdt, tm
 
 from .view_util import (

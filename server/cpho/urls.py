@@ -86,6 +86,11 @@ urlpatterns = [
         name="submit_indicator_data_all",
     ),
     path(
+        "indicators/<int:indicator_id>/submit_metadata",
+        views.SubmitIndicatorMetaData.as_view(),
+        name="submit_metadata",
+    ),
+    path(
         "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/<int:dimension_type_id>/",
         views.ReviewData.as_view(),
         name="review_indicator_data",
@@ -94,6 +99,11 @@ urlpatterns = [
         "indicators/<int:indicator_id>/period/<int:period_pk>/review_data/all/",
         views.ReviewData.as_view(),
         name="review_indicator_data_all",
+    ),
+    path(
+        "indicators/<int:indicator_id>/review_metadata/",
+        views.ReviewIndicatorMetaData.as_view(),
+        name="review_metadata",
     ),
     path(
         "indicators/<int:indicator_id>/changelog/",

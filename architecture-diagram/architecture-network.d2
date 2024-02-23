@@ -1,0 +1,199 @@
+direction: down
+
+unauthed-traffic: Unauthenticated\napp traffic {
+  icon: ./icons/general/person.svg
+  shape: image
+  style: {
+    font-color: red
+  }
+}
+
+active-directory: Health Canada's\nAzure Active Directory\nsign in page {
+  icon: ./icons/general/Azure-Active-Directory.svg
+  shape: image
+}
+
+authed-traffic: Authenticated\napp traffic {
+  icon: ./icons/general/person.svg
+  shape: image
+  style: {
+    font-color: green
+  }
+}
+
+letsencrypt: Let's Encrypt {
+  icon: ./icons/letsencrypt/logo.svg
+  shape: image
+}
+
+gcp: PHAC Google Cloud Org {
+  icon: ./icons/gcp/logo.svg
+  style: {
+    stroke: "#000000"
+    fill: "#f1f3f4"
+  }
+
+  project: HoPiC Google Cloud Project {
+    icon: ./icons/general/folder.svg
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+
+    clouddns: Cloud DNS {
+      icon: ./icons/gcp/cloud_dns.svg
+      shape: image
+    }
+
+    region: northamerica-northeast1 GCP Region (Montreal) {
+      icon: ./icons/gcp/virtual_private_cloud.svg
+      style: {
+        stroke: grey
+        font-color: blue
+        stroke-dash: 3
+        fill: transparent
+      }
+
+      loadbalancer: Regional\nHTTPS Application\nLoad Balancer {
+        icon: ./icons/gcp/cloud_load_balancer.svg
+        shape: image
+      }
+
+      cloudarmor: Cloud Armor \nWAF Policies {
+        icon: ./icons/gcp/cloud_armor.svg
+        shape: image
+      }
+
+      vpc: VPC / Regional Subnet - 10.162.0.0/20 {
+        icon: ./icons/gcp/virtual_private_cloud.svg
+        style: {
+          stroke: blue
+          font-color: blue
+          stroke-dash: 3
+          fill: transparent
+        }
+
+        fw: VPC Firewall {
+          icon: ./icons/gcp/cloud_firewall_rules.svg
+          style: {
+            stroke: black
+            font-color: black
+            stroke-dash: 3
+            fill: transparent
+          }
+
+          k8s: Google Kubernetes Engine\nAutopilot Cluster {
+            icon: ./icons/gcp/anthos_service_mesh.svg
+            style: {
+              stroke: blue
+              font-color: blue
+              fill: transparent
+            }
+
+            cert-manager: cert-manager {
+              icon: ./icons/kubernetes/ns.svg
+              style: {
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
+                fill: transparent
+              }
+
+              certmanager-op: Cert Manager {
+                icon: ./icons/certmanager/logo.svg
+                shape: image
+              }
+            }
+
+            istio_ingress: istio-ingress\nnamespace {
+              icon: ./icons/kubernetes/ns.svg
+              style: {
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
+                fill: transparent
+              }
+
+              tls-cert: TLS Certificate Secret {
+                icon: ./icons/kubernetes/secret.svg
+                shape: image
+              }
+
+              ingress: Cluster Ingress Gateway,\nterminates client TLS,\nswitches to cluster internal\nmutual TLS network {
+                icon: ./icons/kubernetes/pod.svg
+                shape: image
+              }
+            }
+
+            server: Functional\ncomponent\nnamespace {
+              icon: ./icons/kubernetes/ns.svg
+              style: {
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
+                fill: transparent
+              }
+
+              django: Django App {
+                icon: ./icons/django/logo.svg
+                style: {
+                  stroke: "#000000"
+                  fill: transparent
+                }
+              }
+
+              pg: PostgreSQL {
+                icon: ./icons/cloudnativepg/logo.svg
+                style: {
+                  stroke: "#000000"
+                  fill: transparent
+                }
+              }
+            }
+          }
+        }
+      }
+
+      cloudstorage: Cloud Storage {
+        icon: ./icons/gcp/cloud_storage.svg
+        shape: image
+      }
+    }
+  }
+}
+
+slack: Slack alerts\nchannel {
+  icon: ./icons/general/Slack_icon_2019.svg
+  shape: image
+}
+
+# unauthed traffic flow
+unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
+unauthed-traffic -> gcp.project.region.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
+gcp.project.region.loadbalancer -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django: "" {style: {stroke: red}}
+gcp.project.region.vpc.fw.k8s.server.django -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
+active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stroke: red}}
+
+# authed traffic flow
+authed-traffic -> gcp.project.region.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
+gcp.project.region.loadbalancer -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django: "" {style: {stroke: green}}
+gcp.project.region.vpc.fw.k8s.server.django -> gcp.project.region.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
+
+# load balancer misc
+gcp.project.region.cloudarmor -> gcp.project.region.loadbalancer: {style: {stroke: black}}
+
+# cert management
+letsencrypt <-> gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op: ACME over HTTPS {style: {stroke: orange}}
+letsencrypt -> gcp.project.clouddns: ACME over HTTPS {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS) {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: TLS Cert {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.region.loadbalancer: TLS Cert {style: {stroke: orange}}
+
+# postgres pod management
+gcp.project.region.vpc.fw.k8s.server.pg -> gcp.project.region.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS) {style: {stroke: black}}
+
+# dev notifications
+gcp.project.region.vpc.fw.k8s.server.django -> slack: Application error\nalerts (HTTPS) {style: {stroke: gold}}

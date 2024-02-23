@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho.model_factories import (
     BenchmarkingFactory,

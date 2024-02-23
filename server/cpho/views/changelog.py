@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import FieldDoesNotExist, PermissionDenied
 from django.views.generic import TemplateView
 
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho import models
 from cpho.util import flatten

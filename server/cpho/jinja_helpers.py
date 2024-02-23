@@ -8,9 +8,9 @@ from django.utils.translation import activate, get_language
 
 import phac_aspc.django.helpers.templatetags as phac_aspc
 from jinja2 import Environment, pass_context
+from phac_aspc.rules import test_rule
 
 from server.config_util import get_project_config
-from server.rules_framework import test_rule
 
 from cpho import models
 from cpho.constants import SUBMISSION_STATUSES

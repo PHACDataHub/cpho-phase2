@@ -2,7 +2,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho.models import DimensionType, DimensionValue, Period
 

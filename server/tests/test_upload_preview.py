@@ -3,10 +3,9 @@ import io
 from django.urls import reverse
 
 from bs4 import BeautifulSoup
+from phac_aspc.rules import patch_rules
 
 from cpho.models import DimensionType, Indicator, IndicatorDatum, Period
-
-from .utils_for_tests import patch_rules
 
 
 def check_preview(val_dict, hso_client, fieldname=None, num_errors=1):

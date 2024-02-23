@@ -15,8 +15,7 @@ from django.views.generic import (
 )
 
 from ckeditor.widgets import CKEditorWidget
-
-from server.rules_framework import test_rule
+from phac_aspc.rules import test_rule
 
 from cpho.models import DimensionType, Indicator, Period
 from cpho.queries import (

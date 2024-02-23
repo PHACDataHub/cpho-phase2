@@ -16,6 +16,12 @@
   </div>
 {% endmacro %}
 
+{% macro accessible_label(id_for, row_name, label_text) %}
+  <label for="{{ id_for }}"
+         class="visually-hidden"
+         aria-label="{{ row_name }}, {{ label_text }}"></label>
+{% endmacro %}
+
 <form method="POST" action=".">
   {{ csrf_input }}
 
@@ -144,37 +150,47 @@
             <td class='text-center'>{{ tdt("Quintile Values:") }}</td>
             <td>
               <div class="form-group mb-3">{{ form.g1 }}</div>
+              {{ accessible_label(form.g1.id_for_label, tdt("Quintile Values:"), tdt("G1")) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g2_lower }}</div>
+              {{ accessible_label(form.g2_lower.id_for_label, tdt("Quintile Values:"), tdt("G2 Lower")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g2_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g2_upper }}
+              </div>
+              {{ accessible_label(form.g2_upper.id_for_label, tdt("Quintile Values:"), tdt("G2 Upper")) }}
             </td>
             <td>
               <div class="form-group mb-3">
                 {{ form.g3_lower }}
               </div>
+              {{ accessible_label(form.g3_lower.id_for_label, tdt("Quintile Values:"), tdt("G3 Lower")) }}
             </td>
             <td>
               <div class="form-group mb-3">
                 {{ form.g3_upper }}
               </div>
+              {{ accessible_label(form.g3_upper.id_for_label, tdt("Quintile Values:"), tdt("G3 Upper")) }}
             </td>
             <td>
               <div class="form-group mb-3">
                 {{ form.g4_lower }}
               </div>
+              {{ accessible_label(form.g4_lower.id_for_label, tdt("Quintile Values:"), tdt("G4 Lower")) }}
             </td>
             <td>
               <div class="form-group mb-3">
                 {{ form.g4_upper }}
               </div>
+              {{ accessible_label(form.g4_upper.id_for_label, tdt("Quintile Values:"), tdt("G4 Upper")) }}
             </td>
             <td>
               <div class="form-group mb-3">
                 {{ form.g5 }}
               </div>
+              {{ accessible_label(form.g5.id_for_label, tdt("Quintile Values:"), tdt("G5")) }}
             </td>
           </tr>
         </tbody>

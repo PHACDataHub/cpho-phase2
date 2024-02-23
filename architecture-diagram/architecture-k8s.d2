@@ -60,12 +60,17 @@ gcp: PHAC Google Cloud Org {
       shape: image
     }
 
-    loadbalancer: Target-pool\nNetwork Load\nBalancer {
+    loadbalancer: HTTPS Application\nLoad Balancer, regional\n(northamerica-northeast1) {
       icon: ./icons/gcp/cloud_load_balancer.svg
       shape: image
     }
 
-    vpc: VPC - 10.162.0.0/20 {
+    cloudarmor: Cloud Armor \nWAF Policies {
+      icon: ./icons/gcp/cloud_armor.svg
+      shape: image
+    }
+
+    vpc: VPC / Regional Subnet (northamerica-northeast1) - 10.162.0.0/20 {
       icon: ./icons/gcp/virtual_private_cloud.svg
       style: {
         stroke: blue
@@ -74,7 +79,7 @@ gcp: PHAC Google Cloud Org {
         fill: transparent
       }
 
-      fw: Firewall {
+      fw: VPC Firewall {
         icon: ./icons/gcp/cloud_firewall_rules.svg
         style: {
           stroke: black
@@ -106,7 +111,7 @@ gcp: PHAC Google Cloud Org {
             }
           }
 
-          istio_ingress: istio-ingress namespace {
+          istio_ingress: istio-ingress\nnamespace {
             icon: ./icons/kubernetes/ns.svg
             style: {
               stroke: brown
@@ -334,12 +339,16 @@ gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.dj
 gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
 gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
 
+# load balancer misc
+gcp.project.cloudarmor -> gcp.project.loadbalancer: {style: {stroke: black}}
+
 # cert management
 letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME over HTTPS {style: {stroke: orange}}
 letsencrypt -> gcp.project.clouddns: ACME over HTTPS {style: {stroke: orange}}
 gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS) {style: {stroke: orange}}
 gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate {style: {stroke: orange}}
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret {style: {stroke: orange}}
+gcp.project.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: TLS Cert {style: {stroke: orange}}
+gcp.project.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.loadbalancer: TLS Cert {style: {stroke: orange}}
 
 # django pod management
 gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics {style: {stroke: grey}}

@@ -109,6 +109,7 @@ class SubmissionHelpersMixin:
 @add_to_admin
 @track_versions_with_editor_and_submission
 class Indicator(models.Model, SubmissionHelpersMixin):
+    excluded_diff_fields = ["relevant_period_types"]
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     CATEGORY_CHOICES = [
         ("", "--"),

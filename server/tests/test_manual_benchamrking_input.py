@@ -1,9 +1,9 @@
 from django.urls import reverse
 
+from phac_aspc.rules import patch_rules
+
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
 from cpho.models import Benchmarking, Country
-
-from .utils_for_tests import patch_rules
 
 
 def test_benchmarking(vanilla_user_client):

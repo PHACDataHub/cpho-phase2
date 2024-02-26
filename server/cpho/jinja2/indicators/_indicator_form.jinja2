@@ -1,10 +1,9 @@
 {{ form.media }}
 
-{% macro form_field(field, rich=false, helptext=None) %}
+{% macro form_field(field, rich=false) %}
   <div class="row g-3 form-group mb-3">
     <div class="col-lg-3">
       <div class="row">{{ field.label_tag(attrs={'class': 'col col-form-label'}) }}</div>
-      {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
     </div>
     <div class="col-lg-9">
       {% if rich %}
@@ -14,6 +13,26 @@
       {% endif %}
     </div>
   </div>
+{% endmacro %}
+
+{% macro accessible_label(id_for, row_name, label_text) %}
+  <label for="{{ id_for }}"
+         class="visually-hidden"
+         aria-label="{{ row_name }}, {{ label_text }}"></label>
+{% endmacro %}
+
+{% macro fieldset_field(field, helptext=None) %}
+  <fieldset class="row g-3 form-group mb-3">
+    <div class="col-lg-2">
+      <div class="row">
+        <legend class="col col-form-label" style="font-size:1rem">
+          {{ field.label }}
+        </legend>
+      </div>
+      {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
+    </div>
+    <div class="col-lg-10">{{ field }}</div>
+  </fieldset>
 {% endmacro %}
 
 <form method="POST" action=".">
@@ -27,8 +46,8 @@
       {{ form_field(form.topic) }}
       {{ form_field(form.detailed_indicator) }}
       {{ form_field(form.sub_indicator_measurement) }}
-      {{ form_field(form.relevant_dimensions, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
-      {{ form_field(form.relevant_period_types, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
+      {{ fieldset_field(form.relevant_dimensions, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
+      {{ fieldset_field(form.relevant_period_types, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
     </div>
   </div>
  
@@ -144,27 +163,49 @@
             <td class='text-center'>{{ tdt("Quintile Values:") }}</td>
             <td>
               <div class="form-group mb-3">{{ form.g1 }}</div>
+              {{ accessible_label(form.g1.id_for_label, tdt("Quintile Values:"), tdt("G1")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g2_lower }}</div>
+              <div class="form-group mb-3">
+                {{ form.g2_lower }}
+              </div>
+              {{ accessible_label(form.g2_lower.id_for_label, tdt("Quintile Values:"), tdt("G2 Lower")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g2_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g2_upper }}
+              </div>
+              {{ accessible_label(form.g2_upper.id_for_label, tdt("Quintile Values:"), tdt("G2 Upper")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g3_lower }}</div>
+              <div class="form-group mb-3">
+                {{ form.g3_lower }}
+              </div>
+              {{ accessible_label(form.g3_lower.id_for_label, tdt("Quintile Values:"), tdt("G3 Lower")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g3_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g3_upper }}
+              </div>
+              {{ accessible_label(form.g3_upper.id_for_label, tdt("Quintile Values:"), tdt("G3 Upper")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g4_lower }}</div>
+              <div class="form-group mb-3">
+                {{ form.g4_lower }}
+              </div>
+              {{ accessible_label(form.g4_lower.id_for_label, tdt("Quintile Values:"), tdt("G4 Lower")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g4_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g4_upper }}
+              </div>
+              {{ accessible_label(form.g4_upper.id_for_label, tdt("Quintile Values:"), tdt("G4 Upper")) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g5 }}</div>
+              <div class="form-group mb-3">
+                {{ form.g5 }}
+              </div>
+              {{ accessible_label(form.g5.id_for_label, tdt("Quintile Values:"), tdt("G5")) }}
             </td>
           </tr>
         </tbody>
@@ -174,5 +215,5 @@
 
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
-         value="{{ tdt("Submit") }}" />
+         value="{{ tdt("Submit") }}"/>
 </form>

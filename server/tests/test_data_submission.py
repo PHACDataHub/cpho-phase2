@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from freezegun import freeze_time
+from phac_aspc.rules import patch_rules
 
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.model_factories import IndicatorFactory
@@ -11,8 +12,6 @@ from cpho.models import (
     Period,
 )
 from cpho.services import SubmitIndicatorDataService
-
-from .utils_for_tests import patch_rules
 
 
 def test_submit_all_dimensions(vanilla_user, vanilla_user_client):

@@ -1,5 +1,7 @@
 from django.urls import reverse
 
+from phac_aspc.rules import patch_rules
+
 from cpho.model_factories import IndicatorFactory
 from cpho.models import (
     IndicatorDirectory,
@@ -8,8 +10,6 @@ from cpho.models import (
     User,
 )
 from cpho.util import GroupFetcher
-
-from .utils_for_tests import patch_rules
 
 
 def test_list_users(vanilla_user_client):

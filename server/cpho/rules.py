@@ -1,4 +1,4 @@
-from server.rules_framework import add_rule, auto_rule
+from phac_aspc.rules import add_rule, auto_rule
 
 from cpho.models import IndicatorDirectoryUserAccess
 from cpho.queries import get_indicators_for_user

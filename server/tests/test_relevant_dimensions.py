@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from bs4 import BeautifulSoup
+from phac_aspc.rules import patch_rules
 
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
 from cpho.models import (
@@ -10,8 +11,6 @@ from cpho.models import (
     IndicatorDatum,
     Period,
 )
-
-from .utils_for_tests import patch_rules
 
 
 def test_relevant_dimensions(vanilla_user, vanilla_user_client):

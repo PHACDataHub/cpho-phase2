@@ -2,9 +2,9 @@ import io
 
 from django.urls import reverse
 
-from cpho.models import DimensionType, Indicator, IndicatorDatum, Period
+from phac_aspc.rules import patch_rules
 
-from .utils_for_tests import patch_rules
+from cpho.models import DimensionType, Indicator, IndicatorDatum, Period
 
 
 def test_import(hso_client):

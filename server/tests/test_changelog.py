@@ -4,6 +4,8 @@ from django.conf import settings
 from django.test.client import Client
 from django.urls import reverse
 
+from phac_aspc.rules import patch_rules
+
 from cpho.model_factories import IndicatorFactory
 from cpho.models import (
     DimensionType,
@@ -14,8 +16,6 @@ from cpho.models import (
     Period,
     User,
 )
-
-from .utils_for_tests import patch_rules
 
 
 def create_versions():

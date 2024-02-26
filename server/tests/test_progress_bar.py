@@ -1,11 +1,10 @@
 from django.urls import reverse
 
 from bs4 import BeautifulSoup
+from phac_aspc.rules import patch_rules
 
 from cpho.model_factories import IndicatorDatumFactory, IndicatorFactory
 from cpho.models import DimensionType, Period
-
-from .utils_for_tests import patch_rules
 
 
 def progress_bar_percent(ind, period, vanilla_user_client, precent_list):

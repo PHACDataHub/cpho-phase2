@@ -1,6 +1,6 @@
 # Architecture
 
-We have to architecture diagrams right now. A diagram of the current WIP state of the architecture, and a diagram of the current draft of the target architecture state.These should converge over time and, once stable, we'll eventually just have one final state diagram. 
+These will converge over time and, once stable, we'll eventually just have one final state diagram. 
 
 ## Updating the diagram
 

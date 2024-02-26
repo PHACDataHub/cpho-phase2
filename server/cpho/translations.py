@@ -52,27 +52,51 @@ translation_entries = {
     },
     "date": {
         "en": "Date",
+        "fr": "Date",
     },
     "author": {
         "en": "Author",
+        "fr": "Auteur",
     },
     "action": {
         "en": "Action",
+        "fr": "Action",
     },
     "object_type": {
         "en": "Object type",
+        "fr": "Type d'objet",
     },
     "name": {
         "en": "Name",
+        "fr": "Nom",
     },
     "field": {
         "en": "Field",
+        "fr": "Champ",
     },
     "previous_change": {
         "en": "Previous change",
+        "fr": "Valeure précédente",
     },
     "this_change": {
         "en": "This change",
+        "fr": "Valeure après modification",
+    },
+    "no_change_detected_compared_to_previous_version": {
+        "en": "No change detected compared to previous version",
+        "fr": "Aucune modification détectée par rapport à la version précédente",
+    },
+    "of": {
+        "en": "of",
+        "fr": "de",
+    },
+    "first": {
+        "en": "First",
+        "fr": "Premier",
+    },
+    "last": {
+        "en": "Last",
+        "fr": "Dernier",
     },
     "please_login_to_see_page": {
         "en": "Please login to see this page",
@@ -87,5 +111,9 @@ translation_entries = {
     "email_confirmation_exception": {
         "en": "Emails do not match",
         "fr": "Les courriels doivent être identiques",
+    },
+    "changelog": {
+        "en": "Changelog",
+        "fr": "Journal des modifications",
     },
 }

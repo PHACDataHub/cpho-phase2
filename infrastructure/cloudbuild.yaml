@@ -17,3 +17,4 @@ spec:
   ignoredFiles:
     - "k8s/**"
     - "infrastructure/**"
+    - "architecture-diagram/**"

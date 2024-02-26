@@ -60,255 +60,279 @@ gcp: PHAC Google Cloud Org {
       shape: image
     }
 
-    loadbalancer: Target-pool\nNetwork Load\nBalancer {
-      icon: ./icons/gcp/cloud_load_balancer.svg
-      shape: image
-    }
-
-    vpc: VPC - 10.162.0.0/20 {
-      icon: ./icons/gcp/virtual_private_cloud.svg
+    region: northamerica-northeast1 GCP Region (Montreal) {
       style: {
-        stroke: blue
+        stroke: grey
         font-color: blue
         stroke-dash: 3
         fill: transparent
       }
 
-      fw: Firewall {
-        icon: ./icons/gcp/cloud_firewall_rules.svg
+      loadbalancer: HTTPS Load Balancer \nClient TLS Termination \nHTTP-HTTPS Redirect {
+        icon: ./icons/gcp/cloud_load_balancer.svg
+        shape: image
+      }
+
+      cloudarmor: Cloud Armor \nWAF Policies {
+        icon: ./icons/gcp/cloud_armor.svg
+        shape: image
+      }
+
+      cloudkms: Cloud KMS {
+        icon: ./icons/gcp/key_management_service.svg
+        shape: image
+      }
+
+      vpc: VPC / Regional Subnet - 10.162.0.0/20 {
+        icon: ./icons/gcp/virtual_private_cloud.svg
         style: {
-          stroke: black
-          font-color: black
+          stroke: blue
+          font-color: blue
           stroke-dash: 3
           fill: transparent
         }
 
-        k8s: Google Kubernetes Engine Autopilot Cluster/Managed PaaS with ASM {
-          icon: ./icons/gcp/anthos_service_mesh.svg
+        fw: VPC Firewall {
+          icon: ./icons/gcp/cloud_firewall_rules.svg
           style: {
-            stroke: blue
-            font-color: blue
+            stroke: black
+            font-color: black
+            stroke-dash: 3
             fill: transparent
           }
 
-          cert-manager: cert-manager {
-            icon: ./icons/kubernetes/ns.svg
+          k8s: Google Kubernetes Engine Autopilot Cluster/Managed PaaS with ASM {
+            icon: ./icons/gcp/anthos_service_mesh.svg
             style: {
-              stroke: brown
-              stroke-dash: 10
+              stroke: blue
               font-color: blue
               fill: transparent
             }
 
-            certmanager-op: Cert Manager {
-              icon: ./icons/certmanager/logo.svg
-              shape: image
-            }
-          }
-
-          istio_ingress: istio-ingress namespace {
-            icon: ./icons/kubernetes/ns.svg
-            style: {
-              stroke: brown
-              stroke-dash: 10
-              font-color: blue
-              fill: transparent
-            }
-
-            tls-cert: TLS Certificate Secret {
-              icon: ./icons/kubernetes/secret.svg
-              shape: image
-            }
-
-            ingress: Cluster Ingress Gateway,\nterminates client TLS,\nswitches to cluster internal\nmutual TLS network {
-              icon: ./icons/kubernetes/pod.svg
-              shape: image
-            }
-          }
-
-          server: Functional component namespace {
-            icon: ./icons/kubernetes/ns.svg
-            style: {
-              stroke: brown
-              stroke-dash: 10
-              font-color: blue
-              fill: transparent
-            }
-
-            django: Django App {
-              icon: ./icons/django/logo.svg
+            cert-manager: cert-manager {
+              icon: ./icons/kubernetes/ns.svg
               style: {
-                stroke: "#000000"
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
                 fill: transparent
               }
 
-              svc: App Service\n(pod load balancer) {
-                icon: ./icons/kubernetes/svc.svg
+              certmanager-op: Cert Manager {
+                icon: ./icons/certmanager/logo.svg
                 shape: image
               }
+            }
 
-              deploy: Deployment {
-                icon: ./icons/kubernetes/deploy.svg
-                shape: image
+            istio_ingress: istio-ingress\nnamespace {
+              icon: ./icons/kubernetes/ns.svg
+              style: {
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
+                fill: transparent
               }
 
-              hpa: Horizontal Pod Autoscaler\n(65% Mem / 64% CPU) {
-                icon: ./icons/kubernetes/hpa.svg
-                shape: image
-              }
-
-              app-secrets: App Secrets,\ninjected in containers\nas env vars at run-time {
+              tls-cert: TLS Certificate Secret {
                 icon: ./icons/kubernetes/secret.svg
                 shape: image
               }
 
-              pods: Pods {
-                style: {
-                  stroke: blue
-                  font-color: blue
-                  stroke-dash: 3
-                  fill: transparent
-                }
-                pod1: App pod 1 {
-                  icon: ./icons/kubernetes/pod.svg
-                  shape: image
-                }
-                podN: App pod N {
-                  icon: ./icons/kubernetes/pod.svg
-                  shape: image
-                }
+              ingress: Mesh Ingress Gateway {
+                icon: ./icons/kubernetes/pod.svg
+                shape: image
               }
             }
 
-            pg: HA PostgreSQL Cluster {
-              icon: ./icons/cloudnativepg/logo.svg
+            server: Functional component namespace {
+              icon: ./icons/kubernetes/ns.svg
               style: {
-                stroke: "#000000"
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
                 fill: transparent
               }
 
-              rw_svc: Connect to primary for rw {
-                icon: ./icons/kubernetes/svc.svg
-                shape: image
-              }
-
-              ro_svc: Connect to standby for ro {
-                icon: ./icons/kubernetes/svc.svg
-                shape: image
-              }
-
-              r_svc: Connect to any for ro {
-                icon: ./icons/kubernetes/svc.svg
-                shape: image
-              }
-
-              primary_boundary: Primary {
+              django: Django App {
+                icon: ./icons/django/logo.svg
                 style: {
-                  stroke: blue
-                  font-color: blue
-                  stroke-dash: 3
-                  fill: transparent
-                }
-                pod: Primary {
-                  icon: ./icons/kubernetes/pod.svg
-                  shape: image
-                }
-                pvc: PV {
-                  icon: ./icons/kubernetes/pv.svg
-                  shape: image
-                }
-              }
-
-              standby_boundary: Standby 1 {
-                style: {
-                  stroke: blue
-                  font-color: blue
-                  stroke-dash: 3
+                  stroke: "#000000"
                   fill: transparent
                 }
 
-                pod: Standby {
-                  icon: ./icons/kubernetes/pod.svg
+                svc: App Service\n(pod load balancer) {
+                  icon: ./icons/kubernetes/svc.svg
                   shape: image
                 }
 
-                pvc: PV {
-                  icon: ./icons/kubernetes/pv.svg
+                deploy: Deployment {
+                  icon: ./icons/kubernetes/deploy.svg
                   shape: image
+                }
+
+                hpa: Horizontal Pod Autoscaler\n(65% Mem / 64% CPU) {
+                  icon: ./icons/kubernetes/hpa.svg
+                  shape: image
+                }
+
+                app-secrets: App Secrets,\ninjected in containers\nas env vars at run-time {
+                  icon: ./icons/kubernetes/secret.svg
+                  shape: image
+                }
+
+                pods: Pods {
+                  style: {
+                    stroke: blue
+                    font-color: blue
+                    stroke-dash: 3
+                    fill: transparent
+                  }
+                  pod1: App pod 1 {
+                    icon: ./icons/kubernetes/pod.svg
+                    shape: image
+                  }
+                  podN: App pod N {
+                    icon: ./icons/kubernetes/pod.svg
+                    shape: image
+                  }
+                }
+              }
+
+              pg: HA PostgreSQL Cluster {
+                icon: ./icons/cloudnativepg/logo.svg
+                style: {
+                  stroke: "#000000"
+                  fill: transparent
+                }
+
+                rw_svc: Connect to primary for rw {
+                  icon: ./icons/kubernetes/svc.svg
+                  shape: image
+                }
+
+                ro_svc: Connect to standby for ro {
+                  icon: ./icons/kubernetes/svc.svg
+                  shape: image
+                }
+
+                r_svc: Connect to any for ro {
+                  icon: ./icons/kubernetes/svc.svg
+                  shape: image
+                }
+
+                primary_boundary: Primary {
+                  style: {
+                    stroke: blue
+                    font-color: blue
+                    stroke-dash: 3
+                    fill: transparent
+                  }
+                  pod: Primary {
+                    icon: ./icons/kubernetes/pod.svg
+                    shape: image
+                  }
+                  pvc: PV {
+                    icon: ./icons/kubernetes/pv.svg
+                    shape: image
+                  }
+                }
+
+                standby_boundary: Standby 1 {
+                  style: {
+                    stroke: blue
+                    font-color: blue
+                    stroke-dash: 3
+                    fill: transparent
+                  }
+
+                  pod: Standby {
+                    icon: ./icons/kubernetes/pod.svg
+                    shape: image
+                  }
+
+                  pvc: PV {
+                    icon: ./icons/kubernetes/pv.svg
+                    shape: image
+                  }
                 }
               }
             }
-          }
 
-          flux_system: flux-system {
-            icon: ./icons/kubernetes/ns.svg
-            style: {
-              stroke: brown
-              stroke-dash: 10
-              font-color: blue
-              fill: transparent
+            flux_system: flux-system {
+              icon: ./icons/kubernetes/ns.svg
+              style: {
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
+                fill: transparent
+              }
+
+              flux: Flux GitOps operators,\nreconcile cluster\nconfiguration to\nsource of truth (GitHub) {
+                icon: ./icons/flux/logo.svg
+                shape: image
+              }
             }
 
-            flux: Flux GitOps operators,\nreconcile cluster\nconfiguration to\nsource of truth (GitHub) {
-              icon: ./icons/flux/logo.svg
-              shape: image
-            }
-          }
+            cnpg_system: cnpg-system {
+              icon: ./icons/kubernetes/ns.svg
+              style: {
+                stroke: brown
+                stroke-dash: 10
+                font-color: blue
+                fill: transparent
+              }
 
-          cnpg_system: cnpg-system {
-            icon: ./icons/kubernetes/ns.svg
-            style: {
-              stroke: brown
-              stroke-dash: 10
-              font-color: blue
-              fill: transparent
-            }
-
-            cnpg_op: Cloudnative-PG Operator,\nprovisions and manages\ncluster postgres {
-              icon: ./icons/cloudnativepg/logo.svg
-              shape: image
+              cnpg_op: Cloudnative-PG Operator,\nprovisions and manages\ncluster postgres {
+                icon: ./icons/cloudnativepg/logo.svg
+                shape: image
+              }
             }
           }
         }
       }
+
+      cloudstorage: Cloud Storage {
+        icon: ./icons/gcp/cloud_storage.svg
+        shape: image
+      }
+
+      registry: Artifact Registry {
+        icon: ./icons/gcp/artifact_registry.svg
+        shape: image
+      }
+
+      cloud_build: Cloud Build {
+        icon: ./icons/gcp/cloud_build.svg
+        shape: image
+      }
     }
 
-    cloudstorage: Cloud Storage {
-      icon: ./icons/gcp/cloud_storage.svg
-      shape: image
-    }
-
-    observability: Observability Solutions\n(all project logs, events, and security posture alerts) {
+    observability: Observability Solutions {
       style: {
         stroke: transparent
         fill: transparent
         font-color: blue
       }
 
-      project-logs: Cloud Logging {
+      project-logs: Log Explorer {
         icon: ./icons/gcp/cloud_logging.svg
         shape: image
       }
 
-      project-trace: Cloud Trace {
+      project-trace: Trace Explorer {
         icon: ./icons/gcp/trace.svg
         shape: image
       }
 
-      project-scc: Security Command Center {
+      project-scc: Security Command\nCenter {
         icon: ./icons/gcp/security_command_center.svg
         shape: image
       }
-    }
 
-    registry: Artifact Registry {
-      icon: ./icons/gcp/artifact_registry.svg
-      shape: image
-    }
-
-    cloud_build: Cloud Build {
-      icon: ./icons/gcp/cloud_build.svg
-      shape: image
+      project-nic: Network Intelligence\nCenter {
+        icon: ./icons/gcp/network_intelligence_center.svg
+        shape: image
+      }
     }
   }
 
@@ -320,51 +344,56 @@ gcp: PHAC Google Cloud Org {
 
 # unauthed traffic flow
 unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
-unauthed-traffic -> gcp.project.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
-gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: "" {style: {stroke: red}}
-gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: red}}
-gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
+unauthed-traffic -> gcp.project.region.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
+gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: red}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: red}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django.svc: "" {style: {stroke: red}}
+gcp.project.region.vpc.fw.k8s.server.django.svc -> gcp.project.region.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: red}}
+gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
 active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stroke: red}}
 
 # authed traffic flow
-authed-traffic -> gcp.project.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
-gcp.project.loadbalancer -> gcp.project.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.server.django.svc: "" {style: {stroke: green}}
-gcp.project.vpc.fw.k8s.server.django.svc -> gcp.project.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
-gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
+authed-traffic -> gcp.project.region.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
+gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: green}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: green}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django.svc: "" {style: {stroke: green}}
+gcp.project.region.vpc.fw.k8s.server.django.svc -> gcp.project.region.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
+gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.region.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
 
 # cert management
-letsencrypt <-> gcp.project.vpc.fw.k8s.cert-manager.certmanager-op: ACME over HTTPS {style: {stroke: orange}}
+letsencrypt <-> gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op: ACME over HTTPS {style: {stroke: orange}}
 letsencrypt -> gcp.project.clouddns: ACME over HTTPS {style: {stroke: orange}}
-gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS) {style: {stroke: orange}}
-gcp.project.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate {style: {stroke: orange}}
-gcp.project.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.vpc.fw.k8s.istio_ingress.tls-cert: Read TLS secret {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.clouddns: Least priviledge service\naccount manages DNS records\n for Let's Encrypt verification (HTTPS) {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op -> gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert: Refresh certificate {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: TLS Cert {style: {stroke: orange}}
+gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.region.loadbalancer: TLS Cert {style: {stroke: orange}}
 
 # django pod management
-gcp.project.vpc.fw.k8s.server.django.hpa -> gcp.project.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics {style: {stroke: grey}}
-gcp.project.vpc.fw.k8s.server.django.deploy -> gcp.project.vpc.fw.k8s.server.django.pods: Scaling and pod\navailability management {style: {stroke: grey}}
-gcp.project.vpc.fw.k8s.server.django.app-secrets -> gcp.project.vpc.fw.k8s.server.django.pods: "" {style: {stroke: grey}}
+gcp.project.region.vpc.fw.k8s.server.django.hpa -> gcp.project.region.vpc.fw.k8s.server.django.deploy: Scalling signals based\non cluster metrics {style: {stroke: grey}}
+gcp.project.region.vpc.fw.k8s.server.django.deploy -> gcp.project.region.vpc.fw.k8s.server.django.pods: Scaling and pod\navailability management {style: {stroke: grey}}
+gcp.project.region.vpc.fw.k8s.server.django.app-secrets -> gcp.project.region.vpc.fw.k8s.server.django.pods: "" {style: {stroke: grey}}
 
 # postgres pod management
-gcp.project.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod: "" {style: {stroke: black}}
-gcp.project.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
-gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod: "" {style: {stroke: black}}
-gcp.project.vpc.fw.k8s.server.pg.r_svc -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
-gcp.project.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
-gcp.project.vpc.fw.k8s.server.pg -> gcp.project.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS) {style: {stroke: black}}
+gcp.project.region.vpc.fw.k8s.server.pg.rw_svc -> gcp.project.region.vpc.fw.k8s.server.pg.primary_boundary.pod: "" {style: {stroke: black}}
+gcp.project.region.vpc.fw.k8s.server.pg.ro_svc -> gcp.project.region.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
+gcp.project.region.vpc.fw.k8s.server.pg.r_svc -> gcp.project.region.vpc.fw.k8s.server.pg.primary_boundary.pod: "" {style: {stroke: black}}
+gcp.project.region.vpc.fw.k8s.server.pg.r_svc -> gcp.project.region.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
+gcp.project.region.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.region.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
+gcp.project.region.vpc.fw.k8s.server.pg -> gcp.project.region.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS) {style: {stroke: black}}
 
 # dev notifications
 slack -> devs: "" {style: {stroke: gold}}
-gcp.project.vpc.fw.k8s.server.django.pods.pod1 -> slack: Application error\nalerts (HTTPS) {style: {stroke: gold}}
-gcp.project.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications\n (HTTPS) {style: {stroke: gold}}
+gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> slack: Application error\nalerts (HTTPS) {style: {stroke: gold}}
+gcp.project.region.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications\n (HTTPS) {style: {stroke: gold}}
 
 # ci / cd
-gcp.project.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS) {style: {stroke: blue}}
-gcp.project.vpc.fw.k8s.server.django.pods -> gcp.project.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges (HTTPS) {style: {stroke: blue}}
+gcp.project.region.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS) {style: {stroke: blue}}
+gcp.project.region.vpc.fw.k8s.flux_system -> gcp.project.region.cloudkms: Use KMS Crypto to decrypt \nsecrets from git repository {style: {stroke: blue}}
+gcp.project.region.cloudkms -> gcp.project.region.vpc.fw.k8s.server.django.app-secrets: Create/Update app secrets {style: {stroke: blue}}
+gcp.project.region.vpc.fw.k8s.server.django.pods -> gcp.project.region.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges (HTTPS) {style: {stroke: blue}}
 devs <-> gh: "" {style: {stroke: green}}
-gh -> gcp.project.cloud_build: Cloud Build trigger\non "main" branch (HTTPS) {style: {stroke: blue}}
-gcp.project.cloud_build -> gcp.project.registry: Push built app\nimage (HTTPS) {style: {stroke: blue}}
+gh -> gcp.project.region.cloud_build: Cloud Build trigger\non "prod" branch (HTTPS) {style: {stroke: blue}}
+gcp.project.region.cloud_build -> gcp.project.region.registry: Push built app\nimage (HTTPS) {style: {stroke: blue}}
 
 # observability
 devs -> gcp.project.observability: Read access via the Google Cloud Console {style: {stroke: skyBlue}}

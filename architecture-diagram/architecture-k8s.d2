@@ -78,6 +78,11 @@ gcp: PHAC Google Cloud Org {
         shape: image
       }
 
+      cloudkms: Cloud KMS {
+        icon: ./icons/gcp/key_management_service.svg
+        shape: image
+      }
+
       vpc: VPC / Regional Subnet - 10.162.0.0/20 {
         icon: ./icons/gcp/virtual_private_cloud.svg
         style: {
@@ -383,6 +388,8 @@ gcp.project.region.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster sta
 
 # ci / cd
 gcp.project.region.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS) {style: {stroke: blue}}
+gcp.project.region.vpc.fw.k8s.flux_system -> gcp.project.region.cloudkms: Use KMS Crypto to decrypt \nsecrets from git repository {style: {stroke: blue}}
+gcp.project.region.cloudkms -> gcp.project.region.vpc.fw.k8s.server.django.app-secrets: Create/Update app secrets {style: {stroke: blue}}
 gcp.project.region.vpc.fw.k8s.server.django.pods -> gcp.project.region.registry: Pull app image as triggered by\nFlux-managed configuration\nchanges (HTTPS) {style: {stroke: blue}}
 devs <-> gh: "" {style: {stroke: green}}
 gh -> gcp.project.region.cloud_build: Cloud Build trigger\non "prod" branch (HTTPS) {style: {stroke: blue}}

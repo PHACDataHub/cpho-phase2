@@ -61,7 +61,6 @@ gcp: PHAC Google Cloud Org {
     }
 
     region: northamerica-northeast1 GCP Region (Montreal) {
-      icon: ./icons/gcp/virtual_private_cloud.svg
       style: {
         stroke: grey
         font-color: blue
@@ -69,7 +68,7 @@ gcp: PHAC Google Cloud Org {
         fill: transparent
       }
 
-      loadbalancer: Regional\nHTTPS Application\nLoad Balancer {
+      loadbalancer: HTTPS Load Balancer \nClient TLS Termination \nHTTP-HTTPS Redirect {
         icon: ./icons/gcp/cloud_load_balancer.svg
         shape: image
       }
@@ -134,7 +133,7 @@ gcp: PHAC Google Cloud Org {
                 shape: image
               }
 
-              ingress: Cluster Ingress Gateway,\nterminates client TLS,\nswitches to cluster internal\nmutual TLS network {
+              ingress: Mesh Ingress Gateway {
                 icon: ./icons/kubernetes/pod.svg
                 shape: image
               }
@@ -341,7 +340,8 @@ gcp: PHAC Google Cloud Org {
 # unauthed traffic flow
 unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
 unauthed-traffic -> gcp.project.region.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
-gcp.project.region.loadbalancer -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
+gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: red}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django.svc: "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.server.django.svc -> gcp.project.region.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
@@ -349,13 +349,11 @@ active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stro
 
 # authed traffic flow
 authed-traffic -> gcp.project.region.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
-gcp.project.region.loadbalancer -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
+gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: green}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django.svc: "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.server.django.svc -> gcp.project.region.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.region.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
-
-# load balancer misc
-gcp.project.region.cloudarmor -> gcp.project.region.loadbalancer: {style: {stroke: black}}
 
 # cert management
 letsencrypt <-> gcp.project.region.vpc.fw.k8s.cert-manager.certmanager-op: ACME over HTTPS {style: {stroke: orange}}

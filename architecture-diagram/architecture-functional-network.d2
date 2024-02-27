@@ -1,0 +1,78 @@
+direction: right
+
+client: Client {
+  icon: ./icons/general/person.svg
+  shape: image
+}
+
+gcp: PHAC Google Cloud Org {
+  icon: ./icons/gcp/logo.svg
+  style: {
+    stroke: "#000000"
+    fill: "#f1f3f4"
+  }
+
+  project: HoPiC Google Cloud Project {
+    icon: ./icons/general/folder.svg
+    style: {
+      stroke: "#ffffff"
+      fill: "#e1f6fe"
+    }
+
+    loadbalancer: Regional External \nLoadBalancer \n HTTP-HTTPS redirects \n Client TLS Termination{
+      icon: ./icons/gcp/cloud_load_balancer.svg
+      shape: image
+    }
+
+    cloudarmor: Regional Cloud Armor \nSecurity Policies \nWAF Rules {
+      icon: ./icons/gcp/cloud_armor.svg
+      shape: image
+    }
+
+    vpc: VPC (hopic-net) {
+      icon: ./icons/gcp/virtual_private_cloud.svg
+      style: {
+        stroke: blue
+        font-color: black
+        stroke-dash: 3
+        fill: transparent
+      }
+
+      subnet: Regional Subnet (hopic-subnet) {
+        icon: ./icons/gcp/virtual_private_cloud.svg
+        style: {
+          stroke: blue
+          font-color: black
+          stroke-dash: 3
+          fill: transparent
+        }
+
+          asm_gateway: Mesh Internal Gateway {
+            icon: ./icons/kubernetes/deploy.svg
+            shape: image
+          }
+
+
+            app: Django App {
+              icon: ./icons/kubernetes/deploy.svg
+              shape: image
+            }
+
+            psql: PostgreSQL DB {
+              icon: ./icons/kubernetes/deploy.svg
+              shape: image
+            }
+        }
+      }
+    }
+  }
+
+client -> gcp.project.loadbalancer: HTTPS {style: {stroke: green}}
+
+gcp.project.loadbalancer -> gcp.project.cloudarmor: HTTP {style: {stroke: green}}
+gcp.project.cloudarmor -> gcp.project.vpc.subnet.asm_gateway: HTTP {style: {stroke: green}}
+
+gcp.project.vpc.subnet.asm_gateway -> gcp.project.vpc.subnet.app: mTLS {style: {stroke: green}}
+gcp.project.vpc.subnet.app -> gcp.project.vpc.subnet.psql: mTLS {style: {stroke: green}}
+gcp.project.vpc.subnet.psql -> gcp.project.vpc.subnet.app: mTLS {style: {stroke: green}}
+

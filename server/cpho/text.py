@@ -45,9 +45,9 @@ def tm(key: str) -> str:
     # French fallback to machine translation if the string is not yet translated
     FALLBACK_FLAG = True  # Set to False to disable fallback
     if lang_code == "fr" and FALLBACK_FLAG:
-        if text[lang_map[lang_code]] is None:
+        if text.get(lang_map.get(lang_code)) is None:
             lang_code = "fallback"
-    locale_string = text[lang_map[lang_code]]
+    locale_string = text.get(lang_map.get(lang_code))
     return (
         locale_string
         if locale_string is not None

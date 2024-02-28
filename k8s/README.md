@@ -169,7 +169,7 @@ See the [official documentation](https://cloudnative-pg.io/documentation/1.22/#c
 
 # Ephemeral Environments
 
-Ephemeral environments for the Django server and PostgreSQL database are implemented using kustomize and Flux. The `./k8s/server` directory is organized into [kustomize bases and overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). The overlays are further divided into `prod` and `ephemeral` directories that contain the kubernetes configurations for production and ephemeral environments respectively.
+Ephemeral environments for the Django server and PostgreSQL database i.e, `server` namespace are implemented using kustomize and Flux. The `./k8s/server` directory is organized into [kustomize bases and overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). The overlays are further divided into `prod` and `ephemeral` directories that contain kubernetes configurations for production and ephemeral environments respectively.
 
 The `prod` directory syncs (as per the configuration [here](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/server/overlays/prod/sync.yaml)) against the `prod` branch of the repository and serves traffic at `hopic-sdpac.phac-aspc.alpha.canada.ca`. On the other hand, the `ephemeral` directory syncs (as per the configuration(s) [here](https://github.com/PHACDataHub/cpho-phase2/tree/prod/k8s/server/ephemeral-instances)) against any branch that is configured to use ephemeral environments and serves traffic at `*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca`, where `*` is replaced by the github branch name that the environment is built from. 
 
@@ -200,7 +200,7 @@ git commit -m "feat: add ephemeral env for dev-test"
 git push
 ```
 
-> Note how the branch name in the checkout command above is different from the branch name you need an ephemeral environment from.
+> Note how the branch name in the checkout command above is different from the branch name you need an ephemeral environment in.
 
 Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral environment using kubernetes manifests from the `dev-test` branch's `./k8s/server/overlays/ephemeral/` directory.
 
@@ -209,7 +209,7 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
 - The ephemeral environment is completely isolated from the production deployment in it's own kubernetes namespace. The name of the kubernetes namespace is the same as the github branch name that the environment is to be built from.
 
 - The database cluster for an ephemeral environment is currently built from a backup of the production cluster stored in the cloud storage.
- > This might change in the future when we've figured out a way to seed the DB with fake data.
+  > This might change in the future when we've figured out a way to seed the DB with fake data.
 
 - The `./k8s/overlays/ephemeral/infrastructure` grants necessary permissions for the ephemeral environment's database cluster to access the cloud storage bucket. See https://github.com/PHACDataHub/cpho-phase2/pull/205 for details on why this is required.
 

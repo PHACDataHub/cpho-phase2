@@ -258,7 +258,7 @@ To delete an ephemeral environment from the cluster, simple delete the branch's 
 
 # Architecture
 
-This deployment architecture is built on top of the [node-microservices-demo](https://github.com/PHACDataHub/node-microservices-demo?tab=readme-ov-file#node-microservices-demo). Here's a detailed diagram that outlines all of the components and their interactions:
+This deployment architecture is built on top of the [node-microservices-demo](https://github.com/PHACDataHub/node-microservices-demo?tab=readme-ov-file#node-microservices-demo) i.e, the rationale for implementing such an architecture can be found in the embedded link. Here's a detailed diagram that outlines all of the components and their interactions:
 
 > Stroke colors are used to represent operational flows.
 >  - Red: Unauthenticated traffic
@@ -271,6 +271,8 @@ This deployment architecture is built on top of the [node-microservices-demo](ht
 >  - Sky Blue: Observability
 
 ![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)
+
+> See `./architecture-diagram/README.md` at the root of this repository for other diagrams.
 
 ## How are the changes deployed?
 

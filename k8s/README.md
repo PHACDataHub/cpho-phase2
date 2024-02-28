@@ -165,8 +165,6 @@ Replace the PostgreSQL image tag at `spec.imageName` in the `./k8s/server/base/p
 
 See the [official documentation](https://cloudnative-pg.io/documentation/1.22/#container-images) for more info on PostgreSQL images.
 
-**TODO:** Automate using Flux image update automation.
-
 # Ephemeral Environments
 
 Ephemeral environments for the Django server and PostgreSQL database i.e, `server` namespace are implemented using kustomize and Flux. The `./k8s/server` directory is organized into [kustomize bases and overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). The overlays are further divided into `prod` and `ephemeral` directories that contain kubernetes configurations for production and ephemeral environments respectively.
@@ -204,7 +202,7 @@ git push
 
 Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral environment using kubernetes manifests from the `dev-test` branch's `./k8s/server/overlays/ephemeral/` directory.
 
-## Deleting a ephemeral environment
+## Deleting an ephemeral environment
 
 To delete an ephemeral environment from the cluster, simple delete the branch's sync file from the `./k8s/server/ephemeral-instances` directory. For instance, to clean up the ephemeral environment for `dev-test` branch, delete the `./k8s/server/ephemeral-instances/dev-test-sync.yaml` file.
 

@@ -204,6 +204,10 @@ git push
 
 Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral environment using kubernetes manifests from the `dev-test` branch's `./k8s/server/overlays/ephemeral/` directory.
 
+## Deleting a ephemeral environment
+
+To delete an ephemeral environment from the cluster, simple delete the branch's sync file from the `./k8s/server/ephemeral-instances` directory. For instance, to clean up the ephemeral environment for `dev-test` branch, delete the `./k8s/server/ephemeral-instances/dev-test-sync.yaml` file.
+
 ## Gotchas
 
 - Cloudbuild is only available on the `prod` branch. To enable image builds from your branch, update the `GITHUB_MAIN_BRANCH_NAME` variable with the name of your branch in `./deploy/gcloud_env_vars.sh` file.
@@ -274,7 +278,7 @@ This deployment architecture is built on top of the [node-microservices-demo](ht
 
 TLDR; GitOps
 
-Once a change is merged into `prod`, the cloudbuild trigger executes the CI pipeline that runs tests, uploads coverage reports to the cloud storage bucket and, builds, tags and pushes an image to the artifact registry. The image tags follow a naming convention of - `${branch_name}-${short_sha}-$(date +%s)`.
+Once a change is merged into `prod`, the cloudbuild trigger executes the CI pipeline that runs tests, uploads coverage reports to the cloud storage bucket and, builds, tags and pushes an image to the artifact registry. The image tags follow a naming convention of - `${branch_name}-${short_sha}-$(date +%s)`. See `./cloudbuild.yaml` at the root of this repo for details about the CI pipeline.
 
 Flux scans the image repository for new tags based on a regex pattern (see [spec](https://github.com/PHACDataHub/cpho-phase2/blob/update-readme/k8s/server/overlays/prod/sync.yaml#L50-L58)) that matches the naming convention mentioned previously, and pushes an update on GitHub to the kubernetes deployment manifest (based on the `$imagepolicy` comment) with the new image tag.
 
@@ -282,4 +286,26 @@ In addition to scanning the image repository, Flux also scans the Git repository
 
 ## How is infrastructure created / managed?
 
+Google's config connector, an open source kubernetes add-on, is used to manage cloud infrastructure via kubernetes. All infrastructure definitions are stored in the `./infrastructure` directory at the root of this repository. Like all other kubernetes manifests, this directory too is reconciled continously to the cluster by Flux.
+
+There are two reconciliation mechanisms at play here:
+- **Git repo to Cluster**: Managed by Flux
+- **Cluster to Google Cloud**: Managed by config connector i.e, the resources on the cloud are reconciled against their kubernetes resource counterparts.
+
+Checkout the [official documentation](https://cloud.google.com/config-connector/docs/overview) for more details about config connector.
+
 ## What's the use case for each of these components?
+
+- **Flux**: Reconcile kubernetes manifests from the git repository to the cluster. 
+- **Cert-manager**: Provision and manage the life cycle of TLS certificates within the kubernetes cluster.
+- **CNPG (Cloud-native Postgres) Operator**: Manages PostgreSQL workloads on the cluster, thereby relying on kubernetes for capabilities like self-healing, replication, high availability, backup, recovery, updates, etc.
+- **Config Connector**: To manage cloud infrastructure within kubernetes.
+- **Anthos Service Mesh (Managed Istio)**: Configures secure networking for the cluster by providing L7 traffic management and mTLS capabilities.
+
+# Gotchas
+
+- The current GKE autopilot cluster is binded to a [fleet](https://cloud.google.com/anthos/fleet-management/docs) in the `php-fleet-monitoring` project. As a result, some enterprise features might be visible only in the `php-fleet-monitoring` project's space. This is to have a single pane of glass for kubernetes clusters.
+- Some cloud resources, specifically the cloud storage bucket and KMS, have a special annotation (`cnrm.cloud.google.com/deletion-policy: abandon`) set to prevent deletion of cloud resources if the cluster goes down. See https://github.com/PHACDataHub/cpho-phase2/pull/221 for further details.
+- Flux sends reconciliation alerts to the slack channel, however, [some of these alerts](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/flux-system/alerts/alerts.yaml#L37-L47) are ignored due to https://github.com/PHACDataHub/cpho-phase2/pull/208.
+- Not all infrastructure is expressed in the `./infrastructure` directory, some of it is contained in the `./k8s/Taskfile.yaml`. This is due to https://github.com/PHACDataHub/cpho-phase2/pull/193#issue-2121787136.
+- The setup for a adding a cloud armor WAF policy to a backend-service is a bit hacky due to https://github.com/PHACDataHub/cpho-phase2/pull/225. 

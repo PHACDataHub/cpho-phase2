@@ -206,6 +206,24 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
 
 ## Gotchas
 
+- Cloudbuild is only available on the `prod` branch. To enable image builds from your branch, update the `GITHUB_MAIN_BRANCH_NAME` variable with the name of your branch in `./deploy/gcloud_env_vars.sh` file.
+  Here's a diff from the `dev-test` example above for reference:
+  ```sh
+  diff --git a/deploy/gcloud_env_vars.sh b/deploy/gcloud_env_vars.sh
+  index c861c4d..45361ce 100755
+  --- a/deploy/gcloud_env_vars.sh
+  +++ b/deploy/gcloud_env_vars.sh
+  @@ -19,7 +19,7 @@ export PROJECT_ALPHA_SUB_DOMAIN=hopic-sdpac
+   export BUILD_GITHUB_REPO_NAME=cpho-phase2
+   export BUILD_GITHUB_REPO_OWNER=PHACDataHub
+
+  -export GITHUB_MAIN_BRANCH_NAME=prod
+  +export GITHUB_MAIN_BRANCH_NAME=dev-test
+
+   export TEST_COVERAGE_BUCKET_NAME=hopic-test-coverage-reports-01hp04dtnkf
+   export TEST_COVERAGE_THRESHOLD=77.5 # set just below current coverage, consider increasing in time
+  ```
+
 - The ephemeral environment is completely isolated from the production deployment in it's own kubernetes namespace. The name of the kubernetes namespace is the same as the github branch name that the environment is to be built from.
 
 - The database cluster for an ephemeral environment is currently built from the most recent (at the time of ephemeral env creation) backup of the production cluster stored in the cloud storage.
@@ -213,7 +231,7 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
 
 - The `./k8s/overlays/ephemeral/infrastructure` grants necessary permissions for the ephemeral environment's database cluster to access the cloud storage bucket. See https://github.com/PHACDataHub/cpho-phase2/pull/205 for details on why this is required.
 
-- By default, automation for updating the server deployment image when a new image is available on the registry won't work on ephemeral deployments. In order to configure it, you must edit the `$imagepolicy` comment with the ephemeral flux image policy name at `spec.template.spec.image` in the `./k8s/server/overlays/ephemeral/django/deployment.yaml` file in your branch.
+- By default, automation for updating the server deployment image when a new one is available in the registry won't work with ephemeral deployments. In order to configure it, you must edit the `$imagepolicy` comment with the ephemeral `ImagePolicy` resource name at `spec.template.spec.image` in the `./k8s/server/overlays/ephemeral/django/deployment.yaml` file **in your branch**.
   
   Taking `dev-test` as an example, here's what the diff looks like:
   ```
@@ -232,6 +250,6 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
              requests:
   ```
   
-  Note the `$imagepolicy` is updated to `dev-test-server`. In general the value for this will be `${BRANCH_NAME}-server`, where `${BRANCH_NAME}` is the name of the ephemeral env branch.
+  Note that the `$imagepolicy` comment is updated to `dev-test-server`. In general the value for this will be `${BRANCH_NAME}-server`, where `${BRANCH_NAME}` is the name of the ephemeral env branch.
 
-  > The image policy name can be found in the `ImagePolicy` spec in the `dev-test-sync.yaml` file.
+  > The name of the image policy is contained in the `metadata.name` field of the `ImagePolicy` resource in the `dev-test-sync.yaml` file.

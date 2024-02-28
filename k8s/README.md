@@ -153,8 +153,9 @@ There are two types of updates in this section:
 To [upgrade cnpg operator](https://cloudnative-pg.io/documentation/1.22/installation_upgrade/#upgrades) on the cluster, run the following commands from the root of this repository and submit a PR with changes:
 
 ```sh
-curl -sSL https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.22.1/cnpg-1.22.1.yaml > ./k8s/cnpg-system/cnpg-crds.yaml
+curl -sSL https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v<VERISON>/cnpg-<VERSION>.yaml > ./k8s/cnpg-system/cnpg-crds.yaml
 ```
+> Replace `<VERISON>` with a valid CNPG Operator version.
 
 Once the PR is merged, Flux will propagate the changes. See the [official releases](https://github.com/GoogleCloudPlatform/k8s-config-connector/releases) page for more information regarding an upgrade.
 

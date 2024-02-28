@@ -259,14 +259,14 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
 This deployment architecture is built on top of the [node-microservices-demo](https://github.com/PHACDataHub/node-microservices-demo?tab=readme-ov-file#node-microservices-demo). Here's a detailed diagram that outlines all of the components and their interactions:
 
 > Note: Stroke colors are used to represent operational flows.
-  - Red: Unauthenticated traffic
-  - Green: Authenticated traffic
-  - Orange: Certificate Management
-  - Grey: Django deployment
-  - Black: PostgreSQL deployment
-  - Gold: Notification
-  - Blue: CI/CD
-  - Sky Blue: Observability
+>  - Red: Unauthenticated traffic
+>  - Green: Authenticated traffic
+>  - Orange: Certificate Management
+>  - Grey: Django deployment
+>  - Black: PostgreSQL deployment
+>  - Gold: Notification
+>  - Blue: CI/CD
+>  - Sky Blue: Observability
 
 ![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)
 

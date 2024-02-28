@@ -270,7 +270,7 @@ This deployment architecture is built on top of the [node-microservices-demo](ht
 
 ![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)
 
-## How do we deploy changes?
+## How are the changes deployed?
 
 TLDR; GitOps
 

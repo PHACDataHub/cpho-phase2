@@ -167,10 +167,6 @@ See the [official documentation](https://cloudnative-pg.io/documentation/1.22/#c
 
 **TODO:** Automate using Flux image update automation.
 
-# Architecture (WIP):
-
-![draft architecture](../architecture-diagram/architecture-k8s.svg)
-
 # Ephemeral Environments
 
 Ephemeral environments for the Django server and PostgreSQL database are implemented using kustomize and Flux. The `./k8s/server` directory is organized into [kustomize bases and overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). The overlays are further divided into `prod` and `ephemeral` directories that contain the kubernetes configurations for production and ephemeral environments respectively.

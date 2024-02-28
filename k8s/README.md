@@ -208,7 +208,7 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
 
 - The ephemeral environment is completely isolated from the production deployment in it's own kubernetes namespace. The name of the kubernetes namespace is the same as the github branch name that the environment is to be built from.
 
-- The database cluster for an ephemeral environment is currently built from a backup of the production cluster stored in the cloud storage.
+- The database cluster for an ephemeral environment is currently built from the most recent (at the time of ephemeral env creation) backup of the production cluster stored in the cloud storage.
   > This might change in the future when we've figured out a way to seed the DB with fake data.
 
 - The `./k8s/overlays/ephemeral/infrastructure` grants necessary permissions for the ephemeral environment's database cluster to access the cloud storage bucket. See https://github.com/PHACDataHub/cpho-phase2/pull/205 for details on why this is required.

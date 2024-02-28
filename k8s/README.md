@@ -253,3 +253,7 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
   Note that the `$imagepolicy` comment is updated to `dev-test-server`. In general the value for this will be `${BRANCH_NAME}-server`, where `${BRANCH_NAME}` is the name of the ephemeral env branch.
 
   > The name of the image policy is contained in the `metadata.name` field of the `ImagePolicy` resource in the `dev-test-sync.yaml` file.
+
+# Architecture
+
+![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)

@@ -256,16 +256,30 @@ Once the PR is merged, Flux will propagate the changes i.e, create the ephemeral
 
 # Architecture
 
-This deployment architecture is built on top of [node-microservices-demo](https://github.com/PHACDataHub/node-microservices-demo?tab=readme-ov-file#node-microservices-demo). Here's the detailed diagram that outlines all of the components and their interactions:
+This deployment architecture is built on top of the [node-microservices-demo](https://github.com/PHACDataHub/node-microservices-demo?tab=readme-ov-file#node-microservices-demo). Here's a detailed diagram that outlines all of the components and their interactions:
+
+> Note: Stroke colors are used to represent operational flows.
+  - Red: Unauthenticated traffic
+  - Green: Authenticated traffic
+  - Orange: Certificate Management
+  - Grey: Django deployment
+  - Black: PostgreSQL deployment
+  - Gold: Notification
+  - Blue: CI/CD
+  - Sky Blue: Observability
 
 ![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)
 
 ## How do we deploy changes?
 
-Once a change is merged into `prod`, the cloudbuild trigger executes the CI pipeline that runs tests, uploads coverage reports to the cloud storage bucket and, builds, tags and pushes an image to the artifact registry. The image tags follow a naming convention of - `${branch_name}-${short_sha}-$(date +%s)`
+TLDR; GitOps
 
-Flux scans the image repository for new tags based on a regex pattern (see [spec](https://github.com/PHACDataHub/cpho-phase2/blob/update-readme/k8s/server/overlays/prod/sync.yaml#L50-L58)) that matches the naming convention mentioned previously, and pushes an update on GitHub to the kubernetes deployment image tag (based on the `$imagepolicy` comment).
+Once a change is merged into `prod`, the cloudbuild trigger executes the CI pipeline that runs tests, uploads coverage reports to the cloud storage bucket and, builds, tags and pushes an image to the artifact registry. The image tags follow a naming convention of - `${branch_name}-${short_sha}-$(date +%s)`.
 
-In addition to scanning the image repository, Flux also scans the Git repository (see [spec](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/flux-system/gotk-sync.yaml#L3-L14)) for changes and continously reconciles the manifests to the kubernetes cluster. Due to this, the "[updated image tag](https://github.com/PHACDataHub/cpho-phase2/commit/efd626a010627f6f925f949b2242f776d83d6405)" commit is seen by Flux and is then _pulled_ into the cluster to be applied; therefore, rolling out a new version of the application.  
+Flux scans the image repository for new tags based on a regex pattern (see [spec](https://github.com/PHACDataHub/cpho-phase2/blob/update-readme/k8s/server/overlays/prod/sync.yaml#L50-L58)) that matches the naming convention mentioned previously, and pushes an update on GitHub to the kubernetes deployment manifest (based on the `$imagepolicy` comment) with the new image tag.
 
-## How is infrastructure created?
+In addition to scanning the image repository, Flux also scans the Git repository (see [spec](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/flux-system/gotk-sync.yaml#L3-L14)) for changes and continously reconciles manifests to the kubernetes cluster. Due to this, the "[updated image tag](https://github.com/PHACDataHub/cpho-phase2/commit/efd626a010627f6f925f949b2242f776d83d6405)" commit is seen by Flux and is then _pulled_ into the cluster to be applied; therefore, [rolling out](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/) a new version of the application.  
+
+## How is infrastructure created / managed?
+
+## What's the use case for each of these components?

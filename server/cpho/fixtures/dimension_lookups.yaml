@@ -5,6 +5,7 @@
     name_fr: Sexe
     code: sex
     is_literal: false
+    order: 1.0
 - model: cpho.dimensiontype
   pk: 2
   fields:
@@ -12,6 +13,7 @@
     name_fr: Province
     code: province
     is_literal: false
+    order: 2.0
 - model: cpho.dimensiontype
   pk: 3
   fields:
@@ -19,6 +21,7 @@
     name_fr: Région
     code: region
     is_literal: false
+    order: 3.0
 - model: cpho.dimensiontype
   pk: 4
   fields:
@@ -26,6 +29,7 @@
     name_fr: Canada
     code: canada
     is_literal: false
+    order: 0.0
 - model: cpho.dimensiontype
   pk: 5
   fields:
@@ -33,6 +37,7 @@
     name_fr: Âge
     code: age
     is_literal: true
+    order: 8.0
 - model: cpho.dimensiontype
   pk: 6
   fields:
@@ -40,6 +45,7 @@
     name_fr: Genre
     code: gender
     is_literal: false
+    order: 4.0
 - model: cpho.dimensiontype
   pk: 7
   fields:
@@ -47,6 +53,7 @@
     name_fr: Conditions de vie
     code: living_arrangement
     is_literal: false
+    order: 5.0
 - model: cpho.dimensiontype
   pk: 8
   fields:
@@ -54,6 +61,7 @@
     name_fr: Éducation Ménage
     code: education_household
     is_literal: false
+    order: 6.0
 - model: cpho.dimensiontype
   pk: 9
   fields:
@@ -61,6 +69,7 @@
     name_fr: Quintiles de revenu
     code: income_quintiles
     is_literal: false
+    order: 7.0
 
 # dimension value for Sex
 - model: cpho.dimensionvalue

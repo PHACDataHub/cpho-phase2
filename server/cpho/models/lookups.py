@@ -23,6 +23,8 @@ class DimensionType(models.Model):
 
     is_literal = models.BooleanField(default=False)
 
+    order = fields.FloatField(default=0.0)
+
     @property
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")

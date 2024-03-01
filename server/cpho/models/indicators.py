@@ -338,7 +338,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ]
 
     indicator = fields.ForeignKey(
-        Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
+        Indicator, null=False, on_delete=models.CASCADE, related_name="data"
     )
 
     literal_dimension_val = fields.CharField(
@@ -492,7 +492,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
     indicator = fields.ForeignKey(
-        Indicator, on_delete=models.RESTRICT, related_name="benchmarking"
+        Indicator, on_delete=models.CASCADE, related_name="benchmarking"
     )
     UNIT_CHOICES = [
         ("", "--"),
@@ -583,7 +583,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
 
     indicator = fields.ForeignKey(
-        Indicator, on_delete=models.RESTRICT, related_name="trend_analysis"
+        Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
     year = fields.CharField(max_length=50)
     year_range = fields.CharField(max_length=50, null=True, blank=True)

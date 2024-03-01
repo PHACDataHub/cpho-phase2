@@ -33,6 +33,8 @@ We use [SOPS](https://github.com/getsops/sops) with [GCP KMS](https://cloud.goog
 sops -e <path/to/secret.yaml> > <path/to/encrypted/secret.yaml>
 ```
 
+> If you run into a `reauth_related_error` use `gcloud config set project pht-01hp04dtnkf` to set the project id and then run `gcloud auth application-default login` to refresh the auth token.
+
 To decrypt use:
 
 ```sh

@@ -1,7 +1,6 @@
 from django.apps import apps
 from django.db import models
 
-from ckeditor.fields import RichTextField
 from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
@@ -174,14 +173,16 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     measure_text = fields.TextField(null=True, blank=True)
     title_overall = fields.TextField(null=True, blank=True)
     table_title_overall = fields.TextField(null=True, blank=True)
-    impact_text = RichTextField(config_name="notes", null=True, blank=True)
-    general_footnotes = RichTextField(
+    impact_text = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-    main_source_english = RichTextField(
+    general_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-    other_relevant_sources_english = RichTextField(
+    main_source_english = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    other_relevant_sources_english = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 
@@ -221,7 +222,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     visual_description_trend = fields.TextField(null=True, blank=True)
     x_axis_trend = fields.TextField(null=True, blank=True)
     y_axis_trend = fields.TextField(null=True, blank=True)
-    trend_footnotes = RichTextField(config_name="notes", null=True, blank=True)
+    trend_footnotes = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
 
     # BENCHMARKING
     # benchmarking_legend = fields.CharField(
@@ -230,10 +233,10 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     title_benchmark = fields.TextField(null=True, blank=True)
     table_title_benchmark = fields.TextField(null=True, blank=True)
     x_axis_benchmark = fields.TextField(null=True, blank=True)
-    benchmarking_footnotes = RichTextField(
+    benchmarking_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-    benchmarking_sources_english = RichTextField(
+    benchmarking_sources_english = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 

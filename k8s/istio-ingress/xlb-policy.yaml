@@ -26,6 +26,7 @@ metadata:
   namespace: istio-ingress
 spec:
   default:
+    timeoutSec: 180
     logging:
       enabled: true
       sampleRate: 1000000

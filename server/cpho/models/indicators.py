@@ -172,8 +172,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     # GENERAL
     measure_text = fields.TextField(null=True, blank=True)
-    impact_text = fields.TextField(null=True, blank=True)
     title_overall = fields.TextField(null=True, blank=True)
+    table_title_overall = fields.TextField(null=True, blank=True)
+    impact_text = RichTextField(config_name="notes", null=True, blank=True)
     general_footnotes = RichTextField(
         config_name="notes", null=True, blank=True
     )

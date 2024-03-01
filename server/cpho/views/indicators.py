@@ -89,9 +89,15 @@ class IndicatorForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     impact_text = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
     )
     title_overall = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    table_title_overall = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     general_footnotes = forms.CharField(

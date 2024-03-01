@@ -1,7 +1,6 @@
 from django.apps import apps
 from django.db import models
 
-from ckeditor.fields import RichTextField
 from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
@@ -172,15 +171,18 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     # GENERAL
     measure_text = fields.TextField(null=True, blank=True)
-    impact_text = fields.TextField(null=True, blank=True)
     title_overall = fields.TextField(null=True, blank=True)
-    general_footnotes = RichTextField(
+    table_title_overall = fields.TextField(null=True, blank=True)
+    impact_text = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-    main_source_english = RichTextField(
+    general_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-    other_relevant_sources_english = RichTextField(
+    main_source_english = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    other_relevant_sources_english = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 
@@ -220,7 +222,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     visual_description_trend = fields.TextField(null=True, blank=True)
     x_axis_trend = fields.TextField(null=True, blank=True)
     y_axis_trend = fields.TextField(null=True, blank=True)
-    trend_footnotes = RichTextField(config_name="notes", null=True, blank=True)
+    trend_footnotes = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
 
     # BENCHMARKING
     # benchmarking_legend = fields.CharField(
@@ -229,10 +233,10 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     title_benchmark = fields.TextField(null=True, blank=True)
     table_title_benchmark = fields.TextField(null=True, blank=True)
     x_axis_benchmark = fields.TextField(null=True, blank=True)
-    benchmarking_footnotes = RichTextField(
+    benchmarking_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-    benchmarking_sources_english = RichTextField(
+    benchmarking_sources_english = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 
@@ -337,7 +341,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ]
 
     indicator = fields.ForeignKey(
-        Indicator, null=False, on_delete=models.RESTRICT, related_name="data"
+        Indicator, null=False, on_delete=models.CASCADE, related_name="data"
     )
 
     literal_dimension_val = fields.CharField(
@@ -491,7 +495,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
     indicator = fields.ForeignKey(
-        Indicator, on_delete=models.RESTRICT, related_name="benchmarking"
+        Indicator, on_delete=models.CASCADE, related_name="benchmarking"
     )
     UNIT_CHOICES = [
         ("", "--"),
@@ -582,7 +586,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
 
     indicator = fields.ForeignKey(
-        Indicator, on_delete=models.RESTRICT, related_name="trend_analysis"
+        Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
     year = fields.CharField(max_length=50)
     year_range = fields.CharField(max_length=50, null=True, blank=True)

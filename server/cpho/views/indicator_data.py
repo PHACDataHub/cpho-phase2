@@ -433,7 +433,8 @@ class ManageIndicatorData(
                         self.indicator, self.period
                     )
                 ],
-            )
+            ).order_by("order")
+
         elif self.dimension_type.code == "age":
             predefined_dimension_types = []
         else:

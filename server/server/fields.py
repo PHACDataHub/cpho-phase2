@@ -12,6 +12,7 @@ from django.db import models
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from ckeditor.fields import RichTextField as RichTextFieldBase
 from phac_aspc.django.fields import CommaSeparatedCharField
 
 migration_ignored_attrs = [
@@ -177,4 +178,8 @@ class ImageField(DescriptionMixin, models.ImageField):
 
 
 class FileField(DescriptionMixin, models.FileField):
+    pass
+
+
+class RichTextField(DescriptionMixin, RichTextFieldBase):
     pass

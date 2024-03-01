@@ -10,6 +10,8 @@ kind: ComputeBackendService
 metadata:
   name: gkegw1-iswp-istio-ingress-istio-ingressgatewa-8443-6xz70r427d78
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   connectionDrainingTimeoutSec: 0
   healthChecks:
@@ -25,4 +27,4 @@ spec:
   resourceID: gkegw1-iswp-istio-ingress-istio-ingressgatewa-8443-6xz70r427d78
   securityPolicy: https://www.googleapis.com/compute/beta/projects/pht-01hp04dtnkf/regions/northamerica-northeast1/securityPolicies/hopic-waf
   sessionAffinity: NONE
-  timeoutSec: 30
+  timeoutSec: 180

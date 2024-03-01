@@ -1,3 +1,10 @@
+# Due to limitations of GKE's Gateway API, a cloud armor security policy for the
+# regional XLB's backend service cannot be configured via the k8s gateway spec.
+# The workaround, therefore, is to add the policy to the backend-service directly by
+# importing the backend service resource into KCC.
+#
+# As mentioned above, this resource was imported via KCC. DO NOT MODIFY DIRECTLY
+---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeBackendService
 metadata:

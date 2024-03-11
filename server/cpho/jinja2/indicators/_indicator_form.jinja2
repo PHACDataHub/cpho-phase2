@@ -1,7 +1,9 @@
 {{ form.media }}
 
 {% macro form_field(field, rich=false) %}
-  {% if (field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') or (field.name not in form.hso_only_field_names)) %}
+  {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
+  {% set non_hso_field_display = field.name not in form.hso_only_field_names %}
+  {% if (hso_field_display or non_hso_field_display) %}
     <div class="row g-3 form-group mb-3">
       <div class="col-lg-3">
         <div>

@@ -43,15 +43,12 @@ class IndicatorForm(ModelForm):
     class Meta:
         model = Indicator
         fields = "__all__"
-        # widgets = {
-        #     "relevant_period_types": forms.CheckboxSelectMultiple,
-        # }
 
     def __init__(self, *args, **kwargs):
         user = None
         if "user" in kwargs:
             user = kwargs.pop("user", None)
-        super(IndicatorForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         non_hso_readonly_fields = [
             "name",
@@ -64,9 +61,7 @@ class IndicatorForm(ModelForm):
         ]
         if user and not test_rule("is_admin_or_hso", user):
             for field in non_hso_readonly_fields:
-                # self.fields[field].disabled = True
-                # self.fields[field].widget.attrs["readonly"] = True
-                self.fields[field].widget.attrs["disabled"] = True
+                self.fields[field].disabled = True
 
     name = forms.CharField(
         required=True,
@@ -101,18 +96,14 @@ class IndicatorForm(ModelForm):
     relevant_period_types = forms.MultipleChoiceField(
         required=False,
         choices=Indicator.PERIOD_TYPE_CHOICES,
-        widget=forms.CheckboxSelectMultiple(
-            # attrs={"class": "form-check-input"}
-        ),
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     # make it display name_en attribute of DimensionType model
     relevant_dimensions = ModelMultipleChoiceFieldWithTranslation(
         required=False,
         queryset=DimensionType.objects.all(),
-        widget=forms.CheckboxSelectMultiple(
-            # attrs={"class": "form-check-input"}
-        ),
+        widget=forms.CheckboxSelectMultiple(),
         initial=DimensionType.objects.all(),
     )
 
@@ -240,9 +231,6 @@ class IndicatorForm(ModelForm):
     table_title_benchmark = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    # benchmarking_legend = forms.CharField(
-    #     required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    # )
     x_axis_benchmark = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )

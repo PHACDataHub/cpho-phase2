@@ -14,7 +14,10 @@ bind = [f"0.0.0.0:{PORT}"]
 # Our k8s pods only has a fraction of a vCPU currently, so we'll be tuning this by hand
 # Increasing threads doesn't seem to benefit us, likely because we aren't configuring django to be async. For now, explicitly use multiple sync workers
 worker_class = "sync"
-workers = 2
+# With 1 worker (and pre-prod traffic levels), the server pod (.2 vCPU, 500mb RAM) saw idle resource usage of ~5% CPU and ~40% RAM.
+# The larges CPU spikes reached ~40%, but most spikes were only ~15% usage. RAM never spiked. Bumping up to 3 workers for now, to be
+# further tuned based on prod performance.
+workers = 3
 
 
 def post_fork(server, worker):

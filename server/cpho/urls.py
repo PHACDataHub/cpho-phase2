@@ -160,4 +160,9 @@ urlpatterns = [
         views.ExportBenchmarking.as_view(),
         name="export_benchmarking",
     ),
+    path(
+        "infobase_export/",
+        views.InfobaseExportView.as_view(),
+        name="infobase_export",
+    ),
 ]

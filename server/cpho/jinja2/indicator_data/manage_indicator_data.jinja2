@@ -14,7 +14,7 @@
          aria-label="{{ row_name }}, {{ label_text }}"></label>
 {% endmacro %}
 
-{% macro check_display_error(err, field)%}
+{% macro check_display_error(err, field) %}
   {% if err %}
     <div class="error-msg error-display mt-1">
       {% for error in field.errors %}{{ error|escape }}{% endfor %}
@@ -26,53 +26,53 @@
   <tr class="age-group-form">
     <td class="fw-bold">
       {{ form.literal_dimension_val }}
-      {{ accessible_label(form.literal_dimension_val.id_for_label, form.literal_dimension_val.label, tdt("Age")) }}
+      {{ accessible_label(form.literal_dimension_val.id_for_label, form.literal_dimension_val.label, tdt("Age") ) }}
     </td>
     <td>
       {{ form.value }}
-      {{ accessible_label(form.value.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value")) }}
+      {{ accessible_label(form.value.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value") ) }}
       {{ check_display_error(form.errors.value, form.value) }}
     </td>
     <td>
       {{ form.value_unit }}
-      {{ accessible_label(form.value_unit.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Unit")) }}
+      {{ accessible_label(form.value_unit.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Unit") ) }}
     </td>
     <td>
       {{ form.value_lower_bound }}
-      {{ accessible_label(form.value_lower_bound.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Lower Bound")) }}
+      {{ accessible_label(form.value_lower_bound.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Lower Bound") ) }}
       {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
     </td>
     <td>
       {{ form.value_upper_bound }}
-      {{ accessible_label(form.value_upper_bound.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Upper Bound")) }}
+      {{ accessible_label(form.value_upper_bound.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Upper Bound") ) }}
       {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
     </td>
     <td>
       {{ form.data_quality }}
-      {{ accessible_label(form.data_quality.id_for_label, form.literal_dimension_val.id_for_label, tdt("Data Quality")) }}
+      {{ accessible_label(form.data_quality.id_for_label, form.literal_dimension_val.id_for_label, tdt("Data Quality") ) }}
     </td>
     <td>
       {{ form.single_year_timeframe }}
-      {{ accessible_label(form.single_year_timeframe.id_for_label, form.literal_dimension_val.id_for_label, tdt("Single Year Timeframe")) }}
+      {{ accessible_label(form.single_year_timeframe.id_for_label, form.literal_dimension_val.id_for_label, tdt("Single Year Timeframe") ) }}
       {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
     </td>
     <td>
       {{ form.multi_year_timeframe }}
-      {{ accessible_label(form.multi_year_timeframe.id_for_label, form.literal_dimension_val.id_for_label, tdt("Multi Year Timeframe")) }}
+      {{ accessible_label(form.multi_year_timeframe.id_for_label, form.literal_dimension_val.id_for_label, tdt("Multi Year Timeframe") ) }}
       {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
     </td>
     <td>
       {{ form.value_displayed }}
-      {{ accessible_label(form.value_displayed.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Displayed")) }}
+      {{ accessible_label(form.value_displayed.id_for_label, form.literal_dimension_val.id_for_label, tdt("Value Displayed") ) }}
     </td>
     <td>
       {{ form.reason_for_null }}
-      {{ accessible_label(form.reason_for_null.id_for_label, form.literal_dimension_val.id_for_label, tdt("Reason For Null Data")) }}
+      {{ accessible_label(form.reason_for_null.id_for_label, form.literal_dimension_val.id_for_label, tdt("Reason For Null Data") ) }}
     </td>
     <td>
       {{ form.id }} {# this is hidden #}
       {{ form.is_deleted }}
-      {{ accessible_label(form.is_deleted.id_for_label, form.literal_dimension_val.id_for_label, tdt("Delete")) }}
+      {{ accessible_label(form.is_deleted.id_for_label, form.literal_dimension_val.id_for_label, tdt("Delete") ) }}
     </td>
   </tr>
 {% endmacro %}
@@ -101,7 +101,8 @@
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto; display:block">
+               style="overflow-x:auto;
+                      display:block">
           <thead class="table-light text-center">
             <tr>
               <th width="10%">{{ dimension_type.name }}</th>
@@ -177,7 +178,8 @@
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto; display:block">
+               style="overflow-x:auto;
+                      display:block">
  
           <thead class="table-light text-center">
             <tr>
@@ -191,9 +193,7 @@
               <th width="9%">{{ tdt("Multi Year Timeframe") }}</th>
               <th width="9%">{{ tdt("Value Displayed") }}</th>
               <th width="9%">{{ tdt("Reason For Null Data") }}</th>
-              <th width="5%">
-                {{ tdt("Delete") }}
-              </th>
+              <th width="5%">{{ tdt("Delete") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body"
@@ -202,9 +202,7 @@
           </tbody>
         </table>
         <div class="text-center py-1">
-          <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">
-            {{ tdt("Add another age group") }}
-          </button>
+          <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add another age group") }}</button>
         </div>
       </div>
     {% endif %}

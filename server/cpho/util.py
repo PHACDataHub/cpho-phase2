@@ -66,3 +66,15 @@ phac_email_widget_attrs = {
     "oninput": "setCustomValidity('')",
     "class": "form-control",
 }
+
+
+def get(obj, attr_path, default=""):
+    """
+    Get an attribute from an object, but if it's falsey, return None
+    """
+    value = obj
+    for attr in attr_path.split("."):
+        value = getattr(value, attr, None)
+        if not value:
+            return default
+    return value

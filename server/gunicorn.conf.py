@@ -3,14 +3,38 @@ import sys
 
 import structlog
 
+from server.open_telemetry_util import instrument_app_for_open_telemetry
+
 # See https://cloud.google.com/run/docs/tips/python#optimize_gunicorn
 
 PORT = os.getenv("PORT", "8080")
 bind = [f"0.0.0.0:{PORT}"]
 
-# Experiment: trying k8s pods deployed with the minimal resources, and only one Django instance per container
-workers = 1
-threads = 1
+# Note: the generally recommended formula is `workers + threads = cpu_count * 2 + 1`, although gunicorn describes this as "not overly scientific".
+# Our k8s pods only has a fraction of a vCPU currently, so we'll be tuning this by hand
+# Increasing threads doesn't seem to benefit us, likely because we aren't configuring django to be async. For now, explicitly use multiple sync workers
+worker_class = "sync"
+# With 1 worker (and pre-prod traffic levels), the server pod (.2 vCPU, 500mb RAM) saw idle resource usage of ~5% CPU and ~40% RAM.
+# The larges CPU spikes reached ~40%, but most spikes were only ~15% usage. RAM never spiked. Bumping up to 3 workers for now, to be
+# further tuned based on prod performance.
+workers = 3
+
+
+def post_fork(server, worker):
+    # When using OpenTelemetry's background process based BatchSpanProcessor, insturmentation must occur post worker forking. Pre-fork instrumentation
+    # would result in each app process trying to share the same BatchSpanProcessor worker thread, which would not be reliable.
+    # If NOT using BatchSpanProcessor (likely a bad idea, it's much more performant at run time) you can move instrumentation to wsgi.py and enable preload_app
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
+
+    worker.flush_telemetry_callback = instrument_app_for_open_telemetry()
+
+
+def worker_exit(server, worker):
+    worker.log.info(
+        f"Flushing telemetry for exiting worker (pid: {worker.pid})"
+    )
+    worker.flush_telemetry_callback()
+
 
 # From the GCP docs: "timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling."
 # Assume it's of simillar benefit with GKE Autopilot, TODO: determine if that's true

@@ -1,18 +1,28 @@
 {{ form.media }}
 
 {% macro form_field(field, rich=false) %}
-  <div class="row g-3 form-group mb-3">
-    <div class="col-lg-3">
-      <div class="row">{{ field.label_tag(attrs={'class': 'col col-form-label', 'aria-label': field.label }) }}</div>
+  {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
+  {% set non_hso_field_display = field.name not in form.hso_only_field_names %}
+  {% if (hso_field_display or non_hso_field_display) %}
+    <div class="row g-3 form-group mb-3">
+      <div class="col-lg-3">
+        <div>
+          <div class="d-inline">{{ field.label_tag(attrs={'class': 'col col-form-label', 'aria-label': field.label }) }}</div>
+          {% if field.name in form.hso_only_field_names %}
+            <sm class="h6 text-secondary"> <span class="badge bg-success">{{ tdt("HSO only") }}</span></sm>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-9">
+        {% if rich %}
+          {{ field|safe }}
+        {% else %}
+          {{ field }}
+        {% endif %}
+      </div>
     </div>
-    <div class="col-lg-9">
-      {% if rich %}
-        {{ field|safe }}
-      {% else %}
-        {{ field }}
-      {% endif %}
-    </div>
-  </div>
+  {% endif %}
+ 
 {% endmacro %}
 
 {% macro accessible_label(id_for, row_name, label_text) %}
@@ -38,7 +48,7 @@
 <form method="POST" action=".">
   {{ csrf_input }}
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Indicator Information") }}</h5>
     <div class="card-body">
       {{ form_field(form.name) }}
@@ -51,7 +61,7 @@
     </div>
   </div>
  
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("General Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.measure_text) }}
@@ -64,7 +74,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Sex Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_sex) }}
@@ -74,7 +84,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Age Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_age) }}
@@ -84,7 +94,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Province Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_province_territory) }}
@@ -94,7 +104,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Living Arrangement Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_living_arrangement) }}
@@ -102,7 +112,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Education Household Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_education_household) }}
@@ -110,7 +120,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Income Quintiles Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_income_quintiles) }}
@@ -118,7 +128,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Trend Analysis Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_trend) }}
@@ -130,7 +140,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Benchmarking Metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_benchmark) }}
@@ -142,7 +152,7 @@
     </div>
   </div>
 
-  <div class="card my-4">
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tdt("Quintile Metadata") }}</h5>
     <div class="card-body">
       <table class="table" style="overflow-x:auto; display:block">

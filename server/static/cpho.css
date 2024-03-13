@@ -115,6 +115,22 @@ span.new-ind-tag {
     opacity: 0.75;
 }
 
+.hideable-card {
+    display: none;
+}
+
+.hideable-card:has(label) {
+    display: block;
+}
+
+.hideable-card {
+    display: none;
+}
+
+.hideable-card:has(label) {
+    display: block;
+}
+
 .width-15{
     width:15%
 }

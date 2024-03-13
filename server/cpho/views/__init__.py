@@ -4,6 +4,7 @@ from .export_metadata import *
 from .indicator_data import *
 from .indicator_metadata import *
 from .indicators import *
+from .infobase_export import *
 from .submission import *
 from .upload_indicators import *
 from .user_management import *

@@ -59,13 +59,18 @@ def get_metadata_submission_statuses(indicator):
     submission_status_trend = aggregate_statuses(
         [d.submission_status for d in trend_analysis_qs]
     )
-    global_status = aggregate_statuses(
-        [
-            submission_status_benchmarking,
-            submission_status_trend,
-            indicator_qs[0].submission_status,
-        ]
-    )
+
+    all_statuses = []
+
+    if submission_status_benchmarking != SUBMISSION_STATUSES.NO_DATA:
+        all_statuses.append(submission_status_benchmarking)
+    if submission_status_trend != SUBMISSION_STATUSES.NO_DATA:
+        all_statuses.append(submission_status_trend)
+    if indicator_qs[0].submission_status != SUBMISSION_STATUSES.NO_DATA:
+        all_statuses.append(indicator_qs[0].submission_status)
+
+    global_status = aggregate_statuses(all_statuses)
+
     return {
         "global_status": global_status,
         "benchmarking_status": submission_status_benchmarking,
@@ -94,9 +99,9 @@ def get_submission_statuses(indicator, period):
         dim_id = dimension_type.id
         data_for_dim = data_by_dimension_type_id[dim_id]
         if not data_for_dim:
-            submission_status_by_dimension_type_id[dim_id] = (
-                SUBMISSION_STATUSES.NO_DATA
-            )
+            submission_status_by_dimension_type_id[
+                dim_id
+            ] = SUBMISSION_STATUSES.NO_DATA
             continue
 
         submission_statuses = [

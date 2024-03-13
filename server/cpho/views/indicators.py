@@ -32,7 +32,7 @@ from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin, export_mapper
 
 
 # might need to move this to a form_fields.py file
-class RelevantDimensionChoiceMultiCheckbox(forms.ModelMultipleChoiceField):
+class ModelMultipleChoiceFieldWithTranslation(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if get_lang_code() == "fr":
             return obj.name_fr
@@ -43,12 +43,29 @@ class IndicatorForm(ModelForm):
     class Meta:
         model = Indicator
         fields = "__all__"
-        widgets = {
-            "relevant_period_types": forms.CheckboxSelectMultiple,
-        }
+
+    def __init__(self, *args, **kwargs):
+        user = None
+        if "user" in kwargs:
+            user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+
+        non_hso_readonly_fields = [
+            "name",
+            "category",
+            "topic",
+            "detailed_indicator",
+            "sub_indicator_measurement",
+            "relevant_dimensions",
+            "relevant_period_types",
+        ]
+        if user and not test_rule("is_admin_or_hso", user):
+            for field in non_hso_readonly_fields:
+                self.fields[field].disabled = True
 
     name = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=True,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     category = forms.ChoiceField(
         required=False,
@@ -76,8 +93,14 @@ class IndicatorForm(ModelForm):
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
+    relevant_period_types = forms.MultipleChoiceField(
+        required=False,
+        choices=Indicator.PERIOD_TYPE_CHOICES,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+
     # make it display name_en attribute of DimensionType model
-    relevant_dimensions = RelevantDimensionChoiceMultiCheckbox(
+    relevant_dimensions = ModelMultipleChoiceFieldWithTranslation(
         required=False,
         queryset=DimensionType.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
@@ -208,9 +231,6 @@ class IndicatorForm(ModelForm):
     table_title_benchmark = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    # benchmarking_legend = forms.CharField(
-    #     required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    # )
     x_axis_benchmark = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
@@ -260,6 +280,37 @@ class IndicatorForm(ModelForm):
         required=False,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
+
+    hso_only_field_names = [
+        "title_overall",
+        "table_title_overall",
+        "title_sex",
+        "table_title_sex",
+        "title_sex_2",
+        "table_title_sex_2",
+        "title_age",
+        "table_title_age",
+        "title_age_2",
+        "table_title_age_2",
+        "title_province_territory",
+        "table_title_province_territory",
+        "title_province_territory_2",
+        "table_title_province_territory_2",
+        "title_living_arrangement",
+        "table_title_living_arrangement",
+        "title_education_household",
+        "table_title_education_household",
+        "title_income_quintiles",
+        "table_title_income_quintiles",
+        "title_trend",
+        "table_title_trend",
+        "visual_description_trend",
+        "x_axis_trend",
+        "y_axis_trend",
+        "title_benchmark",
+        "table_title_benchmark",
+        "x_axis_benchmark",
+    ]
 
 
 class ListIndicators(ListView):
@@ -419,6 +470,11 @@ class EditIndicator(MustPassAuthCheckMixin, UpdateView):
             self.request.user,
             self.indicator,
         )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"user": self.request.user})
+        return kwargs
 
     @cached_property
     def indicator(self):

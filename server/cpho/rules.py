@@ -50,7 +50,8 @@ def can_create_indicator(user):
 
 @auto_rule
 def can_edit_indicator(user, indicator):
-    return is_admin_or_hso(user)
+    # return is_admin_or_hso(user)
+    return can_access_indicator(user, indicator)
 
 
 @auto_rule

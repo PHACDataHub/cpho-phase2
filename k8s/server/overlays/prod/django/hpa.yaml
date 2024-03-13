@@ -15,7 +15,9 @@ spec:
       name: memory
       target:
         type: Utilization
-        averageUtilization: 65
+        # memory usage is high due to multiple active gunicorn workers, but tends to remains stable under load,
+        # so a higher average utilization target for scaling is preferable
+        averageUtilization: 85
   - type: Resource
     resource:
       name: cpu

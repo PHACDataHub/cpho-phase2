@@ -12,11 +12,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-from server.open_telemetry_util import instrument_app_for_open_telemetry
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
-
-flush_telemetry_callback = instrument_app_for_open_telemetry()
-atexit.register(flush_telemetry_callback)
 
 application = get_wsgi_application()

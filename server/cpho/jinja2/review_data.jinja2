@@ -7,41 +7,37 @@
   {{ bc.indicators_index() }}
   {{ bc.indicator(view.indicator) }}
   {{ bc.indicator_period(view.indicator, period) }}
-  {{ bc.item(tdt("Review for submission") , None, True) }}
+  {{ bc.item(tm("review_for_submission") , None, True) }}
 {% endblock %}
 
 {% block content %}
-  <div class="h2">{{ tdt("Review indicator data for: ") }} {{ view.indicator.name }} {{ view.period }}</div>
+  <div class="h2">{{ tm("review_indicator_data_for") }} : {{ view.indicator.name }} {{ view.period }}</div>
   <div>
     <a type="button"
        data-bs-toggle="modal"
        data-bs-target="#confirmApproveModal"
-       class="btn btn-success my-3">{{ tdt("Approve Data") }}</a>
+       class="btn btn-success my-3">{{ tm("approve_data") }}</a>
   </div>
   <div>
     <div>
       {% for dimension_type in view.dimension_types %}
         <div class="mt-5">
           <div class="h5">
-            {{ tdt("Stratifier: ") }} {{ dimension_type.name }} <sm class="h6 text-secondary">{{ submission_status_badge(view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id]) }}</sm>
+            {{ tm("stratifier") }} : {{ dimension_type.name }} <sm class="h6 text-secondary">{{ submission_status_badge(view.submission_statuses['statuses_by_dimension_type_id'][dimension_type.id]) }}</sm>
           </div>
  
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
         </div>
       {% endfor %}
     </div>
-
-    <div class="my-5">
-    {{ todo_block("TODO: changelog of changes since last submission") }}</center>
   </div>
-</div>
 
-{% if view.dimension_type %}
-  {% set submission_url = url('submit_indicator_data', args=[view.indicator.id, view.period.id, view.dimension_type.id]) %}
-{% else %}
-  {% set submission_url = url('submit_indicator_data_all', args=[view.indicator.id, view.period.id]) %}
-{% endif %}
-{% set modal_title = tdt("Confirm data approval") %}
-{% include 'modals/submission_modal.jinja2' %}
+  {% if view.dimension_type %}
+    {% set submission_url = url('submit_indicator_data', args=[view.indicator.id, view.period.id, view.dimension_type.id]) %}
+  {% else %}
+    {% set submission_url = url('submit_indicator_data_all', args=[view.indicator.id, view.period.id]) %}
+  {% endif %}
+  {% set modal_title = tm("confirm_data_approval") %}
+  {% include 'modals/submission_modal.jinja2' %}
 
 {% endblock %}

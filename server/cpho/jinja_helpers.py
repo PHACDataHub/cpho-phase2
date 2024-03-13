@@ -132,12 +132,12 @@ def message_type(message):
 
 def submission_status_label(submission_status):
     return {
-        SUBMISSION_STATUSES.NO_DATA: tdt("No data"),
-        SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tdt("Not yet submitted"),
-        SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tdt("Program submitted"),
-        SUBMISSION_STATUSES.SUBMITTED: tdt("Submitted by Program and HSO"),
-        SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tdt(
-            "Modified since last submission"
+        SUBMISSION_STATUSES.NO_DATA: tm("no_data"),
+        SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tm("not_yet_submitted"),
+        SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tm("program_submitted"),
+        SUBMISSION_STATUSES.SUBMITTED: tm("submitted_by_program_and_hso"),
+        SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tm(
+            "modified_since_last_submission"
         ),
     }[submission_status]
 

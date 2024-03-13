@@ -25,7 +25,9 @@
   <fieldset class="row g-3 form-group mb-3">
     <div class="col-lg-2">
       <div class="row">
-        <legend class="col col-form-label" style="font-size:1rem">{{ field.label }}</legend>
+        <fieldset>
+          <legend class="col col-form-label" style="font-size:1rem">{{ field.label }}</legend>
+        </fieldset>
       </div>
       {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
     </div>

@@ -20,10 +20,10 @@
  
   <div class="h2">{{ tdt("Review metadata for: ") }} {{ view.indicator.name }}</div>
   <div>
-    <a type="button"
+    <button type="button"
        data-bs-toggle="modal"
        data-bs-target="#confirmApproveModal"
-       class="btn btn-success mt-2">{{ tdt("Approve all metadata") }}</a>
+       class="btn btn-success mt-2">{{ tdt("Approve all metadata") }}</button>
   </div>
 
   <div class="mt-4">
@@ -38,7 +38,7 @@
       <div class="row">
         <div class="h5 col">
           {{ tdt("Indicator Metadata") }}
-          <sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['indicator_status']) }}</sm>
+          <span class="h6 text-secondary">{{ submission_status_badge(submission_statuses['indicator_status']) }}</span>
         </div>
         {% if respects_rule('can_edit_indicator', view.indicator) %}
           <div class="col">
@@ -161,7 +161,7 @@
     <div class="card-header">
       <div class="row">
         <div class="h5 col">
-          {{ tdt("Benchmarking Metadata") }}<sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['benchmarking_status']) }}</sm>
+          {{ tdt("Benchmarking Metadata") }}<span class="h6 text-secondary">{{ submission_status_badge(submission_statuses['benchmarking_status']) }}</span>
         </div>
         {% if respects_rule('can_edit_benchmarking', view.indicator) %}
           <div class="col">
@@ -203,7 +203,7 @@
     <div class="card-header">
       <div class="row">
         <div class="h5 col">
-          {{ tdt("Trend Analysis Metadata") }}<sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['trend_status']) }}</sm>
+          {{ tdt("Trend Analysis Metadata") }}<span class="h6 text-secondary">{{ submission_status_badge(submission_statuses['trend_status']) }}</span>
         </div>
         {% if respects_rule('can_edit_trend_analysis', indicator) %}
           <div class="col">

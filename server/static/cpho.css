@@ -114,3 +114,11 @@ span.new-ind-tag {
 .subtext {
     opacity: 0.75;
 }
+
+.hideable-card {
+    display: none;
+}
+
+.hideable-card:has(label) {
+    display: block;
+}

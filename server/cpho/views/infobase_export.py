@@ -189,20 +189,25 @@ class InfobaseExportView(View):
         writer.write()
 
     def write_indicator_data(self):
+        qs = IndicatorDatum.objects.all().select_related(
+            "indicator", "period", "dimension_type", "dimension_value"
+        )
         writer = IndicatorDatumSheetWriter(
-            workbook=self.workbook, iterator=IndicatorDatum.objects.all()
+            workbook=self.workbook, iterator=qs.all()
         )
         writer.write()
 
     def write_trends(self):
-        writer = TrendSheetWriter(
-            workbook=self.workbook, iterator=TrendAnalysis.objects.all()
-        )
+        qs = TrendAnalysis.objects.all().select_related("indicator")
+        writer = TrendSheetWriter(workbook=self.workbook, iterator=qs.all())
         writer.write()
 
     def write_benchmarking(self):
+        qs = Benchmarking.objects.all().select_related(
+            "indicator", "oecd_country"
+        )
         writer = BenchmarkingSheetWriter(
-            workbook=self.workbook, iterator=Benchmarking.objects.all()
+            workbook=self.workbook, iterator=qs.all()
         )
         writer.write()
 

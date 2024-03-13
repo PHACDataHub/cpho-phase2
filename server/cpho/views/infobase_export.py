@@ -162,6 +162,16 @@ class BenchmarkingSheetWriter(ModelToSheetWriter):
 
 trend_columns = [
     ModelColumn(TrendAnalysis, "id"),
+    CustomColumn("indicator_id", lambda x: x.indicator_id),
+    # indicator columns useful to help identify??
+    CustomColumn("indicator name", lambda x: x.indicator.name),
+    CustomColumn(
+        "detailed indicator", lambda x: x.indicator.detailed_indicator
+    ),
+    CustomColumn(
+        "sub indicator measurement",
+        lambda x: x.indicator.sub_indicator_measurement,
+    ),
     ModelColumn(TrendAnalysis, "year"),
     ModelColumn(TrendAnalysis, "data_point"),
     ModelColumn(TrendAnalysis, "line_of_best_fit_point"),

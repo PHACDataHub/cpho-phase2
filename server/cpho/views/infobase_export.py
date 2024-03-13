@@ -84,10 +84,13 @@ indicator_data_columns = [
     ModelColumn(IndicatorDatum, "id"),
     CustomColumn("indicator_id", lambda x: x.indicator_id),
     # indicator columns useful to help identify??
-    CustomColumn("indicator_id", lambda x: x.indicator.name),
-    CustomColumn("indicator_id", lambda x: x.indicator.detailed_indicator),
+    CustomColumn("indicator name", lambda x: x.indicator.name),
     CustomColumn(
-        "indicator_id", lambda x: x.indicator.sub_indicator_measurement
+        "detailed indicator", lambda x: x.indicator.detailed_indicator
+    ),
+    CustomColumn(
+        "sub indicator measurement",
+        lambda x: x.indicator.sub_indicator_measurement,
     ),
     # denormalized periods, they'll probably only use year
     CustomColumn("year", lambda x: x.period.year),
@@ -135,10 +138,13 @@ benchmarking_columns = [
     ModelColumn(IndicatorDatum, "id"),
     CustomColumn("indicator_id", lambda x: x.indicator_id),
     # indicator columns useful to help identify??
-    CustomColumn("indicator_id", lambda x: x.indicator.name),
-    CustomColumn("indicator_id", lambda x: x.indicator.detailed_indicator),
+    CustomColumn("indicator name", lambda x: x.indicator.name),
     CustomColumn(
-        "indicator_id", lambda x: x.indicator.sub_indicator_measurement
+        "detailed indicator", lambda x: x.indicator.detailed_indicator
+    ),
+    CustomColumn(
+        "sub indicator measurement",
+        lambda x: x.indicator.sub_indicator_measurement,
     ),
     ChoiceColumn(Benchmarking, "unit"),
     ModelColumn(Benchmarking, "oecd_country"),
@@ -212,9 +218,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename=hopic_infobase_export.xlsx"
+        response["Content-Disposition"] = (
+            f"attachment; filename=hopic_infobase_export.xlsx"
+        )
         self.workbook.save(response)
 
         return response

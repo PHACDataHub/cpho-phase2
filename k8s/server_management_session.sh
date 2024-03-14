@@ -71,7 +71,14 @@ IFS=" " read -r selected_pod_name selected_namespace selected_container_name sel
 echo ""
 echo "Attaching debug container image to selected server container, with shared process pool and cloned env vars..."
 echo -e "\tTargetting \"${selected_container_name}\" container with tag \"${selected_image_tag}\" in namespace \"${selected_namespace}\" (pod \"${selected_pod_name}\")"
-echo -e "\Attaching debug container using ${debug_image_name}:${selected_image_tag}"
+echo -e "\tAttaching debug container using ${debug_image_name}:${selected_image_tag}"
+
+echo ""
+echo "Tip: while the maintenance container is still alive (this terminal is attached), you can copy to/from the maintenance pod from your local machine using the following commands:"
+echo -e "\tkubectl cp <local file path> ${selected_namespace}/${selected_pod_name}:<remote file path> -c <debug container name>"
+echo -e "\tkubectl cp ${selected_namespace}/${selected_pod_name}:<remote file path> <local file path> -c <debug container name>"
+echo "Where \"<debug container name>\" is the container name output below (looks like \"debugger-[a-z0-9]{5}\")"
+
 echo ""
 kubectl debug -it --namespace "${selected_namespace}" --target "${selected_container_name}" \
   --image "${debug_image_name}:${selected_image_tag}" "${selected_pod_name}"  \

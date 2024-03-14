@@ -23,6 +23,9 @@ gcloud container clusters get-credentials "${CLUSTER}" --region "${REGION}" --pr
 
 echo ""
 echo "Getting available server containers (looking for \`${server_image_name}:*\`)..."
+# Gets a new-line delimited list of server containers on the cluster
+# Each container line is a space delimited list of pod name, pod namespace, container name (the k8s name within the pod), and container image tag
+# The `uniq -f 1` filters to one option per namespace (`-f 1`, a little confusingly, means ignore the first field, the pod name, while uniq-ing)
 server_container_options=$(\
   kubectl get pods --all-namespaces -o \
   jsonpath='{range .items[*]}{"\n"}{.metadata.name}{" "}{.metadata.namespace}{" "}{range .spec.containers[*]}{"("}{.name}{","}{.image}{")"}{","}{end}{end}' \

@@ -1,64 +1,48 @@
-#################
-# WHEEL BUILDER #
-#################
-FROM python:3.10.13-alpine3.18 as wheel_builder
+######################
+# DEPENDENCY BUILDER #
+######################
+# NOTE: builder layer must mach python and distribution versions of distroless runtime layer!
+FROM python:3.11-bookworm as build_env
 
-# set work directory
-WORKDIR /wheels
+ENV HOME=/cpho
+ENV APP_HOME=$HOME/web
+ENV PYTHON_DEPS=$HOME/python_deps
 
-# set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install dependencies
-RUN apk update \
-    && apk add  \
-    gcc \
-    libffi-dev \
-    musl-dev \
-    openssl-dev \
-    postgresql-dev \
-    python3-dev
+RUN mkdir -p "${APP_HOME}" && mkdir "${PYTHON_DEPS}"
 
 # Update pip
 RUN pip install --upgrade pip
 
-# build prod dependencies in /wheels/prod
 COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./prod -r requirements.txt  
-
-# build test dependencies in /wheels/test
 COPY ./requirements_dev.txt .
 COPY ./requirements_formatting.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./test -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
+
+# type DEPENDENCY_SET = "prod" || "test"
+ARG DEPENDENCY_SET="prod"
+RUN [ "${DEPENDENCY_SET}" = "prod" ] \
+    && pip install --no-cache-dir --no-deps --target "${PYTHON_DEPS}" -r requirements.txt \
+    || pip install --no-cache-dir --no-deps --target "${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
 
 #########
 # FINAL #
 #########
-FROM gcr.io/distroless/python3-debian12:nonroot
+FROM gcr.io/distroless/python3-debian12
 
 ENV HOME=/cpho
 ENV APP_HOME=$HOME/web
-ENV VIRTUALENV=$HOME/env
-ENV WHEELDIR=$HOME/wheels
+ENV PYTHON_DEPS=$HOME/python_deps
 
-RUN mkdir -p $APP_HOME && \
-    mkdir $VIRTUALENV &&
+COPY --chown=nonroot --from=build_env $HOME /
+COPY --chown=nonroot . $APP_HOME
 
+ENV HOME=$HOME
+ENV PATH="${PYTHON_DEPS}/bin:$PATH"
 WORKDIR $APP_HOME
 
-RUN python -mvenv $VIRTUALENV
-ENV PATH="${VIRTUALENV}/bin:$PATH"
-
-# copy and install dependencies from build stage in virtual environment
-# choice of "prod" or "test", corresponding to dependency directories from the wheel_builder step
-ARG DEPENDENCY_SET="prod"
-COPY --from=wheel_builder /wheels/$DEPENDENCY_SET $WHEELDIR
-RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
-    python -m pip install --no-cache $WHEELDIR/* && rm -rf $WHEELDIR
-
-# copy project
-COPY . $APP_HOME
+USER nonroot
 
 EXPOSE 8080
 

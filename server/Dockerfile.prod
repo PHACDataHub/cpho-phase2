@@ -62,7 +62,4 @@ COPY . $APP_HOME
 
 EXPOSE 8080
 
-# Entrypoint script to run on-start steps (confirm migrations, etc)
-ENTRYPOINT ["sh", "./entrypoint.prod.sh"]
-# gunicorn configuration found in gunicorn.conf.py
-CMD exec gunicorn
+ENTRYPOINT [ "python", "./entrypoint.prod.py" ]

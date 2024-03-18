@@ -141,7 +141,7 @@ steps:
         fi
       fi
 
-  - id: "Build and push app image if main"
+  - id: "Build and push app and management image if main"
     name: "gcr.io/cloud-builders/docker"
     script: |
       #!/usr/bin/env bash
@@ -154,10 +154,16 @@ steps:
 
       if [[ "${BRANCH_NAME}" == "${GITHUB_MAIN_BRANCH_NAME}" ]]; then
         echo "Build a new application run time image"
-        docker build -t "${IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile ./server
+        docker build -t "${RUNTIME_IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile.prod ./server
 
-        echo "Push the new image to the project's artifact registry"
-        docker push "${IMAGE_NAME_FOR_RUN}"
+        echo "Push the app run time image to the project's artifact registry"
+        docker push "${RUNTIME_IMAGE_NAME_FOR_RUN}"
+
+        echo "Build a corresponding management image"
+        docker build -t "${MANAGEMENT_IMAGE_NAME_FOR_RUN}" -f ./server/Dockerfile.dev-management ./server
+
+        echo "Push the management image to the project's artifact registry"
+        docker push "${MANAGEMENT_IMAGE_NAME_FOR_RUN}"
        else
         echo "pass"
       fi

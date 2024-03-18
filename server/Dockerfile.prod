@@ -27,30 +27,23 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./prod -r requirements.txt  
 
-# build dev-test dependencies in /wheels/dev-test
+# build test dependencies in /wheels/test
 COPY ./requirements_dev.txt .
 COPY ./requirements_formatting.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./dev-test -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir ./test -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
 
 #########
 # FINAL #
 #########
-FROM python:3.10.13-alpine3.18
-
-ENV USER=5678
+FROM gcr.io/distroless/python3-debian12:nonroot
 
 ENV HOME=/cpho
 ENV APP_HOME=$HOME/web
 ENV VIRTUALENV=$HOME/env
 ENV WHEELDIR=$HOME/wheels
 
-RUN \
-    addgroup -S app && adduser --shell /bin/sh -u $USER -S app -G app --home $HOME && \
-    mkdir -p $APP_HOME && \
-    mkdir $VIRTUALENV && \
-    chown -R $USER $HOME && \
-    echo "root:Docker!" | chpasswd && \
-    echo -e "CPHO Container\n\nFor management commands run: \nsu app\npython -m manage\n\n" > /etc/motd
+RUN mkdir -p $APP_HOME && \
+    mkdir $VIRTUALENV &&
 
 WORKDIR $APP_HOME
 
@@ -58,17 +51,14 @@ RUN python -mvenv $VIRTUALENV
 ENV PATH="${VIRTUALENV}/bin:$PATH"
 
 # copy and install dependencies from build stage in virtual environment
-# choice of "prod" or "dev-test", corresponding to dependency directories from the wheel_builder step
+# choice of "prod" or "test", corresponding to dependency directories from the wheel_builder step
 ARG DEPENDENCY_SET="prod"
-COPY --chown=$USER --from=wheel_builder /wheels/$DEPENDENCY_SET $WHEELDIR
+COPY --from=wheel_builder /wheels/$DEPENDENCY_SET $WHEELDIR
 RUN echo -e "cd $APP_HOME\n" >> /etc/profile && \
     python -m pip install --no-cache $WHEELDIR/* && rm -rf $WHEELDIR
 
 # copy project
-COPY --chown=$USER:app . $APP_HOME
-
-# change to the app user
-USER $USER
+COPY . $APP_HOME
 
 EXPOSE 8080
 

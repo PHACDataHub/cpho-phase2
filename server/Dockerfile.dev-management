@@ -65,4 +65,4 @@ COPY --chown=$USER:app . $APP_HOME
 # change to the app user
 USER $USER
 
-CMD exec sh
+CMD exec /bin/sh

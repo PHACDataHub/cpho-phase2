@@ -7,12 +7,13 @@ PROJECT_ID=pht-01hp04dtnkf
 REGION=northamerica-northeast1
 CLUSTER=hopic-cluster
 SERVER_CONTAINER_NAME=server
-SERVER_CONTAINER_REGISTRY=hopic-k8s-images
+SERVER_CONTAINER_REGISTRY_NAME=hopic-k8s-images
 SERVER_CONTAINER_IMAGE_NAME=cpho-phase2
-DEBUG_CONTAINER_IMAGE_NAME=cpho-phase2 #TODO, debug containers not part of CI/CD yet
+DEBUG_CONTAINER_IMAGE_NAME="${SERVER_CONTAINER_IMAGE_NAME}-dev-management"
 
-server_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY}/${SERVER_CONTAINER_IMAGE_NAME}"
-debug_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY}/${SERVER_CONTAINER_IMAGE_NAME}"
+registry="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY_NAME}"
+server_image_name="${registry}/${SERVER_CONTAINER_IMAGE_NAME}"
+debug_image_name="${registry}/${SERVER_CONTAINER_IMAGE_NAME}"
 
 echo "Log in as your DMIA GCP user"
 gcloud auth login 

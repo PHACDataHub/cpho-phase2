@@ -16,6 +16,7 @@ services:
   server:
     build:
       context: ./server
+      dockerfile: Dockerfile.prod
       args:
         - DEPENDENCY_SET=dev-test
     user: root

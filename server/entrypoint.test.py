@@ -27,7 +27,7 @@ subprocess.run(
         "coverage",
         "json",
         "-o",
-        f"{app_home}/coverage.json",
+        f"{app_home}/coverage/coverage.json",
         "--pretty-print",
     ],
     check=True,

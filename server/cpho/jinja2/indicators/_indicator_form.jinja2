@@ -54,13 +54,13 @@
       {{ form_field(form.topic) }}
       {{ form_field(form.detailed_indicator) }}
       {{ form_field(form.sub_indicator_measurement) }}
-      {{ fieldset_field(form.relevant_dimensions, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
-      {{ fieldset_field(form.relevant_period_types, helptext=tdt("Not published, just a convenience factor to filter in-app choices") ) }}
+      {{ fieldset_field(form.relevant_dimensions, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
+      {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
     </div>
   </div>
  
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("General Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("general_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.measure_text) }}
       {{ form_field(form.title_overall) }}
@@ -73,7 +73,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Sex Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("sex_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_sex) }}
       {{ form_field(form.table_title_sex) }}
@@ -83,7 +83,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Age Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("age_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_age) }}
       {{ form_field(form.table_title_age) }}
@@ -93,7 +93,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Province Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("province_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_province_territory) }}
       {{ form_field(form.table_title_province_territory) }}
@@ -103,7 +103,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Living Arrangement Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("living_arrangement_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_living_arrangement) }}
       {{ form_field(form.table_title_living_arrangement) }}
@@ -111,7 +111,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Education Household Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("education_household_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_education_household) }}
       {{ form_field(form.table_title_education_household) }}
@@ -119,7 +119,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Income Quintiles Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("income_quintiles_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_income_quintiles) }}
       {{ form_field(form.table_title_income_quintiles) }}
@@ -127,7 +127,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Trend Analysis Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("trend_analysis_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_trend) }}
       {{ form_field(form.table_title_trend) }}
@@ -139,7 +139,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Benchmarking Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("benchmarking_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_benchmark) }}
       {{ form_field(form.table_title_benchmark) }}
@@ -151,7 +151,7 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Quintile Metadata") }}</h5>
+    <h5 class="card-header">{{ tm("quintile_metadata") }}</h5>
     <div class="card-body">
       <table class="table" style="overflow-x:auto; display:block">
         <thead>
@@ -210,5 +210,5 @@
 
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
-         value="{{ tdt("Submit") }}" />
+         value="{{ tm("submit") }}" />
 </form>

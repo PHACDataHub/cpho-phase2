@@ -69,7 +69,7 @@ class BenchmarkingForm(ModelForm):
     value = forms.FloatField(
         required=True,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Value")}
+            attrs={"class": "form-control", "placeholder": tm("value")}
         ),
     )
     year = forms.IntegerField(

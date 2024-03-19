@@ -58,6 +58,10 @@ translation_entries = {
         "en": "Date",
         "fr": "Date",
     },
+    "n/a": {
+        "en": "N/A",
+        "fr": "S/O",
+    },
     "author": {
         "en": "Author",
         "fr": "Auteur",
@@ -90,9 +94,17 @@ translation_entries = {
         "en": "No change detected compared to previous version",
         "fr": "Aucune modification détectée par rapport à la version précédente",
     },
+    "saved": {
+        "en": "Saved",
+        "fr": "Enregistré",
+    },
     "of": {
         "en": "of",
         "fr": "de",
+    },
+    "for": {
+        "en": "for",
+        "fr": "pour",
     },
     "first": {
         "en": "First",
@@ -212,10 +224,6 @@ translation_entries = {
         "en": "Approve all metadata",
         "fr": "Approuver toutes les métadonnées",
     },
-    "indicator_metadata_submission": {
-        "en": "Indicator metadata submission",
-        "fr": "Soumission des métadonnées de l'indicateur",
-    },
     "indicator_metadata": {
         "en": "Indicator Metadata",
         "fr": "Métadonnées de l'indicateur",
@@ -295,6 +303,10 @@ translation_entries = {
     "table_title_sex_2": {
         "en": "Table title sex 2",
         "fr": "Titre du tableau sexe 2",
+    },
+    "age": {
+        "en": "Age",
+        "fr": "Âge",
     },
     "title_age": {
         "en": "Title age",
@@ -388,9 +400,13 @@ translation_entries = {
         "en": "X axis benchmark",
         "fr": "Axe x de référence",
     },
+    "benchmarking": {
+        "en": "Benchmarking",
+        "fr": "Analyse comparative",
+    },
     "benchmarking_footnotes": {
         "en": "Benchmarking footnotes",
-        "fr": "Notes de bas de page de référence",
+        "fr": "Notes de bas de page d'analyse comparative",
     },
     "upper": {
         "en": "Upper",
@@ -402,11 +418,11 @@ translation_entries = {
     },
     "benchmarking_metadata": {
         "en": "Benchmarking Metadata",
-        "fr": "Métadonnées de référence",
+        "fr": "Métadonnées d'analyse comparative",
     },
     "edit_benchmarking_metadata": {
         "en": "Edit Benchmarking Metadata",
-        "fr": "Modifier les métadonnées de référence",
+        "fr": "Modifier les métadonnées d'analyse comparative",
     },
     "oecd_country": {
         "en": "OECD Country",
@@ -440,6 +456,10 @@ translation_entries = {
         "en": "Year range",
         "fr": "Plage d'années",
     },
+    "add_data": {
+        "en": "Add Data",
+        "fr": "Ajouter des données",
+    },
     "data_point": {
         "en": "Data point",
         "fr": "Point de données",
@@ -471,5 +491,149 @@ translation_entries = {
     "confirm_metadata_approval": {
         "en": "Confirm metadata approval",
         "fr": "Confirmer l'approbation des métadonnées",
+    },
+    "global_changelog": {
+        "en": "Global Changelog",
+        "fr": "Journal des modifications global",
+    },
+    "changelog_for_indicator": {
+        "en": "Changelog for indicator",
+        "fr": "Journal des modifications pour l'indicateur",
+    },
+    "managing_data_for_stratifier": {
+        "en": "Managing data for stratifier",
+        "fr": "Gestion des données pour le stratificate",
+    },
+    "general_metadata": {
+        "en": "General Metadata",
+        "fr": "Métadonnées générales",
+    },
+    "sex_metadata": {
+        "en": "Sex Metadata",
+        "fr": "Métadonnées sur le sexe",
+    },
+    "age_metadata": {
+        "en": "Age Metadata",
+        "fr": "Métadonnées sur l'âge",
+    },
+    "province_metadata": {
+        "en": "Province Metadata",
+        "fr": "Métadonnées sur la province",
+    },
+    "living_arrangement_metadata": {
+        "en": "Living Arrangement Metadata",
+        "fr": "Métadonnées sur l'arrangement de vie",
+    },
+    "education_household_metadata": {
+        "en": "Education Household Metadata",
+        "fr": "Métadonnées sur l'éducation du ménage",
+    },
+    "income_quintiles_metadata": {
+        "en": "Income Quintiles Metadata",
+        "fr": "Métadonnées sur les quintiles de revenu",
+    },
+    "quintile_metadata": {
+        "en": "Quintile Metadata",
+        "fr": "Métadonnées quintiles",
+    },
+    "not_published_just_a_convenience_factor_to_filter_in_app_choices": {
+        "en": "Not published, just a convenience factor to filter in app choices",
+        "fr": "Non publié, juste un facteur de commodité pour filtrer les choix dans l'application",
+    },
+    "data_entered": {
+        "e gbn": "Data entered",
+        "fr": "Données saisies",
+    },
+    "more_info": {
+        "en": "More info",
+        "fr": "Plus d'informations",
+    },
+    "data_currently_in_database_but_not_approved_by_program_or_hso_data_is_not_made_visible_through_the_api_for_infobase_until_approved_by_program_and_then_hso_data_modified_after_approval_is_also_treated_similarly": {
+        "en": "Data currently in database but not approved by program or HSO. Data is not made visible through the API for Infobase until approved by program and then HSO. Data modified after approval is also treated similarly.",
+        "fr": "Données actuellement dans la base de données mais non approuvées par le programme ou le DSP. Les données ne sont pas rendues visibles via l'API pour Infobase avant d'être approuvées par le programme, puis par le DSP. Les données modifiées après approbation sont également traitées de manière similaire.",
+    },
+    "program_approved_expl": {
+        "en": "Data is approved by program only. At this point is is not made visible through the API (for infobase) until HSO approves it",
+        "fr": "Les données sont approuvées par le programme uniquement. À ce stade, elles ne sont pas rendues visibles via l'API (pour Infobase) avant que le DSP ne les approuve",
+    },
+    "submitted_by_program_and_hso_expl": {
+        "en": "Data is approved by both program and HSO and has not been modified after obtaining approvals. At this point is is made available through the API (for infobase)",
+        "fr": "Les données sont approuvées par le programme et le DSP et n'ont pas été modifiées après avoir obtenu les approbations. À ce stade, elles sont rendues disponibles via l'API (pour Infobase)",
+    },
+    "add_another_age_group": {
+        "en": "Add another age group",
+        "fr": "Ajouter un autre groupe d'âge",
+    },
+    "upload_data": {
+        "en": "Upload Data",
+        "fr": "Télécharger des données",
+    },
+    "export_data": {
+        "en": "Export Data",
+        "fr": "Exporter des données",
+    },
+    "period": {
+        "en": "Period",
+        "fr": "Période",
+    },
+    "data_count": {
+        "en": "Data Count",
+        "fr": "Nombre de données",
+    },
+    "data_submission": {
+        "en": "Data Submission",
+        "fr": "Soumission de données",
+    },
+    "actions": {
+        "en": "Actions",
+        "fr": "Actions",
+    },
+    "periods_with_data": {
+        "en": "Periods with data",
+        "fr": "Périodes avec des données",
+    },
+    "indicator_metadata_submission": {
+        "en": "Indicator Metadata Submission",
+        "fr": "Soumission des métadonnées de l'indicateur",
+    },
+    "add_data_for_new_periods": {
+        "en": "Add data for new periods",
+        "fr": "Ajouter des données pour de nouvelles périodes",
+    },
+    "indicator_group": {"en": "Indicator Group", "fr": "Groupe d'indicateurs"},
+    "you_are_in_indicator_group_expl": {
+        "en": "You are part of this indicator group. You can view, modify and submit the below indicators, and so can every other user in the group. You can add new users to this group. Please contact HSO if users need to be removed",
+        "fr": "Vous faites partie de ce groupe d'indicateurs. Vous pouvez voir, modifier et soumettre les indicateurs ci-dessous, tout comme chaque autre utilisateur du groupe. Vous pouvez ajouter de nouveaux utilisateurs à ce groupe. Veuillez contacter le DSP si des utilisateurs doivent être retirés",
+    },
+    "add_new_user": {
+        "en": "Add new user",
+        "fr": "Ajouter un nouvel utilisateur",
+    },
+    "back_to_indicators": {
+        "en": "Back to indicators",
+        "fr": "Retour aux indicateurs",
+    },
+    "expected_column_names": {
+        "en": "Expected column names",
+        "fr": "Noms de colonnes attendus",
+    },
+    "descriptions": {"en": "Descriptions", "fr": "Descriptions"},
+    "description": {"en": "Description", "fr": "Description"},
+    "possible_values": {"en": "Possible values", "fr": "Valeurs possibles"},
+    "open_text_field": {
+        "en": "Open text field",
+        "fr": "Champ de texte ouvert",
+    },
+    "quarters_are_only_valid_for_fiscal_years": {
+        "en": "Quarters are only valid for fiscal years",
+        "fr": "Les trimestres ne sont valides que pour les années fiscales",
+    },
+    "note": {
+        "en": "Note",
+        "fr": "Note",
+    },
+    "quarter": {
+        "en": "Quarter",
+        "fr": "Trimestre",
     },
 }

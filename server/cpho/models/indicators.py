@@ -11,7 +11,7 @@ from server.model_util import (
 )
 
 from cpho.constants import SUBMISSION_STATUSES
-from cpho.text import tdt
+from cpho.text import tdt, tm
 from cpho.util import get_lang_code
 
 
@@ -368,7 +368,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     data_quality = fields.CharField(
         max_length=50,
         choices=DATA_QUALITY_CHOICES,
-        verbose_name=tdt("Data Quality"),
+        verbose_name=tm("data_quality"),
         null=True,
     )
 
@@ -416,7 +416,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     value_unit = fields.CharField(
         max_length=75,
         choices=VALUE_UNIT_CHOICES,
-        verbose_name=tdt("Value Unit"),
+        verbose_name=tm("value_unit"),
     )
 
     VALUE_DISPLAYED_CHOICES = [

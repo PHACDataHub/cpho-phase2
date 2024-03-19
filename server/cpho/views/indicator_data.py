@@ -71,7 +71,7 @@ class IndicatorDatumForm(ModelForm):
     value = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Value")}
+            attrs={"class": "form-control", "placeholder": tm("value")}
         ),
     )
     value_lower_bound = forms.FloatField(

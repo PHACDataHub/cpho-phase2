@@ -6,12 +6,25 @@ import sys
 # has to happen after the prod env have been (potentially) injected at run time
 sys.stdout.write("\nRunning collectstatic...\n")
 subprocess.run(
-    ["python", "./manage.py", "collectstatic", "--no-input"], check=True
+    ["python", "./manage.py", "collectstatic", "--no-input"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
 )
 
 sys.stdout.write("\nApplying migrations...\n")
-subprocess.run(["python", "./manage.py", "migrate"], check=True)
+subprocess.run(
+    ["python", "./manage.py", "migrate"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)
 
 sys.stdout.write("\nStarting gunicorn\n")
 # https://docs.gunicorn.org/en/latest/custom.html#direct-usage-of-existing-wsgi-apps
-subprocess.run(["python", "-m", "gunicorn"])
+subprocess.run(
+    ["python", "-m", "gunicorn"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)

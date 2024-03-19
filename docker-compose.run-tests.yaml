@@ -29,7 +29,7 @@ services:
       #       If the behaviour changes, or if this is run without using decouple, setting DB_HOST=db here will no longer work.
       - DB_HOST=db
     volumes:
-      - ./coverage:/cpho/web/coverage:rw
+      - ./coverage:/cpho/web/coverage
     depends_on:
       - db
 

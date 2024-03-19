@@ -24,14 +24,13 @@ COPY ./requirements_formatting.txt .
 
 ARG DEPENDENCY_SET="prod"
 
-RUN [ "${DEPENDENCY_SET}" = "prod" ] && ( \
-    pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt \
-    ) || :
+RUN [ "${DEPENDENCY_SET}" = "prod" ] \
+    && pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt \
+    || :
 
-RUN [ "${DEPENDENCY_SET}" = "test" ] && ( \
-    pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt && \
-    mkdir "${BUILD_BASE_DIR}/${APP_HOME}/coverage" \
-    ) || :
+RUN [ "${DEPENDENCY_SET}" = "test" ] \
+    && pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt \
+    || :
 
 #########
 # FINAL #

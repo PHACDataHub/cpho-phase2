@@ -13,7 +13,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p "${BUILD_BASE_DIR}/${APP_HOME}" && \
-    mkdir "${BUILD_BASE_DIR}/${APP_HOME}/coverage" && \
     mkdir "${BUILD_BASE_DIR}/${PYTHON_DEPS}"
 
 # Update pip

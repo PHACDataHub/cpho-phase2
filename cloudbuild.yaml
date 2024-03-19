@@ -30,6 +30,9 @@ steps:
       echo "Get cloud build project configuration values"
       source .env.cloud_build
 
+      echo "Making globally writable coverage directory for mounting to the test image"
+      mkdir --mode 666 ./coverage
+
       echo "Build images for testing, run tests and create report"
       docker compose -f docker-compose.run-tests.yaml up --exit-code-from server    
       # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  

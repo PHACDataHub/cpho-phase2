@@ -22,13 +22,16 @@ COPY ./requirements.txt .
 COPY ./requirements_dev.txt .
 COPY ./requirements_formatting.txt .
 
-# type DEPENDENCY_SET = "prod" || "test"
 ARG DEPENDENCY_SET="prod"
-RUN [ "${DEPENDENCY_SET}" = "prod" ] \
-    && pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt \
-    || pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
 
-RUN [ "${DEPENDENCY_SET}" = "test" ] && mkdir "${BUILD_BASE_DIR}/${APP_HOME}/coverage"
+RUN [ "${DEPENDENCY_SET}" = "prod" ] && ( \
+    pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt \
+    ) || :
+
+RUN [ "${DEPENDENCY_SET}" = "test" ] && ( \
+    pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt && \
+    mkdir "${BUILD_BASE_DIR}/${APP_HOME}/coverage" \
+    ) || :
 
 #########
 # FINAL #
@@ -48,6 +51,8 @@ ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
 ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
 
 WORKDIR $APP_HOME
+
+USER nonroot
 
 EXPOSE 8080
 

@@ -4,6 +4,7 @@
 # NOTE: builder layer must mach python and distribution versions of distroless runtime layer!
 FROM python:3.11-bookworm as build_env
 
+ENV BUILD_BASE_DIR=/build
 ENV HOME=/cpho
 ENV APP_HOME=$HOME/web
 ENV PYTHON_DEPS=$HOME/python_deps
@@ -11,7 +12,7 @@ ENV PYTHON_DEPS=$HOME/python_deps
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p "${APP_HOME}" && mkdir "${PYTHON_DEPS}"
+RUN mkdir -p "${BUILD_BASE_DIR}/${APP_HOME}" && mkdir "${BUILD_BASE_DIR}/${PYTHON_DEPS}"
 
 # Update pip
 RUN pip install --upgrade pip
@@ -23,23 +24,26 @@ COPY ./requirements_formatting.txt .
 # type DEPENDENCY_SET = "prod" || "test"
 ARG DEPENDENCY_SET="prod"
 RUN [ "${DEPENDENCY_SET}" = "prod" ] \
-    && pip install --no-cache-dir --no-deps --target "${PYTHON_DEPS}" -r requirements.txt \
-    || pip install --no-cache-dir --no-deps --target "${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
+    && pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt \
+    || pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
 
 #########
 # FINAL #
 #########
 FROM gcr.io/distroless/python3-debian12
 
+ENV BUILD_BASE_DIR=/build
 ENV HOME=/cpho
 ENV APP_HOME=$HOME/web
 ENV PYTHON_DEPS=$HOME/python_deps
 
-COPY --chown=nonroot --from=build_env $HOME /
+COPY --chown=nonroot --from=build_env $BUILD_BASE_DIR /
 COPY --chown=nonroot . $APP_HOME
 
 ENV HOME=$HOME
-ENV PATH="${PYTHON_DEPS}/bin:$PATH"
+ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
+ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
+
 WORKDIR $APP_HOME
 
 USER nonroot

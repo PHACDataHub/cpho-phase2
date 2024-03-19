@@ -15,7 +15,7 @@ server_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REG
 debug_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY}/${SERVER_CONTAINER_IMAGE_NAME}"
 
 echo "Log in as your DMIA GCP user"
-gcloud auth login 
+#gcloud auth login 
 
 echo ""
 echo "Getting cluster credentials..."
@@ -30,7 +30,7 @@ server_container_options=$(\
   kubectl get pods --all-namespaces -o \
   jsonpath='{range .items[*]}{"\n"}{.metadata.name}{" "}{.metadata.namespace}{" "}{range .spec.containers[*]}{"("}{.name}{","}{.image}{")"}{","}{end}{end}' \
   | grep -E "${server_image_name}" \
-  | sed -E -e "s|^(.*)[ ](.*)[ ].*\((.*?),${server_image_name}:(.*?)\),.*$|\1 \2 \3 \4|g" \
+  | sed -E -e "s|^(.*)[ ](.*)[ ].*\(([^,]+),${server_image_name}:([^\),]+)\),.*$|\1 \2 \3 \4|g" \
   | sort \
   | uniq -f 1 \
 )
@@ -52,6 +52,7 @@ for (( i=1; i<="${server_container_option_count}"; i++ )); do
 
 	echo -e "\t${i}\t${namespace}\t${image_tag}"
 done
+exit 1
 read -p "Select from range 1-${server_container_option_count}: " selected_target
 
 if [[ ! "${selected_target}" =~ ^[1-9]+$ ]]; then

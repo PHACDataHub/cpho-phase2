@@ -28,10 +28,12 @@ RUN [ "${DEPENDENCY_SET}" = "prod" ] \
     && pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt \
     || pip install --no-cache-dir --target "${BUILD_BASE_DIR}/${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
 
+RUN [ "${DEPENDENCY_SET}" = "test" ] && mkdir "${BUILD_BASE_DIR}/${APP_HOME}/coverage"
+
 #########
 # FINAL #
 #########
-FROM gcr.io/distroless/python3-debian12
+FROM gcr.io/distroless/python3-debian12:nonroot
 
 ENV BUILD_BASE_DIR=/build
 ENV HOME=/cpho
@@ -46,8 +48,6 @@ ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
 ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
 
 WORKDIR $APP_HOME
-
-USER nonroot
 
 EXPOSE 8080
 

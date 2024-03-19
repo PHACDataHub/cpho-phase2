@@ -19,6 +19,7 @@ subprocess.run(
 )
 
 sys.stdout.write("\nWritting coverage.json...\n")
+app_home = os.environ["APP_HOME"]
 subprocess.run(
     [
         "python",
@@ -26,10 +27,7 @@ subprocess.run(
         "coverage",
         "json",
         "-o",
-        # NOTE: docker-compose.run-tests.yaml mounts a volume from the host system
-        # to /cpho/web/coverage, to make sharing the coverage.json easier. This volume
-        # must be globally writable for this script to run
-        "/cpho/web/coverage/coverage.json",
+        f"{app_home}/coverage/coverage.json",
         "--pretty-print",
     ],
     check=True,

@@ -3,11 +3,19 @@ import subprocess
 import sys
 
 sys.stdout.write("\nRunning tests...\n")
-subprocess.run(["python", "-m", "coverage", "run", "-m", "pytest"], check=True)
+subprocess.run(
+    ["python", "-m", "coverage", "run", "-m", "pytest"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)
 
 sys.stdout.write("\nCoverage report:\n")
 subprocess.run(
-    ["python", "-m", "coverage", "report", "--show-missing"], check=True
+    ["python", "-m", "coverage", "report", "--show-missing"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
 )
 
 sys.stdout.write("\nWritting coverage.json...\n")
@@ -23,4 +31,6 @@ subprocess.run(
         "--pretty-print",
     ],
     check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
 )

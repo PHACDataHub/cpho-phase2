@@ -50,6 +50,8 @@ def test_is_running_tests_returns_false_outside_test_execution_environment():
             "from server.config_util import is_running_tests; assert not is_running_tests()",
         ],
         check=True,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
 
 

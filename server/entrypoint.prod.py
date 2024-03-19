@@ -14,4 +14,4 @@ subprocess.run(["python", "./manage.py", "migrate"], check=True)
 
 sys.stdout.write("\nStarting gunicorn\n")
 # https://docs.gunicorn.org/en/latest/custom.html#direct-usage-of-existing-wsgi-apps
-subprocess.run(["gunicorn"])
+subprocess.run(["python", "-m", "gunicorn"])

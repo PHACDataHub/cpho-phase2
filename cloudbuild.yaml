@@ -55,12 +55,12 @@ steps:
 
       echo "Copy test coverage report from docker volume to a google cloud storage bucket."
       timestamp=$(date +%s)
-      gsutil cp ./coverage/coverage.json "gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
+      gsutil cp ./coverage.json "gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
 
       # Install jq and bc 
       apt-get update && apt-get install -y jq bc
       
-      this_commit_coverage=$(jq '.totals.percent_covered' ./coverage/coverage.json | awk '{printf "%.2f\n", $1}')
+      this_commit_coverage=$(jq '.totals.percent_covered' ./coverage.json | awk '{printf "%.2f\n", $1}')
       echo ""
       echo "This commit's report: gs://${TEST_COVERAGE_BUCKET_NAME}/${BRANCH_NAME}/${timestamp}-${COMMIT_SHA}.json"
       echo "This commit's test coverage: ${this_commit_coverage}%"

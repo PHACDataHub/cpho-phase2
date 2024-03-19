@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -10,6 +11,7 @@ subprocess.run(
 )
 
 sys.stdout.write("\nWritting coverage.json...\n")
+app_home = os.environ["APP_HOME"]
 subprocess.run(
     [
         "python",
@@ -17,7 +19,7 @@ subprocess.run(
         "coverage",
         "json",
         "-o",
-        "/cpho/web/coverage/coverage.json",
+        f"{app_home}/coverage.json",
         "--pretty-print",
     ],
     check=True,

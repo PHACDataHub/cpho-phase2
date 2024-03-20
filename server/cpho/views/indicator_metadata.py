@@ -26,7 +26,6 @@ from cpho.models import (
     TrendAnalysis,
 )
 from cpho.text import tdt, tm
-from cpho.util import formset_validate_unique
 
 from .view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,

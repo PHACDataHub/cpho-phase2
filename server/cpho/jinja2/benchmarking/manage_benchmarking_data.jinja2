@@ -67,6 +67,9 @@
         {% for form in benchmarking_formset %}{{ benchmarking_form(form) }}{% endfor %}
       </tbody>
     </table>
+    {% if benchmarking_formset.non_form_errors() %}
+      <div class="error-div">{{ benchmarking_formset.non_form_errors() }}</div>
+    {% endif %}
     <div class="text-center py-1">
       <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add Data") }}</button>
     </div>

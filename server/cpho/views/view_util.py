@@ -1,10 +1,90 @@
-from django.core.exceptions import PermissionDenied
+from django import forms
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.forms import BaseInlineFormSet
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
 from phac_aspc.rules import test_rule
 
 from cpho.models import DimensionType, DimensionValue, Period
+from cpho.text import tdt, tm
+
+
+class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
+
+    def clean(
+        self,
+        fields=None,
+    ):
+        super().clean()
+        if self.model._meta.unique_together or fields:
+            unique_combinations = (set(fields) if fields else None) or set(
+                self.model._meta.unique_together
+            )
+            if unique_combinations:
+                values = {}
+                for idx, unique_tuple in enumerate(unique_combinations):
+                    values[idx] = set()
+                for form in self.forms:
+                    form_is_dupe = []
+                    for idx, unique_tuple in enumerate(unique_combinations):
+                        if form.cleaned_data != {}:
+                            value = tuple(
+                                form.cleaned_data.get(field)
+                                for field in unique_tuple
+                                if form.cleaned_data.get(field) is not None
+                            )
+                            if value in values[idx]:
+                                form_is_dupe.append(True)
+                            else:
+                                form_is_dupe.append(False)
+                            values[idx].add(value)
+
+                    if all(form_is_dupe):
+                        common_fields = set()
+                        if len(unique_combinations) > 1:
+                            common_fields = set.intersection(
+                                *map(set, unique_combinations)
+                            )
+                        fields_to_change = []
+                        for unique_tuple in unique_combinations:
+                            for field in unique_tuple:
+                                if (
+                                    field
+                                    not in [
+                                        *list(common_fields),
+                                        "is_deleted",
+                                        "deletion_time",
+                                        "indicator",
+                                    ]
+                                    and field in form.fields
+                                ):
+                                    fields_to_change.append(field)
+                        error_msg = tdt(
+                            "Duplicate field values. Please ensure that the following fields are unique: "
+                        )
+                        for field in fields_to_change:
+                            field_name = None
+                            field_value = None
+                            if field == "literal_dimension_val":
+                                field_name = form.instance.dimension_type.name
+                            else:
+                                field_name = form.fields[field].label
+                            if hasattr(form.fields[field], "_choices"):
+                                val = form.cleaned_data.get(field)
+                                field_value = dict(
+                                    form.fields[field].choices
+                                ).get(val)
+                            else:
+                                field_value = form.cleaned_data.get(field)
+
+                            error_msg += f"{field_name}: {field_value}, "
+                        error_msg = error_msg[:-2]
+
+                        form.add_error(None, tdt("Duplicate form"))
+
+                        raise ValidationError(error_msg)
+        # return self.cleaned_data
 
 
 class SinglePeriodMixin(View):

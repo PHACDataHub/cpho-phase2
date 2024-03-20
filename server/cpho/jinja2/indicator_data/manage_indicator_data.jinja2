@@ -204,6 +204,13 @@
         <div class="text-center py-1">
           <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add another age group") }}</button>
         </div>
+        {% if age_group_formset.non_form_errors() %}
+          <div class="error-div">{{ age_group_formset.non_form_errors() }}</div>
+        {% endif %}
+        {% if predefined_values_formset.non_form_errors() %}
+          <div class="error-div">{{ predefined_values_formset.non_form_errors() }}</div>
+        {% endif %}
+ 
       </div>
     {% endif %}
 

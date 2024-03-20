@@ -17,7 +17,8 @@
 {% endmacro %}
 
 {% macro trend_analysis_form(form) %}
-  <tr class="trend-analysis-form">
+ 
+  <tr class="trend-analysis-form" {% if form.errors %}{% endif %}>
     <td>{{ trend_analysis_form_field_with_errors(form.year) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.year_range) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.data_point) }}</td>
@@ -69,6 +70,9 @@
         {% for form in trend_analysis_formset %}{{ trend_analysis_form(form) }}{% endfor %}
       </tbody>
     </table>
+    {% if trend_analysis_formset.non_form_errors() %}
+      <div class="error-div">{{ trend_analysis_formset.non_form_errors() }}</div>
+    {% endif %}
     <div class="text-center py-1">
       <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add Data") }}</button>
     </div>

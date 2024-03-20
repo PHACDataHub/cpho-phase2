@@ -27,6 +27,7 @@ from cpho.queries import (
 from cpho.text import tdt, tm
 
 from .view_util import (
+    BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
@@ -73,18 +74,21 @@ class IndicatorDatumForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tdt("Value")}
         ),
+        label=tdt("Value"),
     )
     value_lower_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tdt("Lower Bound")}
         ),
+        label=tdt("Lower Bound"),
     )
     value_upper_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tdt("Upper Bound")}
         ),
+        label=tdt("Upper Bound"),
     )
     data_quality = forms.ChoiceField(
         required=False,
@@ -94,6 +98,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tdt("Data Quality"),
     )
     value_unit = forms.ChoiceField(
         required=False,
@@ -103,15 +108,22 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tdt("Value Unit"),
     )
     single_year_timeframe = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tdt("Single Year Timeframe"),
     )
     multi_year_timeframe = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tdt("Multi Year Timeframe"),
     )
     literal_dimension_val = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tdt("Literal Dimension Value"),
     )
     value_displayed = forms.ChoiceField(
         required=False,
@@ -121,6 +133,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tdt("Value Displayed"),
     )
     reason_for_null = forms.ChoiceField(
         required=False,
@@ -130,8 +143,17 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tdt("Reason for Null"),
     )
-    is_deleted = forms.BooleanField(required=False)
+    is_deleted = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tdt("Delete"),
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -256,6 +278,7 @@ class ManageIndicatorData(
             fk_name="indicator",
             form=IndicatorDatumForm,
             # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
+            formset=BaseInlineFormSetWithUniqueTogetherCheck,
             extra=1,
             can_delete=False,
         )

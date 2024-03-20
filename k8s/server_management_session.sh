@@ -15,7 +15,7 @@ server_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REG
 debug_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY}/${SERVER_CONTAINER_IMAGE_NAME}"
 
 echo "Log in as your DMIA GCP user"
-#gcloud auth login 
+gcloud auth login 
 
 echo ""
 echo "Getting cluster credentials..."
@@ -52,7 +52,6 @@ for (( i=1; i<="${server_container_option_count}"; i++ )); do
 
 	echo -e "\t${i}\t${namespace}\t${image_tag}"
 done
-exit 1
 read -p "Select from range 1-${server_container_option_count}: " selected_target
 
 if [[ ! "${selected_target}" =~ ^[1-9]+$ ]]; then

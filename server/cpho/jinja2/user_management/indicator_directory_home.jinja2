@@ -2,22 +2,20 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% block content %}
-  <a href="{{ url("root") }}" class="btn btn-warning">{{ tdt("Back") }}</a>
+  <a href="{{ url("root") }}" class="btn btn-warning">{{ tm("back") }}</a>
 
-  <h1>{{ tdt("Indicator group") }}: {{ indicator_directory.name }}</h1>
+  <h1>{{ tm("indicator_group") }}: {{ indicator_directory.name }}</h1>
   <div>
-    <p>
-      {{ tdt("You are part of this indicator group. You can view, modify and submit the below indicators, and so can every other user in the group. You can add new users to this group. Please contact HSO if users need to be removed") }}
-    </p>
+    <p>{{ tm("you_are_in_indicator_group_expl") }}</p>
   </div>
 
 
   <div class="my-4">
     {% if indicator_directory.description %}
-      <div>{{ tdt("group description") }} : {{ indicator_directory.description }}</div>
+      <div>{{ tm("description") }} : {{ indicator_directory.description }}</div>
     {% endif %}
 
-    <p class="h5">{{ tdt("indicators") }}</p>
+    <p class="h5">{{ tm("indicators") }}</p>
     <ul>
       {% for indicator in indicator_directory.indicators.all() %}
         <li>
@@ -27,11 +25,11 @@
     </ul>
 
 
-    <p class="h5">{{ tdt("users") }}</p>
+    <p class="h5">{{ tm("users") }}</p>
     <table class="table table-striped">
       <thead>
-        <th>{{ tdt("User") }}</th>
-        <th>{{ tdt("last login") }}</th>
+        <th>{{ tm("user") }}</th>
+        <th>{{ tm("last_login") }}</th>
       </thead>
       <tbody>
         {% for user in indicator_directory.users.all() %}
@@ -41,7 +39,7 @@
               {% if user.last_login %}
                 {{ date_display(user.last_login) }}
               {% else %}
-                {{ tdt("Never") }}
+                {{ tm("never") }}
               {% endif %}
             </td>
           </tr>
@@ -51,13 +49,13 @@
   </div>
 
   <details class="border rounded p-3" {% if form.errors %}open{% endif %}>
-    <summary class="fw-bold">{{ tdt("Add a new user") }}</summary>
+    <summary class="fw-bold">{{ tm("add_new_user") }}</summary>
     <form method="post">
       {% include '_standard_form.jinja2' %}
 
       <div class="text-end">
 
-        <input type="submit" value="{{ tdt("Save") }}" class="btn btn-success" />
+        <input type="submit" value="{{ tm("save") }}" class="btn btn-success" />
       </div>
     </form>
   </details>

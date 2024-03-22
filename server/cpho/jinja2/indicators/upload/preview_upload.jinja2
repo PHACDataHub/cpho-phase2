@@ -9,22 +9,18 @@
     <button id="upload-btn"
             class="btn btn-primary"
             type="submit"
-            {% if not no_errors %}disabled{% endif %}>{{ tdt("Upload Data") }}</button>
-    <a href="{{ url("list_indicators") }}" class="btn btn-danger">{{ tdt("Cancel") }}</a>
+            {% if not no_errors %}disabled{% endif %}>{{ tm("upload_data") }}</button>
+    <a href="{{ url("list_indicators") }}" class="btn btn-danger">{{ tm("cancel") }}</a>
   </form>
 
   <div id="status-div" class="d-none">
     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-    <span>{{ tdt("Uploading Data") }}</span>
+    <span>{{ tm("uploading_data") }}</span>
   </div>
 
   <div class="mt-4">
-    {% if not no_errors %}
-      <p class="text-danger">{{ tdt("Identified errors in file; Please review and fix them before re-uploading.") }}</p>
-    {% endif %}
-    <p>
-      {{ tdt("Preview of the file data. Note that the data is not saved in the system until you click the 'Upload Data' button.") }}
-    </p>
+    {% if not no_errors %}<p class="text-danger">{{ tm("errors_in_file_please_review") }}</p>{% endif %}
+    <p>{{ tm("upload_preview_expl") }}</p>
   </div>
  
  
@@ -32,8 +28,8 @@
     <div class='mt-5 card'>
       <div class="card-header">
         <div class="h5">
-          {{ tdt("Indicator") }} : {{ indicator[0] }}
-          {% if grouped_data[indicator][0]["new_indicator"] %}<span class="new-ind-tag">{{ tdt("New") }}</span>{% endif %}
+          {{ tm("indicator") }} : {{ indicator[0] }}
+          {% if grouped_data[indicator][0]["new_indicator"] %}<span class="new-ind-tag">{{ tm("new") }}</span>{% endif %}
         </div>
  
 
@@ -44,20 +40,20 @@
  
 
         <div class="p">
-          <span class="fw-bold">{{ tdt("Detailed Indicator") }}</span> : {{ indicator[1] }}
+          <span class="fw-bold">{{ tm("detailed_indicator") }}</span> : {{ indicator[1] }}
         </div>
  
         <div class="p">
-          <span class="fw-bold">{{ tdt("Sub Indicator Measurement") }}</span> : {{ indicator[2] }}
+          <span class="fw-bold">{{ tm("sub_indicator_measurement") }}</span> : {{ indicator[2] }}
         </div>
 
         <div class="p {{ check_error_class(grouped_data[indicator][0], 'Category').strip() }}">
-          <span class="fw-bold">{{ tdt("Category") }}</span> : {{ indicator[3] }}
+          <span class="fw-bold">{{ tm("category") }}</span> : {{ indicator[3] }}
           {{ (check_error(grouped_data[indicator][0], "Category") ) }}
         </div>
 
         <div class="p {{ check_error_class(grouped_data[indicator][0], 'Topic').strip() }}">
-          <span class="fw-bold">{{ tdt("Topic") }}</span> : {{ indicator[4] }}
+          <span class="fw-bold">{{ tm("topic") }}</span> : {{ indicator[4] }}
           {{ check_error(grouped_data[indicator][0], "Topic") }}
         </div>
 
@@ -66,19 +62,19 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>{{ tdt("Line#") }}</th>
-                <th>{{ tdt("Dimension Type") }}</th>
-                <th>{{ tdt("Dimension Value") }}</th>
-                <th>{{ tdt("Data Quality") }}</th>
-                <th>{{ tdt("Value") }}</th>
-                <th>{{ tdt("Value LowerCI") }}</th>
-                <th>{{ tdt("Value UpperCI") }}</th>
-                <th>{{ tdt("SingleYear TimeFrame") }}</th>
-                <th>{{ tdt("MultiYear TimeFrame") }}</th>
-                <th>{{ tdt("Value Unit") }}</th>
-                <th>{{ tdt("Value Displayed") }}</th>
-                <th>{{ tdt("Reason for Null Data") }}</th>
-                <th>{{ tdt("Period") }}</th>
+                <th>{{ tm("row_number") }}</th>
+                <th>{{ tm("dimension_type") }}</th>
+                <th>{{ tm("dimension_value") }}</th>
+                <th>{{ tm("data_quality") }}</th>
+                <th>{{ tm("value") }}</th>
+                <th>{{ tm("data_lower_ci") }}</th>
+                <th>{{ tm("data_upper_ci") }}</th>
+                <th>{{ tm("single_year_timeframe") }}</th>
+                <th>{{ tm("multi_year_timeframe") }}</th>
+                <th>{{ tm("value_unit") }}</th>
+                <th>{{ tm("value_displayed") }}</th>
+                <th>{{ tm("reason_for_null_data") }}</th>
+                <th>{{ tm("period") }}</th>
               </tr>
             </thead>
  

@@ -4,10 +4,10 @@
 {% block content_breadcrumbs %}
   {{ bc.indicators_index() }}
   {{ bc.indicator(indicator) }}
-  {{ bc.item(tdt("Edit indicator") , None, True) }}
+  {{ bc.item(tm("edit_indicator") , None, True) }}
 {% endblock %}
 
 {% block content %}
-  <div class="h5">{{ tdt("Edit Indicator:") }} {{ object.name }}</div>
+  <div class="h5">{{ tm("edit_indicator") }} : {{ object.name }}</div>
   {% include 'indicators/_indicator_form.jinja2' %}
 {% endblock %}

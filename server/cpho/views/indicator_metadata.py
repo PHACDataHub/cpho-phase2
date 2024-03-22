@@ -71,7 +71,7 @@ class BenchmarkingForm(ModelForm):
     value = forms.FloatField(
         required=True,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Value")}
+            attrs={"class": "form-control", "placeholder": tm("value")}
         ),
         label=tdt("Value"),
     )
@@ -212,7 +212,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
         formset = self.benchmarking_formset()
         if formset.is_valid():
             formset.save()
-            messages.success(self.request, tdt("Benchmarking data saved"))
+            messages.success(self.request, tm("saved_successfully"))
             return redirect(
                 reverse(
                     "manage_benchmarking_data",
@@ -221,9 +221,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
             )
         else:
             print(formset.errors)
-            messages.error(
-                self.request, tdt("There was an error saving the data")
-            )
+            messages.error(self.request, tm("error_saving_form"))
         return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -252,7 +250,7 @@ class TrendAnalysisForm(ModelForm):
     year = forms.IntegerField(
         required=True,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("YYYY")}
+            attrs={"class": "form-control", "placeholder": tm("yyyy")}
         ),
         label=tdt("Year"),
     )
@@ -260,7 +258,7 @@ class TrendAnalysisForm(ModelForm):
     year_range = forms.CharField(
         required=False,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": tdt("YYYY-YYYY")}
+            attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
         ),
         label=tdt("Year Range"),
     )
@@ -288,7 +286,7 @@ class TrendAnalysisForm(ModelForm):
     trend_segment = forms.CharField(
         required=False,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": tdt("YYYY-YYYY")}
+            attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
         ),
         label=tdt("Trend Segment"),
     )
@@ -356,12 +354,12 @@ class TrendAnalysisForm(ModelForm):
                 if not (int(year) >= 2000 and int(year) <= 2050):
                     self.add_error(
                         "year",
-                        tdt("Year must be between the years 2000 and 2050"),
+                        tm("year_timeframe_between"),
                     )
             except ValueError:
                 self.add_error(
                     "year",
-                    tdt("Year must be a valid number"),
+                    tm("must_be_valid_number"),
                 )
 
         return year
@@ -378,14 +376,12 @@ class TrendAnalysisForm(ModelForm):
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "year_range",
-                        tdt(
-                            "Year Range must be between the years 2000 and 2050"
-                        ),
+                        tm("year_timeframe_between"),
                     )
             except ValueError:
                 self.add_error(
                     "year_range",
-                    tdt("Year Range must be in the form: 'YYYY-YYYY'"),
+                    tm("multi_year_format"),
                 )
         return year_range
 
@@ -401,14 +397,12 @@ class TrendAnalysisForm(ModelForm):
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "trend_segment",
-                        tdt(
-                            "Trend Segment must be between the years 2000 and 2050"
-                        ),
+                        tm("year_timeframe_between"),
                     )
             except ValueError:
                 self.add_error(
                     "trend_segment",
-                    tdt("Trend Segment must be in the form: 'YYYY-YYYY'"),
+                    tm("multi_year_format"),
                 )
         return trend_segment
 
@@ -465,7 +459,7 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
         formset = self.trend_analysis_formset()
         if formset.is_valid():
             formset.save()
-            messages.success(self.request, tdt("Trend analysis data saved"))
+            messages.success(self.request, tm("saved_successfully"))
             return redirect(
                 reverse(
                     "manage_trend_analysis_data",
@@ -474,9 +468,7 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
             )
         else:
             print(formset.errors)
-            messages.error(
-                self.request, tdt("There was an error saving the data")
-            )
+            messages.error(self.request, tm("error_saving_form"))
         return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

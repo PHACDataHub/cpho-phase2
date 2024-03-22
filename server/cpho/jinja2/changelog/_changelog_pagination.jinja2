@@ -3,25 +3,25 @@
     {% if page_num != 1 %}
       {% set first_page_path = with_new_url_kwargs(page_num=1) %}
       <a class="btn btn-secondary btn-sm"
-         href='{{ with_same_params(first_page_path) }}'>&laquo; {{ tdt("first") }}</a>
+         href='{{ with_same_params(first_page_path) }}'>&laquo; {{ tm("first") }}</a>
     {% endif %}
     {% if prev_page_num %}
       {% set prev_page_path = with_new_url_kwargs(page_num=prev_page_num) %}
       <a class="btn btn-secondary btn-sm"
-         href='{{ with_same_params(prev_page_path) }}'>{{ tdt("previous") }}</a>
+         href='{{ with_same_params(prev_page_path) }}'>{{ tm("previous") }}</a>
     {% endif %}
   </div>
-  <div>Page {{ page_num }} {{ tdt("of") }} {{ num_pages }}</div>
+  <div>{{ tm("page") }} {{ page_num }} {{ tm("of") }} {{ num_pages }}</div>
   <div>
     {% if next_page_num %}
       {% set next_page_path = with_new_url_kwargs(page_num=next_page_num) %}
       <a href='{{ with_same_params(next_page_path) }}'
-         class="btn btn-secondary btn-sm">{{ tdt("next") }}</a>
+         class="btn btn-secondary btn-sm">{{ tm("next") }}</a>
     {% endif %}
     {% if page_num != num_pages %}
       {% set last_page_path = with_new_url_kwargs(page_num=num_pages) %}
       <a class="btn btn-secondary btn-sm"
-         href="{{ with_same_params(last_page_path) }}">{{ tdt("last") }} &raquo;</a>
+         href="{{ with_same_params(last_page_path) }}">{{ tm("last") }} &raquo;</a>
     {% endif %}
   </div>
 </div>

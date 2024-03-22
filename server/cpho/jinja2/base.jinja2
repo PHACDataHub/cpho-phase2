@@ -64,9 +64,7 @@
           <h1 class="nav-header">
             <a href="{{ url("list_indicators") }}"
                class="text-reset text-decoration-none">
-              {% block nav_header_text %}
-                <abbr title="{{ tdt("Health of People In Canada") }}">{{ tdt("HoPiC") }}</abbr>
-              {% endblock %}
+              {% block nav_header_text %}<abbr title="{{ tm("health_of_ppl_in_canada") }}">{{ tm("hopic") }}</abbr>{% endblock %}
             </a>
           </h1>
           <button class="navbar-toggler"
@@ -98,17 +96,17 @@
                     <a class="dropdown-item"
                        href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
                       <span aria-hidden="true" class="bi bi-file-diff"></span>
-                      {{ tdt("View your own changes") }}
+                      {{ tm("view_own_changes") }}
                     </a>
                     {% if respects_rule('can_manage_users') %}
                       <a class="dropdown-item" href="{{ url("manage_users") }}">
                         <span aria-hidden="true" class="bi bi-people"></span>
-                        {{ tdt("Manage Users") }}
+                        {{ tm("user_management") }}
                       </a>
                     {% endif %}
                     <a class="dropdown-item" href="{{ url("global_changelog") }}">
                       <span aria-hidden="true" class="bi bi-file-diff"></span>
-                      {{ tdt("changelog") }}
+                      {{ tm("changelog") }}
                     </a>
                     {% if respects_rule('is_admin_or_hso') %}
                       <a class="dropdown-item" href="{{ url("infobase_export") }}">

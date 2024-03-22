@@ -24,14 +24,14 @@
                 {% if edit_entry.version.edited_by %}
                   {{ edit_entry.version.edited_by.pretty_name }}
                 {% else %}
-                  {{ tdt("N/A") }}
+                  {{ tm("n/a") }}
                 {% endif %}
               </td>
             {% endif %}
-            <td class='font-weight-bold'>{{ tdt("saved") }}</td>
+            <td class='font-weight-bold'>{{ tm("saved") }}</td>
             {% if show_model_type %}<td>{{ edit_entry.model_name }}</td>{% endif %}
             <td>{{ edit_entry.live_name }}</td>
-            <td colspan="3">{{ tdt("no_change_detected_compared_to_previous_version") }}</td>
+            <td colspan="3">{{ tm("no_change_detected_compared_to_previous_version") }}</td>
           </tr>
         {% endif %}
         {% for diff in edit_entry.diffs %}
@@ -42,7 +42,7 @@
                 {% if edit_entry.version.edited_by %}
                   {{ edit_entry.version.edited_by.pretty_name }}
                 {% else %}
-                  {{ tdt("N/A") }}
+                  {{ tm("n/a") }}
                 {% endif %}
               </td>
             {% endif %}

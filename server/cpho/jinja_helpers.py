@@ -1,6 +1,7 @@
 import os
 from urllib.parse import quote, urlencode, urlparse, urlunparse
 
+from django.apps import apps
 from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
@@ -132,12 +133,12 @@ def message_type(message):
 
 def submission_status_label(submission_status):
     return {
-        SUBMISSION_STATUSES.NO_DATA: tdt("No data"),
-        SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tdt("Not yet submitted"),
-        SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tdt("Program submitted"),
-        SUBMISSION_STATUSES.SUBMITTED: tdt("Submitted by Program and HSO"),
-        SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tdt(
-            "Modified since last submission"
+        SUBMISSION_STATUSES.NO_DATA: tm("no_data"),
+        SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tm("not_yet_submitted"),
+        SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tm("program_submitted"),
+        SUBMISSION_STATUSES.SUBMITTED: tm("submitted_by_program_and_hso"),
+        SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tm(
+            "modified_since_last_submission"
         ),
     }[submission_status]
 
@@ -167,6 +168,10 @@ def with_same_params(context, url):
         return url
 
     return f"{url}?{context['request'].GET.urlencode()}"
+
+
+def vb_name(model_str, field_name):
+    return apps.get_model(model_str)._meta.get_field(field_name).verbose_name
 
 
 def environment(**options):
@@ -199,6 +204,8 @@ def environment(**options):
             "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
             "with_new_url_kwargs": with_new_url_kwargs,
             "with_same_params": with_same_params,
+            "vb_name": vb_name,
+            # global flags:
             "PHAC_ASPC_OAUTH_PROVIDER": config(
                 "PHAC_ASPC_OAUTH_PROVIDER", default=None
             ),

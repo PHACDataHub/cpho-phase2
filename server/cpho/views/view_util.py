@@ -26,6 +26,10 @@ class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
                 for idx, unique_tuple in enumerate(unique_combinations):
                     values[idx] = set()
                 for form in self.forms:
+                    if not hasattr(form, "cleaned_data"):
+                        continue
+                    if not any(form.cleaned_data.values()):
+                        continue
                     form_is_dupe = []
                     for idx, unique_tuple in enumerate(unique_combinations):
                         if form.cleaned_data != {}:

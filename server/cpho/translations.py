@@ -685,6 +685,22 @@ translation_entries = {
         "en": "Add new user",
         "fr": "Ajouter un nouvel utilisateur",
     },
+    "user": {
+        "en": "User",
+        "fr": "Utilisateur",
+    },
+    "last_login": {
+        "en": "Last login",
+        "fr": "Dernière connexion",
+    },
+    "users": {
+        "en": "Users",
+        "fr": "Utilisateurs",
+    },
+    "back": {
+        "en": "Back",
+        "fr": "Retour",
+    },
     "back_to_indicators": {
         "en": "Back to indicators",
         "fr": "Retour aux indicateurs",

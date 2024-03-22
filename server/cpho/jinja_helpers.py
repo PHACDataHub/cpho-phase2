@@ -1,6 +1,7 @@
 import os
 from urllib.parse import quote, urlencode, urlparse, urlunparse
 
+from django.apps import apps
 from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
@@ -169,6 +170,10 @@ def with_same_params(context, url):
     return f"{url}?{context['request'].GET.urlencode()}"
 
 
+def vb_name(model_str, field_name):
+    return apps.get_model(model_str)._meta.get_field(field_name).verbose_name
+
+
 def environment(**options):
     env = Environment(**options)
     env.globals.update(
@@ -199,6 +204,8 @@ def environment(**options):
             "SUBMISSION_STATUSES": SUBMISSION_STATUSES,
             "with_new_url_kwargs": with_new_url_kwargs,
             "with_same_params": with_same_params,
+            "vb_name": vb_name,
+            # global flags:
             "PHAC_ASPC_OAUTH_PROVIDER": config(
                 "PHAC_ASPC_OAUTH_PROVIDER", default=None
             ),

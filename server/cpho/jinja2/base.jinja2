@@ -96,7 +96,7 @@
                     <a class="dropdown-item"
                        href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
                       <span aria-hidden="true" class="bi bi-file-diff"></span>
-                      {{ tm("view_own_chnages") }}
+                      {{ tm("view_own_changes") }}
                     </a>
                     {% if respects_rule('can_manage_users') %}
                       <a class="dropdown-item" href="{{ url("manage_users") }}">

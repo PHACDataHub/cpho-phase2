@@ -10,7 +10,7 @@ lang_map = {
     "fallback": "fr_auto",
 }
 
-RAISE_ON_MISSING_KEY = False
+RAISE_ON_MISSING_KEY = True
 RAISE_ON_MISSING_LANG = False
 
 

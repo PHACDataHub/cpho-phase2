@@ -35,11 +35,11 @@
     </td>
     <td>
       {{ form.value_unit }}
-      {{ accessible_label(form.value_unit.id_for_label, form.literal_dimension_val.id_for_label, tm("Value unit") ) }}
+      {{ accessible_label(form.value_unit.id_for_label, form.literal_dimension_val.id_for_label, tm("value_unit") ) }}
     </td>
     <td>
       {{ form.value_lower_bound }}
-      {{ accessible_label(form.value_lower_bound.id_for_label, form.literal_dimension_val.id_for_label, tdt("value_lower_bound") ) }}
+      {{ accessible_label(form.value_lower_bound.id_for_label, form.literal_dimension_val.id_for_label, tm("value_lower_bound") ) }}
       {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
     </td>
     <td>
@@ -78,7 +78,7 @@
 {% endmacro %}
 
 {% block content %}
-  <h1>{{ tdt("Indicator data for: ") }} {{ indicator.name }} ({{ period }})</h1>
+  <h1>{{ tm("indicator_data") }} : {{ indicator.name }} ({{ period }})</h1>
   <a class="btn btn-warning btn-sm"
      href="{{ url('view_indicator_for_period', args=[indicator.id, period.id]) }}">Cancel</a>
 
@@ -173,7 +173,7 @@
     {% if show_age_group %}
       <div class="card mt-5 mb-2">
         <div class="card-header">
-          <div class="h3">{{ tm("managing_data_for_stratifier: ") }} {{ tm("age") }}</div>
+          <div class="h3">{{ tm("managing_data_for_stratifier") }} {{ tm("age") }}</div>
         </div>
  
         <table class="table mb-0"

@@ -81,8 +81,7 @@ class UploadForm(forms.Form):
                 missing_headers.append(header)
         if missing_headers:
             raise forms.ValidationError(
-                tdt("File is missing the required columns: ")
-                + ", ".join(missing_headers)
+                f"{tm('file_is_missing_the_required_columns')} : {', '.join(missing_headers)}"
             )
 
         errorlist = []
@@ -213,18 +212,7 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        try:
-            messages.error(
-                self.request,
-                tdt(
-                    "There was an error uploading the file. Please correct the errors below and try again"
-                ),
-            )
-        except Exception:
-            messages.error(
-                self.request,
-                tdt("There was an error uploading the file. Please try again"),
-            )
+        messages.error(self.request, tm("upload_error_msg"))
         return super().form_invalid(form)
 
 

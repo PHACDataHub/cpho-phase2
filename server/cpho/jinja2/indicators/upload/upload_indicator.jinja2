@@ -1,19 +1,17 @@
 {% extends 'base.jinja2' %}
 {% block content %}
 
-  <div class="h2 mb-3">{{ tdt("Indicator file upload") }}</div>
+  <div class="h2 mb-3">{{ tm("upload_indicator") }}</div>
 
-  <p>
-    {{ tdt("Please ensure that only CSV files are uploaded. Click the 'View expected column names' button to review the expected input format. For a convenient data input process, consider 'Download a template file' to fill in your data or upload exported indicators after making necessary adjustments.") }}
-  </p>
+  <p>{{ tm("only_csv_expl") }}</p>
 
   <div class="mt-2">
     <button type="button mt-5"
             class="btn btn-primary"
             data-bs-toggle="modal"
-            data-bs-target="#expectedColumnModal">{{ tdt("View expected column names") }}</button>
+            data-bs-target="#expectedColumnModal">{{ tm("view_expected_column_names") }}</button>
  
-    <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tdt("Download a file template") }}</a>
+    <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tm("download_a_file_template") }}</a>
   </div>
  
   <form action="{{ url("upload_indicator") }}"
@@ -30,12 +28,12 @@
           <input type="submit"
                  id="submit-btn"
                  class="btn btn-primary mt-3 float-end"
-                 value="{{ tdt("Preview file data") }}">
+                 value="{{ tm("preview_file_data") }}">
         </div>
       </div>
       <div id="loadingModal" class="d-none mt-3 float-end">
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-        <span>{{ tdt("Getting data ready for preview") }}</span>
+        <span>{{ tm("getting_data_ready_for_preview") }}</span>
       </div>
     </div>
   </form>

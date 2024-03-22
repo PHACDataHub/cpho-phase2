@@ -112,7 +112,7 @@
                           <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
                           <td>
                             <a class='btn btn-outline-dark'
-                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("see_edit_data") }}</a>
                           </td>
                         </tr>
                       {% endif %}

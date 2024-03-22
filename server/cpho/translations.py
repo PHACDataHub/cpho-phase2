@@ -30,6 +30,10 @@ translation_entries = {
         "translated_using": "Save",
         "fr_auto": "Enregistrer",
     },
+    "cancel": {
+        "en": "Cancel",
+        "fr": "Annuler",
+    },
     "edit": {
         "en": "Edit",
         "fr": None,
@@ -61,6 +65,18 @@ translation_entries = {
     "n/a": {
         "en": "N/A",
         "fr": "S/O",
+    },
+    "page": {
+        "en": "Page",
+        "fr": "Page",
+    },
+    "next": {
+        "en": "Next",
+        "fr": "Suivant",
+    },
+    "previous": {
+        "en": "Previous",
+        "fr": "Précédent",
     },
     "author": {
         "en": "Author",
@@ -113,6 +129,10 @@ translation_entries = {
     "last": {
         "en": "Last",
         "fr": "Dernier",
+    },
+    "new": {
+        "en": "New",
+        "fr": "Nouveau",
     },
     "please_login_to_see_page": {
         "en": "Please login to see this page",
@@ -196,9 +216,21 @@ translation_entries = {
         "en": "Invalid email, must end in phac-aspc.gc.ca",
         "fr": "Courriel invalide, doit se terminer par phac-aspc.gc.ca",
     },
+    "edit_all_data": {
+        "en": "Edit all data",
+        "fr": "Modifier toutes les données",
+    },
+    "review_all_data_for_approval": {
+        "en": "Review all data for approval",
+        "fr": "Examiner toutes les données pour approbation",
+    },
     "review_for_submission": {
         "en": "Review for submission",
         "fr": "Revue pour soumission",
+    },
+    "indicator_data": {
+        "en": "Indicator Data",
+        "fr": "Données de l'indicateur",
     },
     "review_indicator_data_for": {
         "en": "Review indicator data for",
@@ -247,6 +279,18 @@ translation_entries = {
     "topic": {
         "en": "Topic",
         "fr": "Sujet",
+    },
+    "view_indicator": {
+        "en": "View Indicator",
+        "fr": "Voir l'indicateur",
+    },
+    "indicator": {
+        "en": "Indicator",
+        "fr": "Indicateur",
+    },
+    "indicator_name": {
+        "en": "Indicator name",
+        "fr": "Nom de l'indicateur",
     },
     "detailed_indicator": {
         "en": "Detailed Indicator",
@@ -428,9 +472,17 @@ translation_entries = {
         "en": "OECD Country",
         "fr": "Pays de l'OCDE",
     },
+    "value_unit": {
+        "en": "Value unit",
+        "fr": "Unité de valeur",
+    },
     "unit": {
         "en": "Unit",
         "fr": "Unité",
+    },
+    "value_displayed": {
+        "en": "Value displayed",
+        "fr": "Valeur affichée",
     },
     "year": {
         "en": "Year",
@@ -481,12 +533,28 @@ translation_entries = {
         "fr": "Qualité des données",
     },
     "data_upper_ci": {
-        "en": "Data upper cI",
+        "en": "Data upper CI",
         "fr": "IC supérieur des données",
     },
     "data_lower_ci": {
         "en": "Data lower CI",
         "fr": "IC inférieur des données",
+    },
+    "lower_bound": {
+        "en": "Lower bound",
+        "fr": "Limite inférieure",
+    },
+    "upper_bound": {
+        "en": "Upper bound",
+        "fr": "Limite supérieure",
+    },
+    "value_lower_bound": {
+        "en": "Value lower bound",
+        "fr": "Limite inférieure de la valeur",
+    },
+    "value_upper_bound": {
+        "en": "Value upper bound",
+        "fr": "Limite supérieure de la valeur",
     },
     "confirm_metadata_approval": {
         "en": "Confirm metadata approval",
@@ -584,6 +652,10 @@ translation_entries = {
         "en": "Data Submission",
         "fr": "Soumission de données",
     },
+    "data_submission_progress": {
+        "en": "Data Submission Progress",
+        "fr": "Progression de la soumission des données",
+    },
     "actions": {
         "en": "Actions",
         "fr": "Actions",
@@ -591,6 +663,10 @@ translation_entries = {
     "periods_with_data": {
         "en": "Periods with data",
         "fr": "Périodes avec des données",
+    },
+    "indicator_information": {
+        "en": "Indicator Information",
+        "fr": "Information sur l'indicateur",
     },
     "indicator_metadata_submission": {
         "en": "Indicator Metadata Submission",
@@ -613,9 +689,33 @@ translation_entries = {
         "en": "Back to indicators",
         "fr": "Retour aux indicateurs",
     },
+    "view_expected_column_names": {
+        "en": "View expected column names",
+        "fr": "Voir les noms de colonnes attendus",
+    },
+    "download_a_file_template": {
+        "en": "Download a file template",
+        "fr": "Télécharger un modèle de fichier",
+    },
+    "preview_file_data": {
+        "en": "Preview file data",
+        "fr": "Aperçu des données du fichier",
+    },
+    "getting_data_ready_for_preview": {
+        "en": "Getting data ready for preview",
+        "fr": "Préparation des données pour l'aperçu",
+    },
     "expected_column_names": {
         "en": "Expected column names",
         "fr": "Noms de colonnes attendus",
+    },
+    "upload_using_csv_file_expl": {
+        "en": "Please upload a .csv file containing the following column names. Note that the column names are case sensitive",
+        "fr": "Veuillez télécharger un fichier .csv contenant les noms de colonnes suivants. Notez que les noms de colonnes sont sensibles à la casse",
+    },
+    "only_csv_expl": {
+        "en": "Please ensure that only CSV files are uploaded. Click the 'View expected column names' button to review the expected input format. For a convenient data input process, consider 'Download a template file' to fill in your data or upload exported indicators after making necessary adjustments.",
+        "fr": "Veuillez vous assurer que seuls les fichiers CSV sont téléchargés. Cliquez sur le bouton 'Voir les noms de colonnes attendus' pour examiner le format d'entrée attendu. Pour un processus de saisie de données pratique, envisagez de 'Télécharger un fichier modèle' pour remplir vos données ou téléchargez des indicateurs exportés après avoir apporté les ajustements nécessaires.",
     },
     "descriptions": {"en": "Descriptions", "fr": "Descriptions"},
     "description": {"en": "Description", "fr": "Description"},
@@ -623,6 +723,10 @@ translation_entries = {
     "open_text_field": {
         "en": "Open text field",
         "fr": "Champ de texte ouvert",
+    },
+    "fiscal_quarters": {
+        "en": "Fiscal Year Quarter",
+        "fr": "Trimestre de l'année fiscale",
     },
     "quarters_are_only_valid_for_fiscal_years": {
         "en": "Quarters are only valid for fiscal years",
@@ -635,5 +739,364 @@ translation_entries = {
     "quarter": {
         "en": "Quarter",
         "fr": "Trimestre",
+    },
+    "single_year_timeframe": {
+        "en": "Single year timeframe",
+        "fr": "Période d'un an",
+    },
+    "multi_year_timeframe": {
+        "en": "Multi-year timeframe",
+        "fr": "Période de plusieurs années",
+    },
+    "submit": {"en": "Submit", "fr": "Soumettre"},
+    "edit_indicator": {"en": "Edit Indicator", "fr": "Modifier l'indicateur"},
+    "indicator_changelog": {
+        "en": "Indicator Changelog",
+        "fr": "Journal des modifications de l'indicateur",
+    },
+    "trend_analysis": {
+        "en": "Trend Analysis",
+        "fr": "Analyse de tendance",
+    },
+    "comparison_to_oecd_average": {
+        "en": "Comparison to OECD average",
+        "fr": "Comparaison à la moyenne de l'OCDE",
+    },
+    "quintile": {
+        "en": "Quintile",
+        "fr": "Quintile",
+    },
+    "data_entered": {"en": "Data entered", "fr": "Données saisies"},
+    "open_number_field_allows_decimals": {
+        "en": "Open number field (allows decimals)",
+        "fr": "Champ de nombre ouvert (inclus les décimales)",
+    },
+    "yyyy": {"en": "YYYY", "fr": "AAAA"},
+    "yyyy_yyyy": {"en": "YYYY-YYYY", "fr": "AAAA-AAAA"},
+    "hso_only": {"en": "HSO only", "fr": "DSP seulement"},
+    "reason_for_null_data": {
+        "en": "Reason for null data",
+        "fr": "Raison pour les données nulles",
+    },
+    "default_is_empty": {
+        "en": "Default is empty",
+        "fr": "La valeur par défaut est vide",
+    },
+    "dimension_type": {"en": "Dimension Type", "fr": "Type de dimension"},
+    "dimension_value": {"en": "Dimension Value", "fr": "Valeur de dimension"},
+    "gender": {
+        "en": "Gender",
+        "fr": "Genre",
+    },
+    "sex": {
+        "en": "Sex",
+        "fr": "Sexe",
+    },
+    "age_group": {"en": "Age Group", "fr": "Groupe d'âge"},
+    "province_territory": {
+        "en": "Province/Territory",
+        "fr": "Province/Territoire",
+    },
+    "no_stratifier": {"en": "No Stratifier", "fr": "Aucun stratificateur"},
+    "living_arrangement": {
+        "en": "Living Arrangement",
+        "fr": "Arrangement de vie",
+    },
+    "fiscal_year": {
+        "en": "Fiscal Year",
+        "fr": "Année fiscale",
+    },
+    "calendar_year": {
+        "en": "Calendar Year",
+        "fr": "Année civile",
+    },
+    "legend": {"en": "Legend", "fr": "Légende"},
+    # categories
+    "category": {"en": "Category", "fr": "Catégorie"},
+    # Do these exist anymore?
+    # "factors_influencing_health": {"en": "", "fr": ""},
+    # "general_health_status": {"en": "", "fr": ""},
+    # "health_outcomes": {"en": "", "fr": ""},
+    # topics
+    "topic": {"en": "Topic", "fr": "Sujet"},
+    "childhood_and_family_factors": {
+        "en": "Childhood and family factors",
+        "fr": "Facteurs liés à l’enfance et à la famille",
+    },
+    "social_factors": {"en": "Social factors", "fr": "Facteurs sociaux"},
+    "substance_use": {
+        "en": "Substance use",
+        "fr": "Consommation de substances",
+    },
+    "health_status": {"en": "Health status", "fr": "État de santé"},
+    "chronic_diseases_and_mental_health": {
+        "en": "Chronic diseases and mental health",
+        "fr": "Maladies chroniques et santé mentale",
+    },
+    "communicable_diseases": {
+        "en": "Communicable diseases",
+        "fr": "Maladies transmissibles",
+    },
+    # data quality choices
+    "caution": {
+        "en": "Caution",
+        "fr": "Attention",
+    },
+    "acceptable": {
+        "en": "Acceptable",
+        "fr": "Acceptable",
+    },
+    "good": {
+        "en": "Good",
+        "fr": "Bon",
+    },
+    "suppressed": {
+        "en": "Suppressed",
+        "fr": "Supprimé",
+    },
+    "very_good": {
+        "en": "Very Good",
+        "fr": "Très bon",
+    },
+    "supressed": {
+        "en": "Suppressed",
+        "fr": "Supprimé",
+    },
+    "not_available": {
+        "en": "Not Available",
+        "fr": "Non disponible",
+    },
+    # value units
+    "daily_dose_1k_census": {
+        "en": "Defined Daily Dose/1,000 Census",
+        "fr": "Dose quotidienne définie/1 000 recensements",
+    },
+    "percentage": {"en": "Percentage", "fr": "Pourcentage"},
+    "percent_age_standardized": {
+        "en": "PERCENTAGE (AGE STANDARDIZED)",
+        "fr": "POURCENTAGE (AJUSTÉ SELON L'ÂGE)",
+    },
+    "percentage_crude": {
+        "en": "Percentage (Crude)",
+        "fr": "Pourcentage (brut)",
+    },
+    "rate_10k_patient_days": {
+        "en": "Rate per 10,000 Patient Days",
+        "fr": "Taux pour 10 000 jours-patients",
+    },
+    "rate_100k_age_standardized": {
+        "en": "RATE PER 100,000 (AGE STANDARDIZED)",
+        "fr": "TAUX PAR 100 000 (AJUSTÉ SELON L'ÂGE)",
+    },
+    "rate_100k_age_specific_crude": {
+        "en": "RATE PER 100,000 (AGE-SPECIFIC CRUDE)",
+        "fr": "TAUX PAR 100 000 (BRUT SPÉCIFIQUE À L'ÂGE)",
+    },
+    "rate_100k_crude": {
+        "en": "Rate per 100,000 (Crude)",
+        "fr": "Taux pour 100 000 (brut)",
+    },
+    "rate_100k_live_births": {
+        "en": "Rate per 100,000 Live Births",
+        "fr": "Taux pour 100 000 naissances vivantes",
+    },
+    "rate_100k_population_per_year": {
+        "en": "RATE PER 100,000 POPULATION PER YEAR",
+        "fr": "TAUX PAR 100 000 POPULATION PAR ANNÉE",
+    },
+    "years": {"en": "years", "fr": "années"},
+    "other": {"en": "other", "fr": "autre"},
+    # Value displayed choices
+    "per_1k_census": {
+        "en": "DDDs Per 1,000 census inhabitants",
+        "fr": "DTQs par 1 000 habitants du recensement",
+    },
+    "per_10k_patient_days": {
+        "en": "Per 10,000 patient days",
+        "fr": "Pour 10 000 jours-patients",
+    },
+    "per_100k_live_births": {
+        "en": "Per 100,000 live births",
+        "fr": "Pour 100 000 naissances vivantes",
+    },
+    "per_100k_population": {
+        "en": "Per 100,000 population",
+        "fr": "Pour 100 000 habitants",
+    },
+    "per_100k_population_per_year": {
+        "en": "Per 100,000 population per year",
+        "fr": "Pour 100 000 habitants par année",
+    },
+    # unit choices
+    "age_standard_rate_per_100k": {
+        "en": "Age standardized rates per 100 000 population",
+        "fr": "Taux standardisés selon l'âge pour 100 000 habitants",
+    },
+    "age_standard_percentage": {
+        "en": "Age-standardized percentage",
+        "fr": "Pourcentage standardisé selon l'âge",
+    },
+    "ddd_per_1000_per_day": {
+        "en": "DDD per 1000 population per day",
+        "fr": "DTQ par 1000 habitants par jour",
+    },
+    "deaths_per_million_inhabitants": {
+        "en": "Deaths per million inhabitants",
+        "fr": "Décès par million d'habitants",
+    },
+    "incidence_100k_population": {
+        "en": "Incidence per 100 000 population",
+        "fr": "Incidence pour 100 000 habitants",
+    },
+    "litres_per_capita": {
+        "en": "Litres per Capita",
+        "fr": "Litres par habitant",
+    },
+    "percent": {"en": "Percent", "fr": "Pourcentage"},
+    "percent_children": {
+        "en": "Percent of children",
+        "fr": "Pourcentage d'enfants",
+    },
+    "percent_births_below_2500_grams": {
+        "en": "Percent of live births below 2500 grams",
+        "fr": "Pourcentage de naissances vivantes de moins de 2500 grammes",
+    },
+    "percent_people_fully_vaccinated": {
+        "en": "Percent of people fully vaccinated",
+        "fr": "Pourcentage de personnes entièrement vaccinées",
+    },
+    "percent_population": {
+        "en": "Percent of population",
+        "fr": "Pourcentage de la population",
+    },
+    "percent_population_health_good_or_very_good": {
+        "en": "Percent of population that rate their health as good or very good",
+        "fr": "Pourcentage de la population qui évalue sa santé comme bonne ou très bonne",
+    },
+    "percentage_value": {
+        "en": "Percentage value",
+        "fr": "Valeur en pourcentage",
+    },
+    "rate_per_100k": {"en": "Rate per 100 000", "fr": "Taux pour 100 000"},
+    "rate_per_100k_population": {
+        "en": "Rate per 100 000 population",
+        "fr": "Taux pour 100 000 habitants",
+    },
+    "rate_per_1000_population": {
+        "en": "Rate per 1000 population",
+        "fr": "Taux pour 1000 habitants",
+    },
+    "total_deaths_per_1m": {
+        "en": "Total deaths per 1 million",
+        "fr": "Décès totaux par million",
+    },
+    "total_per_100k_persons": {
+        "en": "Total per 100 000 persons",
+        "fr": "Total pour 100 000 personnes",
+    },
+    # comparison
+    "better": {"en": "Better", "fr": "Meilleur"},
+    "similar": {"en": "Similar", "fr": "Similaire"},
+    "worse": {"en": "Worse", "fr": "Pire"},
+    "outlier": {"en": "Outlier", "fr": "Valeur aberrante"},
+    # label choices
+    "anxiety": {"en": "Anxiety", "fr": "Anxiété"},
+    "depression": {"en": "Depression", "fr": "Dépression"},
+    "women": {"en": "Women", "fr": "Femmes"},
+    "men": {"en": "Men", "fr": "Hommes"},
+    # trend
+    "stable": {"en": "Stable", "fr": "Stable"},
+    "increasing": {"en": "Increasing", "fr": "En hausse"},
+    "decreasing": {"en": "Decreasing", "fr": "En baisse"},
+    "good": {"en": "Good", "fr": "Bon"},
+    "very_good": {"en": "Very_Good", "fr": "Très bon"},
+    "excellent": {"en": "Excellent", "fr": "Excellent"},
+    "create_new_indicator": {
+        "en": "Create New Indicator",
+        "fr": "Créer un nouvel indicateur",
+    },
+    "upload_indicator": {
+        "en": "Upload Indicator",
+        "fr": "Télécharger un indicateur",
+    },
+    "indicator_groups": {
+        "en": "Indicator Groups",
+        "fr": "Groupes d'indicateurs",
+    },
+    "you_have_access_to_the_following_indicator_groups": {
+        "en": "You have access to the following indicator groups",
+        "fr": "Vous avez accès aux groupes d'indicateurs suivants",
+    },
+    "review_for_approval": {
+        "en": "Review for approval",
+        "fr": "Examiner pour approbation",
+    },
+    "saved_successfully": {
+        "en": "Saved successfully",
+        "fr": "Enregistré avec succès",
+    },
+    "error_saving_form": {
+        "en": "Error saving form",
+        "fr": "Erreur lors de l'enregistrement du formulaire",
+    },
+    "upload_error_msg": {
+        "en": "There was an error uploading the file. Please correct the errors below and try again",
+        "fr": "Une erreur s'est produite lors du téléchargement du fichier. Veuillez corriger les erreurs ci-dessous et réessayer",
+    },
+    "submitted_successfully": {
+        "en": "Submitted successfully",
+        "fr": "Soumis avec succès",
+    },
+    "see_edit_data": {
+        "en": "See/Edit Data",
+        "fr": "Voir/Modifier les données",
+    },
+    "errors_in_file_please_review": {
+        "en": "Identified errors in file; Please review and fix them before re-uploading.",
+        "fr": "Des erreurs ont été identifiées dans le fichier; Veuillez les examiner et les corriger avant de le re-télécharger.",
+    },
+    "upload_preview_expl": {
+        "en": "Preview of the file data. Note that the data is not saved in the system until you click the 'Upload Data' button.",
+        "fr": "Aperçu des données du fichier. Notez que les données ne sont pas enregistrées dans le système tant que vous n'avez pas cliqué sur le bouton 'Télécharger les données'.",
+    },
+    "uploading_data": {
+        "en": "Uploading data...",
+        "fr": "Téléchargement des données...",
+    },
+    "row_number": {
+        "en": "Row #",
+        "fr": "# de ligne",
+    },
+    "percentage_out_of_bounds_err": {
+        "en": "Value must be a percentage between 0-100",
+        "fr": "La valeur doit être un pourcentage entre 0 et 100",
+    },
+    "value_cannot_be_negative": {
+        "en": "Value cannot be negative",
+        "fr": "La valeur ne peut pas être négative",
+    },
+    "lower_bound_must_be_lower_than_value": {
+        "en": "Lower bound must be lower than value",
+        "fr": "La limite inférieure doit être inférieure à la valeur",
+    },
+    "upper_bound_must_be_greater_than_value": {
+        "en": "Upper bound must be higher than value",
+        "fr": "La limite supérieure doit être supérieure à la valeur",
+    },
+    "year_timeframe_between": {
+        "en": "Year must be between the years 2000 and 2050",
+        "fr": "l'année doit être comprise entre les années 2000 et 2050",
+    },
+    "must_be_number": {
+        "en": "Must be a valid number",
+        "fr": "Doit être un nombre",
+    },
+    "multi_year_format": {
+        "en": "Year-range must be in the format YYYY-YYYY",
+        "fr": "La période de plusieurs années doit être au format AAAA-AAAA",
+    },
+    "file_is_missing_the_required_columns": {
+        "en": "File is missing the required columns",
+        "fr": "Le fichier ne contient pas les colonnes requises",
     },
 }

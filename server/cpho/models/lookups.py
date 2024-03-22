@@ -8,7 +8,7 @@ from server.model_util import (
     track_versions_with_editor_and_submission,
 )
 
-from cpho.text import tdt
+from cpho.text import tdt, tm
 from cpho.util import get_lang_code
 
 
@@ -74,8 +74,8 @@ class Period(models.Model):
     CALENDAR_YEAR_TYPE = "calendar"
     FISCAL_YEAR_TYPE = "fiscal"
     YEAR_TYPE_CHOICES = (
-        (CALENDAR_YEAR_TYPE, tdt("Calendar")),
-        (FISCAL_YEAR_TYPE, tdt("Fiscal")),
+        (CALENDAR_YEAR_TYPE, tm("calendar_year")),
+        (FISCAL_YEAR_TYPE, tm("fiscal_year")),
     )
 
     year = fields.IntegerField()

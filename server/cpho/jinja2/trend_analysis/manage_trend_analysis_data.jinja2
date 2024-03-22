@@ -4,7 +4,7 @@
 {% block content_breadcrumbs %}
   {{ bc.indicators_index() }}
   {{ bc.indicator(view.indicator) }}
-  {{ bc.item(tdt("Trend Analysis") , None, True) }}
+  {{ bc.item(tm("trend_analysis") , None, True) }}
 {% endblock %}
 
 {% macro trend_analysis_form_field_with_errors(field) %}
@@ -36,7 +36,7 @@
 
 {% block content %}
 
-  <div class="h2">{{ tdt("Trend analysis data for: ") }} {{ indicator.name }}</div>
+  <div class="h2">{{ tm("trend_analysis") }} : {{ indicator.name }}</div>
 
   <table class="d-none trend-analysis-empty-form-container">
     {{ trend_analysis_form(trend_analysis_formset.empty_form) }}
@@ -52,16 +52,16 @@
                   display:block">
       <thead>
         <tr>
-          <th>{{ tdt("Year") }}</th>
-          <th>{{ tdt("Year Range") }}</th>
-          <th>{{ tdt("Data Point") }}</th>
-          <th>{{ tdt("Line Of Best Fit Point") }}</th>
-          <th>{{ tdt("Trend Segment") }}</th>
-          <th>{{ tdt("Trend") }}</th>
+          <th>{{ tm("Year") }}</th>
+          <th>{{ tm("year_range") }}</th>
+          <th>{{ tm("data_point") }}</th>
+          <th>{{ tm("line_of_best_fit_point") }}</th>
+          <th>{{ tm("trend_segment") }}</th>
+          <th>{{ tm("trend") }}</th>
           <th>{{ tm("data_quality") }}</th>
-          <th>{{ tdt("Data Upper CI") }}</th>
-          <th>{{ tdt("Data Lower CI") }}</th>
-          <th>{{ tdt("Delete") }}</th>
+          <th>{{ tm("data_upper_ci") }}</th>
+          <th>{{ tm("data_lower_ci") }}</th>
+          <th>{{ tm("delete") }}</th>
         </tr>
       </thead>
       <tbody id="trend-analysis-table-body"
@@ -70,11 +70,11 @@
       </tbody>
     </table>
     <div class="text-center py-1">
-      <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add Data") }}</button>
+      <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tm("add_data") }}</button>
     </div>
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tdt("Save") }}">
+           value="{{ tm("save") }}">
   </form>
   <script>
     let addButton = document.querySelector("#add-form");

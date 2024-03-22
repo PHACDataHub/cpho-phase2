@@ -9,7 +9,7 @@
         <div>
           <div class="d-inline">{{ field.label_tag(attrs={'class': 'col col-form-label', 'aria-label': field.label }) }}</div>
           {% if field.name in form.hso_only_field_names %}
-            <sm class="h6 text-secondary"> <span class="badge bg-success">{{ tdt("HSO only") }}</span></sm>
+            <sm class="h6 text-secondary"> <span class="badge bg-success">{{ tm("hso_only") }}</span></sm>
           {% endif %}
         </div>
       </div>
@@ -25,10 +25,10 @@
  
 {% endmacro %}
 
-{% macro accessible_label(id_for, row_name, label_text) %}
-  <label for="{{ id_for }}"
+{% macro hidden_a11y_label(form_field, prefix) %}
+  <label for="{{ form_field.id_for_label }}"
          class="visually-hidden"
-         aria-label="{{ row_name }}, {{ label_text }}"></label>
+         aria-label="{{ prefix }}, {{ form_field.label }}"></label>
 {% endmacro %}
 
 {% macro fieldset_field(field, helptext=None) %}
@@ -47,7 +47,7 @@
   {{ csrf_input }}
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tdt("Indicator Information") }}</h5>
+    <h5 class="card-header">{{ tm("indicator_information") }}</h5>
     <div class="card-body">
       {{ form_field(form.name) }}
       {{ form_field(form.category) }}
@@ -151,56 +151,59 @@
   </div>
 
   <div class="card my-4 hideable-card">
-    <h5 class="card-header">{{ tm("quintile_metadata") }}</h5>
+    <h5 class="card-header">
+      {{ tm("quintile_metadata") }} <span class="badge bg-success">{{ tm("hso_only") }}</span>
+    </h5>
     <div class="card-body">
       <table class="table" style="overflow-x:auto; display:block">
         <thead>
           <tr class="text-center">
-            <th>{{ tdt("Quintile") }}</th>
-            <th>{{ tdt("G1") }}</th>
-            <th>{{ tdt("G2 Lower") }}</th>
-            <th>{{ tdt("G2 Upper") }}</th>
-            <th>{{ tdt("G3 Lower") }}</th>
-            <th>{{ tdt("G3 Upper") }}</th>
-            <th>{{ tdt("G4 Lower") }}</th>
-            <th>{{ tdt("G4 Upper") }}</th>
-            <th>{{ tdt("G5") }}</th>
+            <th>{{ tm("quintile") }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g1') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g2_lower') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g2_upper') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g3_lower') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g3_upper') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g4_lower') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g4_upper') }}</th>
+            <th>{{ vb_name('cpho.Indicator', 'g5') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class='text-center'>{{ tdt("Quintile Values:") }}</td>
+            {% set row_name = tm('quintile_values') %}
+            <td class='text-center'>{{ row_name }}</td>
             <td>
               <div class="form-group mb-3">{{ form.g1 }}</div>
-              {{ accessible_label(form.g1.id_for_label, tdt("Quintile Values:") , tdt("G1")) }}
+              {{ hidden_a11y_label(form.g1, row_name) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g2_lower }}</div>
-              {{ accessible_label(form.g2_lower.id_for_label, tdt("Quintile Values:") , tdt("G2 Lower")) }}
+              {{ hidden_a11y_label(form.g2_lower, row_name) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g2_upper }}</div>
-              {{ accessible_label(form.g2_upper.id_for_label, tdt("Quintile Values:") , tdt("G2 Upper")) }}
+              {{ hidden_a11y_label(form.g2_upper, row_name) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g3_lower }}</div>
-              {{ accessible_label(form.g3_lower.id_for_label, tdt("Quintile Values:") , tdt("G3 Lower")) }}
+              {{ hidden_a11y_label(form.g3_lower, row_name ,) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g3_upper }}</div>
-              {{ accessible_label(form.g3_upper.id_for_label, tdt("Quintile Values:") , tdt("G3 Upper")) }}
+              {{ hidden_a11y_label(form.g3_upper, row_name) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g4_lower }}</div>
-              {{ accessible_label(form.g4_lower.id_for_label, tdt("Quintile Values:") , tdt("G4 Lower")) }}
+              {{ hidden_a11y_label(form.g4_lower, row_name) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g4_upper }}</div>
-              {{ accessible_label(form.g4_upper.id_for_label, tdt("Quintile Values:") , tdt("G4 Upper")) }}
+              {{ hidden_a11y_label(form.g4_upper, row_name) }}
             </td>
             <td>
               <div class="form-group mb-3">{{ form.g5 }}</div>
-              {{ accessible_label(form.g5.id_for_label, tdt("Quintile Values:") , tdt("G5")) }}
+              {{ hidden_a11y_label(form.g5, row_name) }}
             </td>
           </tr>
         </tbody>

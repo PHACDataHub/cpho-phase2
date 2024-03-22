@@ -56,7 +56,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Unit"),
+        label=tm("unit"),
     )
     oecd_country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
@@ -65,7 +65,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("OECD Country"),
+        label=tm("oecd_country"),
     )
 
     value = forms.FloatField(
@@ -73,7 +73,7 @@ class BenchmarkingForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("value")}
         ),
-        label=tdt("Value"),
+        label=tm("value"),
     )
     year = forms.IntegerField(
         required=True,
@@ -82,7 +82,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-control",
             }
         ),
-        label=tdt("Year"),
+        label=tm("year"),
     )
 
     comparison_to_oecd_avg = forms.ChoiceField(
@@ -93,7 +93,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Comparison to OECD Average"),
+        label=tm("comparison_to_oecd_average"),
     )
     labels = forms.ChoiceField(
         required=False,
@@ -103,7 +103,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Labels"),
+        label=tm("labels"),
     )
     is_deleted = forms.BooleanField(
         required=False,
@@ -112,7 +112,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
-        label=tdt("Delete"),
+        label=tm("delete"),
     )
 
     def clean_comparison_to_oecd_avg(self):
@@ -252,7 +252,7 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("yyyy")}
         ),
-        label=tdt("Year"),
+        label=tm("year"),
     )
 
     year_range = forms.CharField(
@@ -260,7 +260,7 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
         ),
-        label=tdt("Year Range"),
+        label=tm("year_range"),
     )
 
     data_point = forms.FloatField(
@@ -270,7 +270,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
-        label=tdt("Data Point"),
+        label=tm("data_point"),
     )
 
     line_of_best_fit_point = forms.FloatField(
@@ -280,7 +280,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
-        label=tdt("Line of Best Fit Point"),
+        label=tm("line_of_best_fit_point"),
     )
 
     trend_segment = forms.CharField(
@@ -288,7 +288,7 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
         ),
-        label=tdt("Trend Segment"),
+        label=tm("trend_segment"),
     )
 
     trend = forms.ChoiceField(
@@ -299,7 +299,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Trend"),
+        label=tm("trend"),
     )
 
     data_quality = forms.ChoiceField(
@@ -310,7 +310,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Data Quality"),
+        label=tm("data_quality"),
     )
 
     data_point_lower_ci = forms.FloatField(
@@ -320,7 +320,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
-        label=tdt("Data Point Lower CI"),
+        label=tm("data_lower_ci"),
     )
 
     data_point_upper_ci = forms.FloatField(
@@ -330,7 +330,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
-        label=tdt("Data Point Upper CI"),
+        label=tm("data_upper_ci"),
     )
 
     is_deleted = forms.BooleanField(
@@ -340,7 +340,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
-        label=tdt("Delete"),
+        label=tm("delete"),
     )
 
     def clean_year(self):

@@ -74,21 +74,21 @@ class IndicatorDatumForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("value")}
         ),
-        label=tdt("Value"),
+        label=tm("value"),
     )
     value_lower_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("lower_bound")}
         ),
-        label=tdt("Lower Bound"),
+        label=tm("lower_bound"),
     )
     value_upper_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("upper_bound")}
         ),
-        label=tdt("Upper Bound"),
+        label=tm("upper_bound"),
     )
     data_quality = forms.ChoiceField(
         required=False,
@@ -98,7 +98,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Data Quality"),
+        label=tm("data_quality"),
     )
     value_unit = forms.ChoiceField(
         required=False,
@@ -108,22 +108,22 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Value Unit"),
+        label=tm("value_unit"),
     )
     single_year_timeframe = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"class": "form-control"}),
-        label=tdt("Single Year Timeframe"),
+        label=tm("single_year_timeframe"),
     )
     multi_year_timeframe = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"class": "form-control"}),
-        label=tdt("Multi Year Timeframe"),
+        label=tm("multi_year_timeframe"),
     )
     literal_dimension_val = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"class": "form-control"}),
-        label=tdt("Literal Dimension Value"),
+        label=tm("literal_dimension_value"),
     )
     value_displayed = forms.ChoiceField(
         required=False,
@@ -133,7 +133,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Value Displayed"),
+        label=tm("value_displayed"),
     )
     reason_for_null = forms.ChoiceField(
         required=False,
@@ -143,7 +143,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
-        label=tdt("Reason for Null"),
+        label=tm("reason_for_null_data"),
     )
     is_deleted = forms.BooleanField(
         required=False,
@@ -152,7 +152,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
-        label=tdt("Delete"),
+        label=tm("delete"),
     )
 
     def clean(self):
@@ -426,6 +426,7 @@ class ManageIndicatorData(
             # get will just render the forms and their errors
             print(self.predefined_values_formset.errors)
             print(self.age_group_formset.errors)
+            messages.error(self.request, tm("error_saving_form"))
             return self.get(*args, **kwargs)
 
     @cached_property

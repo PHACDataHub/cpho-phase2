@@ -609,7 +609,7 @@ translation_entries = {
         "fr": "Non publié, juste un facteur de commodité pour filtrer les choix dans l'application",
     },
     "data_entered": {
-        "e gbn": "Data entered",
+        "en": "Data entered",
         "fr": "Données saisies",
     },
     "more_info": {
@@ -764,6 +764,10 @@ translation_entries = {
         "en": "Multi-year timeframe",
         "fr": "Période de plusieurs années",
     },
+    "literal_dimension_value": {
+        "en": "Literal Dimension Value",
+        "fr": "Valeur de dimension littérale",
+    },
     "submit": {"en": "Submit", "fr": "Soumettre"},
     "edit_indicator": {"en": "Edit Indicator", "fr": "Modifier l'indicateur"},
     "indicator_changelog": {
@@ -774,15 +778,10 @@ translation_entries = {
         "en": "Trend Analysis",
         "fr": "Analyse de tendance",
     },
-    "comparison_to_oecd_average": {
-        "en": "Comparison to OECD average",
-        "fr": "Comparaison à la moyenne de l'OCDE",
-    },
     "quintile": {
         "en": "Quintile",
         "fr": "Quintile",
     },
-    "data_entered": {"en": "Data entered", "fr": "Données saisies"},
     "open_number_field_allows_decimals": {
         "en": "Open number field (allows decimals)",
         "fr": "Champ de nombre ouvert (inclus les décimales)",
@@ -828,13 +827,13 @@ translation_entries = {
     },
     "legend": {"en": "Legend", "fr": "Légende"},
     # categories
-    "category": {"en": "Category", "fr": "Catégorie"},
+    # "category": {"en": "Category", "fr": "Catégorie"},
     # Do these exist anymore?
     # "factors_influencing_health": {"en": "", "fr": ""},
     # "general_health_status": {"en": "", "fr": ""},
     # "health_outcomes": {"en": "", "fr": ""},
     # topics
-    "topic": {"en": "Topic", "fr": "Sujet"},
+    # "topic": {"en": "Topic", "fr": "Sujet"},
     "childhood_and_family_factors": {
         "en": "Childhood and family factors",
         "fr": "Facteurs liés à l’enfance et à la famille",
@@ -862,18 +861,18 @@ translation_entries = {
         "en": "Acceptable",
         "fr": "Acceptable",
     },
-    "good": {
-        "en": "Good",
-        "fr": "Bon",
-    },
+    # "good": {
+    #     "en": "Good",
+    #     "fr": "Bon",
+    # },
     "suppressed": {
         "en": "Suppressed",
         "fr": "Supprimé",
     },
-    "very_good": {
-        "en": "Very Good",
-        "fr": "Très bon",
-    },
+    # "very_good": {
+    #     "en": "Very Good",
+    #     "fr": "Très bon",
+    # },
     "supressed": {
         "en": "Suppressed",
         "fr": "Supprimé",
@@ -1114,5 +1113,13 @@ translation_entries = {
     "file_is_missing_the_required_columns": {
         "en": "File is missing the required columns",
         "fr": "Le fichier ne contient pas les colonnes requises",
+    },
+    "formset_dupe_msg": {
+        "en": "Duplicate field values. Please ensure that the following fields are unique: ",
+        "fr": "Valeurs de champs en double. Veuillez vous assurer que les champs suivants sont uniques : ",
+    },
+    "duplicate_form": {
+        "en": "Duplicate form",
+        "fr": "Formulaire en double",
     },
 }

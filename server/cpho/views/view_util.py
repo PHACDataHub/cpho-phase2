@@ -64,9 +64,7 @@ class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
                                     and field in form.fields
                                 ):
                                     fields_to_change.append(field)
-                        error_msg = tdt(
-                            "Duplicate field values. Please ensure that the following fields are unique: "
-                        )
+                        error_msg = tm("formset_dupe_msg")
                         for field in fields_to_change:
                             field_name = None
                             field_value = None
@@ -85,10 +83,10 @@ class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
                             error_msg += f"{field_name}: {field_value}, "
                         error_msg = error_msg[:-2]
 
-                        form.add_error(None, tdt("Duplicate form"))
+                        form.add_error(None, tm("duplicate_form"))
 
                         raise ValidationError(error_msg)
-        # return self.cleaned_data
+        return self.cleaned_data
 
 
 class SinglePeriodMixin(View):

@@ -4,7 +4,7 @@
 {% block content_breadcrumbs %}
   {{ bc.indicators_index() }}
   {{ bc.indicator(view.indicator) }}
-  {{ bc.item(tdt("Benchmarking") , None, True) }}
+  {{ bc.item(tm("benchmarking") , None, True) }}
 {% endblock %}
 
 {% macro benchmarking_form_field_with_errors(field) %}
@@ -33,7 +33,7 @@
 {% endmacro %}
 
 {% block content %}
-  <div class="h2">{{ tdt("Benchmarking data for: ") }} {{ indicator.name }}</div>
+  <div class="h2">{{ tm("benchmarking_metadata") }} {{ tm("for") }} : {{ indicator.name }}</div>
 
   <a class="btn btn-primary"
      href="{{ url('export_benchmarking', args=[indicator.id]) }}">Export Benchmarking</a>
@@ -52,14 +52,14 @@
                   display:block">
       <thead>
         <tr>
-          <th>{{ tdt("Oecd Country") }}</th>
-          <th>{{ tdt("Value") }}</th>
-          <th>{{ tdt("Unit") }}</th>
-          <th>{{ tdt("Year") }}</th>
+          <th>{{ tm("oecd_country") }}</th>
+          <th>{{ tm("value") }}</th>
+          <th>{{ tm("unit") }}</th>
+          <th>{{ tm("year") }}</th>
           {# <th>{{ tdt("Standard Deviation") }}</th> #}
-          <th>{{ tdt("Comparison to Oecd Average") }}</th>
-          <th>{{ tdt("Labels") }}</th>
-          <th>{{ tdt("Delete") }}</th>
+          <th>{{ tm("comparison_to_oecd_average") }}</th>
+          <th>{{ tm("labels") }}</th>
+          <th>{{ tm("delete") }}</th>
         </tr>
       </thead>
       <tbody id="benchmarking-table-body"
@@ -68,11 +68,11 @@
       </tbody>
     </table>
     <div class="text-center py-1">
-      <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tdt("Add Data") }}</button>
+      <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tm("add_data") }}</button>
     </div>
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tdt("Save") }}">
+           value="{{ tm("save") }}">
   </form>
 
   <script>

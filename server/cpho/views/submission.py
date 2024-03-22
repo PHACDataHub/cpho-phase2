@@ -71,7 +71,7 @@ class SubmitIndicatorData(
             user=self.request.user,
         ).perform()
         messages.success(
-            self.request, tdt("Submission successful"), messages.SUCCESS
+            self.request, tm("submitted_successfully"), messages.SUCCESS
         )
         return redirect(
             reverse(
@@ -101,7 +101,7 @@ class SubmitIndicatorMetaData(MustPassAuthCheckMixin, View):
             user=self.request.user,
         ).perform()
         messages.success(
-            self.request, tdt("Submission successful"), messages.SUCCESS
+            self.request, tm("submitted_successfully"), messages.SUCCESS
         )
         return redirect(
             reverse(

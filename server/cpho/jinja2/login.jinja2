@@ -14,7 +14,7 @@
         <div class="card">
           <h2 class="card-header">{{ tm("log_in") }}</h2>
           <div class="card-body">
-            <p>{{ tdt("Welcome") }}</p>
+            <p>{{ tm("welcome") }}</p>
             <p>{{ tm("prod_login_intro") }}</p>
             <div class="mx-auto float-end">{{ phac_aspc.phac_aspc_auth_signin_microsoft_button(request.GET.urlencode() ) }}</div>
           </div>
@@ -35,7 +35,7 @@
             </div>
           {% endif %}
           <div class="card">
-            <div class="h2" class="card-header">{{ tm("log_in") }}</div>
+            <div class="card-header">{{ tm("log_in") }}</div>
             <div class="card-body">
               <div class="form-floating mb-3">
                 <input type="text"

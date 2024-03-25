@@ -1146,4 +1146,8 @@ translation_entries = {
         "en": "For fields where data are not available (line of best fit, trend, data quality or CI), please leave blank",
         "fr": "Pour les champs où les données ne sont pas disponibles (droite de régression, tendance, qualité des données ou IC), veuillez laisser vide",
     },
+    "year_or_range": {
+        "en": "Single Year / Year Range",
+        "fr": "Année unique / Plage d'années",
+    },
 }

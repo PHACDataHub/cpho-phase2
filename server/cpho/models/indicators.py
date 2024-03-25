@@ -581,7 +581,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
     indicator = fields.ForeignKey(
         Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
-    year = fields.CharField(max_length=50, null=True, blank=True)
+    year = fields.CharField(max_length=50)
     data_point = fields.FloatField()
     line_of_best_fit_point = fields.FloatField(null=True, blank=True)
     trend_segment = fields.CharField(max_length=50, null=True, blank=True)

@@ -86,7 +86,6 @@ class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
                         form.add_error(None, tm("duplicate_form"))
 
                         raise ValidationError(error_msg)
-        return self.cleaned_data
 
 
 class SinglePeriodMixin(View):

@@ -28,6 +28,7 @@ from cpho.models import (
 from cpho.text import tdt, tm
 
 from .view_util import (
+    BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
@@ -42,7 +43,6 @@ class BenchmarkingForm(ModelForm):
             "oecd_country",
             "value",
             "year",
-            # "standard_deviation",
             "comparison_to_oecd_avg",
             "labels",
             "is_deleted",
@@ -56,6 +56,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("unit"),
     )
     oecd_country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
@@ -64,6 +65,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("oecd_country"),
     )
 
     value = forms.FloatField(
@@ -71,6 +73,7 @@ class BenchmarkingForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("value")}
         ),
+        label=tm("value"),
     )
     year = forms.IntegerField(
         required=True,
@@ -79,15 +82,9 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("year"),
     )
-    # standard_deviation = forms.FloatField(
-    #     required=True,
-    #     widget=forms.NumberInput(
-    #         attrs={
-    #             "class": "form-control",
-    #         }
-    #     ),
-    # )
+
     comparison_to_oecd_avg = forms.ChoiceField(
         required=True,
         choices=Benchmarking.COMPARISON_CHOICES,
@@ -96,6 +93,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("comparison_to_oecd_average"),
     )
     labels = forms.ChoiceField(
         required=False,
@@ -105,6 +103,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("labels"),
     )
     is_deleted = forms.BooleanField(
         required=False,
@@ -113,6 +112,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
+        label=tm("delete"),
     )
 
     def clean_comparison_to_oecd_avg(self):
@@ -159,22 +159,6 @@ class BenchmarkingForm(ModelForm):
 
         return year
 
-    # def clean_standard_deviation(self):
-    #     standard_deviation = self.cleaned_data["standard_deviation"]
-
-    #     if standard_deviation is not None:
-    #         if standard_deviation < -3000 or standard_deviation > 1000:
-    #             self.add_error(
-    #                 "standard_deviation",
-    #                 tdt("Standard deviation must be a valid number"),
-    #             )
-    #     else:
-    #         self.add_error(
-    #             "standard_deviation", tdt("Standard deviation cannot be null")
-    #         )
-
-    #     return standard_deviation
-
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:
             self.instance.deletion_time = str(datetime.now())
@@ -205,6 +189,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
             form=BenchmarkingForm,
             extra=1,
             can_delete=False,
+            formset=BaseInlineFormSetWithUniqueTogetherCheck,
         )
 
         kwargs = {
@@ -267,6 +252,7 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("yyyy")}
         ),
+        label=tm("year"),
     )
 
     year_range = forms.CharField(
@@ -274,6 +260,7 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
         ),
+        label=tm("year_range"),
     )
 
     data_point = forms.FloatField(
@@ -283,6 +270,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("data_point"),
     )
 
     line_of_best_fit_point = forms.FloatField(
@@ -292,6 +280,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("line_of_best_fit_point"),
     )
 
     trend_segment = forms.CharField(
@@ -299,6 +288,7 @@ class TrendAnalysisForm(ModelForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
         ),
+        label=tm("trend_segment"),
     )
 
     trend = forms.ChoiceField(
@@ -309,6 +299,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("trend"),
     )
 
     data_quality = forms.ChoiceField(
@@ -319,6 +310,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("data_quality"),
     )
 
     data_point_lower_ci = forms.FloatField(
@@ -328,6 +320,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("data_lower_ci"),
     )
 
     data_point_upper_ci = forms.FloatField(
@@ -337,6 +330,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("data_upper_ci"),
     )
 
     is_deleted = forms.BooleanField(
@@ -346,6 +340,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
+        label=tm("delete"),
     )
 
     def clean_year(self):
@@ -441,6 +436,7 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
             form=TrendAnalysisForm,
             extra=1,
             can_delete=False,
+            formset=BaseInlineFormSetWithUniqueTogetherCheck,
         )
 
         kwargs = {

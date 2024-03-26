@@ -15,6 +15,7 @@ from django.views.generic import FormView, TemplateView
 
 from phac_aspc.rules import test_rule
 
+from cpho.util import get_lang_code
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     Benchmarking,
@@ -59,7 +60,7 @@ class BenchmarkingForm(ModelForm):
         label=tm("unit"),
     )
     oecd_country = forms.ModelChoiceField(
-        queryset=Country.objects.all(),
+        queryset=Country.objects.all().order_by(f"name_{get_lang_code()}"),
         widget=forms.Select(
             attrs={
                 "class": "form-select",

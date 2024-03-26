@@ -36,7 +36,7 @@ def test_benchmarking(vanilla_user_client):
         ][
             0
         ],
-        "benchmarking-0-methodology_differences": "on"
+        "benchmarking-0-methodology_differences": "on",
         "benchmarking-1-oecd_country": canada.id,
         "benchmarking-1-value": 2,
         "benchmarking-1-year": 2020,

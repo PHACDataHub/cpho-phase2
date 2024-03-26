@@ -369,7 +369,8 @@ class TrendAnalysisForm(ModelForm):
                 )
 
         else:
-            start_year, end_year = map(int, year.split("-"))
+            start_year = int(year.split("-")[0])
+            end_year = int(year.split("-")[1])
             if not (2000 <= start_year <= end_year <= 2050):
                 self.add_error(
                     "year",
@@ -397,7 +398,8 @@ class TrendAnalysisForm(ModelForm):
                 )
                 return trend_segment
             if single_segment:
-                start_year, end_year = map(int, trend_segment_.split("-"))
+                start_year = int(trend_segment_.split("-")[0])
+                end_year = int(trend_segment_.split("-")[1])
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "trend_segment",
@@ -405,11 +407,12 @@ class TrendAnalysisForm(ModelForm):
                     )
 
             else:
-                start_range, end_range = map(str, trend_segment_.split("to"))
-                start_year_start, start_year_end = map(
-                    int, start_range.split("-")
-                )
-                end_year_start, end_year_end = map(int, end_range.split("-"))
+                start_range = str(trend_segment_.split("to")[0])
+                end_range = str(trend_segment_.split("to")[1])
+                start_year_start = int(start_range.split("-")[0])
+                start_year_end = int(start_range.split("-")[1])
+                end_year_start = int(end_range.split("-")[0])
+                end_year_end = int(end_range.split("-")[1])
                 if not (
                     2000
                     <= start_year_start

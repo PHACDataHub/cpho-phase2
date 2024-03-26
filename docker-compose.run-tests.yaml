@@ -16,14 +16,10 @@ services:
   server:
     build:
       context: ./server
+      dockerfile: Dockerfile.prod
       args:
-        - DEPENDENCY_SET=dev-test
-    user: root
-    command: >
-      sh -c "
-      coverage run -m pytest &&
-      coverage report --show-missing &&
-      coverage json -o /cpho/web/coverage/coverage.json --pretty-print"
+        - DEPENDENCY_SET=test
+    entrypoint: ["python", "./entrypoint.test.py"]
     env_file:
       - ./server/.env.dev-public
     environment:

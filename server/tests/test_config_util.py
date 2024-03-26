@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 from unittest import mock
 
@@ -40,15 +41,18 @@ def test_is_running_tests_returns_false_outside_test_execution_environment():
     assert os.path.isfile(manage_py_path)
 
     # call is_running_tests in a sub-process, executed with manage.py shell
-    non_test_execution_env_result = (
-        os.popen(
-            f'{manage_py_path} shell --command "from server.config_util import is_running_tests; print(is_running_tests())"'
-        )
-        .readlines()[-1]  #
-        .strip()  # remove any leading spaces or tabs and trailing new lines
+    subprocess.run(
+        [
+            "python",
+            manage_py_path,
+            "shell",
+            "--command",
+            "from server.config_util import is_running_tests; assert not is_running_tests()",
+        ],
+        check=True,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
-
-    assert non_test_execution_env_result == "False"
 
 
 @mock.patch.dict(os.environ, {K8S_FLAG_ENV_VAR_KEY: "true"})

@@ -1,0 +1,32 @@
+# Note: image should match the build env layer of Dockerfile.prod
+FROM python:3.11-bookworm
+
+ENV USER=999
+
+ENV HOME=/cpho
+ENV APP_HOME=$HOME/web
+ENV VIRTUALENV=$HOME/env
+ENV WHEELDIR=$HOME/wheels
+
+# TODO install other useful dev/prod management dependencies like psql
+
+RUN \
+    addgroup --system app && adduser --shell /bin/sh -u $USER --system --group app --home $HOME && \
+    mkdir -p $APP_HOME && \
+    mkdir $VIRTUALENV && \
+    chown -R $USER $HOME && \
+    echo "root:Docker!" | chpasswd && \
+    echo -e "CPHO Container\n\nFor management commands run: \nsu app\npython -m manage\n\n" > /etc/motd
+
+WORKDIR $APP_HOME
+USER $USER
+
+COPY --chown=$USER:app . $APP_HOME
+
+RUN python -mvenv $VIRTUALENV
+ENV PATH="${VIRTUALENV}/bin:$PATH"
+RUN /bin/bash -c "source ${VIRTUALENV}/bin/activate" && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
+
+CMD exec /bin/bash

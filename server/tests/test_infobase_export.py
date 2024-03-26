@@ -21,7 +21,7 @@ def test_infobase_export(vanilla_user_client):
         TrendAnalysis.objects.create(
             indicator=i,
             data_point=1.1,
-            year_range="2019-2020",
+            year="2019-2020",
             trend=TrendAnalysis.TREND_CHOICES[1][0],
         )
 

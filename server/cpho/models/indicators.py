@@ -527,6 +527,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("rate_per_1000_population", tm("rate_per_1000_population")),
         ("total_deaths_per_1m", tm("total_deaths_per_1m")),
         ("total_per_100k_persons", tm("total_per_100k_persons")),
+        ("years", tm("years")),
     ]
     unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
@@ -553,6 +554,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("men", tm("men")),
     ]
     labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
+    methodology_differences = fields.BooleanField(default=False)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""

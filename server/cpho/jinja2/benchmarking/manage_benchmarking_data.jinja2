@@ -25,6 +25,7 @@
     {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
     <td>{{ benchmarking_form_field_with_errors(form.comparison_to_oecd_avg) }}</td>
     <td>{{ form.labels }}</td>
+    <td>{{ form.methodology_differences }}</td>
     <td>
       {{ form.is_deleted }}
       {{ form.id }}
@@ -59,6 +60,7 @@
           {# <th>{{ tdt("Standard Deviation") }}</th> #}
           <th>{{ tm("comparison_to_oecd_average") }}</th>
           <th>{{ tm("labels") }}</th>
+          <th>{{ tm("methodology_differences") }}</th>
           <th>{{ tm("delete") }}</th>
         </tr>
       </thead>

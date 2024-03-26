@@ -46,6 +46,7 @@ class BenchmarkingForm(ModelForm):
             "year",
             "comparison_to_oecd_avg",
             "labels",
+            "methodology_differences",
             "is_deleted",
         ]
 
@@ -59,8 +60,9 @@ class BenchmarkingForm(ModelForm):
         ),
         label=tm("unit"),
     )
+
     oecd_country = forms.ModelChoiceField(
-        queryset=Country.objects.all().order_by(f"name_{get_lang_code()}"),
+        queryset=Country.objects.all().order_by("name_en"),
         widget=forms.Select(
             attrs={
                 "class": "form-select",
@@ -106,6 +108,17 @@ class BenchmarkingForm(ModelForm):
         ),
         label=tm("labels"),
     )
+
+    methodology_differences = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tm("methodology_differences")
+    )
+
     is_deleted = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(
@@ -181,7 +194,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     def benchmarking_formset(self):
         existing_data = Benchmarking.active_objects.filter(
             indicator=self.indicator
-        ).order_by("oecd_country__name_en", "year")
+        ).order_by("labels","-value")
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,

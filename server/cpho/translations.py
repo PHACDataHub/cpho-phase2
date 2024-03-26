@@ -496,6 +496,10 @@ translation_entries = {
         "en": "Labels",
         "fr": "Étiquettes",
     },
+    "methodology_differences": {
+        "en": "Methodology Differences",
+        "fr": "Différences Méthodologiques",
+    },
     "trend_analysis_metadata": {
         "en": "Trend Analysis Metadata",
         "fr": "Métadonnées d'analyse de tendance",
@@ -1009,6 +1013,11 @@ translation_entries = {
         "en": "Total per 100 000 persons",
         "fr": "Total pour 100 000 personnes",
     },
+    "years": {
+        "en": "Years",
+        "fr": "Années",
+    },
+
     # comparison
     "better": {"en": "Better", "fr": "Meilleur"},
     "similar": {"en": "Similar", "fr": "Similaire"},

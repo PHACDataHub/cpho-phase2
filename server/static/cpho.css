@@ -26,6 +26,11 @@ h1 abbr {
     background: #f8d7da;
     color: #842029;
     border-radius: 10px;
+    min-height: 30px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    margin: 5px;
 }
 
 .approved-tag>i {

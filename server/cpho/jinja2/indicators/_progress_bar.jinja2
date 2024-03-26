@@ -35,13 +35,13 @@
            aria-labelledby="{{ data_entered_div_id }}"></div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
-      <div id="{{ data_entered_div_id }}">{{ tdt("Data entered") }}</div>
+      <div id="{{ data_entered_div_id }}">{{ tm("data_entered") }}</div>
       {% if not progress_in_table %}
         <div tabindex="0"
-             aria-label="{{ tdt("More info") }}"
+             aria-label="{{ tm("more_info") }}"
              data-bs-placement="bottom"
              data-bs-toggle="tooltip"
-             data-bs-title="{{ tdt("Data currently in database but not approved by program or HSO. Data is not made visible through the API (for infobase) until approved by program and then HSO. Data modified after approval is also treated similarly") }}">
+             data-bs-title="{{ tm("data_currently_in_database_but_not_approved_by_program_or_hso_data_is_not_made_visible_through_the_api_for_infobase_until_approved_by_program_and_then_hso_data_modified_after_approval_is_also_treated_similarly") }}">
           <div class="bi bi-info-circle px-2" aria-hidden="true"></div>
         </div>
       {% endif %}
@@ -58,13 +58,13 @@
            aria-labelledby="{{ program_approved_div_id }}"></div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
-      <div id="{{ program_approved_div_id }}">{{ tdt("Program approved") }}</div>
+      <div id="{{ program_approved_div_id }}">{{ tm("program_submitted") }}</div>
       {% if not progress_in_table %}
         <div tabindex="0"
-             aria-label="{{ tdt("More info") }}"
+             aria-label="{{ tm("more_info") }}"
              data-bs-placement="bottom"
              data-bs-toggle="tooltip"
-             data-bs-title="{{ tdt("Data is approved by program only. At this point is is not made visible through the API (for infobase) until HSO approves it.") }}">
+             data-bs-title="{{ tm("program_approved_expl") }}">
           <div class="bi bi-info-circle px-2" aria-hidden="true"></div>
         </div>
       {% endif %}
@@ -81,13 +81,13 @@
            aria-labelledby="{{ hso_approved_div_id }}"></div>
     </div>
     <div class="d-flex justify-content-center {% if not progress_in_table %}mt-1 fw-bold{% endif %}">
-      <div id="{{ hso_approved_div_id }}">{{ tdt("HSO approved") }}</div>
+      <div id="{{ hso_approved_div_id }}">{{ tm("submitted_by_program_and_hso") }}</div>
       {% if not progress_in_table %}
         <div tabindex="0"
-             aria-label="{{ tdt("More info") }}"
+             aria-label="{{ tm("more_info") }}"
              data-bs-placement="bottom"
              data-bs-toggle="tooltip"
-             data-bs-title="{{ tdt("Data is approved by both program and HSO and has not been modified after obtaining approvals. At this point is is made available through the API (for infobase)") }}">
+             data-bs-title="{{ tm("submitted_by_program_and_hso") }}">
           <div class="bi bi-info-circle px-2" aria-hidden="true"></div>
         </div>
       {% endif %}

@@ -9,14 +9,14 @@
 {% block content %}
   <div class="container">
     <div class="row">
-      <div class="h2">{{ tdt("Indicator Selected: ") }} {{ indicator.name }}</div>
+      <div class="h2">{{ tm("indicator") }} : {{ indicator.name }}</div>
       <div class="col-md-2 mt-4">
         <div>
           {% if respects_rule('can_edit_indicator', indicator) %}
             <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true" class="bi bi-pen"></span>
-              {{ tdt("Edit indicator") }}
+              {{ tm("edit_indicator") }}
             </a>
           {% endif %}
         </div>
@@ -25,7 +25,7 @@
             <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true"  class="bi bi-file-diff"></span>
-              {{ tdt("Indicator changelog") }}
+              {{ tm("indicator_changelog") }}
             </a>
           {% endif %}
         </div>
@@ -33,14 +33,14 @@
           <a href="{{ url("upload_indicator") }}"
              class="btn w-100 btn-outline-dark my-1">
             <span aria-hidden="true" class="bi bi-file-earmark-arrow-up"></span>
-            {{ tdt("Upload data") }}
+            {{ tm("upload_data") }}
           </a>
         </div>
         <div>
           <a href="{{ url('export_indicator', args=[indicator.id]) }}"
              class="btn w-100 btn-outline-dark my-1">
             <span aria-hidden="true" class="bi bi-file-earmark-arrow-down"></span>
-            {{ tdt("Export data") }}
+            {{ tm("export_data") }}
           </a>
         </div>
 
@@ -49,7 +49,7 @@
             <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true" class="bi bi-clipboard-data"></span>
-              {{ tdt("Benchmarking") }}
+              {{ tm("benchmarking") }}
             </a>
           {% endif %}
         </div>
@@ -59,7 +59,7 @@
             <a href="{{ url('manage_trend_analysis_data', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true" class="bi bi-graph-up-arrow"></span>
-              {{ tdt("Trend Analysis") }}
+              {{ tm("trend_analysis") }}
             </a>
           {% endif %}
         </div>
@@ -69,7 +69,7 @@
             <a href="{{ url('review_metadata', args=[indicator.id]) }}"
                class="btn w-100 btn-outline-dark my-1">
               <span aria-hidden="true" class="bi bi-journal-check"></span>
-              {{ tdt("Review Metadata") }}
+              {{ tm("review_metadata") }}
             </a>
           {% endif %}
         </div>
@@ -79,7 +79,7 @@
         <div class="mt-4">
           <div>
             <div>
-              <div class="h5">{{ tdt("Indicator metadata submission: ") }}</div>
+              <div class="h5">{{ tm("indicator_metadata_submission") }}</div>
               {% set submission_statuses = metadata_submission_statuses %}
               {% set progress_in_table = false %}
               {% set metadata_submission = true %}
@@ -89,15 +89,15 @@
 
           {% if respects_rule('can_access_indicator', indicator) %}
             <div class='card my-4'>
-              <div class="card-header h3">{{ tdt("Periods with data") }}</div>
+              <div class="card-header h3">{{ tm("periods_with_data") }}</div>
               <div class="card-body">
                 <table class="table table-hover">
                   <thead>
                     <tr class="text-center">
-                      <th class="width-15">{{ tdt("Period") }}</th>
-                      <th class="width-15">{{ tdt("Data count") }}</th>
-                      <th class="width-55">{{ tdt("Data submission") }}</th>
-                      <th class="width-15">{{ tdt("Actions") }}</th>
+                      <th class="width-15">{{ tm("period") }}</th>
+                      <th class="width-15">{{ tm("data_count") }}</th>
+                      <th class="width-55">{{ tm("data_submission") }}</th>
+                      <th class="width-15">{{ tm("actions") }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -112,7 +112,7 @@
                           <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
                           <td>
                             <a class='btn btn-outline-dark'
-                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("See/Edit data") }}</a>
+                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("see_edit_data") }}</a>
                           </td>
                         </tr>
                       {% endif %}
@@ -123,13 +123,13 @@
             </div>
           {% endif %}
           {% if respects_rule('can_access_indicator', indicator) %}
-            <div class="h3">{{ tdt("Add data for new periods") }}</div>
+            <div class="h3">{{ tm("add_data_for_new_periods") }}</div>
             <div>
               <ul>
                 {% for period,data_count in data_counts_by_period.items() %}
                   {% if data_count == 0 %}
                     <li>
-                      <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tdt("Add data for ") }} {{ period }}</a>
+                      <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("add_data") }} {{ tm("for") }} {{ period }}</a>
                     </li>
                   {% endif %}
                 {% endfor %}

@@ -6,12 +6,12 @@
 {% block content_breadcrumbs %}
   {{ bc.indicators_index() }}
   {{ bc.indicator(indicator) }}
-  {{ bc.item(tdt('Changelog') ,None, True) }}
+  {{ bc.item(tm('changelog') ,None, True) }}
 {% endblock %}
 
 {% block content %}
  
-  <h1>{{ tdt("Changelog for indicator :") }} {{ indicator }}</h1>
+  <h1>{{ tm("changelog_for_indicator") }} : {{ indicator }}</h1>
   <style>{% include 'changelog/_changelog_styles.css' %}</style>
 
   {{ changelog_table(edit_entries,False) }}

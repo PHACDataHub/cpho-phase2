@@ -11,7 +11,7 @@
 
 
 {% macro indicators_index(active) %}
-  {{ item(tdt("Indicators") , url('list_indicators'), active) }}
+  {{ item(tm("indicators") , url('list_indicators'), active) }}
 {% endmacro %}
 
 {% macro indicator(indicator, active) %}
@@ -19,6 +19,6 @@
 {% endmacro %}
 
 {% macro indicator_period(indicator, period, active) %}
-  {% set label = period ~ " " ~ tdt('data') %}
+  {% set label = period ~ " " ~ tm('data') %}
   {{ item(label, url('view_indicator_for_period', args=[indicator.id, period.id]) , active) }}
 {% endmacro %}

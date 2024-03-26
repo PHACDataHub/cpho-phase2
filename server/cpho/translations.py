@@ -1033,7 +1033,7 @@ translation_entries = {
     "increasing": {"en": "Increasing", "fr": "En hausse"},
     "decreasing": {"en": "Decreasing", "fr": "En baisse"},
     "good": {"en": "Good", "fr": "Bon"},
-    "very_good": {"en": "Very_Good", "fr": "Très bon"},
+    "very_good": {"en": "Very Good", "fr": "Très bon"},
     "excellent": {"en": "Excellent", "fr": "Excellent"},
     "create_new_indicator": {
         "en": "Create New Indicator",
@@ -1130,5 +1130,33 @@ translation_entries = {
     "duplicate_form": {
         "en": "Duplicate form",
         "fr": "Formulaire en double",
+    },
+    "year_format": {
+        "en": "Year must be in the format YYYY or YYYY-YYYY",
+        "fr": "L'année doit être au format AAAA ou AAAA-AAAA",
+    },
+    "year_timeframe_between_multi": {
+        "en": "Years must be between the years 2000 and 2050 and start year must be less than end year.",
+        "fr": "Les années doivent être comprises entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin.",
+    },
+    "trend_segment_format": {
+        "en": "Trend segment must be in the format YYYY-YYYY or YYYY-YYYY to YYYY-YYYY",
+        "fr": "Le segment de tendance doit être au format AAAA-AAAA ou AAAA-AAAA à AAAA-AAAA",
+    },
+    "trend_timeframe_between": {
+        "en": "Trend Segment must be between the years 2000 and 2050 and start year must be less than end year.",
+        "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin.",
+    },
+    "trend_timeframe_between_multi": {
+        "en": "Trend Segment must be between the years 2000 and 2050 and start year must be less than end year. Start range must end before end range.",
+        "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin. La plage de début doit se terminer avant la plage de fin.",
+    },
+    "trend_desctiption": {
+        "en": "For fields where data are not available (line of best fit, trend, data quality or CI), please leave blank",
+        "fr": "Pour les champs où les données ne sont pas disponibles (droite de régression, tendance, qualité des données ou IC), veuillez laisser vide",
+    },
+    "year_or_range": {
+        "en": "Single Year / Year Range",
+        "fr": "Année unique / Plage d'années",
     },
 }

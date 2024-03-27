@@ -527,6 +527,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("rate_per_1000_population", tm("rate_per_1000_population")),
         ("total_deaths_per_1m", tm("total_deaths_per_1m")),
         ("total_per_100k_persons", tm("total_per_100k_persons")),
+        ("years", tm("years")),
     ]
     unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
@@ -553,6 +554,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("men", tm("men")),
     ]
     labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
+    methodology_differences = fields.BooleanField(default=False)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""
@@ -582,7 +584,6 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
     year = fields.CharField(max_length=50)
-    year_range = fields.CharField(max_length=50, null=True, blank=True)
     data_point = fields.FloatField()
     line_of_best_fit_point = fields.FloatField(null=True, blank=True)
     trend_segment = fields.CharField(max_length=50, null=True, blank=True)
@@ -596,8 +597,30 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
     trend = fields.CharField(
         max_length=50, choices=TREND_CHOICES, null=True, blank=True
     )
+    UNIT_CHOICES = [
+        ("", "--"),
+        ("daily_dose_1k_census", tm("daily_dose_1k_census")),
+        ("percentage", tm("percentage")),
+        ("percent_age_standardized", tm("percent_age_standardized")),
+        ("percentage_crude", tm("percentage_crude")),
+        ("rate_10k_patient_days", tm("rate_10k_patient_days")),
+        ("rate_100k_age_standardized", tm("rate_100k_age_standardized")),
+        ("rate_100k_age_specific_crude", tm("rate_100k_age_specific_crude")),
+        ("rate_100k_crude", tm("rate_100k_crude")),
+        ("rate_100k_live_births", tm("rate_100k_live_births")),
+        ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
+        ("years", tm("years")),
+        ("other", tm("other")),
+    ]
+
+    unit = fields.CharField(
+        max_length=75,
+        choices=UNIT_CHOICES,
+        verbose_name=tm("value_unit"),
+    )
     DATA_QUALITY_CHOICES = [
         ("", "--"),
+        ("caution", tm("caution")),
         ("good", tm("good")),
         ("very_good", tm("very_good")),
         ("excellent", tm("excellent")),

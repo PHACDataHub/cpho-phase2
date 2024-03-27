@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Any
 
@@ -15,6 +16,7 @@ from django.views.generic import FormView, TemplateView
 
 from phac_aspc.rules import test_rule
 
+from cpho.util import get_lang_code
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     Benchmarking,
@@ -45,6 +47,7 @@ class BenchmarkingForm(ModelForm):
             "year",
             "comparison_to_oecd_avg",
             "labels",
+            "methodology_differences",
             "is_deleted",
         ]
 
@@ -58,8 +61,9 @@ class BenchmarkingForm(ModelForm):
         ),
         label=tm("unit"),
     )
+
     oecd_country = forms.ModelChoiceField(
-        queryset=Country.objects.all(),
+        queryset=Country.objects.all().order_by("name_en"),
         widget=forms.Select(
             attrs={
                 "class": "form-select",
@@ -105,6 +109,17 @@ class BenchmarkingForm(ModelForm):
         ),
         label=tm("labels"),
     )
+
+    methodology_differences = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tm("methodology_differences")
+    )
+
     is_deleted = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(
@@ -180,7 +195,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     def benchmarking_formset(self):
         existing_data = Benchmarking.active_objects.filter(
             indicator=self.indicator
-        ).order_by("oecd_country__name_en", "year")
+        ).order_by("labels","-value")
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
@@ -236,7 +251,6 @@ class TrendAnalysisForm(ModelForm):
         model = TrendAnalysis
         fields = [
             "year",
-            "year_range",
             "data_point",
             "line_of_best_fit_point",
             "trend_segment",
@@ -245,22 +259,13 @@ class TrendAnalysisForm(ModelForm):
             "data_quality",
             "data_point_lower_ci",
             "data_point_upper_ci",
+            "unit",
         ]
 
-    year = forms.IntegerField(
-        required=True,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tm("yyyy")}
-        ),
-        label=tm("year"),
-    )
-
-    year_range = forms.CharField(
+    year = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
-        ),
-        label=tm("year_range"),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("year"),
     )
 
     data_point = forms.FloatField(
@@ -285,9 +290,7 @@ class TrendAnalysisForm(ModelForm):
 
     trend_segment = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": tm("yyyy_yyyy")}
-        ),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
         label=tm("trend_segment"),
     )
 
@@ -311,6 +314,17 @@ class TrendAnalysisForm(ModelForm):
             }
         ),
         label=tm("data_quality"),
+    )
+
+    unit = forms.ChoiceField(
+        required=False,
+        choices=TrendAnalysis.UNIT_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+        label=tm("unit"),
     )
 
     data_point_lower_ci = forms.FloatField(
@@ -349,41 +363,35 @@ class TrendAnalysisForm(ModelForm):
         if year is None or year == "":
             return None
 
-        if year:
-            try:
-                if not (int(year) >= 2000 and int(year) <= 2050):
-                    self.add_error(
-                        "year",
-                        tm("year_timeframe_between"),
-                    )
-            except ValueError:
+        year = year.strip().replace(" ", "")
+
+        single_year = re.match(r"^\d{4}$", year)
+        multi_year = re.match(r"^\d{4}-\d{4}$", year)
+
+        if not single_year and not multi_year:
+            self.add_error(
+                "year",
+                tm("year_format"),
+            )
+            return year
+
+        if single_year:
+            if not (int(year) >= 2000 and int(year) <= 2050):
                 self.add_error(
                     "year",
-                    tm("must_be_valid_number"),
+                    tm("year_timeframe_between"),
+                )
+
+        else:
+            start_year = int(year.split("-")[0])
+            end_year = int(year.split("-")[1])
+            if not (2000 <= start_year <= end_year <= 2050):
+                self.add_error(
+                    "year",
+                    tm("year_timeframe_between_multi"),
                 )
 
         return year
-
-    def clean_year_range(self):
-        year_range = self.cleaned_data["year_range"]
-
-        if year_range is None or year_range == "":
-            return None
-
-        if year_range:
-            try:
-                start_year, end_year = map(int, year_range.split("-"))
-                if not (2000 <= start_year <= end_year <= 2050):
-                    self.add_error(
-                        "year_range",
-                        tm("year_timeframe_between"),
-                    )
-            except ValueError:
-                self.add_error(
-                    "year_range",
-                    tm("multi_year_format"),
-                )
-        return year_range
 
     def clean_trend_segment(self):
         trend_segment = self.cleaned_data["trend_segment"]
@@ -392,19 +400,46 @@ class TrendAnalysisForm(ModelForm):
             return None
 
         if trend_segment:
-            try:
-                start_year, end_year = map(int, trend_segment.split("-"))
+            trend_segment_ = trend_segment.strip().replace(" ", "")
+            single_segment = re.match(r"^\d{4}-\d{4}$", trend_segment_)
+            multi_segment = re.match(
+                r"^\d{4}-\d{4}to\d{4}-\d{4}$", trend_segment_
+            )
+            if not single_segment and not multi_segment:
+                self.add_error(
+                    "trend_segment",
+                    tm("trend_segment_format"),
+                )
+                return trend_segment
+            if single_segment:
+                start_year = int(trend_segment_.split("-")[0])
+                end_year = int(trend_segment_.split("-")[1])
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "trend_segment",
-                        tm("year_timeframe_between"),
+                        tm("trend_timeframe_between"),
                     )
-            except ValueError:
-                self.add_error(
-                    "trend_segment",
-                    tm("multi_year_format"),
-                )
-        return trend_segment
+
+            else:
+                start_range = str(trend_segment_.split("to")[0])
+                end_range = str(trend_segment_.split("to")[1])
+                start_year_start = int(start_range.split("-")[0])
+                start_year_end = int(start_range.split("-")[1])
+                end_year_start = int(end_range.split("-")[0])
+                end_year_end = int(end_range.split("-")[1])
+                if not (
+                    2000
+                    <= start_year_start
+                    <= start_year_end
+                    <= end_year_start
+                    <= end_year_end
+                    <= 2050
+                ):
+                    self.add_error(
+                        "trend_segment",
+                        tm("trend_timeframe_between_multi"),
+                    )
+            return trend_segment
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

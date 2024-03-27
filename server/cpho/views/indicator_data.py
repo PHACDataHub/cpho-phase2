@@ -223,7 +223,8 @@ class IndicatorDatumForm(ModelForm):
 
         if multi_year:
             try:
-                start_year, end_year = map(int, multi_year.split("-"))
+                start_year = int(multi_year.split("-")[0])
+                end_year = int(multi_year.split("-")[1])
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "multi_year_timeframe",

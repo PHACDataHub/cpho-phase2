@@ -181,10 +181,11 @@
             <th scope="col">{{ tm("year") }}</th>
             <th scope="col">{{ tm("comparison_to_oecd_average") }}</th>
             <th scope="col">{{ tm("labels") }}</th>
+            <th scope="col">{{ tm("methodology_differences") }}</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in metadata["benchmarking"] %}
+          {% for item in metadata["benchmarking"].order_by('labels', 'value') %}
             <tr>
               <th scope="row">{{ item.oecd_country }}</th>
               <td>{{ item.value }}</td>
@@ -192,6 +193,7 @@
               <td>{{ item.year }}</td>
               <td>{{ item.get_comparison_to_oecd_avg_display() }}</td>
               <td>{{ item.get_labels_display() }}</td>
+              <td>{{ tm(item.get_methodology_differences_display()) }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -217,13 +219,13 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">{{ tm("year") }}</th>
-            <th scope="col">{{ tm("year_range") }}</th>
+            <th scope="col">{{ tm("year_or_range") }}</th>
             <th scope="col">{{ tm("data_point") }}</th>
             <th scope="col">{{ tm("line_of_best_fit_point") }}</th>
             <th scope="col">{{ tm("trend_segment") }}</th>
             <th scope="col">{{ tm("trend") }}</th>
             <th scope="col">{{ tm("data_quality") }}</th>
+            <th scope="col">{{ tm("unit") }}</th>
             <th scope="col">{{ tm("data_upper_ci") }}</th>
             <th scope="col">{{ tm("data_lower_ci") }}</th>
           </tr>
@@ -232,12 +234,12 @@
           {% for item in metadata["trend"] %}
             <tr>
               <th scope="row">{{ item.year }}</th>
-              <td>{{ item.year_range }}</td>
               <td>{{ item.data_point }}</td>
               <td>{{ item.line_of_best_fit_point }}</td>
               <td>{{ item.trend_segment }}</td>
               <td>{{ item.get_trend_display() }}</td>
               <td>{{ item.get_data_quality_display() }}</td>
+              <td>{{ item.get_unit_display() }}</td>
               <td>{{ item.data_point_upper_ci }}</td>
               <td>{{ item.data_point_lower_ci }}</td>
             </tr>

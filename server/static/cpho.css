@@ -127,3 +127,35 @@ span.new-ind-tag {
 .hideable-card:has(label) {
     display: block;
 }
+
+.hideable-card {
+    display: none;
+}
+
+.hideable-card:has(label) {
+    display: block;
+}
+
+.width-15{
+    width:15%
+}
+
+.width-55{
+    width:55%
+}
+
+.width-30{
+    width:30%
+}
+
+.width-10{
+    width:10%
+}
+
+.width-9{
+    width:9%
+}
+
+.width-5{
+    width:5%
+}

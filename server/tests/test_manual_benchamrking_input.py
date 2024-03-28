@@ -36,6 +36,7 @@ def test_benchmarking(vanilla_user_client):
         ][
             0
         ],
+        "benchmarking-0-methodology_differences": "on",
         "benchmarking-1-oecd_country": canada.id,
         "benchmarking-1-value": 2,
         "benchmarking-1-year": 2020,
@@ -45,6 +46,7 @@ def test_benchmarking(vanilla_user_client):
         ][
             0
         ],
+        "benchmarking-1-methodology_differences": "",
     }
 
     with patch_rules(can_edit_benchmarking=True):
@@ -56,10 +58,12 @@ def test_benchmarking(vanilla_user_client):
     aus_data = created_data.get(oecd_country=aus)
     assert aus_data.value == 1
     assert aus_data.year == 2020
+    assert aus_data.methodology_differences == True
     # assert aus_data.standard_deviation == 0.1
     canada_data = created_data.get(oecd_country=canada)
     assert canada_data.value == 2
     assert canada_data.year == 2020
+    assert canada_data.methodology_differences == False
     # assert canada_data.standard_deviation == 0.2
 
     with patch_rules(can_edit_benchmarking=True):
@@ -81,6 +85,7 @@ def test_benchmarking(vanilla_user_client):
         ][
             0
         ],
+        "benchmarking-0-methodology_differences": "on",
         "benchmarking-1-id": canada_data.id,
         "benchmarking-1-oecd_country": canada.id,
         "benchmarking-1-value": 2,

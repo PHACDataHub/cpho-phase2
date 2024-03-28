@@ -178,6 +178,7 @@ trend_columns = [
     ModelColumn(TrendAnalysis, "trend_segment"),
     ChoiceColumn(TrendAnalysis, "trend"),
     ChoiceColumn(TrendAnalysis, "data_quality"),
+    ChoiceColumn(TrendAnalysis, "unit"),
 ]
 
 

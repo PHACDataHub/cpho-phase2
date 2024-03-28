@@ -11,7 +11,7 @@ from server.model_util import (
 )
 
 from cpho.constants import SUBMISSION_STATUSES
-from cpho.text import tdt
+from cpho.text import tdt, tm
 from cpho.util import get_lang_code
 
 
@@ -119,24 +119,21 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     TOPIC_CHOICES = [
         ("", "--"),
-        (
-            "childhood_and_family_factors",
-            tdt("Childhood and Family Factors"),
-        ),
-        ("social_factors", tdt("Social Factors")),
-        ("substance_use", tdt("Substance Use")),
-        ("health_status", tdt("Health Status")),
+        ("childhood_and_family_factors", tm("childhood_and_family_factors")),
+        ("social_factors", tm("social_factors")),
+        ("substance_use", tm("substance_use")),
+        ("health_status", tm("health_status")),
         (
             "chronic_diseases_and_mental_health",
-            tdt("Chronic Diseases and Mental Health"),
+            tm("chronic_diseases_and_mental_health"),
         ),
-        ("communicable_diseases", tdt("Communicable Diseases")),
+        ("communicable_diseases", tm("communicable_diseases")),
     ]
 
     PERIOD_TYPE_CHOICES = [
-        ("calendar_years", tdt("Calendar Years")),
-        ("fiscal_years", tdt("Fiscal Years")),
-        ("fiscal_quarters", tdt("Fiscal Year Quarters")),
+        ("calendar_years", tm("calendar_year")),
+        ("fiscal_years", tm("fiscal_year")),
+        ("fiscal_quarters", tm("fiscal_quarters")),
     ]
 
     name = fields.CharField(max_length=50)
@@ -144,13 +141,13 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     category = fields.CharField(
         max_length=50,
         choices=CATEGORY_CHOICES,
-        verbose_name=tdt("Category"),
+        verbose_name=tm("category"),
     )
 
     topic = fields.CharField(
         max_length=50,
         choices=TOPIC_CHOICES,
-        verbose_name=tdt("Topic"),
+        verbose_name=tm("topic"),
     )
 
     detailed_indicator = fields.CharField(max_length=300)
@@ -241,14 +238,27 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     )
 
     # QUINTILES
-    g1 = fields.FloatField(null=True, blank=True)
-    g2_lower = fields.FloatField(null=True, blank=True)
-    g2_upper = fields.FloatField(null=True, blank=True)
-    g3_lower = fields.FloatField(null=True, blank=True)
-    g3_upper = fields.FloatField(null=True, blank=True)
-    g4_lower = fields.FloatField(null=True, blank=True)
-    g4_upper = fields.FloatField(null=True, blank=True)
-    g5 = fields.FloatField(null=True, blank=True)
+    # very small/technical audience, not worth translating vb-names)
+    g1 = fields.FloatField(null=True, blank=True, verbose_name="G1")
+    g2_lower = fields.FloatField(
+        null=True, blank=True, verbose_name="G2 lower"
+    )
+    g2_upper = fields.FloatField(
+        null=True, blank=True, verbose_name="G2 upper"
+    )
+    g3_lower = fields.FloatField(
+        null=True, blank=True, verbose_name="G3 lower"
+    )
+    g3_upper = fields.FloatField(
+        null=True, blank=True, verbose_name="G3 upper"
+    )
+    g4_lower = fields.FloatField(
+        null=True, blank=True, verbose_name="G4 lower"
+    )
+    g4_upper = fields.FloatField(
+        null=True, blank=True, verbose_name="G4 upper"
+    )
+    g5 = fields.FloatField(null=True, blank=True, verbose_name="G5")
 
     def __str__(self):
         return " ".join(
@@ -358,24 +368,24 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
 
     DATA_QUALITY_CHOICES = [
         ("", "--"),
-        ("caution", tdt("Caution")),
-        ("acceptable", tdt("Acceptable")),
-        ("good", tdt("Good")),
-        ("suppressed", tdt("Suppressed")),
-        ("very_good", tdt("Very Good")),
+        ("caution", tm("caution")),
+        ("acceptable", tm("acceptable")),
+        ("good", tm("good")),
+        ("suppressed", tm("suppressed")),
+        ("very_good", tm("very_good")),
     ]
 
     data_quality = fields.CharField(
         max_length=50,
         choices=DATA_QUALITY_CHOICES,
-        verbose_name=tdt("Data Quality"),
+        verbose_name=tm("data_quality"),
         null=True,
     )
 
     REASON_FOR_NULL_CHOICES = [
         ("", "--"),
-        ("suppressed", tdt("Suppressed")),
-        ("not_available", tdt("Not available")),
+        ("suppressed", tm("suppressed")),
+        ("not_available", tm("not_available")),
     ]
 
     reason_for_null = fields.CharField(
@@ -389,49 +399,37 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     value_upper_bound = fields.FloatField(null=True)
 
     VALUE_UNIT_CHOICES = [
-        ("", tdt("--")),
-        ("daily_dose_1k_census", tdt("Defined Daily Dose/1,000 Census")),
-        ("percentage", tdt("Percentage")),
-        ("percent_age_standardized", tdt("PERCENTAGE (AGE STANDARDIZED)")),
-        ("percentage_crude", tdt("Percentage (Crude)")),
-        ("rate_10k_patient_days", tdt("Rate per 10,000 Patient Days")),
-        (
-            "rate_100k_age_standardized",
-            tdt("RATE PER 100,000 (AGE STANDARDIZED)"),
-        ),
-        (
-            "rate_100k_age_specific_crude",
-            tdt("RATE PER 100,000 (AGE-SPECIFIC CRUDE)"),
-        ),
-        ("rate_100k_crude", tdt("Rate per 100,000 (Crude)")),
-        ("rate_100k_live_births", tdt("Rate per 100,000 Live Births")),
-        (
-            "rate_100k_population_per_year",
-            tdt("RATE PER 100,000 POPULATION PER YEAR"),
-        ),
-        ("years", tdt("years")),
-        ("other", tdt("other")),
+        ("", "--"),
+        ("daily_dose_1k_census", tm("daily_dose_1k_census")),
+        ("percentage", tm("percentage")),
+        ("percent_age_standardized", tm("percent_age_standardized")),
+        ("percentage_crude", tm("percentage_crude")),
+        ("rate_10k_patient_days", tm("rate_10k_patient_days")),
+        ("rate_100k_age_standardized", tm("rate_100k_age_standardized")),
+        ("rate_100k_age_specific_crude", tm("rate_100k_age_specific_crude")),
+        ("rate_100k_crude", tm("rate_100k_crude")),
+        ("rate_100k_live_births", tm("rate_100k_live_births")),
+        ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
+        ("years", tm("years")),
+        ("other", tm("other")),
     ]
 
     value_unit = fields.CharField(
         max_length=75,
         choices=VALUE_UNIT_CHOICES,
-        verbose_name=tdt("Value Unit"),
+        verbose_name=tm("value_unit"),
     )
 
     VALUE_DISPLAYED_CHOICES = [
-        ("", tdt("--")),
-        ("%", tdt("%")),
-        ("per_1k_census", tdt("DDDs Per 1,000 census inhabitants")),
-        ("per_10k_patient_days", tdt("Per 10,000 patient days")),
-        ("per_100k_live_births", tdt("Per 100,000 live births")),
-        ("per_100k_population", tdt("Per 100,000 population")),
-        (
-            "per_100k_population_per_year",
-            tdt("Per 100,000 population per year"),
-        ),
-        ("years", tdt("years")),
-        ("other", tdt("other")),
+        ("", "--"),
+        ("%", "%"),
+        ("per_1k_census", tm("per_1k_census")),
+        ("per_10k_patient_days", tm("per_10k_patient_days")),
+        ("per_100k_live_births", tm("per_100k_live_births")),
+        ("per_100k_population", tm("per_100k_population")),
+        ("per_100k_population_per_year", tm("per_100k_population_per_year")),
+        ("years", tm("years")),
+        ("other", tm("other")),
     ]
 
     value_displayed = fields.CharField(
@@ -499,41 +497,37 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
     )
     UNIT_CHOICES = [
         ("", "--"),
-        (
-            "age_standard_rate_per_100K",
-            tdt("Age standardized rates per 100 000 population"),
-        ),
-        ("age_standard_percentage", tdt("Age-standardized percentage")),
-        ("ddd_per_1000_per_day", tdt("DDD per 1000 population per day")),
+        ("age_standard_rate_per_100k", tm("age_standard_rate_per_100k")),
+        ("age_standard_percentage", tm("age_standard_percentage")),
+        ("ddd_per_1000_per_day", tm("ddd_per_1000_per_day")),
         (
             "deaths_per_million_inhabitants",
-            tdt("Deaths per million inhabitants"),
+            tm("deaths_per_million_inhabitants"),
         ),
-        ("incidence_100K_population", tdt("Incidence per 100 000 population")),
-        ("litres_per_capita", tdt("Litres per Capita")),
-        ("percent", tdt("Percent")),
-        ("percent_children", tdt("Percent of children")),
+        ("incidence_100k_population", tm("incidence_100k_population")),
+        ("litres_per_capita", tm("litres_per_capita")),
+        ("percent", tm("percent")),
+        ("percent_children", tm("percent_children")),
         (
             "percent_births_below_2500_grams",
-            tdt("Percent of live births below 2500 grams"),
+            tm("percent_births_below_2500_grams"),
         ),
         (
             "percent_people_fully_vaccinated",
-            tdt("Percent of people fully vaccinated"),
+            tm("percent_people_fully_vaccinated"),
         ),
-        ("percent_population", tdt("Percent of population")),
+        ("percent_population", tm("percent_population")),
         (
             "percent_population_health_good_or_very_good",
-            tdt(
-                "Percent of population that rate their health as good or very good"
-            ),
+            tm("percent_population_health_good_or_very_good"),
         ),
-        ("percentage_value", tdt("Percentage value")),
-        ("rate_per_100K", tdt("Rate per 100 000")),
-        ("rate_per_100K_population", tdt("Rate per 100 000 population")),
-        ("rate_per_1000_population", tdt("Rate per 1000 population")),
-        ("total_deaths_per_1M", tdt("Total deaths per 1 million")),
-        ("total_per_100K_persons", tdt("Total per 100 000 persons")),
+        ("percentage_value", tm("percentage_value")),
+        ("rate_per_100k", tm("rate_per_100k")),
+        ("rate_per_100k_population", tm("rate_per_100k_population")),
+        ("rate_per_1000_population", tm("rate_per_1000_population")),
+        ("total_deaths_per_1m", tm("total_deaths_per_1m")),
+        ("total_per_100k_persons", tm("total_per_100k_persons")),
+        ("years", tm("years")),
     ]
     unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
@@ -543,10 +537,10 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
 
     COMPARISON_CHOICES = [
         ("", "--"),
-        ("better", tdt("Better")),
-        ("similar", tdt("Similar")),
-        ("worse", tdt("Worse")),
-        ("outlier", tdt("Outlier")),
+        ("better", tm("better")),
+        ("similar", tm("similar")),
+        ("worse", tm("worse")),
+        ("outlier", tm("outlier")),
     ]
     comparison_to_oecd_avg = fields.CharField(
         max_length=50, choices=COMPARISON_CHOICES
@@ -554,12 +548,13 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
 
     LABEL_CHOICES = [
         ("", "--"),
-        ("anxiety", tdt("Anxiety")),
-        ("depression", tdt("Depression")),
-        ("women", tdt("Women")),
-        ("men", tdt("Men")),
+        ("anxiety", tm("anxiety")),
+        ("depression", tm("depression")),
+        ("women", tm("women")),
+        ("men", tm("men")),
     ]
     labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
+    methodology_differences = fields.BooleanField(default=False)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""
@@ -589,25 +584,46 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
     year = fields.CharField(max_length=50)
-    year_range = fields.CharField(max_length=50, null=True, blank=True)
     data_point = fields.FloatField()
     line_of_best_fit_point = fields.FloatField(null=True, blank=True)
     trend_segment = fields.CharField(max_length=50, null=True, blank=True)
 
     TREND_CHOICES = [
         ("", "--"),
-        ("stable", tdt("Stable")),
-        ("increasing", tdt("Increasing")),
-        ("decreasing", tdt("Decreasing")),
+        ("stable", tm("stable")),
+        ("increasing", tm("increasing")),
+        ("decreasing", tm("decreasing")),
     ]
     trend = fields.CharField(
         max_length=50, choices=TREND_CHOICES, null=True, blank=True
     )
+    UNIT_CHOICES = [
+        ("", "--"),
+        ("daily_dose_1k_census", tm("daily_dose_1k_census")),
+        ("percentage", tm("percentage")),
+        ("percent_age_standardized", tm("percent_age_standardized")),
+        ("percentage_crude", tm("percentage_crude")),
+        ("rate_10k_patient_days", tm("rate_10k_patient_days")),
+        ("rate_100k_age_standardized", tm("rate_100k_age_standardized")),
+        ("rate_100k_age_specific_crude", tm("rate_100k_age_specific_crude")),
+        ("rate_100k_crude", tm("rate_100k_crude")),
+        ("rate_100k_live_births", tm("rate_100k_live_births")),
+        ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
+        ("years", tm("years")),
+        ("other", tm("other")),
+    ]
+
+    unit = fields.CharField(
+        max_length=75,
+        choices=UNIT_CHOICES,
+        verbose_name=tm("value_unit"),
+    )
     DATA_QUALITY_CHOICES = [
         ("", "--"),
-        ("good", tdt("Good")),
-        ("very_good", tdt("Very Good")),
-        ("excellent", tdt("Excellent")),
+        ("caution", tm("caution")),
+        ("good", tm("good")),
+        ("very_good", tm("very_good")),
+        ("excellent", tm("excellent")),
     ]
     data_quality = fields.CharField(
         max_length=50,

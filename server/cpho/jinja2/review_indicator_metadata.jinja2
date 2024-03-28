@@ -5,12 +5,12 @@
 {% block content_breadcrumbs %}
   {{ bc.indicators_index() }}
   {{ bc.indicator(view.indicator) }}
-  {{ bc.item(tdt("Review for submission") , None, True) }}
+  {{ bc.item(tm("review_for_submission") , None, True) }}
 {% endblock %}
 
 {% macro field_tr(name_str, value) %}
   <tr>
-    <td>{{ tdt(name_str) }}</td>
+    <td>{{ name_str }}</td>
     <td>{{ value|safe if value }}</td>
   </tr>
 {% endmacro %}
@@ -18,16 +18,16 @@
 {% block content %}
   {% set indicator = view.indicator %}
  
-  <div class="h2">{{ tdt("Review metadata for: ") }} {{ view.indicator.name }}</div>
+  <div class="h2">{{ tm("review_metadata") }} : {{ view.indicator.name }}</div>
   <div>
     <a type="button"
        data-bs-toggle="modal"
        data-bs-target="#confirmApproveModal"
-       class="btn btn-success mt-2">{{ tdt("Approve all metadata") }}</a>
+       class="btn btn-success mt-2">{{ tm("approve_all_metadata") }}</a>
   </div>
 
   <div class="mt-4">
-    <div class="h5">{{ tdt("Indicator metadata submission:") }}</div>
+    <div class="h5">{{ tm("indicator_metadata_submission") }}</div>
     {% set progress_in_table = false %}
     {% set metadata_submission = true %}
     {% include 'indicators/_progress_bar.jinja2' %}
@@ -37,13 +37,13 @@
     <div class="card-header">
       <div class="row">
         <div class="h5 col">
-          {{ tdt("Indicator Metadata") }}
+          {{ tm("indicator_metadata") }}
           <sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['indicator_status']) }}</sm>
         </div>
         {% if respects_rule('can_edit_indicator', view.indicator) %}
           <div class="col">
             <a href="{{ url('edit_indicator', args=[view.indicator.id]) }}"
-               class="btn btn-outline-dark float-end">{{ tdt("Edit indicator metadata") }}</a>
+               class="btn btn-outline-dark float-end">{{ tm("edit_indicator_metadata") }}</a>
           </div>
         {% endif %}
       </div>
@@ -51,23 +51,23 @@
     <div class="card-body">
       <div>
         <div>
-          <strong>{{ tdt("Indicator Details:") }}</strong>
+          <strong>{{ tm("indicator_details") }}</strong>
         </div>
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>{{ tdt("Field") }}</th>
-              <th>{{ tdt("Value") }}</th>
+              <th>{{ tm("field") }}</th>
+              <th>{{ tm("value") }}</th>
             </tr>
           </thead>
           <tbody>
-            {{ field_tr("Name:", metadata["indicator"][0].name) }}
-            {{ field_tr("Category:", metadata["indicator"][0].get_category_display() ) }}
-            {{ field_tr("Topic:", metadata["indicator"][0].get_topic_display() ) }}
-            {{ field_tr("Detailed Indicator:", metadata["indicator"][0].detailed_indicator) }}
-            {{ field_tr("Sub indicator measurement:", metadata["indicator"][0].sub_indicator_measurement) }}
+            {{ field_tr(tm("name") , metadata["indicator"][0].name) }}
+            {{ field_tr(tm("category") , metadata["indicator"][0].get_category_display() ) }}
+            {{ field_tr(tm("topic") , metadata["indicator"][0].get_topic_display() ) }}
+            {{ field_tr(tm("detailed_indicator") , metadata["indicator"][0].detailed_indicator) }}
+            {{ field_tr(tm("sub_indicator_measurement") , metadata["indicator"][0].sub_indicator_measurement) }}
             <tr>
-              <td>{{ tdt("Relevant dimensions") }}</td>
+              <td>{{ tm("relevant_dimensions") }}</td>
               <td>
                 <ul>
                   {% for item in metadata["indicator"][0].relevant_dimensions.all() %}<li>{{ item.name }}</li>{% endfor %}
@@ -75,73 +75,73 @@
               </td>
             </tr>
  
-            {{ field_tr("Measure text:", metadata["indicator"][0].measure_text) }}
-            {{ field_tr("Impact text:", metadata["indicator"][0].impact_text) }}
-            {{ field_tr("Title overall:", metadata["indicator"][0].title_overall) }}
-            {{ field_tr("General footnotes:", metadata["indicator"][0].general_footnotes) }}
-            {{ field_tr("Main source english:", metadata["indicator"][0].main_source_english) }}
-            {{ field_tr("Other relevant sources english:", metadata["indicator"][0].other_relevant_sources_english) }}
+            {{ field_tr(tm("measure_text") , metadata["indicator"][0].measure_text) }}
+            {{ field_tr(tm("impact_text") , metadata["indicator"][0].impact_text) }}
+            {{ field_tr(tm("title_overall") , metadata["indicator"][0].title_overall) }}
+            {{ field_tr(tm("general_footnotes") , metadata["indicator"][0].general_footnotes) }}
+            {{ field_tr(tm("main_source_english") , metadata["indicator"][0].main_source_english) }}
+            {{ field_tr(tm("other_relevant_sources_english") , metadata["indicator"][0].other_relevant_sources_english) }}
 
-            {{ field_tr("Title sex:", metadata["indicator"][0].title_sex) }}
-            {{ field_tr("Table title sex:", metadata["indicator"][0].table_title_sex) }}
-            {{ field_tr("Title sex 2:", metadata["indicator"][0].title_sex_2) }}
-            {{ field_tr("Table title sex 2:", metadata["indicator"][0].table_title_sex_2) }}
+            {{ field_tr(tm("title_sex") , metadata["indicator"][0].title_sex) }}
+            {{ field_tr(tm("table_title_sex") , metadata["indicator"][0].table_title_sex) }}
+            {{ field_tr(tm("title_sex_2") , metadata["indicator"][0].title_sex_2) }}
+            {{ field_tr(tm("table_title_sex_2") , metadata["indicator"][0].table_title_sex_2) }}
 
-            {{ field_tr("Title age:", metadata["indicator"][0].title_age) }}
-            {{ field_tr("Table title age:", metadata["indicator"][0].table_title_age) }}
-            {{ field_tr("Title age 2:", metadata["indicator"][0].title_age_2) }}
-            {{ field_tr("Table title age 2:", metadata["indicator"][0].table_title_age_2) }}
+            {{ field_tr(tm("title_age") , metadata["indicator"][0].title_age) }}
+            {{ field_tr(tm("table_title_age") , metadata["indicator"][0].table_title_age) }}
+            {{ field_tr(tm("title_age_2") , metadata["indicator"][0].title_age_2) }}
+            {{ field_tr(tm("table_title_age_2") , metadata["indicator"][0].table_title_age_2) }}
 
-            {{ field_tr("Title province territory:", metadata["indicator"][0].title_province_territory) }}
-            {{ field_tr("Table title province territory:", metadata["indicator"][0].table_title_province_territory) }}
-            {{ field_tr("Title province territory 2:", metadata["indicator"][0].title_province_territory_2) }}
-            {{ field_tr("Table title province territory 2:", metadata["indicator"][0].table_title_province_territory_2) }}
+            {{ field_tr(tm("title_province_territory") , metadata["indicator"][0].title_province_territory) }}
+            {{ field_tr(tm("table_title_province_territory") , metadata["indicator"][0].table_title_province_territory) }}
+            {{ field_tr(tm("title_province_territory_2") , metadata["indicator"][0].title_province_territory_2) }}
+            {{ field_tr(tm("table_title_province_territory_2") , metadata["indicator"][0].table_title_province_territory_2) }}
 
-            {{ field_tr("Title living arrangement:", metadata["indicator"][0].title_living_arrangement) }}
-            {{ field_tr("Table title living arrangement:", metadata["indicator"][0].table_title_living_arrangement) }}
+            {{ field_tr(tm("title_living_arrangement") , metadata["indicator"][0].title_living_arrangement) }}
+            {{ field_tr(tm("table_title_living_arrangement") , metadata["indicator"][0].table_title_living_arrangement) }}
 
-            {{ field_tr("Title education household:", metadata["indicator"][0].title_education_household) }}
-            {{ field_tr("Table title education household:", metadata["indicator"][0].table_title_education_household) }}
+            {{ field_tr(tm("title_education_household") , metadata["indicator"][0].title_education_household) }}
+            {{ field_tr(tm("table_title_education_household") , metadata["indicator"][0].table_title_education_household) }}
 
-            {{ field_tr("Title income quintiles:", metadata["indicator"][0].title_income_quintiles) }}
-            {{ field_tr("Table title income quintiles:", metadata["indicator"][0].table_title_income_quintiles) }}
+            {{ field_tr(tm("title_income_quintiles") , metadata["indicator"][0].title_income_quintiles) }}
+            {{ field_tr(tm("table_title_income_quintiles") , metadata["indicator"][0].table_title_income_quintiles) }}
 
-            {{ field_tr("Title trend:", metadata["indicator"][0].title_trend) }}
-            {{ field_tr("Table title trend:", metadata["indicator"][0].table_title_trend) }}
-            {{ field_tr("Visual description trend:", metadata["indicator"][0].visual_description_trend) }}
-            {{ field_tr("X axis trend:", metadata["indicator"][0].x_axis_trend) }}
-            {{ field_tr("Y axis trend:", metadata["indicator"][0].y_axis_trend) }}
-            {{ field_tr("Trend footnotes:", metadata["indicator"][0].trend_footnotes) }}
+            {{ field_tr(tm("title_trend") , metadata["indicator"][0].title_trend) }}
+            {{ field_tr(tm("table_title_trend") , metadata["indicator"][0].table_title_trend) }}
+            {{ field_tr(tm("visual_description_trend") , metadata["indicator"][0].visual_description_trend) }}
+            {{ field_tr(tm("x_axis_trend") , metadata["indicator"][0].x_axis_trend) }}
+            {{ field_tr(tm("y_axis_trend") , metadata["indicator"][0].y_axis_trend) }}
+            {{ field_tr(tm("trend_footnotes") , metadata["indicator"][0].trend_footnotes) }}
 
-            {{ field_tr("Title benchmark:", metadata["indicator"][0].title_benchmark) }}
-            {{ field_tr("Table title benchmark:", metadata["indicator"][0].table_title_benchmark) }}
-            {{ field_tr("X axis benchmark:", metadata["indicator"][0].x_axis_benchmark) }}
-            {{ field_tr("Benchmarking footnotes:", metadata["indicator"][0].benchmarking_sources_english) }}
+            {{ field_tr(tm("title_benchmark") , metadata["indicator"][0].title_benchmark) }}
+            {{ field_tr(tm("table_title_benchmark") , metadata["indicator"][0].table_title_benchmark) }}
+            {{ field_tr(tm("x_axis_benchmark") , metadata["indicator"][0].x_axis_benchmark) }}
+            {{ field_tr(tm("benchmarking_footnotes") , metadata["indicator"][0].benchmarking_sources_english) }}
 
           </tbody>
         </table>
       </div>
       <div>
         <div class="mt-5">
-          <strong>{{ tdt("Quintile Values:") }}</strong>
+          <strong>{{ tm("quintile_values") }}</strong>
         </div>
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>{{ tdt("Quintile") }}</th>
-              <th>{{ tdt("G1") }}</th>
-              <th>{{ tdt("G2 Lower") }}</th>
-              <th>{{ tdt("G2 Upper") }}</th>
-              <th>{{ tdt("G3 Lower") }}</th>
-              <th>{{ tdt("G3 Upper") }}</th>
-              <th>{{ tdt("G4 Lower") }}</th>
-              <th>{{ tdt("G4 Upper") }}</th>
-              <th>{{ tdt("G5") }}</th>
+              <th>{{ tm("quintile") }}</th>
+              <th>G1</th>
+              <th>G2 {{ tm("lower") }}</th>
+              <th>G2 {{ tm("upper") }}</th>
+              <th>G3 {{ tm("lower") }}</th>
+              <th>G3 {{ tm("upper") }}</th>
+              <th>G4 {{ tm("lower") }}</th>
+              <th>G4 {{ tm("upper") }}</th>
+              <th>G5</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>{{ tdt("Quintile Values") }}</td>
+              <td>{{ tm("quintile_values") }}</td>
               <td>{{ metadata["indicator"][0].g1 }}</td>
               <td>{{ metadata["indicator"][0].g2_lower }}</td>
               <td>{{ metadata["indicator"][0].g2_upper }}</td>
@@ -161,12 +161,12 @@
     <div class="card-header">
       <div class="row">
         <div class="h5 col">
-          {{ tdt("Benchmarking Metadata") }}<sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['benchmarking_status']) }}</sm>
+          {{ tm("benchmarking_metadata") }}<sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['benchmarking_status']) }}</sm>
         </div>
         {% if respects_rule('can_edit_benchmarking', view.indicator) %}
           <div class="col">
             <a href="{{ url('manage_benchmarking_data', args=[view.indicator.id]) }}"
-               class="btn btn-outline-dark float-end">{{ tdt("Edit benchmarking metadata") }}</a>
+               class="btn btn-outline-dark float-end">{{ tm("edit_benchmarking_metadata") }}</a>
           </div>
         {% endif %}
       </div>
@@ -175,16 +175,17 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">{{ tdt("OECD Country") }}</th>
-            <th scope="col">{{ tdt("Value") }}</th>
-            <th scope="col">{{ tdt("Unit") }}</th>
-            <th scope="col">{{ tdt("Year") }}</th>
-            <th scope="col">{{ tdt("Comparison to Oecd Average") }}</th>
-            <th scope="col">{{ tdt("Labels") }}</th>
+            <th scope="col">{{ tm("oecd_country") }}</th>
+            <th scope="col">{{ tm("value") }}</th>
+            <th scope="col">{{ tm("unit") }}</th>
+            <th scope="col">{{ tm("year") }}</th>
+            <th scope="col">{{ tm("comparison_to_oecd_average") }}</th>
+            <th scope="col">{{ tm("labels") }}</th>
+            <th scope="col">{{ tm("methodology_differences") }}</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in metadata["benchmarking"] %}
+          {% for item in metadata["benchmarking"].order_by('labels', 'value') %}
             <tr>
               <th scope="row">{{ item.oecd_country }}</th>
               <td>{{ item.value }}</td>
@@ -192,6 +193,7 @@
               <td>{{ item.year }}</td>
               <td>{{ item.get_comparison_to_oecd_avg_display() }}</td>
               <td>{{ item.get_labels_display() }}</td>
+              <td>{{ tm(item.get_methodology_differences_display() ) }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -203,12 +205,12 @@
     <div class="card-header">
       <div class="row">
         <div class="h5 col">
-          {{ tdt("Trend Analysis Metadata") }}<sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['trend_status']) }}</sm>
+          {{ tm("trend_analysis_metadata") }}<sm class="h6 text-secondary">{{ submission_status_badge(submission_statuses['trend_status']) }}</sm>
         </div>
         {% if respects_rule('can_edit_trend_analysis', indicator) %}
           <div class="col">
             <a href="{{ url('manage_trend_analysis_data', args=[view.indicator.id]) }}"
-               class="btn btn-outline-dark float-end">{{ tdt("Edit trend analysis metadata") }}</a>
+               class="btn btn-outline-dark float-end">{{ tm("edit_trend_analysis_metadata") }}</a>
           </div>
         {% endif %}
       </div>
@@ -217,27 +219,27 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">{{ tdt("Year") }}</th>
-            <th scope="col">{{ tdt("Year Range") }}</th>
-            <th scope="col">{{ tdt("Data Point") }}</th>
-            <th scope="col">{{ tdt("Line of Best fit Point") }}</th>
-            <th scope="col">{{ tdt("Trend Segment") }}</th>
-            <th scope="col">{{ tdt("Trend") }}</th>
-            <th scope="col">{{ tdt("Data Quality") }}</th>
-            <th scope="col">{{ tdt("Data Upper CI") }}</th>
-            <th scope="col">{{ tdt("Data Lower CI") }}</th>
+            <th scope="col">{{ tm("year_or_range") }}</th>
+            <th scope="col">{{ tm("data_point") }}</th>
+            <th scope="col">{{ tm("line_of_best_fit_point") }}</th>
+            <th scope="col">{{ tm("trend_segment") }}</th>
+            <th scope="col">{{ tm("trend") }}</th>
+            <th scope="col">{{ tm("data_quality") }}</th>
+            <th scope="col">{{ tm("unit") }}</th>
+            <th scope="col">{{ tm("data_upper_ci") }}</th>
+            <th scope="col">{{ tm("data_lower_ci") }}</th>
           </tr>
         </thead>
         <tbody>
           {% for item in metadata["trend"] %}
             <tr>
               <th scope="row">{{ item.year }}</th>
-              <td>{{ item.year_range }}</td>
               <td>{{ item.data_point }}</td>
               <td>{{ item.line_of_best_fit_point }}</td>
               <td>{{ item.trend_segment }}</td>
               <td>{{ item.get_trend_display() }}</td>
               <td>{{ item.get_data_quality_display() }}</td>
+              <td>{{ item.get_unit_display() }}</td>
               <td>{{ item.data_point_upper_ci }}</td>
               <td>{{ item.data_point_lower_ci }}</td>
             </tr>
@@ -248,6 +250,6 @@
   </div>
 
   {% set submission_url = url('submit_metadata', args=[view.indicator.id]) %}
-  {% set modal_title = tdt("Confirm metadata approval") %}
+  {% set modal_title = tm("confirm_metadata_approval") %}
   {% include 'modals/submission_modal.jinja2' %}
 {% endblock %}

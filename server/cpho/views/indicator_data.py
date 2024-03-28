@@ -27,6 +27,7 @@ from cpho.queries import (
 from cpho.text import tdt, tm
 
 from .view_util import (
+    BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
@@ -71,20 +72,23 @@ class IndicatorDatumForm(ModelForm):
     value = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Value")}
+            attrs={"class": "form-control", "placeholder": tm("value")}
         ),
+        label=tm("value"),
     )
     value_lower_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Lower Bound")}
+            attrs={"class": "form-control", "placeholder": tm("lower_bound")}
         ),
+        label=tm("lower_bound"),
     )
     value_upper_bound = forms.FloatField(
         required=False,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Upper Bound")}
+            attrs={"class": "form-control", "placeholder": tm("upper_bound")}
         ),
+        label=tm("upper_bound"),
     )
     data_quality = forms.ChoiceField(
         required=False,
@@ -94,6 +98,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("data_quality"),
     )
     value_unit = forms.ChoiceField(
         required=False,
@@ -103,15 +108,22 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("value_unit"),
     )
     single_year_timeframe = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("single_year_timeframe"),
     )
     multi_year_timeframe = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("multi_year_timeframe"),
     )
     literal_dimension_val = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("literal_dimension_value"),
     )
     value_displayed = forms.ChoiceField(
         required=False,
@@ -121,6 +133,7 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("value_displayed"),
     )
     reason_for_null = forms.ChoiceField(
         required=False,
@@ -130,8 +143,17 @@ class IndicatorDatumForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("reason_for_null_data"),
     )
-    is_deleted = forms.BooleanField(required=False)
+    is_deleted = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tm("delete"),
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -140,7 +162,8 @@ class IndicatorDatumForm(ModelForm):
         if value_unit == "%":
             if value and (value > 100 or value < 0):
                 self.add_error(
-                    "value", tdt("Value must be a percentage between 0-100")
+                    "value",
+                    tm("percentage_out_of_bounds_err"),
                 )
         return cleaned_data
 
@@ -148,7 +171,7 @@ class IndicatorDatumForm(ModelForm):
         value = self.cleaned_data["value"]
         if value and value < 0:
             print("invalid")
-            self.add_error("value", tdt("Value cannot be negative"))
+            self.add_error("value", tm("value_cannot_be_negative"))
         return value
 
     def clean_value_lower_bound(self):
@@ -157,7 +180,7 @@ class IndicatorDatumForm(ModelForm):
         if (value and value_lower) and value < value_lower:
             self.add_error(
                 "value_lower_bound",
-                tdt("Value lower bound must be lower than value"),
+                tm("lower_bound_must_be_lower_than_value"),
             )
         return value_lower
 
@@ -167,7 +190,7 @@ class IndicatorDatumForm(ModelForm):
         if (value and value_upper) and value > value_upper:
             self.add_error(
                 "value_upper_bound",
-                tdt("Value upper bound must be greater than value"),
+                tm("upper_bound_must_be_greater_than_value"),
             )
         return value_upper
 
@@ -182,14 +205,12 @@ class IndicatorDatumForm(ModelForm):
                 if not (int(single_year) >= 2000 and int(single_year) <= 2050):
                     self.add_error(
                         "single_year_timeframe",
-                        tdt(
-                            "Single Year Timeframe must be between the years 2000 and 2050"
-                        ),
+                        tm("year_timeframe_between"),
                     )
             except ValueError:
                 self.add_error(
                     "single_year_timeframe",
-                    tdt("Single Year Timeframe must be a valid number"),
+                    tm("must_be_number"),
                 )
 
         return single_year
@@ -202,20 +223,17 @@ class IndicatorDatumForm(ModelForm):
 
         if multi_year:
             try:
-                start_year, end_year = map(int, multi_year.split("-"))
+                start_year = int(multi_year.split("-")[0])
+                end_year = int(multi_year.split("-")[1])
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "multi_year_timeframe",
-                        tdt(
-                            "Multi Year Timeframe must be between the years 2000 and 2050 and start year must be less than end year"
-                        ),
+                        tm("year_timeframe_between"),
                     )
             except ValueError:
                 self.add_error(
                     "multi_year_timeframe",
-                    tdt(
-                        "Multiyear timeframe must be in the form: 'YYYY-YYYY'"
-                    ),
+                    tm("multi_year_format"),
                 )
 
         return multi_year
@@ -256,6 +274,7 @@ class ManageIndicatorData(
             fk_name="indicator",
             form=IndicatorDatumForm,
             # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
+            formset=BaseInlineFormSetWithUniqueTogetherCheck,
             extra=1,
             can_delete=False,
         )
@@ -397,7 +416,7 @@ class ManageIndicatorData(
                 if self.has_age_group_forms:
                     self.age_group_formset.save()
 
-                messages.success(self.request, tdt("Data saved."))
+                messages.success(self.request, tm("saved_successfully"))
                 return redirect(
                     reverse(
                         "view_indicator_for_period",
@@ -408,6 +427,7 @@ class ManageIndicatorData(
             # get will just render the forms and their errors
             print(self.predefined_values_formset.errors)
             print(self.age_group_formset.errors)
+            messages.error(self.request, tm("error_saving_form"))
             return self.get(*args, **kwargs)
 
     @cached_property

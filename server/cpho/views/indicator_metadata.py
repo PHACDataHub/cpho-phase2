@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Any
 
@@ -26,8 +27,10 @@ from cpho.models import (
     TrendAnalysis,
 )
 from cpho.text import tdt, tm
+from cpho.util import get_lang_code
 
 from .view_util import (
+    BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
@@ -42,9 +45,9 @@ class BenchmarkingForm(ModelForm):
             "oecd_country",
             "value",
             "year",
-            # "standard_deviation",
             "comparison_to_oecd_avg",
             "labels",
+            "methodology_differences",
             "is_deleted",
         ]
 
@@ -56,21 +59,25 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("unit"),
     )
+
     oecd_country = forms.ModelChoiceField(
-        queryset=Country.objects.all(),
+        queryset=Country.objects.all().order_by("name_en"),
         widget=forms.Select(
             attrs={
                 "class": "form-select",
             }
         ),
+        label=tm("oecd_country"),
     )
 
     value = forms.FloatField(
         required=True,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("Value")}
+            attrs={"class": "form-control", "placeholder": tm("value")}
         ),
+        label=tm("value"),
     )
     year = forms.IntegerField(
         required=True,
@@ -79,15 +86,9 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("year"),
     )
-    # standard_deviation = forms.FloatField(
-    #     required=True,
-    #     widget=forms.NumberInput(
-    #         attrs={
-    #             "class": "form-control",
-    #         }
-    #     ),
-    # )
+
     comparison_to_oecd_avg = forms.ChoiceField(
         required=True,
         choices=Benchmarking.COMPARISON_CHOICES,
@@ -96,6 +97,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("comparison_to_oecd_average"),
     )
     labels = forms.ChoiceField(
         required=False,
@@ -105,7 +107,19 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("labels"),
     )
+
+    methodology_differences = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tm("methodology_differences"),
+    )
+
     is_deleted = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(
@@ -113,6 +127,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
+        label=tm("delete"),
     )
 
     def clean_comparison_to_oecd_avg(self):
@@ -159,22 +174,6 @@ class BenchmarkingForm(ModelForm):
 
         return year
 
-    # def clean_standard_deviation(self):
-    #     standard_deviation = self.cleaned_data["standard_deviation"]
-
-    #     if standard_deviation is not None:
-    #         if standard_deviation < -3000 or standard_deviation > 1000:
-    #             self.add_error(
-    #                 "standard_deviation",
-    #                 tdt("Standard deviation must be a valid number"),
-    #             )
-    #     else:
-    #         self.add_error(
-    #             "standard_deviation", tdt("Standard deviation cannot be null")
-    #         )
-
-    #     return standard_deviation
-
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:
             self.instance.deletion_time = str(datetime.now())
@@ -196,7 +195,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     def benchmarking_formset(self):
         existing_data = Benchmarking.active_objects.filter(
             indicator=self.indicator
-        ).order_by("oecd_country__name_en", "year")
+        ).order_by("labels", "-value")
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
@@ -205,6 +204,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
             form=BenchmarkingForm,
             extra=1,
             can_delete=False,
+            formset=BaseInlineFormSetWithUniqueTogetherCheck,
         )
 
         kwargs = {
@@ -227,7 +227,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
         formset = self.benchmarking_formset()
         if formset.is_valid():
             formset.save()
-            messages.success(self.request, tdt("Benchmarking data saved"))
+            messages.success(self.request, tm("saved_successfully"))
             return redirect(
                 reverse(
                     "manage_benchmarking_data",
@@ -236,9 +236,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
             )
         else:
             print(formset.errors)
-            messages.error(
-                self.request, tdt("There was an error saving the data")
-            )
+            messages.error(self.request, tm("error_saving_form"))
         return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -253,7 +251,6 @@ class TrendAnalysisForm(ModelForm):
         model = TrendAnalysis
         fields = [
             "year",
-            "year_range",
             "data_point",
             "line_of_best_fit_point",
             "trend_segment",
@@ -262,20 +259,13 @@ class TrendAnalysisForm(ModelForm):
             "data_quality",
             "data_point_lower_ci",
             "data_point_upper_ci",
+            "unit",
         ]
 
-    year = forms.IntegerField(
-        required=True,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": tdt("YYYY")}
-        ),
-    )
-
-    year_range = forms.CharField(
+    year = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": tdt("YYYY-YYYY")}
-        ),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("year"),
     )
 
     data_point = forms.FloatField(
@@ -285,6 +275,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("data_point"),
     )
 
     line_of_best_fit_point = forms.FloatField(
@@ -294,13 +285,13 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("line_of_best_fit_point"),
     )
 
     trend_segment = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": tdt("YYYY-YYYY")}
-        ),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("trend_segment"),
     )
 
     trend = forms.ChoiceField(
@@ -311,6 +302,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("trend"),
     )
 
     data_quality = forms.ChoiceField(
@@ -321,6 +313,18 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("data_quality"),
+    )
+
+    unit = forms.ChoiceField(
+        required=False,
+        choices=TrendAnalysis.UNIT_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+        label=tm("unit"),
     )
 
     data_point_lower_ci = forms.FloatField(
@@ -330,6 +334,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("data_lower_ci"),
     )
 
     data_point_upper_ci = forms.FloatField(
@@ -339,6 +344,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-control",
             }
         ),
+        label=tm("data_upper_ci"),
     )
 
     is_deleted = forms.BooleanField(
@@ -348,6 +354,7 @@ class TrendAnalysisForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
+        label=tm("delete"),
     )
 
     def clean_year(self):
@@ -356,43 +363,35 @@ class TrendAnalysisForm(ModelForm):
         if year is None or year == "":
             return None
 
-        if year:
-            try:
-                if not (int(year) >= 2000 and int(year) <= 2050):
-                    self.add_error(
-                        "year",
-                        tdt("Year must be between the years 2000 and 2050"),
-                    )
-            except ValueError:
+        year = year.strip().replace(" ", "")
+
+        single_year = re.match(r"^\d{4}$", year)
+        multi_year = re.match(r"^\d{4}-\d{4}$", year)
+
+        if not single_year and not multi_year:
+            self.add_error(
+                "year",
+                tm("year_format"),
+            )
+            return year
+
+        if single_year:
+            if not (int(year) >= 2000 and int(year) <= 2050):
                 self.add_error(
                     "year",
-                    tdt("Year must be a valid number"),
+                    tm("year_timeframe_between"),
+                )
+
+        else:
+            start_year = int(year.split("-")[0])
+            end_year = int(year.split("-")[1])
+            if not (2000 <= start_year <= end_year <= 2050):
+                self.add_error(
+                    "year",
+                    tm("year_timeframe_between_multi"),
                 )
 
         return year
-
-    def clean_year_range(self):
-        year_range = self.cleaned_data["year_range"]
-
-        if year_range is None or year_range == "":
-            return None
-
-        if year_range:
-            try:
-                start_year, end_year = map(int, year_range.split("-"))
-                if not (2000 <= start_year <= end_year <= 2050):
-                    self.add_error(
-                        "year_range",
-                        tdt(
-                            "Year Range must be between the years 2000 and 2050"
-                        ),
-                    )
-            except ValueError:
-                self.add_error(
-                    "year_range",
-                    tdt("Year Range must be in the form: 'YYYY-YYYY'"),
-                )
-        return year_range
 
     def clean_trend_segment(self):
         trend_segment = self.cleaned_data["trend_segment"]
@@ -401,21 +400,46 @@ class TrendAnalysisForm(ModelForm):
             return None
 
         if trend_segment:
-            try:
-                start_year, end_year = map(int, trend_segment.split("-"))
+            trend_segment_ = trend_segment.strip().replace(" ", "")
+            single_segment = re.match(r"^\d{4}-\d{4}$", trend_segment_)
+            multi_segment = re.match(
+                r"^\d{4}-\d{4}to\d{4}-\d{4}$", trend_segment_
+            )
+            if not single_segment and not multi_segment:
+                self.add_error(
+                    "trend_segment",
+                    tm("trend_segment_format"),
+                )
+                return trend_segment
+            if single_segment:
+                start_year = int(trend_segment_.split("-")[0])
+                end_year = int(trend_segment_.split("-")[1])
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "trend_segment",
-                        tdt(
-                            "Trend Segment must be between the years 2000 and 2050"
-                        ),
+                        tm("trend_timeframe_between"),
                     )
-            except ValueError:
-                self.add_error(
-                    "trend_segment",
-                    tdt("Trend Segment must be in the form: 'YYYY-YYYY'"),
-                )
-        return trend_segment
+
+            else:
+                start_range = str(trend_segment_.split("to")[0])
+                end_range = str(trend_segment_.split("to")[1])
+                start_year_start = int(start_range.split("-")[0])
+                start_year_end = int(start_range.split("-")[1])
+                end_year_start = int(end_range.split("-")[0])
+                end_year_end = int(end_range.split("-")[1])
+                if not (
+                    2000
+                    <= start_year_start
+                    <= start_year_end
+                    <= end_year_start
+                    <= end_year_end
+                    <= 2050
+                ):
+                    self.add_error(
+                        "trend_segment",
+                        tm("trend_timeframe_between_multi"),
+                    )
+            return trend_segment
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:
@@ -447,6 +471,7 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
             form=TrendAnalysisForm,
             extra=1,
             can_delete=False,
+            formset=BaseInlineFormSetWithUniqueTogetherCheck,
         )
 
         kwargs = {
@@ -469,7 +494,7 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
         formset = self.trend_analysis_formset()
         if formset.is_valid():
             formset.save()
-            messages.success(self.request, tdt("Trend analysis data saved"))
+            messages.success(self.request, tm("saved_successfully"))
             return redirect(
                 reverse(
                     "manage_trend_analysis_data",
@@ -478,9 +503,7 @@ class ManageTrendAnalysisData(MustPassAuthCheckMixin, TemplateView):
             )
         else:
             print(formset.errors)
-            messages.error(
-                self.request, tdt("There was an error saving the data")
-            )
+            messages.error(self.request, tm("error_saving_form"))
         return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

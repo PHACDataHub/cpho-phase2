@@ -10,6 +10,9 @@ lang_map = {
     "fallback": "fr_auto",
 }
 
+RAISE_ON_MISSING_KEY = False
+RAISE_ON_MISSING_LANG = False
+
 
 def get_language_code(lang=None):
     """Translate strings like fr-ca, en-ca to fr and en respectively
@@ -39,6 +42,8 @@ def tm(key: str) -> str:
     text = translation_entries.get(key.lower())
 
     if text is None:
+        if RAISE_ON_MISSING_KEY:
+            raise Exception("missing  key: " + key)
         return f"Missing **{key}** key"
 
     lang_code = get_language_code() or "en"
@@ -48,11 +53,14 @@ def tm(key: str) -> str:
         if text.get(lang_map.get(lang_code)) is None:
             lang_code = "fallback"
     locale_string = text.get(lang_map.get(lang_code))
-    return (
-        locale_string
-        if locale_string is not None
-        else f"Missing **{key}[{lang_map[lang_code]}]**"
-    )
+
+    if locale_string is not None:
+        return locale_string
+
+    if RAISE_ON_MISSING_LANG:
+        raise Exception(f"missing translation for {key} in {lang_code}")
+    else:
+        return f"Missing **{key}[{lang_map[lang_code]}]**"
 
 
 tm = lazy(tm, str)

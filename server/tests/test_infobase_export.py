@@ -16,12 +16,16 @@ def test_infobase_export(vanilla_user_client):
         IndicatorDatumFactory.create_batch(5, indicator=i)
 
         Benchmarking.objects.create(
-            indicator=i, oecd_country=canada, value=1, year=2020
+            indicator=i,
+            oecd_country=canada,
+            value=1,
+            year=2020,
+            methodology_differences="True",
         )
         TrendAnalysis.objects.create(
             indicator=i,
             data_point=1.1,
-            year_range="2019-2020",
+            year="2019-2020",
             trend=TrendAnalysis.TREND_CHOICES[1][0],
         )
 

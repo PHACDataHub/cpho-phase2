@@ -1,0 +1,36 @@
+# Define a Log Bucket in GCP to store application logs
+apiVersion: logging.cnrm.cloud.google.com/v1beta1
+kind: LoggingLogBucket
+metadata:
+  name: hopic-application-logs-pht-01hp04dtnkf
+  namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
+spec:
+  projectRef:
+    external: "projects/pht-01hp04dtnkf"
+  location: "northamerica-northeast1"
+  description: "Hopic Application Logs Storage"
+  # Whether the log bucket is protected from deletion
+  locked: true
+  # Number of days to retain logs in the bucket
+  retentionDays: 90
+---
+# Define a Log Sink for routing logs to the defined Log Bucket
+apiVersion: logging.cnrm.cloud.google.com/v1beta1
+kind: LoggingLogSink
+metadata:
+  namespace: cnrm-system
+  name: hopic-application-logs-sink
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
+spec:
+  projectRef:
+    external: "pht-01hp04dtnkf"
+  # Destination bucket for the logs captured by this sink
+  destination:
+    loggingLogBucketRef:
+      external: "logging.googleapis.com/projects/pht-01hp04dtnkf/locations/northamerica-northeast1/buckets/hopic-application-logs-pht-01hp04dtnkf"
+  # Log filter to specify which logs to include; excludes logs from 'istio-proxy' container in the 'server' namespace
+  filter: |
+    resource.labels.namespace_name="server" AND NOT resource.labels.container_name="istio-proxy"

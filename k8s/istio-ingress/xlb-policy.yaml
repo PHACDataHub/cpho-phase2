@@ -1,0 +1,36 @@
+# Note: The ./infrastructure/backend-service.yaml must be re-imported if this file is edited. 
+# See https://github.com/PHACDataHub/cpho-phase2/pull/225 for details
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-ingress
+spec:
+  default:
+    logConfig:
+      enabled: true
+    config:
+      type: HTTP
+      httpHealthCheck:
+        requestPath: /healthz/ready
+        port: 15021
+  targetRef:
+    group: ""
+    kind: Service
+    name: istio-ingressgateway
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: mesh-gateway-policy
+  namespace: istio-ingress
+spec:
+  default:
+    timeoutSec: 180
+    logging:
+      enabled: true
+      sampleRate: 1000000
+  targetRef:
+    group: ""
+    kind: Service
+    name: istio-ingressgateway

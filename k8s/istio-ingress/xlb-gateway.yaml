@@ -1,0 +1,34 @@
+# Regional XLB configuration
+# 
+# Note: The ./infrastructure/backend-service.yaml must be re-imported if this file is edited. 
+# See https://github.com/PHACDataHub/cpho-phase2/pull/225 for details
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: xlb-gateway
+  namespace: istio-ingress
+spec:
+  gatewayClassName: gke-l7-regional-external-managed
+  listeners:
+  - name: edge-http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+      namespaces:
+        from: All
+  - name: edge-https
+    protocol: HTTPS
+    port: 443
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        - kind: Secret
+          group: ""
+          name: tlskeys

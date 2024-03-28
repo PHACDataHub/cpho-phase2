@@ -3,6 +3,8 @@ kind: DNSPolicy
 metadata:
   name: hopic-net-dnspolicy
   namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   description: "Enables DNS logging for the hopic-net VPC"
   enableLogging: true

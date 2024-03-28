@@ -6,6 +6,7 @@ metadata:
   namespace: cnrm-system
   annotations:
     cnrm.cloud.google.com/force-destroy: "false"
+    cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   location: northamerica-northeast1
   versioning:
@@ -21,6 +22,7 @@ metadata:
   namespace: cnrm-system
   annotations:
     cnrm.cloud.google.com/force-destroy: "false"
+    cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   location: northamerica-northeast1
   versioning:

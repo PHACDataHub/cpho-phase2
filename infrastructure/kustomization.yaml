@@ -1,15 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- api.yaml
-- artifactregistry.yaml
-- bucket.yaml
-- cloudbuild.yaml
-- dns-zone.yaml
-- dnspolicy.yaml
-- service-account.yaml
-- iam-mapping.yaml
-- kms.yaml
+  - api.yaml
+  - artifactregistry.yaml
+  - bucket.yaml
+  - cloudbuildtrigger.yaml
+  - dns-zone.yaml
+  - dnspolicy.yaml
+  - service-account.yaml
+  - iam-mapping.yaml
+  - kms.yaml
+  - proxy-subnet.yaml
+  - backend-service.yaml
+  - logging-bucket.yaml
 
 commonLabels:
   classification: ucll

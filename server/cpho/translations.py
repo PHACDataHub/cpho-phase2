@@ -1017,7 +1017,6 @@ translation_entries = {
         "en": "Years",
         "fr": "Années",
     },
-
     # comparison
     "better": {"en": "Better", "fr": "Meilleur"},
     "similar": {"en": "Similar", "fr": "Similaire"},

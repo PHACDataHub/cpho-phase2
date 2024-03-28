@@ -46,7 +46,7 @@ def test_benchmarking(vanilla_user_client):
         ][
             0
         ],
-        "benchmarking-1-methodology_differences": ""
+        "benchmarking-1-methodology_differences": "",
     }
 
     with patch_rules(can_edit_benchmarking=True):
@@ -85,7 +85,7 @@ def test_benchmarking(vanilla_user_client):
         ][
             0
         ],
-        "benchmarking-0-methodology_differences":"on",
+        "benchmarking-0-methodology_differences": "on",
         "benchmarking-1-id": canada_data.id,
         "benchmarking-1-oecd_country": canada.id,
         "benchmarking-1-value": 2,

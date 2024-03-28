@@ -14,5 +14,6 @@ spec:
   privateKey:
     algorithm: RSA
     encoding: PKCS8
-    size: 2048
+    size: 4096
+    rotationPolicy: Always
   secretName: tlskeys

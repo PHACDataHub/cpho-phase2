@@ -2,8 +2,18 @@ import os
 import subprocess
 import sys
 
+python_dep_dir = os.environ["PYTHON_DEPS"]
 subprocess.run(
-    ["python", "-m", "coverage", "run", "-m", "pytest"],
+    [
+        "python",
+        "-m",
+        "coverage",
+        "run",
+        "--omit",
+        python_dep_dir,
+        "-m",
+        "pytest",
+    ],
     check=True,
     stdout=sys.stdout,
     stderr=sys.stderr,
@@ -16,7 +26,7 @@ subprocess.run(
     stderr=sys.stderr,
 )
 
-app_home = os.environ["APP_HOME"]
+app_home_dir = os.environ["APP_HOME"]
 subprocess.run(
     [
         "python",
@@ -24,9 +34,9 @@ subprocess.run(
         "coverage",
         "json",
         "-o",
-        # NOTE: "{app_home}/coverage" is expected to be a writable mounted volume, see docker-compose.run-tests.yaml.
+        # NOTE: "{app_home_dir}/coverage" is expected to be a writable mounted volume, see docker-compose.run-tests.yaml.
         # Used to share the coverage report with the host system.
-        f"{app_home}/coverage/coverage.json",
+        f"{app_home_dir}/coverage/coverage.json",
         "--pretty-print",
     ],
     check=True,

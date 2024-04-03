@@ -2,15 +2,12 @@ import os
 import subprocess
 import sys
 
-python_dep_dir = os.environ["PYTHON_DEPS"]
 subprocess.run(
     [
         "python",
         "-m",
         "coverage",
         "run",
-        "--omit",
-        python_dep_dir,
         "-m",
         "pytest",
     ],

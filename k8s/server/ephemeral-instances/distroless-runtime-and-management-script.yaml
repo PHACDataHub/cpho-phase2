@@ -85,7 +85,7 @@ metadata:
 spec:
   filterTags:
     extract: $ts
-    pattern: ^distroless-[a-fA-F0-9]+-(?P<ts>.*)
+    pattern: ^distroless-runtime-and-management-image-[a-fA-F0-9]+-(?P<ts>.*)
   imageRepositoryRef:
     name: server
   policy:

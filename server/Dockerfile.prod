@@ -42,17 +42,16 @@ ENV HOME=/cpho
 ENV APP_HOME=$HOME/web
 ENV PYTHON_DEPS=$HOME/python_deps
 
+ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
+ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
+
 # this is the ID of the distroless "nonroot" user, using ID instead of user name because the k8s runAsNonRoot security context
-# can't verify non-rootness when setting user by name
+# can't verify non-rootness when the docker file sets user by name
 # https://github.com/GoogleContainerTools/distroless/blob/9c5d2c431825d7aa21017551b2ec75c29c1f23c6/common/variables.bzl#L18
 ENV NONROOT_USER_ID=65532
 
-COPY --chown=$NONROOT_USER_ID --from=build_env $BUILD_BASE_DIR /
-COPY --chown=$NONROOT_USER_ID . $APP_HOME
-
-ENV HOME=$HOME
-ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
-ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
+COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID --from=build_env $BUILD_BASE_DIR /
+COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID . $APP_HOME
 
 WORKDIR $APP_HOME
 

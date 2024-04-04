@@ -13,7 +13,7 @@ DEBUG_CONTAINER_IMAGE_NAME="${SERVER_CONTAINER_IMAGE_NAME}-dev-management"
 
 registry="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY_NAME}"
 server_image_name="${registry}/${SERVER_CONTAINER_IMAGE_NAME}"
-debug_image_name="${registry}/${SERVER_CONTAINER_IMAGE_NAME}"
+debug_image_name="${registry}/${DEBUG_CONTAINER_IMAGE_NAME}"
 
 echo "Log in as your DMIA GCP user"
 gcloud auth login 

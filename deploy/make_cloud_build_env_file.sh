@@ -37,7 +37,7 @@ bash_escape "COMMIT_SHA=${commit_sha}" >> "${env_file}"
 
 image_tag_for_run="${branch_name}-${short_sha}-$(date +%s)"
 bash_escape "RUNTIME_IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUNTIME_IMAGE_NAME}:${image_tag_for_run}" >> "${env_file}"
-bash_escape "MANAGEMENT_IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUNTIME_IMAGE_NAME}:${image_tag_for_run}" >> "${env_file}"
+bash_escape "MANAGEMENT_IMAGE_NAME_FOR_RUN=${BUILD_CLOUD_RUNTIME_IMAGE_NAME}-dev-management:${image_tag_for_run}" >> "${env_file}"
 
 # re-exports from gcloud_env_vars.sh
 bash_escape "GITHUB_MAIN_BRANCH_NAME=${GITHUB_MAIN_BRANCH_NAME}" >> "${env_file}"

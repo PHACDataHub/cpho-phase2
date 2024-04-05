@@ -1,0 +1,72 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: disable-login
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: disable-login
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/PHACDataHub/cpho-phase2
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: disable-login-infra
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/infrastructure
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: disable-login
+  wait: true
+  dependsOn:
+    - name: ephemeral-instances
+  postBuild:
+    substitute:
+      BRANCH_NAME: disable-login
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: disable-login-postgres
+  namespace: flux-system
+spec:
+  path: ./k8s/server/overlays/ephemeral/postgres
+  interval: 2m0s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: disable-login
+  wait: true
+  dependsOn:
+    - name: disable-login-infra
+  postBuild:
+    substitute:
+      BRANCH_NAME: disable-login
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: disable-login-django
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  path: ./k8s/server/overlays/ephemeral/django
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: disable-login
+  dependsOn:
+    - name: disable-login-postgres
+  decryption:
+    provider: sops
+  postBuild:
+    substitute:
+      BRANCH_NAME: disable-login
+---

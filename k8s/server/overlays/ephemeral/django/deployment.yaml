@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: northamerica-northeast1-docker.pkg.dev/pht-01hp04dtnkf/hopic-k8s-images/cpho-phase2:distroless-runtime-and-management-image-f6a81889-1712257663 # {"$imagepolicy": "flux-system:distroless-server"}
+        image: northamerica-northeast1-docker.pkg.dev/pht-01hp04dtnkf/hopic-k8s-images/cpho-phase2:distroless-runtime-and-management-image-336a1ea9-1712259415 # {"$imagepolicy": "flux-system:distroless-server"}
         securityContext:
           runAsUser: 65532
           allowPrivilegeEscalation: false

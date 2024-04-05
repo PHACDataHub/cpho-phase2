@@ -82,8 +82,8 @@ echo "Where \"<debug container name>\" is the container name output below (looks
 
 echo ""
 kubectl debug -it --namespace "${selected_namespace}" --target "${selected_container_name}" \
-  --image "${debug_image_name}:${selected_image_tag}" "${selected_pod_name}"  \
-  -- sh -c "export \$(strings /proc/1/environ) && sh"
+  --image "${debug_image_name}:${selected_image_tag}" "${selected_pod_name}" \
+  -- sh -c "export \$(strings /proc/1/environ) && \$SHELL"
 # RE: the command passed to the debug container above
 #   The debug container shares a process pool with the --target container (one of our live servers). In this shared pool,
 #   the process with pid 1 (aka /proc/1) will be the container command of the server container (most likely gunicorn),

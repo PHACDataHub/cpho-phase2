@@ -75,10 +75,16 @@ echo -e "\tTargetting \"${selected_container_name}\" container with tag \"${sele
 echo -e "\tAttaching debug container using ${debug_image_name}:${selected_image_tag}"
 
 echo ""
-echo "Tip: while the maintenance container is still alive (this terminal is attached), you can copy to/from the maintenance pod from your local machine using the following commands:"
+echo "Tip 1: while the maintenance container is still alive (this terminal is attached), you can copy to/from the maintenance pod from your local machine using the following commands:"
 echo -e "\tkubectl cp <local file path> ${selected_namespace}/${selected_pod_name}:<remote file path> -c <debug container name>"
 echo -e "\tkubectl cp ${selected_namespace}/${selected_pod_name}:<remote file path> <local file path> -c <debug container name>"
 echo "Where \"<debug container name>\" is the container name output below (looks like \"debugger-[a-z0-9]{5}\")"
+
+echo ""
+echo "Tip 2: if you must interact with the prod DB, it's highly recommended to do so via the Django ORM via:"
+echo -e "\t\`./manage.py shell_plus\` from the maintenance pod"
+echo "The postgres client is also available on the maintenance images, for debugging purposes. You can connect via:"
+echo -e "\t\`psql \"postgresql://\${DB_USER}:\${DB_PASSWORD}@\${CPHO_POSTGRES14_CLUSTER_RW_SERVICE_HOST}:\${CPHO_POSTGRES14_CLUSTER_RW_SERVICE_PORT}/\${DB_NAME}\"\`"
 
 echo ""
 kubectl debug -it --namespace "${selected_namespace}" --target "${selected_container_name}" \

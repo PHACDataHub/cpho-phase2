@@ -2,19 +2,24 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+- xlb-gateway.yaml
+- xlb-httproute.yaml
+- xlb-policy.yaml
 - gw-certificate.yaml
-- public-gateway.yaml
+- mesh-gateway.yaml
 - ingress.yaml
 - namespace.yaml
 
 patches:
-# Patch the Istio ingress service so that our IP is used.
-- patch: |-
-    - op: add
-      path: /spec/loadBalancerIP
-      value: 35.203.101.160
-  target:
-    kind: Service
-    name: istio-ingressgateway
+- target:
+    group: gateway.networking.k8s.io
+    version: v1beta1
+    kind: Gateway
+    name: xlb-gateway
     namespace: istio-ingress
-    version: v1
+  patch: |-
+    - op: add
+      path: /spec/addresses
+      value:
+        - type: NamedAddress
+          value: hopic-external-ip

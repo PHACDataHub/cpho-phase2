@@ -18,7 +18,7 @@ spec:
       log_min_messages: "warning" # From "error" to "warning" to reduce informational messages
       pg_stat_statements.track: top # From "all" to "top" to only track top-level statements
       auto_explain.log_min_duration: '30s' # From "10s" to "30s" to reduce slow query logs
-      pgaudit.log: "ddl, role" # From "all, -misc" to specific events like DDL and role changes
+      pgaudit.log: "all, -misc"
       log_connections: "off" # Reduced connection logs
       log_disconnections: "off" # Reduced disconnection logs
       log_hostname: "off" # Avoided logging hostnames
@@ -30,6 +30,7 @@ spec:
       pgaudit.log_catalog: "off"
       pgaudit.log_parameter: "on"
       pgaudit.log_relation: "on"
+      log_statement: "none" 
 
   nodeMaintenanceWindow:
     inProgress: false

@@ -11,7 +11,6 @@ from cpho.text import tdt, tm
 
 
 class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
-
     def clean(
         self,
         fields=None,

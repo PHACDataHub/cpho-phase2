@@ -57,14 +57,18 @@ class ExportBenchmarking(MustPassAuthCheckMixin, View):
             # "Standard_Deviation",
             "Comparison_to_OECD_average",
             "Labels (multiple graphs only)",
-            "Methodology Differences"
+            "Methodology Differences",
         ]
         writer.writerow(header_row)
 
         if benchmarking_data_qs:
             # mapper = metadata_mapper()
             for benchmarking_data in benchmarking_data_qs:
-                methodology_differences = "Yes" if benchmarking_data.methodology_differences else "No"
+                methodology_differences = (
+                    "Yes"
+                    if benchmarking_data.methodology_differences
+                    else "No"
+                )
                 data_row = [
                     benchmarking_data.indicator.name,
                     benchmarking_data.indicator.detailed_indicator,

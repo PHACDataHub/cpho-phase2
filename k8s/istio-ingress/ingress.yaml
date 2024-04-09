@@ -4,16 +4,23 @@ metadata:
   name: istio-ingressgateway
   namespace: istio-ingress
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     istio: ingressgateway
   ports:
-  - name: http
+  # status-port exposes a /healthz/ready endpoint that can be used with GKE Ingress health checks
+  - name: status-port
+    port: 15021
+    protocol: TCP
+    targetPort: 15021
+  # Any ports exposed in Gateway resources should be exposed here.
+  - name: http2
     port: 80
     targetPort: 8080
   - name: https
-    port: 443
+    port: 8443
     targetPort: 8443
+    appProtocol: HTTPS
 ---
 apiVersion: apps/v1
 kind: Deployment

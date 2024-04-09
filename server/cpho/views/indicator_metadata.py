@@ -16,7 +16,6 @@ from django.views.generic import FormView, TemplateView
 
 from phac_aspc.rules import test_rule
 
-from cpho.util import get_lang_code
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     Benchmarking,
@@ -28,6 +27,7 @@ from cpho.models import (
     TrendAnalysis,
 )
 from cpho.text import tdt, tm
+from cpho.util import get_lang_code
 
 from .view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
@@ -117,7 +117,7 @@ class BenchmarkingForm(ModelForm):
                 "class": "form-check-input",
             }
         ),
-        label=tm("methodology_differences")
+        label=tm("methodology_differences"),
     )
 
     is_deleted = forms.BooleanField(
@@ -195,7 +195,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     def benchmarking_formset(self):
         existing_data = Benchmarking.active_objects.filter(
             indicator=self.indicator
-        ).order_by("labels","-value")
+        ).order_by("labels", "-value")
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,

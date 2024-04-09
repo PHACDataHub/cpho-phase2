@@ -43,7 +43,10 @@
               <td>{{ indicator.get_topic_display() }}</td>
               <td>
                 <a class="btn btn-outline-dark"
-                   href="{{ url('view_indicator', args=[indicator.pk]) }}">{{ tm("view_indicator") }}</a>
+                   href="{{ url('view_indicator', args=[indicator.pk]) }}"
+                   aria-label="{{ tm('view_indicator')}},  {{ indicator.name }}">
+                  {{ tm("view_indicator") }}
+                </a>
               </td>
             </tr>
           {% endif %}

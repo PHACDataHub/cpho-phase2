@@ -125,7 +125,7 @@
           {% if respects_rule('can_access_indicator', indicator) %}
             <div class="h3">{{ tm("add_data_for_new_periods") }}</div>
             <div>
-              <ul>
+              <ul aria-label="{{ tm('add_data_for_new_periods') }}">
                 {% for period,data_count in data_counts_by_period.items() %}
                   {% if data_count == 0 %}
                     <li>

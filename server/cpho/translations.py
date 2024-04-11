@@ -1013,10 +1013,6 @@ translation_entries = {
         "en": "Total per 100 000 persons",
         "fr": "Total pour 100 000 personnes",
     },
-    "years": {
-        "en": "Years",
-        "fr": "Années",
-    },
     # comparison
     "better": {"en": "Better", "fr": "Meilleur"},
     "similar": {"en": "Similar", "fr": "Similaire"},
@@ -1147,8 +1143,8 @@ translation_entries = {
         "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin.",
     },
     "trend_timeframe_between_multi": {
-        "en": "Trend Segment must be between the years 2000 and 2050 and start year must be less than end year. Start range must end before end range.",
-        "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin. La plage de début doit se terminer avant la plage de fin.",
+        "en": "Trend Segment must be between the years 2000 and 2050 and start year must be less than end year.",
+        "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin.",
     },
     "trend_desctiption": {
         "en": "For fields where data are not available (line of best fit, trend, data quality or CI), please leave blank",

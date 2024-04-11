@@ -532,7 +532,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
     unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
     oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
     value = fields.FloatField(max_length=50)
-    year = fields.IntegerField()
+    year = fields.IntegerField(blank=True, null=True)
     # standard_deviation = fields.FloatField(null=True)
 
     COMPARISON_CHOICES = [

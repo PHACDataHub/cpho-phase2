@@ -80,7 +80,7 @@ class BenchmarkingForm(ModelForm):
         label=tm("value"),
     )
     year = forms.IntegerField(
-        required=True,
+        required=False,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -157,7 +157,14 @@ class BenchmarkingForm(ModelForm):
         year = self.cleaned_data["year"]
 
         if year is None or year == "":
-            return None
+            if self.cleaned_data["oecd_country"].name_en in ["OECD"]:
+                return None
+            else:
+                self.add_error(
+                    "year",
+                    tdt("Please enter a year"),
+                )
+                return year
 
         if year:
             try:
@@ -427,18 +434,16 @@ class TrendAnalysisForm(ModelForm):
                 start_year_end = int(start_range.split("-")[1])
                 end_year_start = int(end_range.split("-")[0])
                 end_year_end = int(end_range.split("-")[1])
-                if not (
-                    2000
-                    <= start_year_start
-                    <= start_year_end
-                    <= end_year_start
-                    <= end_year_end
-                    <= 2050
+                if (
+                    not (2000 <= start_year_start <= end_year_end <= 2050)
+                    or not (2000 <= start_year_start <= start_year_end <= 2050)
+                    or not (2000 <= end_year_start <= end_year_end <= 2050)
                 ):
                     self.add_error(
                         "trend_segment",
                         tm("trend_timeframe_between_multi"),
                     )
+
             return trend_segment
 
     def save(self, commit=True):

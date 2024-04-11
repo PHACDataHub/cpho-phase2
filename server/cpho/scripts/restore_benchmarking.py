@@ -22,7 +22,6 @@ def run():
             print(row)
 
             if row["Indicator_Trend"] in [
-                "OPIOID TOXICITY DEATHS",
                 "DIABETES",
             ]:
                 continue
@@ -46,31 +45,67 @@ def run():
 
             year = int(row["Year"]) if row["Year"] != "--" else None
 
-            # # check if already exists
-            # query = Benchmarking.objects.filter(
-            #     indicator=Indicator,
-            #     oecd_country=Country,
-            #     is_deleted=False,
-            #     labels=labels,
-            # )
+            value = None
+            try:
+                value = float(row["Value"])
+            except ValueError:
+                pass
 
-            # if len(query) == 0:
-            #     Benchmarking.objects.create(
-            #         indicator=Indicator,
-            #         oecd_country=Country,
-            #         year=row["Year"],
-            #         value=row["Value"],
-            #     )
-            #     rows_inserted += 1
+            # check if already exists
+            query = Benchmarking.objects.filter(
+                indicator=indicator,
+                oecd_country=country,
+                is_deleted=False,
+                labels=labels,
+            )
+
+            if len(query) == 0:
+                Benchmarking.objects.create(
+                    indicator=indicator,
+                    oecd_country=country,
+                    year=year,
+                    value=value,
+                    labels=labels,
+                    comparison_to_oecd_avg=comparison,
+                    unit=unit,
+                )
+                rows_inserted += 1
+            else:
+                # check if exactly the same
+                duplicate = None
+
+                for obj in query:
+                    if (
+                        obj.year == year
+                        and obj.value == value
+                        and obj.comparison_to_oecd_avg == comparison
+                        and obj.unit == unit
+                    ):
+                        duplicate = True
+                        break
+                if duplicate:
+                    print("Duplicate found")
+                    continue
+
+                raise ValueError(
+                    f"More than one benchmarking found for: {indicator}, {country}, {labels}"
+                )
+
+        print(f"Inserted {rows_inserted} rows")
 
 
 def get_indicator(Indicator_Trend, Detailed_Indicator_Trend):
     qs = Indicator.objects.filter(
         name=Indicator_Trend, detailed_indicator=Detailed_Indicator_Trend
     )
+    if Indicator_Trend == "OPIOID TOXICITY DEATHS":
+        qs = qs.filter(
+            sub_indicator_measurement="Rate of apparent opioid toxicity deaths per 100,000"
+        )
     if len(qs) == 1:
         return qs[0]
     else:
+
         print(Indicator_Trend, Detailed_Indicator_Trend)
         print(qs)
         raise ValueError(

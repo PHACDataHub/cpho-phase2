@@ -26,7 +26,7 @@ spec:
           allowPrivilegeEscalation: false
       - name: server
         securityContext:
-          runAsUser: 5678
+          runAsUser: 65532
           allowPrivilegeEscalation: false
         env:
         - name: SECRET_KEY

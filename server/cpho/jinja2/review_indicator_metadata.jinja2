@@ -21,9 +21,11 @@
   <div class="h2">{{ tm("review_metadata") }} : {{ view.indicator.name }}</div>
   <div>
     <button type="button"
-       data-bs-toggle="modal"
-       data-bs-target="#confirmApproveModal"
-       class="btn btn-success mt-2">{{ tm("approve_all_metadata") }}</button>
+            data-bs-toggle="modal"
+            data-bs-target="#confirmApproveModal"
+            class="btn btn-success mt-2">
+      {{ tm("approve_all_metadata") }}
+    </button>
   </div>
 
   <div class="mt-4">
@@ -70,7 +72,9 @@
               <td>{{ tm("relevant_dimensions") }}</td>
               <td>
                 <ul>
-                  {% for item in metadata["indicator"][0].relevant_dimensions.all() %}<li>{{ item.name }}</li>{% endfor %}
+                  {% for item in metadata["indicator"][0].relevant_dimensions.all() %}
+                    <li>{{ item.name }}</li>
+                  {% endfor %}
                 </ul>
               </td>
             </tr>
@@ -125,6 +129,7 @@
         <div class="mt-5">
           <strong>{{ tm("quintile_values") }}</strong>
         </div>
+        <p class="my-2">{{ tm("quintile_metadata_description") }}</p>
         <table class="table table-hover">
           <thead>
             <tr>
@@ -144,12 +149,24 @@
               <td>{{ tm("quintile_values") }}</td>
               <td>{{ metadata["indicator"][0].g1 }}</td>
               <td>{{ metadata["indicator"][0].g2_lower }}</td>
-              <td>{{ metadata["indicator"][0].g2_upper }}</td>
-              <td>{{ metadata["indicator"][0].g3_lower }}</td>
-              <td>{{ metadata["indicator"][0].g3_upper }}</td>
-              <td>{{ metadata["indicator"][0].g4_lower }}</td>
-              <td>{{ metadata["indicator"][0].g4_upper }}</td>
-              <td>{{ metadata["indicator"][0].g5 }}</td>
+              <td>
+                {{ metadata["indicator"][0].g2_upper }}
+              </td>
+              <td>
+                {{ metadata["indicator"][0].g3_lower }}
+              </td>
+              <td>
+                {{ metadata["indicator"][0].g3_upper }}
+              </td>
+              <td>
+                {{ metadata["indicator"][0].g4_lower }}
+              </td>
+              <td>
+                {{ metadata["indicator"][0].g4_upper }}
+              </td>
+              <td>
+                {{ metadata["indicator"][0].g5 }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -175,25 +192,53 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">{{ tm("oecd_country") }}</th>
-            <th scope="col">{{ tm("value") }}</th>
-            <th scope="col">{{ tm("unit") }}</th>
-            <th scope="col">{{ tm("year") }}</th>
-            <th scope="col">{{ tm("comparison_to_oecd_average") }}</th>
-            <th scope="col">{{ tm("labels") }}</th>
-            <th scope="col">{{ tm("methodology_differences") }}</th>
+            <th scope="col">
+              {{ tm("oecd_country") }}
+            </th>
+            <th scope="col">
+              {{ tm("value") }}
+            </th>
+            <th scope="col">
+              {{ tm("unit") }}
+            </th>
+            <th scope="col">
+              {{ tm("year") }}
+            </th>
+            <th scope="col">
+              {{ tm("comparison_to_oecd_average") }}
+            </th>
+            <th scope="col">
+              {{ tm("labels") }}
+            </th>
+            <th scope="col">
+              {{ tm("methodology_differences") }}
+            </th>
           </tr>
         </thead>
         <tbody>
           {% for item in metadata["benchmarking"].order_by('labels', 'value') %}
             <tr>
-              <th scope="row">{{ item.oecd_country }}</th>
-              <td>{{ item.value }}</td>
-              <td>{{ item.get_unit_display() }}</td>
-              <td>{{ item.year }}</td>
-              <td>{{ item.get_comparison_to_oecd_avg_display() }}</td>
-              <td>{{ item.get_labels_display() }}</td>
-              <td>{{ tm(item.get_methodology_differences_display() ) }}</td>
+              <th scope="row">
+                {{ item.oecd_country }}
+              </th>
+              <td>
+                {{ item.value }}
+              </td>
+              <td>
+                {{ item.get_unit_display() }}
+              </td>
+              <td>
+                {{ item.year }}
+              </td>
+              <td>
+                {{ item.get_comparison_to_oecd_avg_display() }}
+              </td>
+              <td>
+                {{ item.get_labels_display() }}
+              </td>
+              <td>
+                {{ tm(item.get_methodology_differences_display() ) }}
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -219,29 +264,65 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">{{ tm("year_or_range") }}</th>
-            <th scope="col">{{ tm("data_point") }}</th>
-            <th scope="col">{{ tm("line_of_best_fit_point") }}</th>
-            <th scope="col">{{ tm("trend_segment") }}</th>
-            <th scope="col">{{ tm("trend") }}</th>
-            <th scope="col">{{ tm("data_quality") }}</th>
-            <th scope="col">{{ tm("unit") }}</th>
-            <th scope="col">{{ tm("data_upper_ci") }}</th>
-            <th scope="col">{{ tm("data_lower_ci") }}</th>
+            <th scope="col">
+              {{ tm("year_or_range") }}
+            </th>
+            <th scope="col">
+              {{ tm("data_point") }}
+            </th>
+            <th scope="col">
+              {{ tm("line_of_best_fit_point") }}
+            </th>
+            <th scope="col">
+              {{ tm("trend_segment") }}
+            </th>
+            <th scope="col">
+              {{ tm("trend") }}
+            </th>
+            <th scope="col">
+              {{ tm("data_quality") }}
+            </th>
+            <th scope="col">
+              {{ tm("unit") }}
+            </th>
+            <th scope="col">
+              {{ tm("data_upper_ci") }}
+            </th>
+            <th scope="col">
+              {{ tm("data_lower_ci") }}
+            </th>
           </tr>
         </thead>
         <tbody>
           {% for item in metadata["trend"] %}
             <tr>
-              <th scope="row">{{ item.year }}</th>
-              <td>{{ item.data_point }}</td>
-              <td>{{ item.line_of_best_fit_point }}</td>
-              <td>{{ item.trend_segment }}</td>
-              <td>{{ item.get_trend_display() }}</td>
-              <td>{{ item.get_data_quality_display() }}</td>
-              <td>{{ item.get_unit_display() }}</td>
-              <td>{{ item.data_point_upper_ci }}</td>
-              <td>{{ item.data_point_lower_ci }}</td>
+              <th scope="row">
+                {{ item.year }}
+              </th>
+              <td>
+                {{ item.data_point }}
+              </td>
+              <td>
+                {{ item.line_of_best_fit_point }}
+              </td>
+              <td>
+                {{ item.trend_segment }}
+              </td>
+              <td>
+                {{ item.get_trend_display() }}
+              </td>
+              <td>
+                {{ item.get_data_quality_display() }}
+              </td>
+              <td>
+                {{ item.get_unit_display() }}
+              </td>
+              <td>
+                {{ item.data_point_upper_ci }}
+              </td>
+              <td>
+                {{ item.data_point_lower_ci }}
+              </td>
             </tr>
           {% endfor %}
         </tbody>

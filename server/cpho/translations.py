@@ -1158,4 +1158,16 @@ translation_entries = {
         "en": "Single Year / Year Range",
         "fr": "Année unique / Plage d'années",
     },
+    "pt_dynamic_text": {
+        "en": "PT Dynamic Text",
+        "fr": "Texte dynamique PT",
+    },
+    "recommendations_for_hso": {
+        "en": "Recommendations for HSO",
+        "fr": "Recommandations pour le DSP",
+    },
+    "quintile_metadata_description": {
+        "en": "HSO will recalculate with updated data",
+        "fr": "Le DSP recalculera avec des données mises à jour",
+    },
 }

@@ -28,7 +28,8 @@
 {% macro hidden_a11y_label(form_field, prefix) %}
   <label for="{{ form_field.id_for_label }}"
          class="visually-hidden"
-         aria-label="{{ prefix }}, {{ form_field.label }}"></label>
+         aria-label="{{ prefix }}, {{ form_field.label }}">
+  </label>
 {% endmacro %}
 
 {% macro fieldset_field(field, helptext=None) %}
@@ -36,7 +37,9 @@
     <div class="col-lg-2">
       <div class="row">
         <fieldset>
-          <legend class="col col-form-label" style="font-size:1rem">{{ field.label }}</legend>
+          <legend class="col col-form-label" style="font-size:1rem">
+            {{ field.label }}
+          </legend>
         </fieldset>
       </div>
       {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
@@ -71,6 +74,7 @@
       {{ form_field(form.general_footnotes, rich=true) }}
       {{ form_field(form.main_source_english, rich=true) }}
       {{ form_field(form.other_relevant_sources_english, rich=true) }}
+      {{ form_field(form.recommendations_for_hso, rich=true) }}
     </div>
   </div>
 
@@ -101,6 +105,7 @@
       {{ form_field(form.table_title_province_territory) }}
       {{ form_field(form.title_province_territory_2) }}
       {{ form_field(form.table_title_province_territory_2) }}
+      {{ form_field(form.pt_dynamic_text) }}
     </div>
   </div>
 
@@ -157,6 +162,7 @@
       {{ tm("quintile_metadata") }} <span class="badge bg-success">{{ tm("hso_only") }}</span>
     </h5>
     <div class="card-body">
+      <p class="my-2">{{ tm("quintile_metadata_description") }}</p>
       <table class="table" style="overflow-x:auto; display:block">
         <thead>
           <tr class="text-center">
@@ -174,37 +180,55 @@
         <tbody>
           <tr>
             {% set row_name = tm('quintile_values') %}
-            <td class='text-center'>{{ row_name }}</td>
+            <td class='text-center'>
+              {{ row_name }}
+            </td>
             <td>
-              <div class="form-group mb-3">{{ form.g1 }}</div>
+              <div class="form-group mb-3">
+                {{ form.g1 }}
+              </div>
               {{ hidden_a11y_label(form.g1, row_name) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g2_lower }}</div>
+              <div class="form-group mb-3">
+                {{ form.g2_lower }}
+              </div>
               {{ hidden_a11y_label(form.g2_lower, row_name) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g2_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g2_upper }}
+              </div>
               {{ hidden_a11y_label(form.g2_upper, row_name) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g3_lower }}</div>
+              <div class="form-group mb-3">
+                {{ form.g3_lower }}
+              </div>
               {{ hidden_a11y_label(form.g3_lower, row_name ,) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g3_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g3_upper }}
+              </div>
               {{ hidden_a11y_label(form.g3_upper, row_name) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g4_lower }}</div>
+              <div class="form-group mb-3">
+                {{ form.g4_lower }}
+              </div>
               {{ hidden_a11y_label(form.g4_lower, row_name) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g4_upper }}</div>
+              <div class="form-group mb-3">
+                {{ form.g4_upper }}
+              </div>
               {{ hidden_a11y_label(form.g4_upper, row_name) }}
             </td>
             <td>
-              <div class="form-group mb-3">{{ form.g5 }}</div>
+              <div class="form-group mb-3">
+                {{ form.g5 }}
+              </div>
               {{ hidden_a11y_label(form.g5, row_name) }}
             </td>
           </tr>
@@ -215,5 +239,5 @@
 
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
-         value="{{ tm("submit") }}" />
+         value="{{ tm("submit") }}"/>
 </form>

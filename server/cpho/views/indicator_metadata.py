@@ -178,7 +178,31 @@ class BenchmarkingForm(ModelForm):
         if self.cleaned_data["is_deleted"]:
             self.instance.deletion_time = str(datetime.now())
         return super().save(commit=commit)
+    
+class ReadOnlyFormMixin:
+    """A form mixin for the read only view that includes methods to
+    disable fields and remove placeholders."""
 
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
+
+    def disable_fields(self):
+        """Disable all fields in the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs["disabled"] = True
+
+    def remove_placeholders(self):
+        """Remove all placeholders from the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs.pop("placeholder", None)
+
+class ReadOnlyBenchmarkingForm(BenchmarkingForm, ReadOnlyFormMixin):
+    """A form for the read only view of a threat."""
+
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyBenchmarkingForm, self).__init__(*args, **kwargs)
+        self.disable_fields()
+        self.remove_placeholders()  
 
 class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     template_name = "benchmarking/manage_benchmarking_data.jinja2"
@@ -189,7 +213,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_edit_benchmarking", self.request.user, self.indicator
+            "can_view_benchmarking", self.request.user, self.indicator
         )
 
     def benchmarking_formset(self):
@@ -201,7 +225,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
             Indicator,
             Benchmarking,
             fk_name="indicator",
-            form=BenchmarkingForm,
+            form=BenchmarkingForm if test_rule('can_edit_benchmarking',self.request.user, self.indicator) else ReadOnlyBenchmarkingForm,
             extra=1,
             can_delete=False,
             formset=BaseInlineFormSetWithUniqueTogetherCheck,

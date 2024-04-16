@@ -50,7 +50,7 @@ class ExportBenchmarking(MustPassAuthCheckMixin, View):
         header_row = [
             "Indicator_Trend",
             "Detailed_Indicator_Trend",
-            "Indicator_Benchmarking",
+            "SubIndicator_Measurement",
             "Unit",
             "OECD_Country",
             "Value",

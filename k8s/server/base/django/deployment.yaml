@@ -66,12 +66,12 @@ spec:
               key: microsoft-tenant
         readinessProbe:
           httpGet:
-            path: /healthcheck
+            path: /healthcheck/
             port: 8080
             httpHeaders:
             - name: Host
               value: hopic-sdpac.phac-aspc.alpha.canada.ca
-          initialDelaySeconds: 35
+          initialDelaySeconds: 115
           periodSeconds: 10
           timeoutSeconds: 3
 status: {}

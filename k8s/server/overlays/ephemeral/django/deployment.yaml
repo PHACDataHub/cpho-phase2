@@ -17,3 +17,8 @@ spec:
         envFrom:
         - configMapRef:
             name: server
+        readinessProbe:
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: ${BRANCH_NAME}.dev.hopic-sdpac.phac-aspc.alpha.canada.ca

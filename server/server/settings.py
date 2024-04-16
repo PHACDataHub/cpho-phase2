@@ -99,7 +99,7 @@ if not IS_DEV:
     SECURE_SSL_REDIRECT = True
     # For K8S Health Check
     SECURE_REDIRECT_EXEMPT = [
-        '^healthcheck/',
+        "^healthcheck/",
     ]
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 

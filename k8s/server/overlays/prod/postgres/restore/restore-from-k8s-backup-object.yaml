@@ -11,7 +11,7 @@ metadata:
 
 
 spec:
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.9
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.11
   instances: 3
   startDelay: 900
   stopDelay: 900

@@ -1170,4 +1170,12 @@ translation_entries = {
         "en": "HSO will recalculate with updated data",
         "fr": "Le DSP recalculera avec des données mises à jour",
     },
+    "submission_text": {
+        "en": "All information provided in InfoSource must be approved by the program director. Clicking this button indicates director approval",
+        "fr": "Toutes les informations fournies dans InfoSource doivent être approuvées par le directeur du programme. En cliquant sur ce bouton, vous indiquez l'approbation du directeur",
+    },
+    "submission_confirmation_text": {
+        "en": "I confirm that necessary approvals were obtained from my program director and agree to submit",
+        "fr": "Je confirme que les approbations nécessaires ont été obtenues de mon directeur de programme et accepte de soumettre",
+    },
 }

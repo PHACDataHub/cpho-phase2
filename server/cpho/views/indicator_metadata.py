@@ -196,13 +196,21 @@ class ReadOnlyFormMixin:
         for field in self.fields:
             self.fields[field].widget.attrs.pop("placeholder", None)
 
+    def choice_to_text_field(self):
+        initial_data={}
+        for field_name, field in self.fields.items():
+            if isinstance(field, forms.ChoiceField):
+                initial_data[field_name] = self.initial.get(field_name)
+                self.fields[field_name].widget = forms.TextInput(attrs={"class": "form-control", 'value': initial_data[field_name]})
+    
 class ReadOnlyBenchmarkingForm(BenchmarkingForm, ReadOnlyFormMixin):
     """A form for the read only view of a threat."""
 
     def __init__(self, *args, **kwargs):
         super(ReadOnlyBenchmarkingForm, self).__init__(*args, **kwargs)
+        self.choice_to_text_field()
         self.disable_fields()
-        self.remove_placeholders()  
+        self.remove_placeholders()   
 
 class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     template_name = "benchmarking/manage_benchmarking_data.jinja2"
@@ -215,18 +223,25 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
         return test_rule(
             "can_view_benchmarking", self.request.user, self.indicator
         )
+    
 
     def benchmarking_formset(self):
         existing_data = Benchmarking.active_objects.filter(
             indicator=self.indicator
         ).order_by("labels", "-value")
 
+        form_type = ReadOnlyBenchmarkingForm
+        extra_val = 0
+        if test_rule('can_edit_benchmarking',self.request.user, self.indicator):
+            form_type = BenchmarkingForm
+            extra_val= 1
+
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
             Benchmarking,
             fk_name="indicator",
-            form=BenchmarkingForm if test_rule('can_edit_benchmarking',self.request.user, self.indicator) else ReadOnlyBenchmarkingForm,
-            extra=1,
+            form=form_type,
+            extra=extra_val,
             can_delete=False,
             formset=BaseInlineFormSetWithUniqueTogetherCheck,
         )

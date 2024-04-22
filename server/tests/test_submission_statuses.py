@@ -15,7 +15,7 @@ from cpho.services import SubmitIndicatorDataService
 
 # These tests are very heavy on data-generation
 
-NO_DATA_TRIPLE = [SUBMISSION_STATUSES.NO_DATA] * 3
+NO_DATA_TRIPLE = ["no_data"] * 3
 
 
 def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):

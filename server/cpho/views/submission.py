@@ -203,15 +203,6 @@ class ReviewData(
         return get_submission_statuses(self.indicator, self.period)
 
     @cached_property
-    def submission_status(self):
-        if self.dimension_type:
-            return self.submission_statuses["statuses_by_dimension_type_id"][
-                self.dimension_type.id
-            ]
-        else:
-            return self.submission_statuses["global_status"]
-
-    @cached_property
     def dimension_types(self):
         if self.dimension_type:
             return [self.dimension_type]

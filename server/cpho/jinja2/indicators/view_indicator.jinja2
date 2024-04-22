@@ -1,4 +1,5 @@
 {% extends 'base.jinja2' %}
+{% from 'cpho_macros.jinja2' import submission_status_badge %}
 {% import 'breadcrumb_macros.jinja2' as bc %}
 
 {% block content_breadcrumbs %}
@@ -83,7 +84,7 @@
               {% set submission_statuses = metadata_submission_statuses %}
               {% set progress_in_table = false %}
               {% set metadata_submission = true %}
-              {% include 'indicators/_progress_bar.jinja2' %}
+              {% include 'indicators/_submission_fragment.jinja2' %}
             </div>
           </div>
 
@@ -94,10 +95,11 @@
                 <table class="table table-hover">
                   <thead>
                     <tr class="text-center">
-                      <th class="width-15">{{ tm("period") }}</th>
-                      <th class="width-15">{{ tm("data_count") }}</th>
-                      <th class="width-55">{{ tm("data_submission") }}</th>
-                      <th class="width-15">{{ tm("actions") }}</th>
+                      <th>{{ tm("period") }}</th>
+                      <th>{{ tm("data_count") }}</th>
+                      <th>{{ tm("hso_submission") }}</th>
+                      <th>{{ tm("program_submission") }}</th>
+                      <th>{{ tm("actions") }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -109,7 +111,8 @@
                         <tr class="text-center">
                           <th>{{ period }}</th>
                           <td>{{ data_count }}</td>
-                          <td>{% include 'indicators/_progress_bar.jinja2' %}</td>
+                          <td>{{ submission_status_badge(submission_statuses['hso_global_status']) }}</td>
+                          <td>{{ submission_status_badge(submission_statuses['program_global_status']) }}</td>
                           <td>
                             <a class='btn btn-outline-dark'
                                href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("see_edit_data") }}</a>

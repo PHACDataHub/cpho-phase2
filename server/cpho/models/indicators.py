@@ -49,7 +49,7 @@ class SubmissionQueryset(models.QuerySet):
         return self.annotate(last_version_id=last_version_id)
 
     def with_last_program_submitted_version_id(self):
-        last_submitted_version_id = models.Subquery(
+        last_program_submitted_version_id = models.Subquery(
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk"),
                 is_program_submitted=True,
@@ -58,7 +58,7 @@ class SubmissionQueryset(models.QuerySet):
             .values("id")[:1]
         )
         return self.annotate(
-            last_program_submitted_version_id=last_submitted_version_id
+            last_program_submitted_version_id=last_program_submitted_version_id
         )
 
     def with_last_submitted_version_id(self):
@@ -66,7 +66,6 @@ class SubmissionQueryset(models.QuerySet):
             self.model._history_class.objects.filter(
                 eternal_id=models.OuterRef("pk"),
                 is_hso_submitted=True,
-                is_program_submitted=True,
             )
             .order_by("-timestamp")
             .values("id")[:1]
@@ -84,8 +83,7 @@ class SubmissionQueryset(models.QuerySet):
 
 
 class SubmissionHelpersMixin:
-    @property
-    def submission_status(self):
+    def submission_status(self, submission_type):
         try:
             self.last_version_id
             self.last_submitted_version_id
@@ -93,14 +91,16 @@ class SubmissionHelpersMixin:
         except AttributeError:
             raise Exception("You must add the submission_annotations")
 
-        if not self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
-
-        if self.last_version_id == self.last_submitted_version_id:
-            return SUBMISSION_STATUSES.SUBMITTED
-
-        if self.last_version_id == self.last_program_submitted_version_id:
-            return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+        if submission_type == "hso":
+            if not self.last_submitted_version_id:
+                return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+            if self.last_version_id == self.last_submitted_version_id:
+                return SUBMISSION_STATUSES.SUBMITTED
+        elif submission_type == "program":
+            if not self.last_program_submitted_version_id:
+                return SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+            if self.last_version_id == self.last_program_submitted_version_id:
+                return SUBMISSION_STATUSES.PROGRAM_SUBMITTED
 
         return SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
 

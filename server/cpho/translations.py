@@ -193,12 +193,12 @@ translation_entries = {
         "fr": "Pas encore soumis",
     },
     "program_submitted": {
-        "en": "Program submitted",
+        "en": "Program Submitted",
         "fr": "Programme soumis",
     },
-    "submitted_by_program_and_hso": {
-        "en": "Submitted by Program and HSO",
-        "fr": "Soumis par le programme et le DSP",
+    "submitted_by_hso": {
+        "en": "HSO Submitted",
+        "fr": "DSP soumis",
     },
     "modified_since_last_submission": {
         "en": "Modified since last submission",
@@ -1177,5 +1177,13 @@ translation_entries = {
     "submission_confirmation_text": {
         "en": "I confirm that necessary approvals were obtained from my program director and agree to submit",
         "fr": "Je confirme que les approbations nécessaires ont été obtenues de mon directeur de programme et accepte de soumettre",
+    },
+    "hso_submission": {
+        "en": "HSO Submission",
+        "fr": "Soumission du DSP",
+    },
+    "program_submission": {
+        "en": "Program Submission",
+        "fr": "Soumission du programme",
     },
 }

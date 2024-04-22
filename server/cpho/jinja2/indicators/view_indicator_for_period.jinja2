@@ -27,15 +27,19 @@
     <div class="h5 mt-4">{{ tm("data_submission_progress") }}</div>
     {% set metadata_submission = false %}
     {% set progress_in_table = false %}
-    {% include 'indicators/_progress_bar.jinja2' %}
+    {% include 'indicators/_submission_fragment.jinja2' %}
   </div>
 
   <div class="mt-4">
     <div class="mt-5">
       {% for dimension_type in dimension_types %}
         <div>
-          <div class="h5">
-            {{ tm("stratifier") }} : {{ dimension_type.name }} <span class="h6 text-secondary">{{ submission_status_badge(submission_statuses['statuses_by_dimension_type_id'][dimension_type.id]) }}</span>
+          <div class="h5">{{ tm("stratifier") }} : {{ dimension_type.name }}</div>
+          <div>
+            <span class="fw-bold">{{ tm("hso_submission")}}:</span> {{ submission_status_badge(submission_statuses['hso_statuses_by_dimension_type_id'][dimension_type.id]) }}
+          </div>
+          <div>
+            <span class="fw-bold">{{ tm("program_submission")}}:</span> {{ submission_status_badge(submission_statuses['program_statuses_by_dimension_type_id'][dimension_type.id]) }}
           </div>
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
           <div class="text-end">

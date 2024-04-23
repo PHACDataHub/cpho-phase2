@@ -18,31 +18,9 @@ ADULT OBESITY,% of adults that are obese,percent_population,Hungary,67.6,2019,si
 ADULT OBESITY,% of adults that are obese,percent_population,Portugal,67.6,2015,similar,
 ADULT OBESITY,% of adults that are obese,percent_population,New Zealand,68.1,2021,similar,
 ADULT OBESITY,% of adults that are obese,percent_population,United States,73.1,2019,worse,
-ADULT OBESITY,% of adults that are obese,percent_children,Mexico,74.1,2020,worse,
-ADULT OBESITY,% of adults that are obese,percent_children,Chile,74.2,2016,worse,
-ADULT OBESITY,% of adults that are obese,percent_children,OECD,59.5,--,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Japan,27.2,2019,better,
-ADULT OBESITY,% of adults that are obese,percent_population,Korea,36.7,2021,better,
-ADULT OBESITY,% of adults that are obese,percent_population,France,46.4,2017,better,
-ADULT OBESITY,% of adults that are obese,percent_population,Israel,50.9,2015,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Estonia,51.3,2014,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Czech Republic,55,2010,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Belgium,55.4,2018,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Latvia,58.8,2020,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Canada,59.8,2019,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Germany,60,2012,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Ireland,61,2019,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,United Kingdom,64.2,2019,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Turkey,64.4,2017,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Australia,65.2,2017,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Finland,67.6,2017,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Hungary,67.6,2019,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,Portugal,67.6,2015,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,New Zealand,68.1,2021,similar,
-ADULT OBESITY,% of adults that are obese,percent_population,United States,73.1,2019,worse,
-ADULT OBESITY,% of adults that are obese,percent_children,Mexico,74.1,2020,worse,
-ADULT OBESITY,% of adults that are obese,percent_children,Chile,74.2,2016,worse,
-ADULT OBESITY,% of adults that are obese,percent_children,OECD,59.5,--,similar,
+ADULT OBESITY,% of adults that are obese,percent_population,Mexico,74.1,2020,worse,
+ADULT OBESITY,% of adults that are obese,percent_population,Chile,74.2,2016,worse,
+ADULT OBESITY,% of adults that are obese,percent_population,OECD,59.5,--,similar,
 BREAST CANCER CASES,"Rate of all newly diagnosed breast cancers, per 100,000 (age-standardized)",age_standard_rate_per_100K,Chile,34.8,2012,better,
 BREAST CANCER CASES,"Rate of all newly diagnosed breast cancers, per 100,000 (age-standardized)",age_standard_rate_per_100K,Mexico,35.4,2012,better,
 BREAST CANCER CASES,"Rate of all newly diagnosed breast cancers, per 100,000 (age-standardized)",age_standard_rate_per_100K,Colombia,35.7,2012,better,
@@ -120,7 +98,7 @@ BULLYING,% of grade 6-10 students who were victims of bullying more than once or
 BULLYING,% of grade 6-10 students who were victims of bullying more than once or twice in the past two months,percent,Australia,13,2019,worse,
 BULLYING,% of grade 6-10 students who were victims of bullying more than once or twice in the past two months,percent,OECD,7.8,--,similar,
 CANCER CASES,"Rate of all newly diagnosed cancer cases, total population, per 100,000 (age-standardized)",rate_per_100K,Mexico,140.4,2020,better,
-CANCER CASES,"Rate of all newly diagnosed cancer cases, total population, per 100,000 (age-standardized)",rate_per_100K,Chile,189.9,2020,better,
+CANCER CASES,"Rate of all newly diagnosed cancer cases, total population, per 100,000 (age-standardized)",rate_per_100K,Chile,180.9,2020,better,
 CANCER CASES,"Rate of all newly diagnosed cancer cases, total population, per 100,000 (age-standardized)",rate_per_100K,Colombia,182.3,2020,better,
 CANCER CASES,"Rate of all newly diagnosed cancer cases, total population, per 100,000 (age-standardized)",rate_per_100K,Costa Rica,188.7,2020,better,
 CANCER CASES,"Rate of all newly diagnosed cancer cases, total population, per 100,000 (age-standardized)",rate_per_100K,Turkey,231.5,2020,better,
@@ -192,7 +170,7 @@ CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-sta
 CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Denmark,231.1,2020,similar,
 CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Lithuania,226,2021,similar,
 CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Poland,240.4,2020,worse,
-CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Slovenia,247.7,2020,worse,
+CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Slovenia,247.4,2020,worse,
 CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Slovak Republic,252.9,2019,worse,
 CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Latvia,245.8,2021,worse,
 CANCER DEATHS,"All cancer mortality rate, total population, per 100,000 (age-standardized)",rate_per_100K_population,Hungary,286.4,2019,worse,
@@ -219,7 +197,7 @@ COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deat
 COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Sweden,2319.669,2023,similar,
 COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Estonia,2263.088,2023,similar,
 COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Germany,2095.374,2023,similar,
-COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_per_100K_persons,Luxembourg,1902.406,2023,similar,
+COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Luxembourg,1902.406,2023,similar,
 COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Costa Rica,1811.291,2023,similar,
 COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Ireland,1797.294,2023,similar,
 COVID-19 DEATHS,"COVID-19 death rate per 100,000 population per year",total_deaths_per_1M,Finland,1784.237,2023,similar,
@@ -297,7 +275,7 @@ DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_
 DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,Poland,11.6,2019,similar,
 DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,Norway,11.8,2016,similar,
 DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,New Zealand,12.1,2016,similar,
-DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_deaths_per_1M,France,12.3,2017,similar,
+DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,France,12.3,2017,similar,
 DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,Australia,12.4,2021,similar,
 DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,Sweden,12.4,2018,similar,
 DEATHS BY SUICIDE,"Mortality rate due to suicide, per 100,000 population",total_per_100K_persons,Latvia,12.7,2021,similar,
@@ -389,84 +367,84 @@ DEMENTIA CASES,"Rate of newly diagnosed dementia cases, including Alzheimers dis
 "DIPHTHERIA, TETANUS, AND PERTUSSIS VACCINATION","% of 2 year-old population that have received the recommended 4 doses for diphtheria, pertussis and tetanus",percent,Portugal,99,2021,better,
 "DIPHTHERIA, TETANUS, AND PERTUSSIS VACCINATION","% of 2 year-old population that have received the recommended 4 doses for diphtheria, pertussis and tetanus",percent,Hungary,99.9,2022,better,
 "DIPHTHERIA, TETANUS, AND PERTUSSIS VACCINATION","% of 2 year-old population that have received the recommended 4 doses for diphtheria, pertussis and tetanus",percent,OECD,93.5,--,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Japan,20.4,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Korea,19.8,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,France,19.7,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Switzerland,19.5,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Israel,19.3,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Spain,19.2,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Iceland,19,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Canada,19,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Australia,19,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Italy,18.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Sweden,18.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Costa Rica,18.7,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Portugal,18.6,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Ireland,18.6,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,New Zealand,18.6,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Luxembourg,18.5,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Germany,18.5,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Finland,18.5,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Norway,18.5,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Greece,18.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Netherlands,18.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Chile,18.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Austria,18.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,United Kingdom,18.3,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Denmark,18.2,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Belgium,18.2,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Colombia,18.1,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Slovenia,17.8,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Estonia,17.3,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Poland,16.8,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Turkey,16.6,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Slovak Republic,16.6,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,United States,16.4,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Czech Republic,16.3,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Mexico,16.1,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Lithuania,15.9,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Latvia,15.6,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,Hungary,15.3,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",--,OECD,18.11,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Japan,74.1,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Korea,73.1,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Switzerland,72.5,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Israel,72.4,2019,better,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Spain,72.1,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,France,72.1,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Iceland,72,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Italy,71.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Sweden,71.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Luxembourg,71.5,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Netherlands,71.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Norway,71.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Canada,71.3,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Ireland,71.1,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Denmark,71,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Finland,71,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Portugal,71,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Austria,70.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Australia,70.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Germany,70.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Greece,70.9,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Slovenia,70.7,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Belgium,70.6,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,New Zealand,70.2,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,United Kingdom,70.1,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Chile,70,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Costa Rica,70,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Estonia,69.2,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Colombia,69,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Czech Republic,68.8,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Poland,68.7,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Slovak Republic,68.5,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Turkey,68.4,2019,similar,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Hungary,67.2,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Lithuania,66.7,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Latvia,66.3,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,United States,66.1,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,Slovakia,65.8,2019,worse,
-HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",--,OECD,70.31,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Japan,20.4,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Korea,19.8,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,France,19.7,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Switzerland,19.5,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Israel,19.3,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Spain,19.2,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Iceland,19,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Canada,19,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Australia,19,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Italy,18.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Sweden,18.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Costa Rica,18.7,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Portugal,18.6,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Ireland,18.6,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,New Zealand,18.6,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Luxembourg,18.5,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Germany,18.5,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Finland,18.5,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Norway,18.5,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Greece,18.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Netherlands,18.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Chile,18.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Austria,18.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,United Kingdom,18.3,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Denmark,18.2,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Belgium,18.2,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Colombia,18.1,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Slovenia,17.8,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Estonia,17.3,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Poland,16.8,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Turkey,16.6,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Slovak Republic,16.6,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,United States,16.4,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Czech Republic,16.3,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Mexico,16.1,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Lithuania,15.9,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Latvia,15.6,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,Hungary,15.3,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT AGE 65,"Health-adjusted life expectancy at age 65, in years",years,OECD,18.1,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Japan,74.1,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Korea,73.1,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Switzerland,72.5,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Israel,72.4,2019,better,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Spain,72.1,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,France,72.1,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Iceland,72,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Italy,71.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Sweden,71.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Luxembourg,71.5,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Netherlands,71.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Norway,71.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Canada,71.3,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Ireland,71.1,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Denmark,71,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Finland,71,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Portugal,71,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Austria,70.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Australia,70.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Germany,70.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Greece,70.9,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Slovenia,70.7,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Belgium,70.6,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,New Zealand,70.2,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,United Kingdom,70.1,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Chile,70,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Costa Rica,70,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Estonia,69.2,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Colombia,69,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Czech Republic,68.8,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Poland,68.7,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Slovak Republic,68.5,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Turkey,68.4,2019,similar,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Hungary,67.2,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Lithuania,66.7,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Latvia,66.3,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,United States,66.1,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,Slovakia,65.8,2019,worse,
+HEALTH-ADJUSTED LIFE EXPECTANCY AT BIRTH,"Health-adjusted life expectancy at birth, in years",years,OECD,70.3,2019,similar,
 LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high school diploma or equivalent,percent,Czech Republic,5.6,2021,better,
 LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high school diploma or equivalent,percent,Lithuania,6.7,2021,similar,
 LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high school diploma or equivalent,percent,Poland,6.8,2021,similar,
@@ -505,123 +483,123 @@ LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high 
 LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high school diploma or equivalent,percent,Mexico,57.2,2021,similar,
 LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high school diploma or equivalent,percent,Costa Rica,57.4,2021,similar,
 LEVEL OF EDUCATION,% of population aged 25+ years that has not completed a high school diploma or equivalent,percent,OECD,20.1,--,similar,
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Japan,24.7,2021,better,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Korea,23.7,2021,better,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Spain,23.5,2021,better,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,France,23.3,2021,better,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Australia,23,2021,better,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Switzerland,23,2021,better,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Chile,22.2,2022,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Luxembourg,22.2,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Belgium,22.1,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Canada,22.1,2020,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Finland,22.1,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Italy,22.1,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Sweden,22.1,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Israel,22,2022,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,New Zealand,22,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Portugal,22,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Iceland,21.9,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Ireland,21.8,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Norway,21.8,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Costa Rica,21.5,2022,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Slovenia,21.2,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Austria,21.1,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Germany,21.1,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,United Kingdom,21,2020,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Denmark,20.9,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Netherlands,20.8,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Greece,20.7,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Colombia,20,2020,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,United States,19.7,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Estonia,19.6,2021,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Turkey,19.6,2019,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Mexico,18.7,2020,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Czech Republic,18.6,2021,worse,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Poland,18.4,2021,worse,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Lithuania,18.2,2021,worse,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Latvia,17.6,2021,worse,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Hungary,17.3,2021,worse,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Slovak Republic,17.1,2021,worse,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,OECD,21.1,--,similar,women
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Iceland,20.5,2021,better,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Australia,20.3,2021,better,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Switzerland,20.1,2021,better,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Japan,19.9,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Norway,19.8,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,New Zealand,19.7,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Sweden,19.6,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Canada,19.4,2020,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Israel,19.4,2022,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Korea,19.3,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,France,19.2,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Ireland,19.2,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Spain,19.2,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Luxembourg,19,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Chile,18.9,2022,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Costa Rica,18.9,2022,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Italy,18.9,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Finland,18.6,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Belgium,18.5,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,United Kingdom,18.5,2020,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Denmark,18.3,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Portugal,18.3,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Netherlands,18.2,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Austria,18,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Germany,17.8,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Greece,17.6,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Colombia,17.4,2020,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Slovenia,17.2,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,United States,17,2021,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Mexico,16.7,2020,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Turkey,16.3,2019,similar,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Czech Republic,14.5,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Estonia,14.5,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Poland,14,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Slovak Republic,13.3,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Hungary,13.2,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Lithuania,13.2,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,Latvia,12.7,2021,worse,men
-LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",--,OECD,17.8,--,similar,men
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Japan,84.5,2021,better,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Switzerland,83.9,2021,better,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Korea,83.6,2021,better,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Australia,83.3,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Spain,83.3,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Iceland,83.2,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Norway,83.2,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Sweden,83.1,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Israel,82.9,2022,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Italy,82.7,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Luxembourg,82.7,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,France,82.4,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Ireland,82.4,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,New Zealand,82.3,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Belgium,81.9,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Finland,81.9,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Canada,81.7,2020,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Denmark,81.5,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Portugal,81.5,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Netherlands,81.4,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Austria,81.3,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Chile,81.2,2022,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,United Kingdom,81,2020,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Costa Rica,80.9,2022,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Germany,80.8,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Slovenia,80.7,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Greece,80.2,2021,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Turkey,78.6,2019,similar,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Czech Republic,77.2,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Estonia,77.2,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Colombia,76.9,2022,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,United States,76.4,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Poland,75.5,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Mexico,75.4,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Slovak Republic,74.6,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Hungary,74.3,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Lithuania,74.2,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,Latvia,73.1,2021,worse,
-LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",--,OECD,80.3,--,similar,
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Japan,24.7,2021,better,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Korea,23.7,2021,better,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Spain,23.5,2021,better,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,France,23.3,2021,better,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Australia,23,2021,better,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Switzerland,23,2021,better,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Chile,22.2,2022,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Luxembourg,22.2,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Belgium,22.1,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Canada,22.1,2020,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Finland,22.1,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Italy,22.1,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Sweden,22.1,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Israel,22,2022,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,New Zealand,22,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Portugal,22,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Iceland,21.9,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Ireland,21.8,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Norway,21.8,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Costa Rica,21.5,2022,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Slovenia,21.2,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Austria,21.1,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Germany,21.1,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,United Kingdom,21,2020,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Denmark,20.9,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Netherlands,20.8,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Greece,20.7,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Colombia,20,2020,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,United States,19.7,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Estonia,19.6,2021,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Turkey,19.6,2019,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Mexico,18.7,2020,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Czech Republic,18.6,2021,worse,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Poland,18.4,2021,worse,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Lithuania,18.2,2021,worse,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Latvia,17.6,2021,worse,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Hungary,17.3,2021,worse,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Slovak Republic,17.1,2021,worse,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,OECD,21.1,--,similar,women
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Iceland,20.5,2021,better,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Australia,20.3,2021,better,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Switzerland,20.1,2021,better,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Japan,19.9,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Norway,19.8,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,New Zealand,19.7,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Sweden,19.6,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Canada,19.4,2020,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Israel,19.4,2022,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Korea,19.3,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,France,19.2,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Ireland,19.2,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Spain,19.2,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Luxembourg,19,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Chile,18.9,2022,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Costa Rica,18.9,2022,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Italy,18.9,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Finland,18.6,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Belgium,18.5,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,United Kingdom,18.5,2020,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Denmark,18.3,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Portugal,18.3,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Netherlands,18.2,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Austria,18,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Germany,17.8,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Greece,17.6,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Colombia,17.4,2020,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Slovenia,17.2,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,United States,17,2021,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Mexico,16.7,2020,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Turkey,16.3,2019,similar,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Czech Republic,14.5,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Estonia,14.5,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Poland,14,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Slovak Republic,13.3,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Hungary,13.2,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Lithuania,13.2,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,Latvia,12.7,2021,worse,men
+LIFE EXPECTANCY AT AGE 65,"Life expectancy at age 65, in years",years,OECD,17.8,--,similar,men
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Japan,84.5,2021,better,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Switzerland,83.9,2021,better,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Korea,83.6,2021,better,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Australia,83.3,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Spain,83.3,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Iceland,83.2,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Norway,83.2,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Sweden,83.1,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Israel,82.9,2022,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Italy,82.7,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Luxembourg,82.7,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,France,82.4,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Ireland,82.4,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,New Zealand,82.3,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Belgium,81.9,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Finland,81.9,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Canada,81.7,2020,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Denmark,81.5,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Portugal,81.5,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Netherlands,81.4,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Austria,81.3,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Chile,81.2,2022,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,United Kingdom,81,2020,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Costa Rica,80.9,2022,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Germany,80.8,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Slovenia,80.7,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Greece,80.2,2021,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Turkey,78.6,2019,similar,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Czech Republic,77.2,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Estonia,77.2,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Colombia,76.9,2022,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,United States,76.4,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Poland,75.5,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Mexico,75.4,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Slovak Republic,74.6,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Hungary,74.3,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Lithuania,74.2,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,Latvia,73.1,2021,worse,
+LIFE EXPECTANCY AT BIRTH,"Life expectancy at birth, in years",years,OECD,80.3,--,similar,
 LOW BIRTHWEIGHT,"Birth-weight less than 2,500 grams (% of live births)",percent,United States,8.5,2021,worse,
 LOW BIRTHWEIGHT,"Birth-weight less than 2,500 grams (% of live births)",percent,Colombia,9.9,2021,worse,
 LOW BIRTHWEIGHT,"Birth-weight less than 2,500 grams (% of live births)",percent,Greece,9.7,2021,worse,
@@ -755,7 +733,7 @@ OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 peop
 OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,Poland,2,2016,similar,
 OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,Slovak Republic,3.1,2016,similar,
 OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,Sweden,55,2016,similar,
-OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,Turkey,3.6,2016,similar,
+OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,Turkey,3.9,2016,similar,
 OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,United States,131,2016,worse,
 OPIOID TOXICITY DEATHS,"Rate of apparent opioid toxicity deaths per 100,000 people",deaths_per_million_inhabitants,OECD,27,2016,similar,
 PERCEIVED HEALTH,% of population aged 12 years and older reporting very good or excellent health,percent,New Zealand,88.4,2022,better,
@@ -874,83 +852,44 @@ TUBERCULOSIS,"Incidence rate of active tuberculosis per 100,000 people",rate_per
 TUBERCULOSIS,"Incidence rate of active tuberculosis per 100,000 people",rate_per_100K_population,Slovak Republic,2.8,2021,better,
 TUBERCULOSIS,"Incidence rate of active tuberculosis per 100,000 people",rate_per_100K_population,United States,2.6,2021,better,
 TUBERCULOSIS,"Incidence rate of active tuberculosis per 100,000 people",rate_per_100K_population,OECD,9.7,2021,similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,058",percent,Australia,15.1,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,025",percent,Australia,5.6,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,049",percent,Austria,18.5,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,016",percent,Austria,6.6,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,047",percent,Belgium,18.8,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,061",percent,Canada,13.9,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,010",percent,Canada,7.6,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,063",percent,Chile,13.3,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,009",percent,Chile,8.6,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,007",percent,China,9.2,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,074",percent,Colombia,9.1,2021,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,011",percent,Colombia,7.4,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,072",percent,Costa Rica,10.7,2021,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,008",percent,Costa Rica,9.1,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,070",percent,Czech Republic,11.2,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,012",percent,Czech Republic,7,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,052",percent,Denmark,17.6,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,056",percent,Estonia,16,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,034",percent,Estonia,4.2,2019,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,046",percent,Finland,20.2,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,024",percent,Finland,5.6,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,045",percent,France,20.8,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,032",percent,France,4.8,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,043",percent,Germany,21.8,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,004",percent,Germany,10.4,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,041",percent,Greece,23.2,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,033",percent,Greece,4.7,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,069",percent,Hungary,11.3,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,015",percent,Hungary,6.9,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,060",percent,Iceland,14,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,021",percent,Iceland,5.8,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,066",percent,Ireland,12.2,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,037",percent,Ireland,3.2,2019,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,071",percent,Israel,11,2021,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,006",percent,Israel,9.7,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,040",percent,Italy,23.7,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,030",percent,Italy,5,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,039",percent,Japan,26.7,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,023",percent,Japan,5.6,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,067",percent,Korea,11.8,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,014",percent,Korea,6.9,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,055",percent,Latvia,16.4,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,029",percent,Latvia,5,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,054",percent,Lithuania,17.3,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,036",percent,Lithuania,3.8,2019,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,062",percent,Luxembourg,13.6,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,028",percent,Luxembourg,5,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,076",percent,Mexico,7.7,2021,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,001",percent,Mexico,13.5,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,051",percent,Netherlands,17.8,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,026",percent,Netherlands,5.4,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,059",percent,New Zealand,14.7,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,018",percent,New Zealand,6.2,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,057",percent,Norway,15.7,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,027",percent,Norway,5.3,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,038",percent,OECD Average,15.7,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,OECD Average,6.7,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,068",percent,Poland,11.4,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,019",percent,Poland,6.1,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,042",percent,Portugal,21.9,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,005",percent,Portugal,9.8,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,075",percent,Slovak Republic,9,2021,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,017",percent,Slovak Republic,6.5,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,064",percent,Slovenia,12.9,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,020",percent,Slovenia,5.9,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,044",percent,Spain,20.8,2021,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,013",percent,Spain,6.9,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,048",percent,Sweden,18.7,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,031",percent,Sweden,4.8,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,050",percent,Switzerland,18.3,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,022",percent,Switzerland,5.7,2019,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,073",percent,Turkey,9.2,2021,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,002",percent,Turkey,11.1,2019,Worse,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,053",percent,United Kingdom,17.6,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,035",percent,United Kingdom,3.9,2019,Better,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,065",percent,United States,12.7,2021,Similar,
-DIABETES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,003",percent,United States,10.8,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Ireland,3.2,2019,Better,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Lithuania,3.8,2019,Better,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,United Kingdom,3.9,2019,Better,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Estonia,4.2,2019,Better,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Greece,4.7,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,France,4.8,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Sweden,4.8,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Italy,5,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Latvia,5,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Luxembourg,5,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Norway,5.3,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Netherlands,5.4,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Australia,5.6,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Finland,5.6,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Japan,5.6,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Switzerland,5.7,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Iceland,5.8,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Slovenia,5.9,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Poland,6.1,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,New Zealand,6.2,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Slovak Republic,6.5,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Austria,6.6,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Hungary,6.9,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Korea,6.9,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Spain,6.9,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Czech Republic,7,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Colombia,7.4,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Canada,7.6,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Chile,8.6,2019,Similar,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Costa Rica,9.1,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,China,9.2,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Israel,9.7,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Portugal,9.8,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Germany,10.4,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,United States,10.8,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Turkey,11.1,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,Mexico,13.5,2019,Worse,
+DIABETES CASES,"Rate of newly diagnosed diabetes cases, population aged 1+ years, per 100,000",percent,OECD Average,6.7,2019,Similar,
 ANTIBIOTIC USE,"Rate of antibiotic use in the community (Defined Daily Dose/1,000 census inhabitants) (crude rate)",--,Australia,26.6,2020,Worse,
 ANTIBIOTIC USE,"Rate of antibiotic use in the community (Defined Daily Dose/1,000 census inhabitants) (crude rate)",--,Austria,9.7,2019,Similar,
 ANTIBIOTIC USE,"Rate of antibiotic use in the community (Defined Daily Dose/1,000 census inhabitants) (crude rate)",--,Belgium,13.3,2019,Similar,

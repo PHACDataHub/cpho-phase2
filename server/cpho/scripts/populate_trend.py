@@ -9,7 +9,7 @@ from cpho.models import Country, Indicator, TrendAnalysis
 @transaction.atomic
 def run():
     with open(
-        Path(__file__).resolve().parent / "Trend_2024.04.08.csv",
+        Path(__file__).resolve().parent / "Trend_data.csv",
         encoding="utf-8-sig",
     ) as f:
         reader = DictReader(f)

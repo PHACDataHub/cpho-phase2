@@ -9,7 +9,7 @@ from cpho.models import Benchmarking, Country, Indicator
 @transaction.atomic
 def run():
     with open(
-        Path(__file__).resolve().parent / "Benchmarking_2024.04.04.csv",
+        Path(__file__).resolve().parent / "Benchmarking_data.csv",
         encoding="utf-8-sig",
     ) as f:
         reader = DictReader(f)
@@ -21,10 +21,6 @@ def run():
 
             print(row)
 
-            if row["Indicator_Trend"] in [
-                "DIABETES",
-            ]:
-                continue
             indicator = get_indicator(
                 row["Indicator_Trend"], row["Detailed_Indicator_Trend"]
             )

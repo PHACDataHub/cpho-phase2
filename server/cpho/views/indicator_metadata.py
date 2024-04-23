@@ -41,6 +41,7 @@ class BenchmarkingForm(ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
+            "is_deleted",
             "unit",
             "oecd_country",
             "value",
@@ -48,8 +49,17 @@ class BenchmarkingForm(ModelForm):
             "comparison_to_oecd_avg",
             "labels",
             "methodology_differences",
-            "is_deleted",
         ]
+
+    is_deleted = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tm("delete"),
+    )
 
     unit = forms.ChoiceField(
         required=False,
@@ -80,7 +90,7 @@ class BenchmarkingForm(ModelForm):
         label=tm("value"),
     )
     year = forms.IntegerField(
-        required=True,
+        required=False,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -120,16 +130,6 @@ class BenchmarkingForm(ModelForm):
         label=tm("methodology_differences"),
     )
 
-    is_deleted = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                "class": "form-check-input",
-            }
-        ),
-        label=tm("delete"),
-    )
-
     def clean_comparison_to_oecd_avg(self):
         comparison_to_oecd_avg = self.cleaned_data["comparison_to_oecd_avg"]
         if not comparison_to_oecd_avg:
@@ -154,10 +154,16 @@ class BenchmarkingForm(ModelForm):
         return value
 
     def clean_year(self):
+        print(self.cleaned_data)
+        if self.cleaned_data["is_deleted"]:
+            return None
         year = self.cleaned_data["year"]
 
         if year is None or year == "":
-            return None
+            self.add_error(
+                "year",
+                tdt("Year is required"),
+            )
 
         if year:
             try:
@@ -178,7 +184,8 @@ class BenchmarkingForm(ModelForm):
         if self.cleaned_data["is_deleted"]:
             self.instance.deletion_time = str(datetime.now())
         return super().save(commit=commit)
-    
+
+
 class ReadOnlyFormMixin:
     """A form mixin for the read only view that includes methods to
     disable fields and remove placeholders."""
@@ -197,12 +204,19 @@ class ReadOnlyFormMixin:
             self.fields[field].widget.attrs.pop("placeholder", None)
 
     def choice_to_text_field(self):
-        initial_data={}
         for field_name, field in self.fields.items():
             if isinstance(field, forms.ChoiceField):
-                initial_data[field_name] = self.initial.get(field_name)
-                self.fields[field_name].widget = forms.TextInput(attrs={"class": "form-control", 'value': initial_data[field_name]})
-    
+                value_to_display = dict(field.choices).get(
+                    self.initial.get(field_name)
+                )
+                self.fields[field_name].widget = forms.TextInput(
+                    attrs={
+                        "class": "form-control",
+                    },
+                )
+                self.initial[field_name] = value_to_display
+
+
 class ReadOnlyBenchmarkingForm(BenchmarkingForm, ReadOnlyFormMixin):
     """A form for the read only view of a threat."""
 
@@ -210,7 +224,8 @@ class ReadOnlyBenchmarkingForm(BenchmarkingForm, ReadOnlyFormMixin):
         super(ReadOnlyBenchmarkingForm, self).__init__(*args, **kwargs)
         self.choice_to_text_field()
         self.disable_fields()
-        self.remove_placeholders()   
+        self.remove_placeholders()
+
 
 class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     template_name = "benchmarking/manage_benchmarking_data.jinja2"
@@ -223,7 +238,6 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
         return test_rule(
             "can_view_benchmarking", self.request.user, self.indicator
         )
-    
 
     def benchmarking_formset(self):
         existing_data = Benchmarking.active_objects.filter(
@@ -232,9 +246,11 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
 
         form_type = ReadOnlyBenchmarkingForm
         extra_val = 0
-        if test_rule('can_edit_benchmarking',self.request.user, self.indicator):
+        if test_rule(
+            "can_edit_benchmarking", self.request.user, self.indicator
+        ):
             form_type = BenchmarkingForm
-            extra_val= 1
+            extra_val = 1
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,

@@ -92,13 +92,18 @@ def can_export_benchmarking(user, indicator):
     # TODO: need to update this
     return is_admin_or_hso(user)
 
+
 @auto_rule
 def can_edit_benchmarking(user, indicator):
     return is_admin_or_hso(user)
 
+
 @auto_rule
 def can_view_benchmarking(user, indicator):
-    return is_inputting_user(user) and not is_admin_or_hso(user)
+    return can_edit_benchmarking(user, indicator) or (
+        is_inputting_user(user) and not is_admin_or_hso(user)
+    )
+
 
 @auto_rule
 def can_edit_trend_analysis(user, indicator):

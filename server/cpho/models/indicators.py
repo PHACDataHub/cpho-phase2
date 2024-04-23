@@ -260,6 +260,12 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     )
     g5 = fields.FloatField(null=True, blank=True, verbose_name="G5")
 
+    recommendations_for_hso = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
+    pt_dynamic_text = fields.TextField(null=True, blank=True)
+
     def __str__(self):
         return " ".join(
             [

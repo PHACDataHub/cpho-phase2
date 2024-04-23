@@ -97,6 +97,10 @@ CSRF_TRUSTED_ORIGINS = []
 # Prod only security settings
 if not IS_DEV:
     SECURE_SSL_REDIRECT = True
+    # For K8S Health Check
+    SECURE_REDIRECT_EXEMPT = [
+        "^healthcheck/",
+    ]
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
     SECURE_HSTS_SECONDS = 3600  # TODO this could be set longer, most likely

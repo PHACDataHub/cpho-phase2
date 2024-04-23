@@ -1,0 +1,38 @@
+# Note: image should match the build env layer of Dockerfile.prod
+FROM python:3.11-bookworm
+
+# MUST keep these envs in sync with Dockerfile.prod
+ENV HOME=/cpho
+ENV APP_HOME=$HOME/web
+ENV PYTHON_DEPS=$HOME/python_deps
+
+# MUST be the same as the Dockerfile.prod runtime user ID, so that unix permissions will
+# let the management containers read the prod process environs when attaching to it's
+# process space
+ENV NONROOT_USER_ID=65532
+ENV NONROOT_USER_NAME=nonroot
+
+# Debian doesn't have packages for postgresql 14, the current version on Debian Bookworm is 15
+RUN apt-get update && \
+    apt-get install -y postgresql-client-15
+
+ENV SHELL=/bin/bash
+RUN addgroup --system --gid $NONROOT_USER_ID $NONROOT_USER_NAME && \
+    adduser --system --gid $NONROOT_USER_ID --uid $NONROOT_USER_ID --home $HOME --shell $SHELL $NONROOT_USER_NAME && \
+    mkdir -p $APP_HOME && \
+    mkdir $PYTHON_DEPS && \
+    chown -R $NONROOT_USER_ID:$NONROOT_USER_ID $HOME
+
+COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID . $APP_HOME
+
+WORKDIR $APP_HOME
+
+USER $NONROOT_USER_ID
+
+RUN python -mvenv $PYTHON_DEPS
+ENV PATH="${PYTHON_DEPS}/bin:$PATH"
+RUN /bin/bash -c "source ${PYTHON_DEPS}/bin/activate" && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt
+
+CMD exec /bin/bash

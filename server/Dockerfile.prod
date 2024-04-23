@@ -1,0 +1,60 @@
+######################
+# DEPENDENCY BUILDER #
+######################
+# NOTE: builder layer must mach python and distribution versions of distroless runtime layer!
+FROM python:3.11-bookworm as build_env
+
+# MUST keep these envs in sync with the Dockerfile.prod "FINAL" layer AND with Dockerfile.dev-management
+ENV HOME=/cpho
+ENV APP_HOME=$HOME/web
+ENV PYTHON_DEPS=$HOME/python_deps
+
+RUN mkdir "${HOME}" && \
+    mkdir "${APP_HOME}" && \
+    mkdir "${PYTHON_DEPS}"
+
+# Update pip
+RUN pip install --upgrade pip
+
+COPY ./requirements.txt .
+COPY ./requirements_dev.txt .
+COPY ./requirements_formatting.txt .
+
+ARG DEPENDENCY_SET="prod"
+
+RUN [ "${DEPENDENCY_SET}" = "prod" ] \
+    && pip install --no-cache-dir --target "${PYTHON_DEPS}" -r requirements.txt \
+    || :
+
+RUN [ "${DEPENDENCY_SET}" = "test" ] \
+    && pip install --no-cache-dir --target "${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt \
+    || :
+
+#########
+# FINAL #
+#########
+FROM gcr.io/distroless/python3-debian12
+
+# MUST keep these envs in sync with the Dockerfile.prod "DEPENDENCY BUILDER" layer AND with Dockerfile.dev-management
+ENV HOME=/cpho
+ENV APP_HOME=$HOME/web
+ENV PYTHON_DEPS=$HOME/python_deps
+
+# this is the ID of the distroless "nonroot" user, using ID instead of user name because the k8s runAsNonRoot security context
+# can't verify non-rootness when the docker file sets user by name
+# https://github.com/GoogleContainerTools/distroless/blob/9c5d2c431825d7aa21017551b2ec75c29c1f23c6/common/variables.bzl#L18
+ENV NONROOT_USER_ID=65532
+
+ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
+ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
+
+COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID --from=build_env $HOME $HOME
+COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID . $APP_HOME
+
+WORKDIR $APP_HOME
+
+USER $NONROOT_USER_ID
+
+EXPOSE 8080
+
+ENTRYPOINT [ "python", "./entrypoint.prod.py" ]

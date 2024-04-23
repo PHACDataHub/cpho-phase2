@@ -105,16 +105,16 @@
                       display:block">
           <thead class="table-light text-center">
             <tr>
-              <th width="10%">{{ dimension_type.name }}</th>
-              <th width="9%">{{ tm("value") }}</th>
-              <th width="9%">{{ tm("value_unit") }}</th>
-              <th width="9%">{{ tm("value_lower_bound") }}</th>
-              <th width="9%">{{ tm("value_upper_bound") }}</th>
-              <th width="9%">{{ tm("data_quality") }}</th>
-              <th width="9%">{{ tm("single_year_timeframe") }}</th>
-              <th width="9%">{{ tm("multi_year_timeframe") }}</th>
-              <th width="9%">{{ tm("value_displayed") }}</th>
-              <th width="9%">{{ tm("reason_for_null_data") }}</th>
+              <th class="width-10">{{ dimension_type.name }}</th>
+              <th class="width-9">{{ tm("value") }}</th>
+              <th class="width-9">{{ tm("value_unit") }}</th>
+              <th class="width-9">{{ tm("value_lower_bound") }}</th>
+              <th class="width-9">{{ tm("value_upper_bound") }}</th>
+              <th class="width-9">{{ tm("data_quality") }}</th>
+              <th class="width-9">{{ tm("single_year_timeframe") }}</th>
+              <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
+              <th class="width-9">{{ tm("value_displayed") }}</th>
+              <th class="width-9">{{ tm("reason_for_null_data") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
@@ -183,17 +183,19 @@
  
           <thead class="table-light text-center">
             <tr>
-              <th width="9%">{{ tm("age") }}</th>
-              <th width="9%">{{ tm("value") }}</th>
-              <th width="9%">{{ tm("value_unit") }}</th>
-              <th width="9%">{{ tm("value_lower_bound") }}</th>
-              <th width="9%">{{ tm("value_upper_bound") }}</th>
-              <th width="9%">{{ tm("data_quality") }}</th>
-              <th width="9%">{{ tm("single_year_timeframe") }}</th>
-              <th width="9%">{{ tm("multi_year_timeframe") }}</th>
-              <th width="9%">{{ tm("value_displayed") }}</th>
-              <th width="9%">{{ tm("reason_for_null_data") }}</th>
-              <th width="5%">{{ tm("delete") }}</th>
+              <th class="width-9">{{ tm("age") }}</th>
+              <th class="width-9">{{ tm("value") }}</th>
+              <th class="width-9">{{ tm("value_unit") }}</th>
+              <th class="width-9">{{ tm("value_lower_bound") }}</th>
+              <th class="width-9">{{ tm("value_upper_bound") }}</th>
+              <th class="width-9">{{ tm("data_quality") }}</th>
+              <th class="width-9">{{ tm("single_year_timeframe") }}</th>
+              <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
+              <th class="width-9">{{ tm("value_displayed") }}</th>
+              <th class="width-9">{{ tm("reason_for_null_data") }}</th>
+              <th class="width-5">
+                {{ tm("delete") }}
+              </th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body"

@@ -5,7 +5,7 @@ metadata:
 spec:
   # See for info regarding images: https://cloudnative-pg.io/documentation/1.22/#container-images
   # Images are found here: https://github.com/cloudnative-pg/postgres-containers/pkgs/container/postgresql
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.10
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.11
   primaryUpdateStrategy: unsupervised
 
 # PostGres Best Practices for the Logging 

@@ -7,12 +7,13 @@ PROJECT_ID=pht-01hp04dtnkf
 REGION=northamerica-northeast1
 CLUSTER=hopic-cluster
 SERVER_CONTAINER_NAME=server
-SERVER_CONTAINER_REGISTRY=hopic-k8s-images
+SERVER_CONTAINER_REGISTRY_NAME=hopic-k8s-images
 SERVER_CONTAINER_IMAGE_NAME=cpho-phase2
-DEBUG_CONTAINER_IMAGE_NAME=cpho-phase2 #TODO, debug containers not part of CI/CD yet
+DEBUG_CONTAINER_IMAGE_NAME="${SERVER_CONTAINER_IMAGE_NAME}-dev-management"
 
-server_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY}/${SERVER_CONTAINER_IMAGE_NAME}"
-debug_image_name="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY}/${SERVER_CONTAINER_IMAGE_NAME}"
+registry="${REGION}-docker.pkg.dev/${PROJECT_ID}/${SERVER_CONTAINER_REGISTRY_NAME}"
+server_image_name="${registry}/${SERVER_CONTAINER_IMAGE_NAME}"
+debug_image_name="${registry}/${DEBUG_CONTAINER_IMAGE_NAME}"
 
 echo "Log in as your DMIA GCP user"
 gcloud auth login 
@@ -74,15 +75,21 @@ echo -e "\tTargetting \"${selected_container_name}\" container with tag \"${sele
 echo -e "\tAttaching debug container using ${debug_image_name}:${selected_image_tag}"
 
 echo ""
-echo "Tip: while the maintenance container is still alive (this terminal is attached), you can copy to/from the maintenance pod from your local machine using the following commands:"
+echo "Tip 1: while the maintenance container is still alive (this terminal is attached), you can copy to/from the maintenance pod from your local machine using the following commands:"
 echo -e "\tkubectl cp <local file path> ${selected_namespace}/${selected_pod_name}:<remote file path> -c <debug container name>"
 echo -e "\tkubectl cp ${selected_namespace}/${selected_pod_name}:<remote file path> <local file path> -c <debug container name>"
 echo "Where \"<debug container name>\" is the container name output below (looks like \"debugger-[a-z0-9]{5}\")"
 
 echo ""
+echo "Tip 2: if you must interact with the prod DB, it's highly recommended to do so via the Django ORM via:"
+echo -e "\t\`./manage.py shell_plus\` from the maintenance pod"
+echo "The postgres client is also available on the maintenance images, for debugging purposes. You can connect via:"
+echo -e "\t\`psql \"postgresql://\${DB_USER}:\${DB_PASSWORD}@\${CPHO_POSTGRES14_CLUSTER_RW_SERVICE_HOST}:\${CPHO_POSTGRES14_CLUSTER_RW_SERVICE_PORT}/\${DB_NAME}\"\`"
+
+echo ""
 kubectl debug -it --namespace "${selected_namespace}" --target "${selected_container_name}" \
-  --image "${debug_image_name}:${selected_image_tag}" "${selected_pod_name}"  \
-  -- sh -c "export \$(strings /proc/1/environ) && sh"
+  --image "${debug_image_name}:${selected_image_tag}" "${selected_pod_name}" \
+  -- sh -c "export \$(strings /proc/1/environ) && export FORCE_LOCAL_OTEL_BEHAVIOUR=True && \$SHELL"
 # RE: the command passed to the debug container above
 #   The debug container shares a process pool with the --target container (one of our live servers). In this shared pool,
 #   the process with pid 1 (aka /proc/1) will be the container command of the server container (most likely gunicorn),

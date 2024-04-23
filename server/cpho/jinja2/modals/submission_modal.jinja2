@@ -14,7 +14,7 @@
                 aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>{{ tdt("Placeholder Text: What happens when you submit data") }}</p>
+        <p>{{ tm("submission_text") }}</p>
         {% if respects_rule("is_admin") %}
           {% set input_class = "border p-2 ps-0" %}
         {% else %}
@@ -22,7 +22,6 @@
         {% endif %}
 
         <div class="{{ input_class }}">
-          <div>TODO: this field will dissapear and be automatically inferred from user type</div>
           <div>
             <input type="radio"
                    name="submission_type"
@@ -46,9 +45,7 @@
                  type="checkbox"
                  id="confirmCheckbox"
                  required>
-          <label class="form-check-label" for="confirmCheckbox">
-            {{ tdt("Placeholder Text: I confirm data validity and agree to submit") }}
-          </label>
+          <label class="form-check-label" for="confirmCheckbox">{{ tm("submission_confirmation_text") }}</label>
         </div>
       </div>
       <div class="modal-footer">

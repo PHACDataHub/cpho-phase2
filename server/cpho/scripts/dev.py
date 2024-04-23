@@ -26,7 +26,7 @@ from cpho.util import GroupFetcher
 @transaction.atomic
 def run():
     create_admins()
-    # create_data()
+    create_data()
 
 
 def create_admins():

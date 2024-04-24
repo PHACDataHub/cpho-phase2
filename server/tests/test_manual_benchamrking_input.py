@@ -15,7 +15,7 @@ def test_benchmarking(vanilla_user_client):
         response = vanilla_user_client.get(url)
         assert response.status_code == 403
 
-    with patch_rules(can_edit_benchmarking=True):
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
@@ -49,7 +49,7 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-1-methodology_differences": "",
     }
 
-    with patch_rules(can_edit_benchmarking=True):
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -66,7 +66,7 @@ def test_benchmarking(vanilla_user_client):
     assert canada_data.methodology_differences == False
     # assert canada_data.standard_deviation == 0.2
 
-    with patch_rules(can_edit_benchmarking=True):
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
         response = vanilla_user_client.get(url)
         assert response.status_code == 200
 
@@ -99,7 +99,7 @@ def test_benchmarking(vanilla_user_client):
         "benchmarking-1-is_deleted": "on",  # delete canada
     }
 
-    with patch_rules(can_edit_benchmarking=True):
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 

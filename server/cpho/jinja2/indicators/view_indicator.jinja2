@@ -52,6 +52,14 @@
               <span aria-hidden="true" class="bi bi-clipboard-data"></span>
               {{ tm("benchmarking") }}
             </a>
+            {% else %}
+              {% if respects_rule('can_view_benchmarking', indicator) %}
+              <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
+                class="btn w-100 btn-outline-dark my-1">
+                <span aria-hidden="true" class="bi bi-clipboard-data"></span>
+                {{ tm("benchmarking") }}
+              </a>
+            {% endif %}
           {% endif %}
         </div>
 

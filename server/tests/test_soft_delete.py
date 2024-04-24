@@ -103,10 +103,14 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
 
     # submit all data as hso including deleted data
     assert statuses == {
-        "statuses_by_dimension_type_id": {
+        "hso_statuses_by_dimension_type_id": {
+            age_dim_type.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        "program_statuses_by_dimension_type_id": {
             age_dim_type.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
         },
-        "global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+        "program_global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
     }
 
     url = reverse("submit_indicator_data_all", args=[indicator_id, period.id])
@@ -131,10 +135,14 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
     assert record_51_75_latest.is_hso_submitted is True
 
     assert statuses == {
-        "statuses_by_dimension_type_id": {
+        "hso_statuses_by_dimension_type_id": {
             age_dim_type.id: SUBMISSION_STATUSES.SUBMITTED,
         },
-        "global_status": SUBMISSION_STATUSES.SUBMITTED,
+        "hso_global_status": SUBMISSION_STATUSES.SUBMITTED,
+        "program_statuses_by_dimension_type_id": {
+            age_dim_type.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+        },
+        "program_global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
     }
 
     # query the api to get only non deleted data
@@ -186,10 +194,14 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
     # Users will still see status "modified since last submission" to indicated deletion
     statuses = get_submission_statuses(indicator, period)
     assert statuses == {
-        "statuses_by_dimension_type_id": {
+        "hso_statuses_by_dimension_type_id": {
             age_dim_type.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
         },
-        "global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "hso_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "program_statuses_by_dimension_type_id": {
+            age_dim_type.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        },
+        "program_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
     }
 
     # query the api to get only non deleted data as the deletions are not yet submitted
@@ -212,6 +224,26 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
     # status should return to no data
     statuses = get_submission_statuses(indicator, period)
     assert statuses == {
-        "statuses_by_dimension_type_id": {},
-        "global_status": SUBMISSION_STATUSES.NO_DATA,
+        "hso_statuses_by_dimension_type_id": {
+            age_dim_type.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "program_statuses_by_dimension_type_id": {
+            age_dim_type.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+        },
+        "program_global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+    }
+
+    url = reverse("submit_indicator_data_all", args=[indicator_id, period.id])
+    with patch_rules(can_submit_indicator=True):
+        resp = vanilla_user_client.post(url, {"submission_type": "hso"})
+        assert resp.status_code == 302
+
+    statuses = get_submission_statuses(indicator, period)
+
+    assert statuses == {
+        "hso_statuses_by_dimension_type_id": {},
+        "hso_global_status": SUBMISSION_STATUSES.NO_DATA,
+        "program_statuses_by_dimension_type_id": {},
+        "program_global_status": SUBMISSION_STATUSES.NO_DATA,
     }

@@ -15,7 +15,7 @@ from cpho.services import SubmitIndicatorDataService
 
 # These tests are very heavy on data-generation
 
-NO_DATA_TRIPLE = [SUBMISSION_STATUSES.NO_DATA] * 3
+NO_DATA_TRIPLE = ["no_data"] * 3
 
 
 def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
@@ -45,7 +45,7 @@ def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
 
     for dim_type, val_statuses in vals_by_dim.items():
         for dim_val, status in val_statuses:
-            if status == SUBMISSION_STATUSES.NO_DATA:
+            if status == "no_data":
                 continue
 
             datum = ind.data.create(
@@ -54,28 +54,31 @@ def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
                 dimension_value=dim_val,
                 value=1.0,
             )
-            if status == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION:
+            if status in ["both_modified", "hso_modified", "program_modified"]:
                 # submit a version and then create a new one
                 v1 = datum.versions.last()
-                v1.is_hso_submitted = True
-                v1.is_program_submitted = True
+                if status in ["both_modified", "hso_modified"]:
+                    v1.is_hso_submitted = True
+                if status in ["both_modified", "program_modified"]:
+                    v1.is_program_submitted = True
                 v1.save()
 
                 datum.reset_version_attrs()
                 datum.save()
 
-            elif status == SUBMISSION_STATUSES.SUBMITTED:
+            elif status in [
+                "both_submitted",
+                "hso_submitted",
+                "program_submitted",
+            ]:
                 v1 = datum.versions.last()
-                v1.is_hso_submitted = True
-                v1.is_program_submitted = True
+                if status in ["both_submitted", "hso_submitted"]:
+                    v1.is_hso_submitted = True
+                if status in ["both_submitted", "program_submitted"]:
+                    v1.is_program_submitted = True
                 v1.save()
 
-            elif status == SUBMISSION_STATUSES.PROGRAM_SUBMITTED:
-                v1 = datum.versions.last()
-                v1.is_program_submitted = True
-                v1.save()
-
-            elif status == SUBMISSION_STATUSES.NOT_YET_SUBMITTED:
+            elif status == "not_yet_submitted":
                 pass
 
             else:
@@ -84,102 +87,151 @@ def create_data(abc, xyz=NO_DATA_TRIPLE, ijk=NO_DATA_TRIPLE):
     return ind, period, dim1, dim2, dim3
 
 
-def test_fully_submitted():
+def test_hso_submitted():
     ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        ijk=[SUBMISSION_STATUSES.SUBMITTED] * 3,
+        abc=["hso_submitted"] * 3,
+        xyz=["hso_submitted"] * 3,
+        ijk=["hso_submitted"] * 3,
     )
     statuses = get_submission_statuses(ind, period)
     assert statuses == {
-        "statuses_by_dimension_type_id": {
+        "hso_statuses_by_dimension_type_id": {
             abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
             xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
             ijk_dim.id: SUBMISSION_STATUSES.SUBMITTED,
         },
-        "global_status": SUBMISSION_STATUSES.SUBMITTED,
-    }
-
-
-def test_fully_submitted_with_program_caveat():
-    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        ijk=[
-            SUBMISSION_STATUSES.SUBMITTED,
-            SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
-            SUBMISSION_STATUSES.SUBMITTED,
-        ],
-    )
-    statuses = get_submission_statuses(ind, period)
-    assert statuses == {
-        "statuses_by_dimension_type_id": {
-            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            ijk_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
-        },
-        "global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
-    }
-
-
-def test_fully_submitted_with_edit():
-    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        ijk=[
-            SUBMISSION_STATUSES.SUBMITTED,
-            SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-            SUBMISSION_STATUSES.SUBMITTED,
-        ],
-    )
-    statuses = get_submission_statuses(ind, period)
-    assert statuses == {
-        "statuses_by_dimension_type_id": {
-            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-        },
-        "global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-    }
-
-
-def test_modified_takes_precedence_over_program_submitted():
-    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        ijk=[
-            SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
-            SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-            SUBMISSION_STATUSES.SUBMITTED,
-        ],
-    )
-    statuses = get_submission_statuses(ind, period)
-    assert statuses == {
-        "statuses_by_dimension_type_id": {
-            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-        },
-        "global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-    }
-
-
-def test_not_submitted_takes_precedence_over_modified_since_submitted():
-    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
-        abc=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        xyz=[SUBMISSION_STATUSES.SUBMITTED] * 3,
-        ijk=[
-            SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
-            SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
-            SUBMISSION_STATUSES.SUBMITTED,
-        ],
-    )
-    statuses = get_submission_statuses(ind, period)
-    assert statuses == {
-        "statuses_by_dimension_type_id": {
-            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
-            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+        "hso_global_status": SUBMISSION_STATUSES.SUBMITTED,
+        "program_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
             ijk_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
         },
-        "global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        "program_global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+    }
+
+
+def test_program_submitted():
+    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
+        abc=["program_submitted"] * 3,
+        xyz=["program_submitted"] * 3,
+        ijk=["program_submitted"] * 3,
+    )
+    statuses = get_submission_statuses(ind, period)
+    assert statuses == {
+        "hso_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        "program_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+        },
+        "program_global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+    }
+
+
+def test_both_submitted():
+    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
+        abc=["both_submitted"] * 3,
+        xyz=["both_submitted"] * 3,
+        ijk=["both_submitted"] * 3,
+    )
+    statuses = get_submission_statuses(ind, period)
+    assert statuses == {
+        "hso_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.SUBMITTED,
+        "program_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+        },
+        "program_global_status": SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+    }
+
+
+def test_both_submitted_with_edit():
+    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
+        abc=["both_submitted"] * 3,
+        xyz=["both_submitted"] * 3,
+        ijk=[
+            "both_submitted",
+            "both_modified",
+            "both_submitted",
+        ],
+    )
+    statuses = get_submission_statuses(ind, period)
+    assert statuses == {
+        "hso_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "program_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        },
+        "program_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+    }
+
+
+def test_hso_submitted_with_edit():
+    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
+        abc=["hso_submitted"] * 3,
+        xyz=["hso_submitted"] * 3,
+        ijk=[
+            "hso_submitted",
+            "hso_modified",
+            "hso_submitted",
+        ],
+    )
+    statuses = get_submission_statuses(ind, period)
+    assert statuses == {
+        "hso_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        "program_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        },
+        "program_global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+    }
+
+
+def test_program_submitted_with_edit():
+    ind, period, abc_dim, xyz_dim, ijk_dim = create_data(
+        abc=["program_submitted"] * 3,
+        xyz=["program_submitted"] * 3,
+        ijk=[
+            "program_submitted",
+            "program_modified",
+            "program_submitted",
+        ],
+    )
+    statuses = get_submission_statuses(ind, period)
+    assert statuses == {
+        "hso_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        },
+        "hso_global_status": SUBMISSION_STATUSES.NOT_YET_SUBMITTED,
+        "program_statuses_by_dimension_type_id": {
+            abc_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            xyz_dim.id: SUBMISSION_STATUSES.PROGRAM_SUBMITTED,
+            ijk_dim.id: SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
+        },
+        "program_global_status": SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION,
     }

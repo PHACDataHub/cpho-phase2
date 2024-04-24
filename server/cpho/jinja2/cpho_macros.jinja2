@@ -8,7 +8,8 @@
         <th class="width-30">{{ tm("stratifier_value") }}</th>
         <th>{{ tm("indicator_value") }}</th>
         <th>{{ tm("last_modified") }}</th>
-        <th>{{ tm("approval_status") }}</th>
+        <th>{{ tm("hso_submission")}}</th>
+        <th>{{ tm("program_submission")}}</th>
       </tr>
     </thead>
     <tbody>
@@ -23,7 +24,8 @@
           </th>
           <td>{{ datum.value }}</td>
           <td>{{ date_display(datum.last_version_date) }}</td>
-          <td>{{ submission_status_label(datum.submission_status) }}</td>
+          <td>{{ submission_status_label(datum.submission_status(submission_type="hso")) }}</td>
+          <td>{{ submission_status_label(datum.submission_status(submission_type="program")) }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -36,7 +38,7 @@
   {% elif submission_status == SUBMISSION_STATUSES.NO_DATA %}
     {% set badge_type = "secondary" %}
   {% elif submission_status == SUBMISSION_STATUSES.PROGRAM_SUBMITTED %}
-    {% set badge_type = "info" %}
+    {% set badge_type = "success" %}
   {% else %}
     {% set badge_type = "warning" %}
   {% endif %}

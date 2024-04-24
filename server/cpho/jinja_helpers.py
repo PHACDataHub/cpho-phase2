@@ -136,7 +136,7 @@ def submission_status_label(submission_status):
         SUBMISSION_STATUSES.NO_DATA: tm("no_data"),
         SUBMISSION_STATUSES.NOT_YET_SUBMITTED: tm("not_yet_submitted"),
         SUBMISSION_STATUSES.PROGRAM_SUBMITTED: tm("program_submitted"),
-        SUBMISSION_STATUSES.SUBMITTED: tm("submitted_by_program_and_hso"),
+        SUBMISSION_STATUSES.SUBMITTED: tm("submitted_by_hso"),
         SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION: tm(
             "modified_since_last_submission"
         ),

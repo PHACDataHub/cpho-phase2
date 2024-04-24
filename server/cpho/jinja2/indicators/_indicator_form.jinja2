@@ -1,4 +1,5 @@
 {{ form.media }}
+{% from 'cpho_macros.jinja2' import hidden_a11y_label %}
 
 {% macro form_field(field, rich=false) %}
   {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
@@ -23,13 +24,6 @@
     </div>
   {% endif %}
  
-{% endmacro %}
-
-{% macro hidden_a11y_label(form_field, prefix) %}
-  <label for="{{ form_field.id_for_label }}"
-         class="visually-hidden"
-         aria-label="{{ prefix }}, {{ form_field.label }}">
-  </label>
 {% endmacro %}
 
 {% macro fieldset_field(field, helptext=None) %}

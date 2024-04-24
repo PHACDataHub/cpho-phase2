@@ -1,5 +1,6 @@
 {% extends 'base.jinja2' %}
 {% import 'breadcrumb_macros.jinja2' as bc %}
+{% from 'cpho_macros.jinja2' import hidden_a11y_label %}
 
 {% block content_breadcrumbs %}
   {{ bc.indicators_index() }}
@@ -7,12 +8,6 @@
   {{ bc.indicator_period(view.indicator, period) }}
   {{ bc.item(tm("edit") , None, True) }}
 {% endblock %}
-
-{% macro accessible_label(id_for, row_name, label_text) %}
-  <label for="{{ id_for }}"
-         class="visually-hidden"
-         aria-label="{{ row_name }}, {{ label_text }}"></label>
-{% endmacro %}
 
 {% macro check_display_error(err, field) %}
   {% if err %}
@@ -24,55 +19,56 @@
 
 {% macro age_group_form(form) %}
   <tr class="age-group-form">
+    {% set row_name = form.literal_dimension_val.label %}
     <td class="fw-bold">
       {{ form.literal_dimension_val }}
-      {{ accessible_label(form.literal_dimension_val.id_for_label, form.literal_dimension_val.label, tm("age") ) }}
+      {{ hidden_a11y_label(form.literal_dimension_val, row_name) }}
     </td>
     <td>
       {{ form.value }}
-      {{ accessible_label(form.value.id_for_label, form.literal_dimension_val.id_for_label, tm("value") ) }}
+      {{ hidden_a11y_label(form.value, row_name) }}
       {{ check_display_error(form.errors.value, form.value) }}
     </td>
     <td>
       {{ form.value_unit }}
-      {{ accessible_label(form.value_unit.id_for_label, form.literal_dimension_val.id_for_label, tm("value_unit") ) }}
+      {{ hidden_a11y_label(form.value_unit, row_name) }}
     </td>
     <td>
       {{ form.value_lower_bound }}
-      {{ accessible_label(form.value_lower_bound.id_for_label, form.literal_dimension_val.id_for_label, tm("value_lower_bound") ) }}
+      {{ hidden_a11y_label(form.value_lower_bound, row_name) }}
       {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
     </td>
     <td>
       {{ form.value_upper_bound }}
-      {{ accessible_label(form.value_upper_bound.id_for_label, form.literal_dimension_val.id_for_label, tm("value_upper_bound") ) }}
+      {{ hidden_a11y_label(form.value_upper_bound, row_name) }}
       {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
     </td>
     <td>
       {{ form.data_quality }}
-      {{ accessible_label(form.data_quality.id_for_label, form.literal_dimension_val.id_for_label, tm('data_quality') ) }}
+      {{ hidden_a11y_label(form.data_quality, row_name) }}
     </td>
     <td>
       {{ form.single_year_timeframe }}
-      {{ accessible_label(form.single_year_timeframe.id_for_label, form.literal_dimension_val.id_for_label, tm("single_year_timeframe") ) }}
+      {{ hidden_a11y_label(form.single_year_timeframe, row_name) }}
       {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
     </td>
     <td>
       {{ form.multi_year_timeframe }}
-      {{ accessible_label(form.multi_year_timeframe.id_for_label, form.literal_dimension_val.id_for_label, tm("multi_year_timeframe") ) }}
+      {{ hidden_a11y_label(form.multi_year_timeframe, row_name) }}
       {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
     </td>
     <td>
       {{ form.value_displayed }}
-      {{ accessible_label(form.value_displayed.id_for_label, form.literal_dimension_val.id_for_label, tm("value_displayed") ) }}
+      {{ hidden_a11y_label(form.value_displayed, row_name) }}
     </td>
     <td>
       {{ form.reason_for_null }}
-      {{ accessible_label(form.reason_for_null.id_for_label, form.literal_dimension_val.id_for_label, tm("reason_for_null_data") ) }}
+      {{ hidden_a11y_label(form.reason_for_null, row_name) }}
     </td>
     <td>
       {{ form.id }} {# this is hidden #}
       {{ form.is_deleted }}
-      {{ accessible_label(form.is_deleted.id_for_label, form.literal_dimension_val.id_for_label, tm("delete") ) }}
+      {{ hidden_a11y_label(form.is_deleted, row_name) }}
     </td>
   </tr>
 {% endmacro %}
@@ -121,47 +117,48 @@
             {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
               <tr>
                 {% set form = forms_by_dimension_value[possible_value] %}
-                <td class="fw-bold">{{ possible_value.name }}</td>
+                {% set row_name = possible_value.name %}
+                <td class="fw-bold">{{ row_name }}</td>
                 <td>
                   {{ form.value }}
-                  {{ accessible_label(form.value.id_for_label, possible_value.name, form.value.label) }}
+                  {{ hidden_a11y_label(form.value, row_name) }}
                   {{ check_display_error(form.errors.value, form.value) }}
                 </td>
                 <td>
                   {{ form.value_unit }}
-                  {{ accessible_label(form.value_unit.id_for_label, possible_value.name, form.value_unit.label) }}
+                  {{ hidden_a11y_label(form.value_unit, row_name) }}
                 </td>
                 <td>
                   {{ form.value_lower_bound }}
-                  {{ accessible_label(form.value_lower_bound.id_for_label, possible_value.name, form.value_lower_bound.label) }}
+                  {{ hidden_a11y_label(form.value_lower_bound, row_name) }}
                   {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
                 </td>
                 <td>
                   {{ form.value_upper_bound }}
-                  {{ accessible_label(form.value_upper_bound.id_for_label, possible_value.name, form.value_upper_bound.label) }}
+                  {{ hidden_a11y_label(form.value_upper_bound, row_name) }}
                   {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
                 </td>
                 <td>
                   {{ form.data_quality }}
-                  {{ accessible_label(form.data_quality.id_for_label, possible_value.name, form.data_quality.label) }}
+                  {{ hidden_a11y_label(form.data_quality, row_name) }}
                 </td>
                 <td>
                   {{ form.single_year_timeframe }}
-                  {{ accessible_label(form.single_year_timeframe.id_for_label, possible_value.name, form.single_year_timeframe.label) }}
+                  {{ hidden_a11y_label(form.single_year_timeframe, row_name) }}
                   {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
                 </td>
                 <td>
                   {{ form.multi_year_timeframe }}
-                  {{ accessible_label(form.multi_year_timeframe.id_for_label, possible_value.name, form.multi_year_timeframe.label) }}
+                  {{ hidden_a11y_label(form.multi_year_timeframe, row_name) }}
                   {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
                 </td>
                 <td>
                   {{ form.value_displayed }}
-                  {{ accessible_label(form.value_displayed.id_for_label, possible_value.name, form.value_displayed.label) }}
+                  {{ hidden_a11y_label(form.value_displayed, row_name) }}
                 </td>
                 <td>
                   {{ form.reason_for_null }}
-                  {{ accessible_label(form.reason_for_null.id_for_label, possible_value.name, form.reason_for_null.label) }}
+                  {{ hidden_a11y_label(form.reason_for_null, row_name) }}
                 </td>
               </tr>
             {% endfor %}

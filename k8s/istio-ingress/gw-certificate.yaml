@@ -5,8 +5,8 @@ metadata:
   namespace: istio-ingress
 spec:
   dnsNames:
-    - hopic-sdpac.phac-aspc.alpha.canada.ca
-    - "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca"
+    - hopic-sdpac.data-donnes.phac-aspc.gc.ca
+    - "*.dev.hopic-sdpac.data-donnes.phac-aspc.gc.ca"
   issuerRef:
     kind: ClusterIssuer
     # name: letsencrypt-staging

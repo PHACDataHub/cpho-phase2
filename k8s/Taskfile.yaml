@@ -11,6 +11,9 @@ tasks:
 
   infra-up:
     desc: Create infrastructure components upto the cluster-level
+    vars:
+      CURRENT_DATE:
+        sh: echo {{now | date "2006-01-02"}}
     cmds:
       # Enable APIs
       - gcloud services enable container.googleapis.com --project={{.PROJECT_ID}}
@@ -54,6 +57,11 @@ tasks:
           --network="projects/{{.PROJECT_ID}}/global/networks/{{.NAME}}-net" \
           --subnetwork="projects/{{.PROJECT_ID}}/regions/{{.REGION}}/subnetworks/{{.NAME}}-subnet" \
           --service-account="gke-default@{{.PROJECT_ID}}.iam.gserviceaccount.com"
+      - |
+        gcloud container --project={{.PROJECT_ID}} clusters update {{.NAME}}-cluster \
+          --maintenance-window-start {{.CURRENT_DATE}}T13:00:00Z \
+          --maintenance-window-end {{.CURRENT_DATE}}T19:00:00Z \
+          --maintenance-window-recurrence 'FREQ=WEEKLY;BYDAY=WE,TH,FR'
 
       # Setup provisioner account for config connnector
       - |
@@ -147,4 +155,3 @@ tasks:
           --path=./k8s/ \
           --components="source-controller,kustomize-controller,notification-controller" \
           --components-extra="image-reflector-controller,image-automation-controller"
-

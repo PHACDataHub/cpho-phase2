@@ -18,12 +18,12 @@ def test_benchmarking_permissions(vanilla_user_client):
 
     with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=False):
         response = vanilla_user_client.get(url)
-        assert response.status.code == 200; 
+        assert response.status_code == 200; 
         assert isinstance(response.context['form'], ReadOnlyBenchmarkingForm)
 
     with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
         response =vanilla_user_client.get(url)
-        assert response.status.code == 200; 
+        assert response.status_code == 200; 
         assert isinstance(response.context['form'], BenchmarkingForm)
 
 

@@ -11,3 +11,5 @@ omit =
     server/wsgi.py
     server/asgi.py
     cpho/scripts/dev.py
+    cpho/scripts/populate_trend.py
+    cpho/scripts/restore_benchmarking.py

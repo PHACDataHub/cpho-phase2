@@ -185,7 +185,6 @@ def test_metadata_review_page(vanilla_user, vanilla_user_client):
     with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.get(url)
         assert resp.status_code == 200
-        print(resp.context["submission_statuses"])
         assert (
             resp.context["submission_statuses"]["indicator_status"]
             == SUBMISSION_STATUSES.SUBMITTED

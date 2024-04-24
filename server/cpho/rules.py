@@ -101,7 +101,7 @@ def can_edit_benchmarking(user, indicator):
 @auto_rule
 def can_view_benchmarking(user, indicator):
     return can_edit_benchmarking(user, indicator) or (
-        is_inputting_user(user) and not is_admin_or_hso(user)
+        can_access_indicator(user, indicator)
     )
 
 

@@ -127,15 +127,35 @@ def test_metadata_review_page(vanilla_user, vanilla_user_client):
         resp = vanilla_user_client.get(url)
         assert resp.status_code == 200
         assert (
-            resp.context["submission_statuses"]["indicator_status"]
+            resp.context["submission_statuses"]["hso_indicator_status"]
             == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["benchmarking_status"]
+            resp.context["submission_statuses"]["hso_benchmarking_status"]
             == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["trend_status"]
+            resp.context["submission_statuses"]["hso_trend_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_indicator_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_benchmarking_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_trend_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_global_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_global_status"]
             == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
         )
 
@@ -145,15 +165,35 @@ def test_metadata_review_page(vanilla_user, vanilla_user_client):
         resp = vanilla_user_client.get(url)
         assert resp.status_code == 200
         assert (
-            resp.context["submission_statuses"]["indicator_status"]
+            resp.context["submission_statuses"]["program_indicator_status"]
             == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["benchmarking_status"]
+            resp.context["submission_statuses"]["program_benchmarking_status"]
             == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["trend_status"]
+            resp.context["submission_statuses"]["program_trend_status"]
+            == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_indicator_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_benchmarking_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_trend_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_global_status"]
+            == SUBMISSION_STATUSES.NOT_YET_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_global_status"]
             == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
         )
 
@@ -163,16 +203,36 @@ def test_metadata_review_page(vanilla_user, vanilla_user_client):
         resp = vanilla_user_client.get(url)
         assert resp.status_code == 200
         assert (
-            resp.context["submission_statuses"]["indicator_status"]
+            resp.context["submission_statuses"]["hso_indicator_status"]
             == SUBMISSION_STATUSES.SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["benchmarking_status"]
+            resp.context["submission_statuses"]["hso_benchmarking_status"]
             == SUBMISSION_STATUSES.SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["trend_status"]
+            resp.context["submission_statuses"]["hso_trend_status"]
             == SUBMISSION_STATUSES.SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_indicator_status"]
+            == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_benchmarking_status"]
+            == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_trend_status"]
+            == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_global_status"]
+            == SUBMISSION_STATUSES.SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_global_status"]
+            == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
         )
 
     b1 = Benchmarking.objects.get(pk=b1.pk)
@@ -185,16 +245,35 @@ def test_metadata_review_page(vanilla_user, vanilla_user_client):
     with patch_rules(can_submit_indicator=True):
         resp = vanilla_user_client.get(url)
         assert resp.status_code == 200
-        print(resp.context["submission_statuses"])
         assert (
-            resp.context["submission_statuses"]["indicator_status"]
+            resp.context["submission_statuses"]["hso_indicator_status"]
             == SUBMISSION_STATUSES.SUBMITTED
         )
         assert (
-            resp.context["submission_statuses"]["benchmarking_status"]
+            resp.context["submission_statuses"]["hso_benchmarking_status"]
             == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
         )
         assert (
-            resp.context["submission_statuses"]["trend_status"]
+            resp.context["submission_statuses"]["hso_trend_status"]
+            == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        )
+        assert (
+            resp.context["submission_statuses"]["program_indicator_status"]
+            == SUBMISSION_STATUSES.PROGRAM_SUBMITTED
+        )
+        assert (
+            resp.context["submission_statuses"]["program_benchmarking_status"]
+            == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        )
+        assert (
+            resp.context["submission_statuses"]["program_trend_status"]
+            == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        )
+        assert (
+            resp.context["submission_statuses"]["hso_global_status"]
+            == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
+        )
+        assert (
+            resp.context["submission_statuses"]["program_global_status"]
             == SUBMISSION_STATUSES.MODIFIED_SINCE_LAST_SUBMISSION
         )

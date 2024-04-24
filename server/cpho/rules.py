@@ -95,7 +95,14 @@ def can_export_benchmarking(user, indicator):
 
 @auto_rule
 def can_edit_benchmarking(user, indicator):
-    return can_edit_indicator(user, indicator)
+    return is_admin_or_hso(user)
+
+
+@auto_rule
+def can_view_benchmarking(user, indicator):
+    return can_edit_benchmarking(user, indicator) or (
+        can_access_indicator(user, indicator)
+    )
 
 
 @auto_rule

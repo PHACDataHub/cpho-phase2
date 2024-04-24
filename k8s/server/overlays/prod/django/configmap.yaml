@@ -9,5 +9,4 @@ data:
   DB_HOST: "cpho-postgres14-cluster-rw"
   DB_PORT: "5432"
   PHAC_ASPC_OAUTH_PROVIDER: "microsoft"
-  ENABLE_LEGACY_LOG_IN: "true" # TODO temporary for dev purposes, not to be used in final prod
   PHAC_ASPC_SESSION_COOKIE_AGE: "259200"

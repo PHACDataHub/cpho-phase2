@@ -58,6 +58,14 @@ class IndicatorForm(ModelForm):
             "sub_indicator_measurement",
             "relevant_dimensions",
             "relevant_period_types",
+            "g1",
+            "g2_lower",
+            "g2_upper",
+            "g3_lower",
+            "g3_upper",
+            "g4_lower",
+            "g4_upper",
+            "g5",
         ]
         if user and not test_rule("is_admin_or_hso", user):
             for field in non_hso_readonly_fields:
@@ -281,6 +289,20 @@ class IndicatorForm(ModelForm):
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
+    recommendations_for_hso = forms.CharField(
+        required=False,
+        widget=CKEditorWidget(
+            config_name="notes", attrs={"class": "form-control"}
+        ),
+        label=tm("recommendations_for_hso"),
+    )
+
+    pt_dynamic_text = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label=tm("pt_dynamic_text"),
+    )
+
     hso_only_field_names = [
         "title_overall",
         "table_title_overall",
@@ -294,6 +316,7 @@ class IndicatorForm(ModelForm):
         "table_title_age_2",
         "title_province_territory",
         "table_title_province_territory",
+        "pt_dynamic_text",
         "title_province_territory_2",
         "table_title_province_territory_2",
         "title_living_arrangement",

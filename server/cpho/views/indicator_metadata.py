@@ -41,6 +41,7 @@ class BenchmarkingForm(ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
+            "is_deleted",
             "unit",
             "oecd_country",
             "value",
@@ -48,8 +49,17 @@ class BenchmarkingForm(ModelForm):
             "comparison_to_oecd_avg",
             "labels",
             "methodology_differences",
-            "is_deleted",
         ]
+
+    is_deleted = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+        label=tm("delete"),
+    )
 
     unit = forms.ChoiceField(
         required=False,
@@ -80,7 +90,7 @@ class BenchmarkingForm(ModelForm):
         label=tm("value"),
     )
     year = forms.IntegerField(
-        required=True,
+        required=False,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -120,16 +130,6 @@ class BenchmarkingForm(ModelForm):
         label=tm("methodology_differences"),
     )
 
-    is_deleted = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                "class": "form-check-input",
-            }
-        ),
-        label=tm("delete"),
-    )
-
     def clean_comparison_to_oecd_avg(self):
         comparison_to_oecd_avg = self.cleaned_data["comparison_to_oecd_avg"]
         if not comparison_to_oecd_avg:
@@ -157,7 +157,14 @@ class BenchmarkingForm(ModelForm):
         year = self.cleaned_data["year"]
 
         if year is None or year == "":
-            return None
+            if self.cleaned_data["oecd_country"].name_en in ["OECD"]:
+                return None
+            else:
+                self.add_error(
+                    "year",
+                    tdt("Please enter a year"),
+                )
+                return year
 
         if year:
             try:
@@ -180,6 +187,47 @@ class BenchmarkingForm(ModelForm):
         return super().save(commit=commit)
 
 
+class ReadOnlyFormMixin:
+    """A form mixin for the read only view that includes methods to
+    disable fields and remove placeholders."""
+
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
+
+    def disable_fields(self):
+        """Disable all fields in the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs["disabled"] = True
+
+    def remove_placeholders(self):
+        """Remove all placeholders from the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs.pop("placeholder", None)
+
+    def choice_to_text_field(self):
+        for field_name, field in self.fields.items():
+            if isinstance(field, forms.ChoiceField):
+                value_to_display = dict(field.choices).get(
+                    self.initial.get(field_name)
+                )
+                self.fields[field_name].widget = forms.TextInput(
+                    attrs={
+                        "class": "form-control",
+                    },
+                )
+                self.initial[field_name] = value_to_display
+
+
+class ReadOnlyBenchmarkingForm(BenchmarkingForm, ReadOnlyFormMixin):
+    """A form for the read only view of a threat."""
+
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyBenchmarkingForm, self).__init__(*args, **kwargs)
+        self.choice_to_text_field()
+        self.disable_fields()
+        self.remove_placeholders()
+
+
 class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
     template_name = "benchmarking/manage_benchmarking_data.jinja2"
 
@@ -189,7 +237,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
 
     def check_rule(self):
         return test_rule(
-            "can_edit_benchmarking", self.request.user, self.indicator
+            "can_view_benchmarking", self.request.user, self.indicator
         )
 
     def benchmarking_formset(self):
@@ -197,12 +245,20 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
             indicator=self.indicator
         ).order_by("labels", "-value")
 
+        form_type = ReadOnlyBenchmarkingForm
+        extra_val = 0
+        if test_rule(
+            "can_edit_benchmarking", self.request.user, self.indicator
+        ):
+            form_type = BenchmarkingForm
+            extra_val = 1
+
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
             Benchmarking,
             fk_name="indicator",
-            form=BenchmarkingForm,
-            extra=1,
+            form=form_type,
+            extra=extra_val,
             can_delete=False,
             formset=BaseInlineFormSetWithUniqueTogetherCheck,
         )
@@ -427,18 +483,16 @@ class TrendAnalysisForm(ModelForm):
                 start_year_end = int(start_range.split("-")[1])
                 end_year_start = int(end_range.split("-")[0])
                 end_year_end = int(end_range.split("-")[1])
-                if not (
-                    2000
-                    <= start_year_start
-                    <= start_year_end
-                    <= end_year_start
-                    <= end_year_end
-                    <= 2050
+                if (
+                    not (2000 <= start_year_start <= end_year_end <= 2050)
+                    or not (2000 <= start_year_start <= start_year_end <= 2050)
+                    or not (2000 <= end_year_start <= end_year_end <= 2050)
                 ):
                     self.add_error(
                         "trend_segment",
                         tm("trend_timeframe_between_multi"),
                     )
+
             return trend_segment
 
     def save(self, commit=True):

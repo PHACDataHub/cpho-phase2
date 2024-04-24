@@ -20,10 +20,7 @@ from cpho.models import (
     Indicator,
     IndicatorDatum,
 )
-from cpho.queries import (
-    get_submission_statuses,
-    relevant_dimension_types_for_period,
-)
+from cpho.queries import relevant_dimension_types_for_period
 from cpho.text import tdt, tm
 
 from .view_util import (
@@ -430,19 +427,6 @@ class ManageIndicatorData(
             messages.error(self.request, tm("error_saving_form"))
             return self.get(*args, **kwargs)
 
-    @cached_property
-    def submission_statuses(self):
-        return get_submission_statuses(self.indicator, self.period)
-
-    @cached_property
-    def submission_status(self):
-        if self.dimension_type:
-            return self.submission_statuses[
-                "statuses_by_dimension_type_id"
-            ].get(self.dimension_type.id, SUBMISSION_STATUSES.NO_DATA)
-        else:
-            return self.submission_statuses["global_status"]
-
     def get_context_data(self, **kwargs):
         if self.dimension_type is None:
             predefined_dimension_types = DimensionType.objects.filter(
@@ -469,8 +453,6 @@ class ManageIndicatorData(
             "possible_values_by_dimension_type": self.possible_values_by_dimension_type,
             "age_group_formset": self.age_group_formset,
             "show_age_group": self.has_age_group_forms,
-            "submission_statuses": self.submission_statuses,
-            "submission_status": self.submission_status,
         }
 
         return ctx

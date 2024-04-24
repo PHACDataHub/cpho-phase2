@@ -193,12 +193,12 @@ translation_entries = {
         "fr": "Pas encore soumis",
     },
     "program_submitted": {
-        "en": "Program submitted",
+        "en": "Program Submitted",
         "fr": "Programme soumis",
     },
-    "submitted_by_program_and_hso": {
-        "en": "Submitted by Program and HSO",
-        "fr": "Soumis par le programme et le DSP",
+    "submitted_by_hso": {
+        "en": "HSO Submitted",
+        "fr": "DSP soumis",
     },
     "modified_since_last_submission": {
         "en": "Modified since last submission",
@@ -1013,10 +1013,6 @@ translation_entries = {
         "en": "Total per 100 000 persons",
         "fr": "Total pour 100 000 personnes",
     },
-    "years": {
-        "en": "Years",
-        "fr": "Années",
-    },
     # comparison
     "better": {"en": "Better", "fr": "Meilleur"},
     "similar": {"en": "Similar", "fr": "Similaire"},
@@ -1147,8 +1143,8 @@ translation_entries = {
         "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin.",
     },
     "trend_timeframe_between_multi": {
-        "en": "Trend Segment must be between the years 2000 and 2050 and start year must be less than end year. Start range must end before end range.",
-        "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin. La plage de début doit se terminer avant la plage de fin.",
+        "en": "Trend Segment must be between the years 2000 and 2050 and start year must be less than end year.",
+        "fr": "Le segment de tendance doit être compris entre les années 2000 et 2050 et l'année de début doit être inférieure à l'année de fin.",
     },
     "trend_desctiption": {
         "en": "For fields where data are not available (line of best fit, trend, data quality or CI), please leave blank",
@@ -1157,5 +1153,33 @@ translation_entries = {
     "year_or_range": {
         "en": "Single Year / Year Range",
         "fr": "Année unique / Plage d'années",
+    },
+    "pt_dynamic_text": {
+        "en": "PT Dynamic Text",
+        "fr": "Texte dynamique PT",
+    },
+    "recommendations_for_hso": {
+        "en": "Recommendations for HSO",
+        "fr": "Recommandations pour le DSP",
+    },
+    "quintile_metadata_description": {
+        "en": "HSO will recalculate with updated data",
+        "fr": "Le DSP recalculera avec des données mises à jour",
+    },
+    "submission_text": {
+        "en": "All information provided in InfoSource must be approved by the program director. Clicking this button indicates director approval",
+        "fr": "Toutes les informations fournies dans InfoSource doivent être approuvées par le directeur du programme. En cliquant sur ce bouton, vous indiquez l'approbation du directeur",
+    },
+    "submission_confirmation_text": {
+        "en": "I confirm that necessary approvals were obtained from my program director and agree to submit",
+        "fr": "Je confirme que les approbations nécessaires ont été obtenues de mon directeur de programme et accepte de soumettre",
+    },
+    "hso_submission": {
+        "en": "HSO Submission",
+        "fr": "Soumission du DSP",
+    },
+    "program_submission": {
+        "en": "Program Submission",
+        "fr": "Soumission du programme",
     },
 }

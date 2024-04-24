@@ -32,9 +32,13 @@ logger = logging.getLogger()
 
 def instrument_app_for_open_telemetry():
     config = get_project_config()
-    IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
 
-    if IS_LOCAL:
+    IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
+    FORCE_LOCAL_OTEL_BEHAVIOUR = config(
+        "FORCE_LOCAL_OTEL_BEHAVIOUR", cast=bool, default=False
+    )
+
+    if IS_LOCAL or FORCE_LOCAL_OTEL_BEHAVIOUR:
         project_id = "local"
 
         OUTPUT_TELEMETRY_TO_CONSOLE = config(

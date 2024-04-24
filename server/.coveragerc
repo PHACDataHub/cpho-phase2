@@ -1,9 +1,15 @@
 [run]
+source =
+    api
+    cpho
+    server
+
 omit =
-    tests/**
     **/__init__.py
     **/migrations/*
-    **/monkey_patch_for_testing.py  
-    ./manage.py 
+    **/monkey_patch_for_testing.py
     server/wsgi.py
     server/asgi.py
+    cpho/scripts/dev.py
+    cpho/scripts/populate_trend.py
+    cpho/scripts/restore_benchmarking.py

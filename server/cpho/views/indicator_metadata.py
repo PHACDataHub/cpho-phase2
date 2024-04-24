@@ -90,7 +90,7 @@ class BenchmarkingForm(ModelForm):
         label=tm("value"),
     )
     year = forms.IntegerField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -154,16 +154,17 @@ class BenchmarkingForm(ModelForm):
         return value
 
     def clean_year(self):
-        print(self.cleaned_data)
-        if self.cleaned_data["is_deleted"]:
-            return None
         year = self.cleaned_data["year"]
 
         if year is None or year == "":
-            self.add_error(
-                "year",
-                tdt("Year is required"),
-            )
+            if self.cleaned_data["oecd_country"].name_en in ["OECD"]:
+                return None
+            else:
+                self.add_error(
+                    "year",
+                    tdt("Please enter a year"),
+                )
+                return year
 
         if year:
             try:

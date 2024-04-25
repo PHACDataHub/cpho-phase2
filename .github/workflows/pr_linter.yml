@@ -1,0 +1,48 @@
+name: Pull Request Linter
+
+on:
+  pull_request:
+    types: ['opened', 'edited', 'synchronize', 'reopened']
+
+jobs:
+  pr_title_and_body:
+    if: ${{ (github.event.pull_request.user.login != 'dependabot[bot]') && (github.event.pull_request.user.login != 'github-actions[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep for 5 seconds
+        run: sleep 5s
+        shell: bash
+
+      - name: Get PR JSON information
+        uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
+        with:
+          # Authetication token to access GitHub APIs. (Can be omitted by default.)
+          github-token: ${{ github.token }}
+          # Verbose setting SHA when using Pull_Request event trigger to fix #16. (For push even trigger this is not necessary.)
+          sha: ${{ github.event.pull_request.head.sha }}
+          # Only return if PR is still open. (By default it returns PRs in any state.)
+          filterOutClosed: true
+          # Only return if PR is not in draft state. (By default it returns PRs in any state.)
+          filterOutDraft: true
+
+      - name: Parse out JSON to check prTitle and prBody
+        id: parse-json
+        if: steps.PR.outcome == 'success' && steps.PR.outputs.pr
+        run: |
+          echo "Here is all the PR JSON information ${prNumber} ${prTitle} at ${prUrl} is ${prJSON}"
+          title_regex='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\([a-zA-Z\_\-\.\0-9]+\))?(!)?: .*'
+          if [[ ${prTitle} =~ $title_regex ]]; then echo 'prTitle matched regex!'; else echo 'prTitle does not match conventional commit regex, please reformat!!!' && exit 1; fi
+        env:
+          # JSON object with the full PR object
+          # toJSON(fromJSON(...pr)) parses it into memory and then format is with pretty-print.
+          prJSON: ${{ toJSON(fromJSON(steps.PR.outputs.pr)) }}
+          # Direct access to common PR properties
+          prNumber: ${{ steps.PR.outputs.number }}
+          prUrl: ${{ steps.PR.outputs.pr_url }}
+          prTitle: ${{ steps.PR.outputs.pr_title }}
+          prBody: ${{ steps.PR.outputs.pr_body }}
+          prCreatedAt: ${{ steps.PR.outputs.pr_created_at }}
+          prMergedAt: ${{ steps.PR.outputs.pr_merged_at }}
+          prClosedAt: ${{ steps.PR.outputs.pr_closed_at }}
+          prLabel: ${{ steps.PR.outputs.pr_labels }}

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import admin
 from django.db import models
 
 from server import fields
@@ -83,6 +84,7 @@ class Period(models.Model):
     year_type = fields.CharField(
         max_length=50, choices=YEAR_TYPE_CHOICES, null=True, blank=True
     )
+    is_current = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["year", "quarter"]
@@ -118,9 +120,10 @@ class Period(models.Model):
 
     @staticmethod
     def get_currently_relevant_periods():
-        return Period.objects.filter(
-            year__in=[settings.CURRENT_YEAR - 1, settings.CURRENT_YEAR]
-        )
+        return Period.objects.filter(is_current=True)
+
+    class adminClass(admin.ModelAdmin):
+        list_display = ["year", "year_type", "quarter", "is_current"]
 
 
 class Country(models.Model):

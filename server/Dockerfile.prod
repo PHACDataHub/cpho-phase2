@@ -19,7 +19,6 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 COPY ./requirements_dev.txt .
 COPY ./requirements_formatting.txt .
-COPY ../pyproject.toml .
 
 ARG DEPENDENCY_SET="prod"
 

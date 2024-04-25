@@ -1,0 +1,21 @@
+# Docker compose file for running tests.
+
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+      args:
+        - DEPENDENCY_SET=test
+    entrypoint: ["python", "./entrypoint.test.py"]
+    env_file:
+      - ./server/.env.dev-public
+
+networks:
+  default:
+    name: cloudbuild
+    external: true
+# NOTE:  An issue with error around network label being incorrect - fixed by: "docker network create --label com.docker.compose.network=cloudbuild cloudbuild"
+

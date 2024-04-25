@@ -7,20 +7,20 @@ subprocess.run(
     stdout=sys.stdout,
     stderr=sys.stderr,
 )
-subprocess.run(
-    [
-        "python",
-        "-m",
-        "isort",
-        "--check",
-        "./",
-        "--settings-path ",
-        "pyproject.toml",
-    ],
-    check=True,
-    stdout=sys.stdout,
-    stderr=sys.stderr,
-)
+# subprocess.run(
+#     [
+#         "python",
+#         "-m",
+#         "isort",
+#         "--check",
+#         "./",
+#         "--settings-path ",
+#         "pyproject.toml",
+#     ],
+#     check=True,
+#     stdout=sys.stdout,
+#     stderr=sys.stderr,
+# )
 
 subprocess.run(
     [

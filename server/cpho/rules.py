@@ -108,3 +108,8 @@ def can_view_benchmarking(user, indicator):
 @auto_rule
 def can_edit_trend_analysis(user, indicator):
     return can_edit_indicator(user, indicator)
+
+
+@auto_rule
+def can_view_non_current_periods(user):
+    return is_admin_or_hso(user)

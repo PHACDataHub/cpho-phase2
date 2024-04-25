@@ -52,10 +52,10 @@
               <span aria-hidden="true" class="bi bi-clipboard-data"></span>
               {{ tm("benchmarking") }}
             </a>
-            {% else %}
-              {% if respects_rule('can_view_benchmarking', indicator) %}
+          {% else %}
+            {% if respects_rule('can_view_benchmarking', indicator) %}
               <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
-                class="btn w-100 btn-outline-dark my-1">
+                 class="btn w-100 btn-outline-dark my-1">
                 <span aria-hidden="true" class="bi bi-clipboard-data"></span>
                 {{ tm("benchmarking") }}
               </a>
@@ -98,7 +98,7 @@
 
           {% if respects_rule('can_access_indicator', indicator) %}
             <div class='card my-4'>
-              <div class="card-header h3">{{ tm("periods_with_data") }}</div>
+              <div class="card-header h3">{{ tm("periodic_data") }}</div>
               <div class="card-body">
                 <table class="table table-hover">
                   <thead>
@@ -112,12 +112,20 @@
                   </thead>
                   <tbody>
                     {% for period,data_count in data_counts_by_period.items() %}
-                      {% if data_count > 0 %}
+                      {% if period.is_current or respects_rule("can_view_non_current_periods") %}
                         {% set submission_statuses = submission_statuses_by_period[period] %}
                         {% set progress_in_table = true %}
                         {% set metadata_submission = false %}
                         <tr class="text-center">
-                          <th>{{ period }}</th>
+                          <th>
+                            {{ period }}
+                            {% if not period.is_current %}
+                              <div>
+                                <div class="badge bg-success" ">{{ tm("hso_only") }}
+                                </div>
+                              </div>
+                            {% endif %}
+                          </th>
                           <td>{{ data_count }}</td>
                           <td>{{ submission_status_badge(submission_statuses['hso_global_status']) }}</td>
                           <td>{{ submission_status_badge(submission_statuses['program_global_status']) }}</td>
@@ -133,16 +141,17 @@
               </div>
             </div>
           {% endif %}
-          {% if respects_rule('can_access_indicator', indicator) %}
-            <div class="h3">{{ tm("add_data_for_new_periods") }}</div>
+          {% if respects_rule('can_view_non_current_periods', indicator) %}
             <div>
-              <ul aria-label="{{ tm('add_data_for_new_periods') }}">
-                {% for period,data_count in data_counts_by_period.items() %}
-                  {% if data_count == 0 %}
-                    <li>
-                      <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("add_data") }} {{ tm("for") }} {{ period }}</a>
-                    </li>
-                  {% endif %}
+              <span class="h3">{{ tm("add_data_for_new_periods") }}</span>
+              <span class="badge bg-success" style="transform:translate(0,-0.75em);">{{ tm("hso_only") }}</span>
+            </div>
+            <div>
+              <ul aria-label="{{ tm("add_data_for_new_periods") }}">
+                {% for period in alternate_periods %}
+                  <li>
+                    <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("add_data") }} {{ tm("for") }} {{ period }}</a>
+                  </li>
                 {% endfor %}
               </ul>
             </div>

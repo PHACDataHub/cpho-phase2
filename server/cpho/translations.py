@@ -664,9 +664,9 @@ translation_entries = {
         "en": "Actions",
         "fr": "Actions",
     },
-    "periods_with_data": {
-        "en": "Periods with data",
-        "fr": "Périodes avec des données",
+    "periodic_data": {
+        "en": "Periodic data",
+        "fr": "Données périodiques",
     },
     "indicator_information": {
         "en": "Indicator Information",

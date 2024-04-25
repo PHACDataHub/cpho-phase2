@@ -375,22 +375,24 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
         indicator = Indicator.objects.get(pk=self.kwargs["pk"])
         relevant_periods = indicator.get_relevant_periods()
 
-        data_for_periods = indicator.data.filter(
-            period__in=relevant_periods, is_deleted=False
+        all_data = indicator.data.filter(is_deleted=False).prefetch_related(
+            "period"
         )
+        periods_with_data = set(d.period for d in all_data)
+
+        all_shown_periods = periods_with_data | set(relevant_periods)
+
         data_counts_by_period = {
-            p: len(
-                [
-                    datum
-                    for datum in data_for_periods
-                    if datum.period_id == p.id
-                ]
-            )
-            for p in relevant_periods
+            p: len([datum for datum in all_data if datum.period_id == p.id])
+            for p in all_shown_periods
         }
         submission_statuses_by_period = {
-            p: get_submission_statuses(indicator, p) for p in relevant_periods
+            p: get_submission_statuses(indicator, p) for p in all_shown_periods
         }
+
+        alternate_periods = (
+            set(indicator.get_adjacent_periods()) - periods_with_data
+        )
 
         return {
             **super().get_context_data(**kwargs),
@@ -401,6 +403,7 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
             "metadata_submission_statuses": get_metadata_submission_statuses(
                 indicator
             ),
+            "alternate_periods": alternate_periods,
         }
 
 

@@ -33,7 +33,7 @@ Note: run all this in the repo's root directory
         ```
 10. `python manage.py runserver`
 
-## #Other useful dev commands:
+### Other useful dev commands:
 
 resetting dev db: 
 ```bash
@@ -47,6 +47,16 @@ dropdb -U cpho_db_user cpho_test_db
 ```
 
 
+### Manually running format commands
+
+In the case your CI is failing due to formatting issues, you can run the following commands to fix them all.
+
+1. `isort server --settings-path pyproject.toml`
+2. `black server/ --config pyproject.toml`
+3. `djlint --reformat server --configuration pyproject.toml`
+
+
+
 ## Using SQlite
 
 Note: if you set USE_SQLITE=True in your .env file, you don't need to set any of the DB-related environment variables and the app will use sqlite instead of postgres. This is useful for testing/development, especially on the PHAC workstations. Note that changelogs won't work with sqlite, so those tests will always fail.
@@ -54,3 +64,4 @@ Note: if you set USE_SQLITE=True in your .env file, you don't need to set any of
 ## Remote DB manipulation
 
 To connect to the remote DB from your local machine, download, chmod and ensure the cloud-sql-proxy is in your path, then run `source deploy/connect_cloud_sql_proxy.sh`. In a different shell, you can now run `./manage.py` commands directly against the remote DB. Be careful and make sure you close the script process when you're done.
+

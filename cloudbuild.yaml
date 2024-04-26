@@ -42,6 +42,24 @@ steps:
       
       echo "Tear down tests"
       docker compose -f docker-compose.run-tests.yaml down -v
+
+  - id: "Run format checks"
+    name: "gcr.io/cloud-builders/docker"
+    script: |
+      #!/usr/bin/env bash
+      set -o errexit
+      set -o pipefail
+      set -o nounset
+      
+      echo "Get cloud build project configuration values"
+      source .env.cloud_build
+
+      echo "Build images for format checking"
+      # NOTE: Tests are run within docker compose. When "--exit-code-from" is used, and the build or a command fails, this flag will cause the step to fail.  
+      docker compose -f docker-compose.run-format-checks.yaml up --exit-code-from server    
+      
+      echo "Tear down format-checking"
+      docker compose -f docker-compose.run-format-checks.yaml down -v
       
   - id: "Upload test coverage reports to Google Cloud Storage"
     name: 'gcr.io/cloud-builders/gsutil'

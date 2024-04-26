@@ -28,7 +28,7 @@ subprocess.run(
         "-m",
         "djlint",
         "--check",
-        "omd",
+        "./",
         "--configuration",
         "pyproject.toml",
     ],

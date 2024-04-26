@@ -3,8 +3,6 @@ import traceback
 
 from django.db import connection
 
-from api.schema import schema
-from api.util import GraphQLContext
 from graphene.test import Client
 from graphql.error import GraphQLError
 from graphql.language.parser import parse
@@ -13,6 +11,9 @@ from graphql_core_promise import PromiseExecutionContext
 from pleasant_promises.core import genfunc_to_prom, promise_from_generator
 from pleasant_promises.graphene import promised_generator_middleware
 from promise import Promise
+
+from api.schema import schema
+from api.util import GraphQLContext
 
 
 def get_promise_result(func):

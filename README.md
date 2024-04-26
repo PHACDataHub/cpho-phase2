@@ -33,7 +33,7 @@ Note: run all this in the repo's root directory
         ```
 10. `python manage.py runserver`
 
-###Other useful dev commands:
+### Other useful dev commands:
 
 resetting dev db: 
 ```bash

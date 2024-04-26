@@ -13,6 +13,7 @@
   fields:
     year: 2023
     year_type: calendar
+    is_current: True
 - model: cpho.period
   pk: 4
   fields:
@@ -28,6 +29,7 @@
   fields:
     year: 2023
     year_type: fiscal
+    is_current: True
 - model: cpho.period
   pk: 7
   fields:
@@ -82,6 +84,7 @@
     year: 2023
     quarter: 1
     year_type: fiscal
+    is_current: True
 - model: cpho.period
   pk: 16
   fields:

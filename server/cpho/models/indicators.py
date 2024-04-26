@@ -278,13 +278,29 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         from .lookups import Period
 
         globally_relevant = Period.get_currently_relevant_periods()
+        return self._filter_irrelevant_periods(globally_relevant)
 
+    def get_adjacent_periods(self):
+        from .lookups import Period
+
+        globally_relevant = Period.get_currently_relevant_periods()
+        min_year = min([x.year for x in globally_relevant])
+        max_year = max([x.year for x in globally_relevant])
+        adjacent_periods = Period.objects.filter(
+            year__lte=max_year + 2, year__gte=min_year - 2
+        )
+        adjacent_periods = set(adjacent_periods) - set(globally_relevant)
+        return self._filter_irrelevant_periods(adjacent_periods)
+
+    def _filter_irrelevant_periods(self, periods):
         # if there isn't a "preference" set, return all relevant periods
+        from .lookups import Period
+
         if not self.relevant_period_types:
-            return globally_relevant
+            return periods
 
         relevant = []
-        for period in globally_relevant:
+        for period in periods:
             if (
                 period.quarter
                 and "fiscal_quarters" in self.relevant_period_types

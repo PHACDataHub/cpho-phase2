@@ -1,13 +1,15 @@
+from promise import Promise
+
+from cpho.model_factories import IndicatorFactory
+from cpho.models import DimensionType, DimensionValue, Period
+
+from tests.api.api_test_utils import get_promise_result
+from tests.utils_for_tests import submit_indicator_datum
+
 from api.dataloaders import (
     PeriodByIdLoader,
     SubmittedDatumByIndicatorYearLoader,
 )
-from promise import Promise
-from tests.api.api_test_utils import get_promise_result
-from tests.utils_for_tests import submit_indicator_datum
-
-from cpho.model_factories import IndicatorFactory
-from cpho.models import DimensionType, DimensionValue, Period
 
 
 def test_promise_behaviour(django_assert_max_num_queries):

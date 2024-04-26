@@ -36,21 +36,21 @@
         <div>
           <div class="h5">{{ tm("stratifier") }} : {{ dimension_type.name }}</div>
           <div>
-            <span class="fw-bold">{{ tm("hso_submission")}}:</span> {{ submission_status_badge(submission_statuses['hso_statuses_by_dimension_type_id'][dimension_type.id]) }}
+            <span class="fw-bold">{{ tm("hso_submission") }}:</span> {{ submission_status_badge(submission_statuses['hso_statuses_by_dimension_type_id'][dimension_type.id]) }}
           </div>
           <div>
-            <span class="fw-bold">{{ tm("program_submission")}}:</span> {{ submission_status_badge(submission_statuses['program_statuses_by_dimension_type_id'][dimension_type.id]) }}
+            <span class="fw-bold">{{ tm("program_submission") }}:</span> {{ submission_status_badge(submission_statuses['program_statuses_by_dimension_type_id'][dimension_type.id]) }}
           </div>
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
           <div class="text-end">
             {% if respects_rule('can_access_indicator', indicator) %}
               <a class="btn btn-outline-primary"
-                 aria-label="{{ tm('edit') }}, {{ dimension_type.name }}"
+                 aria-label="{{ tm("edit") }}, {{ dimension_type.name }}"
                  href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tm("edit") }}</a>
             {% endif %}
             {% if respects_rule('can_submit_indicator', indicator) %}
               <a class="btn btn-outline-success"
-                 aria-label="{{ tm('review_for_approval') }}, {{ dimension_type.name }}"
+                 aria-label="{{ tm("review_for_approval") }}, {{ dimension_type.name }}"
                  href="{{ url('review_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tm("review_for_approval") }}</a>
             {% endif %}
           </div>

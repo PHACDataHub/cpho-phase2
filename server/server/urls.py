@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.urls import include, path, re_path
 from django.views.decorators.csrf import csrf_exempt
 
-from api import views as api_views
 from autocomplete import HTMXAutoComplete
 
 from server.middleware import allow_unauthenticated
@@ -14,6 +13,8 @@ from cpho.urls import (
     urlpatterns as cpho_urls,  # force an import for runserver's refresh sake
 )
 from cpho.views.auth import LoginView, LogoutView, RootView
+
+from api import views as api_views
 
 dev_routes = []
 if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:

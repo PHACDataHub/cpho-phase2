@@ -18,7 +18,6 @@ def run():
         rows_inserted = 0
 
         for row in data:
-
             print(row)
 
             indicator = get_indicator(
@@ -101,7 +100,6 @@ def get_indicator(Indicator_Trend, Detailed_Indicator_Trend):
     if len(qs) == 1:
         return qs[0]
     else:
-
         print(Indicator_Trend, Detailed_Indicator_Trend)
         print(qs)
         raise ValueError(

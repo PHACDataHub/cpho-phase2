@@ -1,8 +1,8 @@
-from tests.api.api_test_utils import execute_query
-from tests.utils_for_tests import submit_indicator_datum
-
 from cpho.model_factories import IndicatorFactory
 from cpho.models import DimensionType, DimensionValue, Period
+
+from tests.api.api_test_utils import execute_query
+from tests.utils_for_tests import submit_indicator_datum
 
 query = """
 query SingleIndicator($id: Int!) {

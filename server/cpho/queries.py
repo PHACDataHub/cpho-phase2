@@ -134,12 +134,12 @@ def get_submission_statuses(indicator, period):
         dim_id = dimension_type.id
         data_for_dim = data_by_dimension_type_id[dim_id]
         if not data_for_dim:
-            hso_submission_status_by_dimension_type_id[dim_id] = (
-                SUBMISSION_STATUSES.NO_DATA
-            )
-            program_submission_status_by_dimension_type_id[dim_id] = (
-                SUBMISSION_STATUSES.NO_DATA
-            )
+            hso_submission_status_by_dimension_type_id[
+                dim_id
+            ] = SUBMISSION_STATUSES.NO_DATA
+            program_submission_status_by_dimension_type_id[
+                dim_id
+            ] = SUBMISSION_STATUSES.NO_DATA
             continue
 
         hso_submission_statuses = [
@@ -151,12 +151,12 @@ def get_submission_statuses(indicator, period):
             for datum in data_for_dim
         ]
 
-        hso_submission_status_by_dimension_type_id[dim_id] = (
-            aggregate_statuses(hso_submission_statuses)
-        )
-        program_submission_status_by_dimension_type_id[dim_id] = (
-            aggregate_statuses(program_submission_statuses)
-        )
+        hso_submission_status_by_dimension_type_id[
+            dim_id
+        ] = aggregate_statuses(hso_submission_statuses)
+        program_submission_status_by_dimension_type_id[
+            dim_id
+        ] = aggregate_statuses(program_submission_statuses)
         if dimension_type.is_literal:
             all_deleted = all(d.is_deleted for d in data_for_dim)
             if all_deleted:

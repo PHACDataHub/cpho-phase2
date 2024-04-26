@@ -8,8 +8,8 @@
         <th class="width-30">{{ tm("stratifier_value") }}</th>
         <th>{{ tm("indicator_value") }}</th>
         <th>{{ tm("last_modified") }}</th>
-        <th>{{ tm("hso_submission")}}</th>
-        <th>{{ tm("program_submission")}}</th>
+        <th>{{ tm("hso_submission") }}</th>
+        <th>{{ tm("program_submission") }}</th>
       </tr>
     </thead>
     <tbody>
@@ -24,8 +24,8 @@
           </th>
           <td>{{ datum.value }}</td>
           <td>{{ date_display(datum.last_version_date) }}</td>
-          <td>{{ submission_status_label(datum.submission_status(submission_type="hso")) }}</td>
-          <td>{{ submission_status_label(datum.submission_status(submission_type="program")) }}</td>
+          <td>{{ submission_status_label(datum.submission_status(submission_type="hso") ) }}</td>
+          <td>{{ submission_status_label(datum.submission_status(submission_type="program") ) }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -56,6 +56,5 @@
 {% macro hidden_a11y_label(form_field, prefix) %}
   <label for="{{ form_field.id_for_label }}"
          class="visually-hidden"
-         aria-label="{{ prefix }}, {{ form_field.label }}">
-  </label>
+         aria-label="{{ prefix }}, {{ form_field.label }}"></label>
 {% endmacro %}

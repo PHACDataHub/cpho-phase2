@@ -16,9 +16,7 @@
     <button type="button"
             data-bs-toggle="modal"
             data-bs-target="#confirmApproveModal"
-            class="btn btn-success my-3">
-      {{ tm("approve_data") }}
-    </button>
+            class="btn btn-success my-3">{{ tm("approve_data") }}</button>
   </div>
   <div>
     <div>
@@ -27,10 +25,10 @@
           <div class="h5">{{ tm("stratifier") }} : {{ dimension_type.name }}</div>
 
           <div>
-            <span class="fw-bold">{{ tm("hso_submission")}}:</span> {{ submission_status_badge(view.submission_statuses['hso_statuses_by_dimension_type_id'][dimension_type.id]) }}
+            <span class="fw-bold">{{ tm("hso_submission") }}:</span> {{ submission_status_badge(view.submission_statuses['hso_statuses_by_dimension_type_id'][dimension_type.id]) }}
           </div>
           <div>
-            <span class="fw-bold">{{ tm("program_submission")}}:</span>{{ submission_status_badge(view.submission_statuses['program_statuses_by_dimension_type_id'][dimension_type.id]) }}
+            <span class="fw-bold">{{ tm("program_submission") }}:</span>{{ submission_status_badge(view.submission_statuses['program_statuses_by_dimension_type_id'][dimension_type.id]) }}
           </div>
  
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>

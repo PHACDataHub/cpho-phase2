@@ -16,6 +16,8 @@ from cpho.views.auth import LoginView, LogoutView, RootView
 
 from api import views as api_views
 
+from .healthcheck import healthcheck_view
+
 dev_routes = []
 if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:
     import debug_toolbar
@@ -45,7 +47,7 @@ urlpatterns = i18n_patterns(
     *phac_aspc_helper_urls,
     path(
         "healthcheck/",
-        allow_unauthenticated(lambda r: HttpResponse(status=200)),
+        healthcheck_view,
         name="simple_healthcheck",
     ),
     path(

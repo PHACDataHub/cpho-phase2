@@ -14,7 +14,7 @@ spec:
   - action: DELETE
     id: delete-older-than-30-days
     condition:
-      olderThan: 2592000s
+      olderThan: 2592000s # 30 days
   - action: KEEP
     id: keep-5-recent-versions
     mostRecentVersions:

@@ -41,6 +41,7 @@ class BenchmarkingForm(ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
+            "indicator",
             "is_deleted",
             "unit",
             "oecd_country",
@@ -89,13 +90,9 @@ class BenchmarkingForm(ModelForm):
         ),
         label=tm("value"),
     )
-    year = forms.IntegerField(
+    year = forms.CharField(
         required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-            }
-        ),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
         label=tm("year"),
     )
 
@@ -164,6 +161,32 @@ class BenchmarkingForm(ModelForm):
                     "year",
                     tdt("Please enter a year"),
                 )
+                return year
+
+        if self.cleaned_data["indicator"].id == 168:
+            year = str(year).strip()
+            pattern = r"^(\d{1,2})\s*\/\s*(\d{4})$"
+
+            match = re.match(pattern, year)
+            if not match:
+                self.add_error(
+                    "year",
+                    tdt("Year must be in the format MM/YYYY"),
+                )
+                return year
+            if match:
+                month = int(match.group(1).strip())
+                if not (month >= 1 and month <= 12):
+                    self.add_error(
+                        "year",
+                        tdt("Month must be between 1 and 12"),
+                    )
+                _year = int(match.group(2).strip())
+                if not (_year >= 2000 and _year <= 2050):
+                    self.add_error(
+                        "year",
+                        tdt("Year must be between the years 2000 and 2050"),
+                    )
                 return year
 
         if year:

@@ -8,6 +8,7 @@ from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
 from django.forms.models import ModelForm
+from django.forms.utils import ErrorDict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -180,6 +181,12 @@ class BenchmarkingForm(ModelForm):
                 )
 
         return year
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
+            self._errors = ErrorDict()
+        return self.cleaned_data
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:
@@ -412,6 +419,12 @@ class TrendAnalysisForm(ModelForm):
         ),
         label=tm("delete"),
     )
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
+            self._errors = ErrorDict()
+        return self.cleaned_data
 
     def clean_year(self):
         year = self.cleaned_data["year"]

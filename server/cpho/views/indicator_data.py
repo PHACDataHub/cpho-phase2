@@ -6,6 +6,7 @@ from django.db import transaction
 from django.forms import BaseFormSet
 from django.forms.formsets import formset_factory
 from django.forms.models import ModelForm
+from django.forms.utils import ErrorDict
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -154,6 +155,9 @@ class IndicatorDatumForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
+            self._errors = ErrorDict()
+            return self.cleaned_data
         value = cleaned_data["value"]
         value_unit = cleaned_data["value_unit"]
         if value_unit == "%":

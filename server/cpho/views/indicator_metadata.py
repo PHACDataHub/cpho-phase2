@@ -497,7 +497,6 @@ class TrendAnalysisForm(ModelForm):
             return trend_segment
 
         if trend_segment:
-
             single_segment = re.match(
                 get_regex_pattern("trend_segment_single")["pattern"],
                 trend_segment,

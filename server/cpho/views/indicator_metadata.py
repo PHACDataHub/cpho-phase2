@@ -430,7 +430,11 @@ class TrendAnalysisForm(ModelForm):
         year = self.cleaned_data["year"]
 
         if year is None or year == "":
-            return None
+            self.add_error(
+                "year",
+                tm("year_required"),
+            )
+            return year
 
         year = year.strip().replace(" ", "")
 

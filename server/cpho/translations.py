@@ -1182,4 +1182,8 @@ translation_entries = {
         "en": "Program Submission",
         "fr": "Soumission du programme",
     },
+    "year_required": {
+        "en": "Year is required",
+        "fr": "L'année est requise",
+    },
 }

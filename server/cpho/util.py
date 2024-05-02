@@ -78,3 +78,60 @@ def get(obj, attr_path, default=""):
         if not value:
             return default
     return value
+
+
+def get_regex_pattern(match_type):
+    all_patterns = {
+        "benchmarking_year": {
+            "pattern": r"^\s*(\d{1,2})\s*\/\s*(\d{4})\s*$",
+            "valid": [
+                "09/2020",
+                "9/2020",
+                "09 / 2020",
+                "9 / 2020",
+                " 9/2020 ",
+                " 9 / 2020 ",
+            ],
+        },
+        "trend_year_single": {
+            "pattern": r"^\s*(\d{4})\s*$",
+            "valid": ["2020", " 2020 ", " 2020", "2020 "],
+        },
+        "trend_year_multi": {
+            "pattern": r"^\s*(\d{4})\s*-\s*(\d{4})\s*$",
+            "valid": [
+                "2020-2021",
+                " 2020 - 2021 ",
+                " 2020-2021",
+                "2020 - 2021 ",
+                "2020 - 2021",
+                " 2020 -2021",
+            ],
+        },
+        "trend_segment_single": {
+            "pattern": r"^\s*(\d{4})\s*-\s*(\d{4})\s*$",
+            "valid": [
+                "2020-2021",
+                " 2020 - 2021 ",
+                " 2020-2021",
+                "2020 - 2021 ",
+                "2020 - 2021",
+                " 2020 -2021",
+            ],
+        },
+        "trend_segment_multi": {
+            "pattern": r"^\s*(\d{4})\s*-\s*(\d{4})\s*to\s*(\d{4})\s*-\s*(\d{4})\s*$",
+            "valid": [
+                "2020-2021 to 2022-2023",
+                " 2020 - 2021 to 2022 - 2023 ",
+                " 2020-2021 to 2022-2023",
+                "2020 - 2021 to 2022 - 2023 ",
+                "2020 - 2021 to 2022 - 2023",
+                " 2020 -2021 to 2022 -2023",
+            ],
+        },
+    }
+    if match_type == "all":
+        return all_patterns
+
+    return all_patterns[match_type]

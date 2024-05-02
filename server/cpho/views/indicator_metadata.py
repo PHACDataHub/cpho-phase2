@@ -28,7 +28,7 @@ from cpho.models import (
     TrendAnalysis,
 )
 from cpho.text import tdt, tm
-from cpho.util import get_lang_code
+from cpho.util import get_lang_code, get_regex_pattern
 
 from .view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
@@ -165,9 +165,7 @@ class BenchmarkingForm(ModelForm):
                 return year
 
         if self.cleaned_data["indicator"].id == 168:
-            year = str(year).strip()
-            pattern = r"^(\d{1,2})\s*\/\s*(\d{4})$"
-
+            pattern = get_regex_pattern("benchmarking_year")["pattern"]
             match = re.match(pattern, year)
             if not match:
                 self.add_error(
@@ -188,6 +186,7 @@ class BenchmarkingForm(ModelForm):
                         "year",
                         tdt("Year must be between the years 2000 and 2050"),
                     )
+                year = str(year).strip()
                 return year
 
         if year:
@@ -458,11 +457,12 @@ class TrendAnalysisForm(ModelForm):
                 tm("year_required"),
             )
             return year
-
-        year = year.strip().replace(" ", "")
-
-        single_year = re.match(r"^\d{4}$", year)
-        multi_year = re.match(r"^\d{4}-\d{4}$", year)
+        single_year = re.match(
+            get_regex_pattern("trend_year_single")["pattern"], year
+        )
+        multi_year = re.match(
+            get_regex_pattern("trend_year_multi")["pattern"], year
+        )
 
         if not single_year and not multi_year:
             self.add_error(
@@ -472,34 +472,39 @@ class TrendAnalysisForm(ModelForm):
             return year
 
         if single_year:
-            if not (int(year) >= 2000 and int(year) <= 2050):
+            year_val = int(single_year.group(1))
+            if not (year_val >= 2000 and year_val <= 2050):
                 self.add_error(
                     "year",
                     tm("year_timeframe_between"),
                 )
 
         else:
-            start_year = int(year.split("-")[0])
-            end_year = int(year.split("-")[1])
+            start_year = int(multi_year.group(1))
+            end_year = int(multi_year.group(2))
             if not (2000 <= start_year <= end_year <= 2050):
                 self.add_error(
                     "year",
                     tm("year_timeframe_between_multi"),
                 )
-
+        year = year.strip().replace(" ", "")
         return year
 
     def clean_trend_segment(self):
         trend_segment = self.cleaned_data["trend_segment"]
 
         if trend_segment is None or trend_segment == "":
-            return None
+            return trend_segment
 
         if trend_segment:
-            trend_segment_ = trend_segment.strip().replace(" ", "")
-            single_segment = re.match(r"^\d{4}-\d{4}$", trend_segment_)
+
+            single_segment = re.match(
+                get_regex_pattern("trend_segment_single")["pattern"],
+                trend_segment,
+            )
             multi_segment = re.match(
-                r"^\d{4}-\d{4}to\d{4}-\d{4}$", trend_segment_
+                get_regex_pattern("trend_segment_multi")["pattern"],
+                trend_segment,
             )
             if not single_segment and not multi_segment:
                 self.add_error(
@@ -508,8 +513,8 @@ class TrendAnalysisForm(ModelForm):
                 )
                 return trend_segment
             if single_segment:
-                start_year = int(trend_segment_.split("-")[0])
-                end_year = int(trend_segment_.split("-")[1])
+                start_year = int(single_segment.group(1))
+                end_year = int(single_segment.group(2))
                 if not (2000 <= start_year <= end_year <= 2050):
                     self.add_error(
                         "trend_segment",
@@ -517,12 +522,10 @@ class TrendAnalysisForm(ModelForm):
                     )
 
             else:
-                start_range = str(trend_segment_.split("to")[0])
-                end_range = str(trend_segment_.split("to")[1])
-                start_year_start = int(start_range.split("-")[0])
-                start_year_end = int(start_range.split("-")[1])
-                end_year_start = int(end_range.split("-")[0])
-                end_year_end = int(end_range.split("-")[1])
+                start_year_start = int(multi_segment.group(1))
+                start_year_end = int(multi_segment.group(2))
+                end_year_start = int(multi_segment.group(3))
+                end_year_end = int(multi_segment.group(4))
                 if (
                     not (2000 <= start_year_start <= end_year_end <= 2050)
                     or not (2000 <= start_year_start <= start_year_end <= 2050)
@@ -532,7 +535,7 @@ class TrendAnalysisForm(ModelForm):
                         "trend_segment",
                         tm("trend_timeframe_between_multi"),
                     )
-
+            trend_segment = trend_segment.strip().replace(" ", "")
             return trend_segment
 
     def save(self, commit=True):

@@ -71,6 +71,22 @@ def test_create_user(vanilla_user_client):
     assert set(user.groups.all()) == {GroupFetcher.hso_group}
 
 
+def test_create_user_healthcan(vanilla_user_client):
+    url = reverse("create_user")
+
+    email = "testy@hc-sc.gc.ca"
+    data = {
+        "email": email,
+        "email_confirmation": email,
+    }
+    with patch_rules(can_manage_users=True):
+        resp = vanilla_user_client.post(url, data=data)
+
+    assert resp.status_code == 302
+    user = User.objects.get(email=email)
+    assert user.username == email
+
+
 def test_create_indicator_directory(vanilla_user_client):
     i1 = IndicatorFactory()
     i2 = IndicatorFactory()

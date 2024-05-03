@@ -34,6 +34,7 @@ from cpho.util import (
     GroupFetcher,
     get_lang_code,
     get_or_create_user_by_email,
+    is_allowed_email,
     phac_email_widget_attrs,
 )
 
@@ -101,7 +102,7 @@ class CreateUserForm(UserForm):
     def clean_email(self):
         # force only lowercase emails, safer to compare that way
         email = self.cleaned_data["email"].lower()
-        if not email.endswith("phac-aspc.gc.ca"):
+        if not is_allowed_email(email):
             raise ValidationError(tdt("email_exception"))
 
         if User.objects.filter(email__icontains=email).exists():
@@ -282,7 +283,7 @@ class EmailForm(forms.Form):
     def clean_email(self):
         # force only lowercase emails, safer to compare that way
         email = self.cleaned_data["email"].lower()
-        if not email.endswith("phac-aspc.gc.ca"):
+        if not is_allowed_email(email):
             raise ValidationError(tdt("email_exception"))
 
         return email

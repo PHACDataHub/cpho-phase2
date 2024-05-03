@@ -57,12 +57,12 @@ def test_benchmarking(vanilla_user_client):
     assert created_data.count() == 2
     aus_data = created_data.get(oecd_country=aus)
     assert aus_data.value == 1
-    assert aus_data.year == 2020
+    assert aus_data.year == "2020"
     assert aus_data.methodology_differences == True
     # assert aus_data.standard_deviation == 0.1
     canada_data = created_data.get(oecd_country=canada)
     assert canada_data.value == 2
-    assert canada_data.year == 2020
+    assert canada_data.year == "2020"
     assert canada_data.methodology_differences == False
     # assert canada_data.standard_deviation == 0.2
 

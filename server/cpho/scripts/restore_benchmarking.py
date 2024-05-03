@@ -38,7 +38,7 @@ def run():
             if unit not in [item[0] for item in Benchmarking.UNIT_CHOICES]:
                 raise ValueError(f"Invalid unit: {unit}")
 
-            year = int(row["Year"]) if row["Year"] != "--" else None
+            year = row["Year"] if row["Year"] != "--" else None
 
             value = None
             try:

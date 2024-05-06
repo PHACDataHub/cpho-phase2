@@ -47,10 +47,16 @@ class GroupFetcher:
         return Group.objects.get_or_create(name=HSO_GROUP_NAME)[0]
 
 
+def is_allowed_email(email: str):
+    return email.lower().endswith(
+        "@phac-aspc.gc.ca"
+    ) or email.lower().endswith("@hc-sc.gc.ca")
+
+
 def get_or_create_user_by_email(email: str):
     from cpho.models import User
 
-    if not email.endswith("@phac-aspc.gc.ca"):
+    if not is_allowed_email(email):
         raise Exception("Only PHAC emails can be used to register")
 
     user = User.objects.filter(Q(email__iexact=email)).first()

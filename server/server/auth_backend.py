@@ -1,4 +1,5 @@
 """Code related to custom oauth authentication"""
+
 from typing import Any
 
 from django.conf import settings
@@ -8,6 +9,8 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.sessions.models import Session
 from django.db.models import Q
 from django.http.request import HttpRequest
+
+from cpho.util import is_allowed_email
 
 
 class OAuthBackend(BaseBackend):
@@ -61,7 +64,7 @@ class OAuthBackend(BaseBackend):
                 if settings.DISABLE_AUTO_REGISTRATION:
                     return None
 
-                if not email.lower().endswith("@phac-aspc.gc.ca"):
+                if not is_allowed_email(email):
                     # only allow phac emails to register
                     return None
 

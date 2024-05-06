@@ -104,15 +104,14 @@
     quarter: 4
     year_type: fiscal
 - model: cpho.period
-  pk: 18
+  pk: 19
   fields:
     year: 2024
     quarter:
     year_type: calendar
     is_current: True
-
 - model: cpho.period
-  pk: 18
+  pk: 20
   fields:
     year: 2024
     quarter: 1

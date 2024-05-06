@@ -230,9 +230,10 @@
   // this approach is documented here https://www.brennantymrak.com/articles/django-dynamic-formsets-javascript
   // changed a few things, like using an empty-form template
   let addButton = document.querySelector("#add-form")
-  if (addButton)
-    addButton.addEventListener('click', addForm)
-
+  if (addButton){
+    addButton.addEventListener('click', addForm);
+  }
+  
   function addForm(e){
       /*
         copies innerHTML of empty form template, inserts new prefix

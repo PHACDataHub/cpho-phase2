@@ -1186,4 +1186,16 @@ translation_entries = {
         "en": "Year is required",
         "fr": "L'année est requise",
     },
+    "view_data": {
+        "en": "View Data",
+        "fr": "Voir les données",
+    },
+    "view_all_data": {
+        "en": "View all data",
+        "fr": "Voir toutes les données",
+    },
+    "view": {
+        "en": "View",
+        "fr": "Voir",
+    },
 }

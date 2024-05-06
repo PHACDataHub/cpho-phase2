@@ -13,11 +13,20 @@
   <div class="h2">{{ tm("indicator_data") }} : {{ object.name }} {{ period }}</div>
  
   <div class="my-3">
+    {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
+      {% set button_text_all = tm("edit_all_data") %}
+      {% set button_text = tm("edit") %}
+      {% set mode = "edit" %}
+    {% else %}
+      {% set button_text_all = tm("view_all_data") %}
+      {% set button_text = tm("view") %}
+      {% set mode = "view" %}
+    {% endif %}
     {% if respects_rule('can_access_indicator', indicator) %}
       <a class="btn btn-primary"
-         href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ tm("edit_all_data") }}</a>
+         href="{{ url('manage_indicator_data_all', args=[object.id, period.id]) }}">{{ button_text_all }}</a>
     {% endif %}
-    {% if respects_rule('can_submit_indicator', indicator) %}
+    {% if respects_rule('can_submit_indicator', indicator) and mode == "edit" %}
       <a class="btn btn-success"
          href="{{ url('review_indicator_data_all', args=[object.id, period.id]) }}">{{ tm("review_all_data_for_approval") }}</a>
     {% endif %}
@@ -26,7 +35,6 @@
   <div>
     <div class="h5 mt-4">{{ tm("data_submission_progress") }}</div>
     {% set metadata_submission = false %}
-    {% set progress_in_table = false %}
     {% include 'indicators/_submission_fragment.jinja2' %}
   </div>
 
@@ -46,9 +54,9 @@
             {% if respects_rule('can_access_indicator', indicator) %}
               <a class="btn btn-outline-primary"
                  aria-label="{{ tm("edit") }}, {{ dimension_type.name }}"
-                 href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tm("edit") }}</a>
+                 href="{{ url('manage_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ button_text }}</a>
             {% endif %}
-            {% if respects_rule('can_submit_indicator', indicator) %}
+            {% if respects_rule('can_submit_indicator', indicator) and mode == "edit" %}
               <a class="btn btn-outline-success"
                  aria-label="{{ tm("review_for_approval") }}, {{ dimension_type.name }}"
                  href="{{ url('review_indicator_data', args=[object.id, period.id, dimension_type.id]) }}">{{ tm("review_for_approval") }}</a>

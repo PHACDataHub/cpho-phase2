@@ -90,7 +90,6 @@
             <div>
               <div class="h5">{{ tm("indicator_metadata_submission") }}</div>
               {% set submission_statuses = metadata_submission_statuses %}
-              {% set progress_in_table = false %}
               {% set metadata_submission = true %}
               {% include 'indicators/_submission_fragment.jinja2' %}
             </div>
@@ -112,26 +111,23 @@
                   </thead>
                   <tbody>
                     {% for period,data_count in data_counts_by_period.items() %}
-                      {% if period.is_current or respects_rule("can_view_non_current_periods") %}
+                      {% if data_count or period.is_current %}
                         {% set submission_statuses = submission_statuses_by_period[period] %}
-                        {% set progress_in_table = true %}
                         {% set metadata_submission = false %}
+                        {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
+                          {% set button_text = tm("see_edit_data") %}
+                        {% else %}
+                          {% set button_text = tm("view_data") %}
+                        {% endif %}
+ 
                         <tr class="text-center">
-                          <th>
-                            {{ period }}
-                            {% if not period.is_current %}
-                              <div>
-                                <div class="badge bg-success" ">{{ tm("hso_only") }}
-                                </div>
-                              </div>
-                            {% endif %}
-                          </th>
+                          <th>{{ period }}</th>
                           <td>{{ data_count }}</td>
                           <td>{{ submission_status_badge(submission_statuses['hso_global_status']) }}</td>
                           <td>{{ submission_status_badge(submission_statuses['program_global_status']) }}</td>
                           <td>
                             <a class='btn btn-outline-dark'
-                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("see_edit_data") }}</a>
+                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ button_text }}</a>
                           </td>
                         </tr>
                       {% endif %}

@@ -23,11 +23,11 @@ from cpho.models import (
 )
 from cpho.queries import relevant_dimension_types_for_period
 from cpho.text import tdt, tm
-
-from .view_util import (
+from cpho.views.view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
+    ReadOnlyFormMixin,
     SinglePeriodMixin,
 )
 
@@ -245,6 +245,14 @@ class IndicatorDatumForm(ModelForm):
         return super().save(commit)
 
 
+class ReadOnlyIndicatorDatumForm(IndicatorDatumForm, ReadOnlyFormMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.choice_to_text_field()
+        self.disable_fields()
+        self.remove_placeholders()
+
+
 class ManageIndicatorData(
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
@@ -256,6 +264,16 @@ class ManageIndicatorData(
     @cached_property
     def indicator(self):
         return Indicator.objects.get(pk=self.kwargs["indicator_id"])
+
+    @cached_property
+    def form_type(self):
+        if test_rule(
+            "can_edit_indicator_data",
+            self.request.user,
+            {"indicator": self.indicator, "period": self.period},
+        ):
+            return IndicatorDatumForm
+        return ReadOnlyIndicatorDatumForm
 
     @cached_property
     def age_group_formset(self):
@@ -273,10 +291,10 @@ class ManageIndicatorData(
             Indicator,
             IndicatorDatum,
             fk_name="indicator",
-            form=IndicatorDatumForm,
+            form=self.form_type,
             # formset=ProjectOptionFormset,# TODO: use custom formset to validate groups are unique, contiguous, etc.
             formset=BaseInlineFormSetWithUniqueTogetherCheck,
-            extra=1,
+            extra=1 if self.form_type == IndicatorDatumForm else 0,
             can_delete=False,
         )
 
@@ -353,7 +371,7 @@ class ManageIndicatorData(
             instances.append(record)
 
         factory = formset_factory(
-            form=IndicatorDatumForm, formset=InstanceProvidingFormSet, extra=0
+            form=self.form_type, formset=InstanceProvidingFormSet, extra=0
         )
         formset_kwargs = {
             "initial": [{} for x in possible_values],
@@ -400,7 +418,7 @@ class ManageIndicatorData(
 
     def check_rule(self):
         return test_rule(
-            "can_edit_indicator_data", self.request.user, self.indicator
+            "can_view_indicator_data", self.request.user, self.indicator
         )
 
     def post(self, *args, **kwargs):

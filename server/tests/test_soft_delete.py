@@ -66,7 +66,9 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
         args=[indicator.id, period.id, age_dim_type.pk],
     )
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(
+        can_edit_indicator_data=True, can_view_indicator_data=True
+    ):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 
@@ -187,7 +189,9 @@ def test_soft_delete(vanilla_user_client, django_assert_max_num_queries):
         args=[indicator.id, period.id, age_dim_type.pk],
     )
 
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(
+        can_edit_indicator_data=True, can_view_indicator_data=True
+    ):
         response = vanilla_user_client.post(url, data=data)
         assert response.status_code == 302
 

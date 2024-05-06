@@ -55,7 +55,14 @@ def can_edit_indicator(user, indicator):
 
 
 @auto_rule
-def can_edit_indicator_data(user, indicator):
+def can_edit_indicator_data(user, info_dict):
+    return can_access_indicator(user, info_dict["indicator"]) and (
+        is_admin_or_hso(user) or info_dict["period"].is_current
+    )
+
+
+@auto_rule
+def can_view_indicator_data(user, indicator):
     return can_access_indicator(user, indicator)
 
 

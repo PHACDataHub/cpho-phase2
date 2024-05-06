@@ -29,11 +29,11 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 from cpho.util import get_lang_code, get_regex_pattern
-
-from .view_util import (
+from cpho.views.view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
+    ReadOnlyFormMixin,
     SinglePeriodMixin,
 )
 
@@ -216,39 +216,8 @@ class BenchmarkingForm(ModelForm):
         return super().save(commit=commit)
 
 
-class ReadOnlyFormMixin:
-    """A form mixin for the read only view that includes methods to
-    disable fields and remove placeholders."""
-
-    def __init__(self, *args, **kwargs):
-        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
-
-    def disable_fields(self):
-        """Disable all fields in the form."""
-        for field in self.fields:
-            self.fields[field].widget.attrs["disabled"] = True
-
-    def remove_placeholders(self):
-        """Remove all placeholders from the form."""
-        for field in self.fields:
-            self.fields[field].widget.attrs.pop("placeholder", None)
-
-    def choice_to_text_field(self):
-        for field_name, field in self.fields.items():
-            if isinstance(field, forms.ChoiceField):
-                value_to_display = dict(field.choices).get(
-                    self.initial.get(field_name)
-                )
-                self.fields[field_name].widget = forms.TextInput(
-                    attrs={
-                        "class": "form-control",
-                    },
-                )
-                self.initial[field_name] = value_to_display
-
-
 class ReadOnlyBenchmarkingForm(BenchmarkingForm, ReadOnlyFormMixin):
-    """A form for the read only view of a threat."""
+    """A form for the read only benchmarking view."""
 
     def __init__(self, *args, **kwargs):
         super(ReadOnlyBenchmarkingForm, self).__init__(*args, **kwargs)

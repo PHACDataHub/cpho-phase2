@@ -1,0 +1,331 @@
+- model: cpho.indicatordirectory
+  pk: 2
+  fields:
+    name: CHP
+    description: Centre for Health Promotion (CHP)
+- model: cpho.indicatordirectory
+  pk: 3
+  fields:
+    name: AMR-TF
+    description: Antimicrobial Resistance Task Force (AMR-TF)
+- model: cpho.indicatordirectory
+  pk: 4
+  fields:
+    name: CCDIC
+    description: Centre for Communicable Diseases and Infection Control (CCDIC)
+- model: cpho.indicatordirectory
+  pk: 5
+  fields:
+    name: CERIPP
+    description: Centre for Emerging and Respiratory Infections and Pandemic Preparedness
+      (CERIPP)
+- model: cpho.indicatordirectory
+  pk: 6
+  fields:
+    name: CIS
+    description: Centre for Immunization Surveillance (CIS)
+- model: cpho.indicatordirectory
+  pk: 7
+  fields:
+    name: SPD
+    description: Social Policy Directorate
+- model: cpho.indicatordirectory
+  pk: 8
+  fields:
+    name: IHEPD
+    description: Intergovernmental and Health Equity Policy Directorate
+- model: cpho.indicatordirectory
+  pk: 9
+  fields:
+    name: HPPPD
+    description: Horizontal Policy, Planning and Program Directorate
+- model: cpho.indicatordirectory
+  pk: 10
+  fields:
+    name: CSAR
+    description: ''
+- model: cpho.indicatordirectory
+  pk: 11
+  fields:
+    name: CMHC
+    description: ''
+- model: cpho.indicatordirectorylink
+  pk: 4
+  fields:
+    indicator: 115
+    directory: 2
+- model: cpho.indicatordirectorylink
+  pk: 5
+  fields:
+    indicator: 166
+    directory: 3
+- model: cpho.indicatordirectorylink
+  pk: 6
+  fields:
+    indicator: 165
+    directory: 4
+- model: cpho.indicatordirectorylink
+  pk: 7
+  fields:
+    indicator: 167
+    directory: 4
+- model: cpho.indicatordirectorylink
+  pk: 8
+  fields:
+    indicator: 171
+    directory: 4
+- model: cpho.indicatordirectorylink
+  pk: 9
+  fields:
+    indicator: 172
+    directory: 4
+- model: cpho.indicatordirectorylink
+  pk: 10
+  fields:
+    indicator: 173
+    directory: 4
+- model: cpho.indicatordirectorylink
+  pk: 11
+  fields:
+    indicator: 174
+    directory: 4
+- model: cpho.indicatordirectorylink
+  pk: 12
+  fields:
+    indicator: 168
+    directory: 5
+- model: cpho.indicatordirectorylink
+  pk: 13
+  fields:
+    indicator: 169
+    directory: 5
+- model: cpho.indicatordirectorylink
+  pk: 14
+  fields:
+    indicator: 116
+    directory: 6
+- model: cpho.indicatordirectorylink
+  pk: 15
+  fields:
+    indicator: 119
+    directory: 6
+- model: cpho.indicatordirectorylink
+  pk: 16
+  fields:
+    indicator: 170
+    directory: 6
+- model: cpho.indicatordirectorylink
+  pk: 17
+  fields:
+    indicator: 123
+    directory: 6
+- model: cpho.indicatordirectorylink
+  pk: 18
+  fields:
+    indicator: 125
+    directory: 6
+- model: cpho.indicatordirectorylink
+  pk: 19
+  fields:
+    indicator: 135
+    directory: 7
+- model: cpho.indicatordirectorylink
+  pk: 20
+  fields:
+    indicator: 132
+    directory: 8
+- model: cpho.indicatordirectorylink
+  pk: 21
+  fields:
+    indicator: 133
+    directory: 8
+- model: cpho.indicatordirectorylink
+  pk: 22
+  fields:
+    indicator: 134
+    directory: 8
+- model: cpho.indicatordirectorylink
+  pk: 23
+  fields:
+    indicator: 127
+    directory: 8
+- model: cpho.indicatordirectorylink
+  pk: 24
+  fields:
+    indicator: 136
+    directory: 9
+- model: cpho.indicatordirectorylink
+  pk: 25
+  fields:
+    indicator: 137
+    directory: 9
+- model: cpho.indicatordirectorylink
+  pk: 26
+  fields:
+    indicator: 142
+    directory: 9
+- model: cpho.indicatordirectorylink
+  pk: 27
+  fields:
+    indicator: 143
+    directory: 9
+- model: cpho.indicatordirectorylink
+  pk: 29
+  fields:
+    indicator: 128
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 30
+  fields:
+    indicator: 129
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 31
+  fields:
+    indicator: 139
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 32
+  fields:
+    indicator: 141
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 33
+  fields:
+    indicator: 144
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 34
+  fields:
+    indicator: 145
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 35
+  fields:
+    indicator: 146
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 36
+  fields:
+    indicator: 147
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 37
+  fields:
+    indicator: 148
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 38
+  fields:
+    indicator: 149
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 39
+  fields:
+    indicator: 150
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 40
+  fields:
+    indicator: 151
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 41
+  fields:
+    indicator: 152
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 42
+  fields:
+    indicator: 153
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 43
+  fields:
+    indicator: 154
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 44
+  fields:
+    indicator: 155
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 45
+  fields:
+    indicator: 156
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 46
+  fields:
+    indicator: 157
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 47
+  fields:
+    indicator: 158
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 48
+  fields:
+    indicator: 160
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 49
+  fields:
+    indicator: 162
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 50
+  fields:
+    indicator: 164
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 51
+  fields:
+    indicator: 117
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 52
+  fields:
+    indicator: 118
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 53
+  fields:
+    indicator: 120
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 54
+  fields:
+    indicator: 121
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 55
+  fields:
+    indicator: 122
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 56
+  fields:
+    indicator: 124
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 57
+  fields:
+    indicator: 126
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 58
+  fields:
+    indicator: 138
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 59
+  fields:
+    indicator: 140
+    directory: 10
+- model: cpho.indicatordirectorylink
+  pk: 60
+  fields:
+    indicator: 130
+    directory: 11

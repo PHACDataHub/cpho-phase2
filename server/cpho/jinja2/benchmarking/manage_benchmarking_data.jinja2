@@ -84,8 +84,10 @@
 
   <script>
     let addButton = document.querySelector("#add-form");
-    addButton.addEventListener('click', addForm);
-
+    if (addButton){
+      addButton.addEventListener('click', addForm);
+    }
+      
     function addForm(e) {
       let forms = document.querySelectorAll(".benchmarking-form-list > .benchmarking-form");
       let newFormIndex = forms.length;

@@ -10,6 +10,37 @@ from cpho.models import DimensionType, DimensionValue, Period
 from cpho.text import tdt, tm
 
 
+class ReadOnlyFormMixin:
+    """A form mixin for the read only view that includes methods to
+    disable fields and remove placeholders."""
+
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyFormMixin, self).__init__(*args, **kwargs)
+
+    def disable_fields(self):
+        """Disable all fields in the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs["disabled"] = True
+
+    def remove_placeholders(self):
+        """Remove all placeholders from the form."""
+        for field in self.fields:
+            self.fields[field].widget.attrs.pop("placeholder", None)
+
+    def choice_to_text_field(self):
+        for field_name, field in self.fields.items():
+            if isinstance(field, forms.ChoiceField):
+                value_to_display = dict(field.choices).get(
+                    self.initial.get(field_name)
+                )
+                self.fields[field_name].widget = forms.TextInput(
+                    attrs={
+                        "class": "form-control",
+                    },
+                )
+                self.initial[field_name] = value_to_display
+
+
 class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
     def clean(
         self,

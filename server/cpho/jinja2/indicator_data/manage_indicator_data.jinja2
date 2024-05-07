@@ -83,6 +83,11 @@
     {# Parent must be a table, otherwise browser will strip the invalid tr/td tags #}
     {{ age_group_form(age_group_formset.empty_form) }}
   </table>
+  {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
+    {% set mode = "edit" %}
+  {% else %}
+    {% set mode = "view" %}
+  {% endif %}
 
   {# TODO: display form errors?  #}
   <form action="." method="post">
@@ -198,9 +203,11 @@
             {% for form in age_group_formset %}{{ age_group_form(form) }}{% endfor %}
           </tbody>
         </table>
-        <div class="text-center py-1">
-          <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tm("add_another_age_group") }}</button>
-        </div>
+        {% if mode == "edit" %}
+          <div class="text-center py-1">
+            <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tm("add_another_age_group") }}</button>
+          </div>
+        {% endif %}
         {% if age_group_formset.non_form_errors() %}
           <div class="error-div">{{ age_group_formset.non_form_errors() }}</div>
         {% endif %}
@@ -211,9 +218,11 @@
       </div>
     {% endif %}
 
-    <input type="submit"
-           class="btn btn-primary float-end my-3"
-           value="{{ tm("save") }}">
+    {% if mode == "edit" %}
+      <input type="submit"
+             class="btn btn-primary float-end my-3"
+             value="{{ tm("save") }}">
+    {% endif %}
   </form>
 
   {% if show_age_group %}
@@ -221,8 +230,10 @@
   // this approach is documented here https://www.brennantymrak.com/articles/django-dynamic-formsets-javascript
   // changed a few things, like using an empty-form template
   let addButton = document.querySelector("#add-form")
-  addButton.addEventListener('click', addForm)
-
+  if (addButton){
+    addButton.addEventListener('click', addForm);
+  }
+  
   function addForm(e){
       /*
         copies innerHTML of empty form template, inserts new prefix

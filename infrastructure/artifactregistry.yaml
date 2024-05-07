@@ -10,3 +10,13 @@ spec:
   format: DOCKER
   location: northamerica-northeast1
   mode: STANDARD_REPOSITORY
+  cleanupPolicies:
+  - action: DELETE
+    id: delete-older-than-30-days
+    condition:
+      olderThan: 2592000s # 30 days
+  - action: KEEP
+    id: keep-5-recent-versions
+    mostRecentVersions:
+      keepCount: 5
+  cleanupPolicyDryRun: false

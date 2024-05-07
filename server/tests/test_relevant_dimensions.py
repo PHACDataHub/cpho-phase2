@@ -42,7 +42,9 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in headers_str
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(
+        can_edit_indicator_data=True, can_view_indicator_data=True
+    ):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
         html_content = resp.content.decode("utf-8")
@@ -94,7 +96,9 @@ def test_relevant_dimensions(vanilla_user, vanilla_user_client):
         assert gender_dim.name_en in headers_str
 
     url_manage_data = reverse("manage_indicator_data_all", args=[ind.id, p.id])
-    with patch_rules(can_edit_indicator_data=True):
+    with patch_rules(
+        can_edit_indicator_data=True, can_view_indicator_data=True
+    ):
         resp = vanilla_user_client.get(url_manage_data)
         assert resp.status_code == 200
         html_content = resp.content.decode("utf-8")

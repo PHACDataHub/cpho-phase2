@@ -1,3 +1,33 @@
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSManagedZone
+metadata:
+  name: hopic-managed-zone
+  namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
+spec:
+  cloudLoggingConfig:
+    enableLogging: true
+  description: HoPiC DNS Zone for alpha DNS
+  dnsName: hopic-sdpac.phac-aspc.alpha.canada.ca.
+  visibility: public
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: hopic-dns-record-set
+  namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
+spec:
+  name: "hopic-sdpac.phac-aspc.alpha.canada.ca."
+  type: A
+  ttl: 300
+  managedZoneRef:
+    name: hopic-managed-zone
+  rrdatasRefs:
+    - name: hopic-external-ip
+      kind: ComputeAddress
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeAddress
@@ -11,6 +41,24 @@ spec:
   description: HoPiC external ip address for ingress gateway
   location: northamerica-northeast1
   networkTier: STANDARD
+---
+# ephemeral DNS config
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: hopic-ephemeral-dns-record-set
+  namespace: cnrm-system
+  annotations:
+    cnrm.cloud.google.com/state-into-spec: merge
+spec:
+  name: "*.dev.hopic-sdpac.phac-aspc.alpha.canada.ca."
+  type: A
+  ttl: 300
+  managedZoneRef:
+    name: hopic-managed-zone
+  rrdatasRefs:
+    - name: hopic-external-ip
+      kind: ComputeAddress
 ---
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSManagedZone

@@ -342,10 +342,13 @@ class ListIndicators(ListView):
 
     def get_queryset(self):
         if test_rule("is_admin_or_hso", self.request.user):
-            return Indicator.objects.all()
+            return Indicator.objects.all().order_by("name")
 
         else:
-            return get_indicators_for_user(self.request.user.id)
+            filtered = get_indicators_for_user(self.request.user.id)
+            filtered = list(filtered)
+            filtered.sort(key=lambda i: i.name)
+            return filtered
 
     def get_context_data(self, **kwargs):
         return {

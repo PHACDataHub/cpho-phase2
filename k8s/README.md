@@ -137,10 +137,12 @@ Once the PR is merged, Flux will propagate the changes. See the [official releas
 To [upgrade config connector](https://cloud.google.com/config-connector/docs/how-to/install-manually#upgrading) on the cluster, run the following commands from the root of this repository and submit a PR with changes:
 
 ```sh
-gsutil cp gs://configconnector-operator/latest/release-bundle.tar.gz release-bundle.tar.gz
+gsutil cp gs://configconnector-operator/<VERSION>/release-bundle.tar.gz release-bundle.tar.gz
 tar zxvf release-bundle.tar.gz
 cp ./operator-system/autopilot-configconnector-operator.yaml ./k8s/configconnector-operator-system/
+rm -rf operator-system/ release-bundle.tar.gz
 ```
+> Replace `<VERISON>` with a valid KCC Operator version.
 
 Once the PR is merged, Flux will propagate the changes. See the [official releases](https://github.com/GoogleCloudPlatform/k8s-config-connector/releases) page for more information regarding an upgrade.
 

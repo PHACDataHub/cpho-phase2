@@ -140,6 +140,7 @@ To [upgrade config connector](https://cloud.google.com/config-connector/docs/how
 gsutil cp gs://configconnector-operator/latest/release-bundle.tar.gz release-bundle.tar.gz
 tar zxvf release-bundle.tar.gz
 cp ./operator-system/autopilot-configconnector-operator.yaml ./k8s/configconnector-operator-system/
+rm -rf operator-system/ release-bundle.tar.gz
 ```
 
 Once the PR is merged, Flux will propagate the changes. See the [official releases](https://github.com/GoogleCloudPlatform/k8s-config-connector/releases) page for more information regarding an upgrade.

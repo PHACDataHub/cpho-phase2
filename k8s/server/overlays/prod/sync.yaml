@@ -72,7 +72,7 @@ spec:
     numerical:
       order: asc
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta1
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
 metadata:
   name: cpho-updater
@@ -93,6 +93,6 @@ spec:
       author:
         name: fluxbot
         email: fluxcd@users.noreply.github.com
-      messageTemplate: "[ci skip] {{range .Updated.Images}}{{println .}}{{end}}"
+      messageTemplate: "[ci skip] {{range .Changed.Images}}{{println .}}{{end}}"
     push:
       branch: "prod"

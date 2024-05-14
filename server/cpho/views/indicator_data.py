@@ -29,6 +29,7 @@ from cpho.views.view_util import (
     MustPassAuthCheckMixin,
     ReadOnlyFormMixin,
     SinglePeriodMixin,
+    age_group_sort,
 )
 
 
@@ -276,16 +277,17 @@ class ManageIndicatorData(
         return ReadOnlyIndicatorDatumForm
 
     @cached_property
+    def age_group_qs(self):
+        existing_data = IndicatorDatum.active_objects.filter(
+            indicator=self.indicator,
+            dimension_type__code="age",
+            period=self.period,
+        ).with_submission_annotations()
+        return existing_data
+
+    @cached_property
     def age_group_formset(self):
-        existing_data = (
-            IndicatorDatum.active_objects.filter(
-                indicator=self.indicator,
-                dimension_type__code="age",
-                period=self.period,
-            )
-            .order_by("dimension_value__order")
-            .with_submission_annotations()
-        )
+        existing_data = self.age_group_qs
 
         InlineFormsetCls = forms.inlineformset_factory(
             Indicator,
@@ -315,6 +317,11 @@ class ManageIndicatorData(
             form.instance.period = self.period
 
         return fs
+
+    @cached_property
+    def age_group_sorted(self):
+        existing_data = self.age_group_qs
+        return age_group_sort(existing_data)
 
     @cached_property
     def predefined_values_formset(self):
@@ -476,5 +483,8 @@ class ManageIndicatorData(
             "age_group_formset": self.age_group_formset,
             "show_age_group": self.has_age_group_forms,
         }
+
+        if self.has_age_group_forms:
+            ctx["age_group_sorted"] = self.age_group_sorted
 
         return ctx

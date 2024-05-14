@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.forms import BaseInlineFormSet
@@ -167,6 +169,33 @@ class MustPassAuthCheckMixin(View):
 class MustBeAdminOrHsoMixin(MustPassAuthCheckMixin):
     def check_rule(self):
         return test_rule("is_admin_or_hso", self.request.user)
+
+
+def custom_sort_age(ind_data):
+    if ind_data.dimension_type.code == "age":
+        match = re.findall(r"[<]?\d+[+]?", ind_data.literal_dimension_val)
+        if match:
+            first_numeric = match[0]
+            if "<" in first_numeric:
+                return str(
+                    int(first_numeric.replace("<", "").strip()) - 1
+                ).zfill(6)
+            if "+" in first_numeric:
+                return str(
+                    int(first_numeric.replace("+", "").strip()) + 1
+                ).zfill(6)
+            else:
+                return str(int(first_numeric.replace("+", "").strip())).zfill(
+                    6
+                )
+        return ind_data.literal_dimension_val
+
+    else:
+        raise ValueError("Custom Sort: Dimension type is not age")
+
+
+def age_group_sort(qs):
+    return sorted(qs, key=custom_sort_age)
 
 
 def upload_mapper():

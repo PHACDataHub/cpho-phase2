@@ -200,7 +200,14 @@
           </thead>
           <tbody id="{{ dimension_type }}-table-body"
                  class="text-center age-group-form-list">
-            {% for form in age_group_formset %}{{ age_group_form(form) }}{% endfor %}
+            {% for item in age_group_sorted %}
+              {% for form_instance in age_group_formset %}
+                {% if form_instance.instance.id == item.id %}
+                  {% set form = form_instance %}
+                  {{ age_group_form(form) }}
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
           </tbody>
         </table>
         {% if mode == "edit" %}

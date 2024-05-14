@@ -202,11 +202,11 @@
                  class="text-center age-group-form-list">
             {% for item in age_group_sorted %}
               {% for form_instance in age_group_formset %}
-                {% if form_instance.instance.id == item.id %}
-                  {% set form = form_instance %}
-                  {{ age_group_form(form) }}
-                {% endif %}
+                {% if form_instance.instance.id == item.id %}{{ age_group_form(form_instance) }}{% endif %}
               {% endfor %}
+            {% endfor %}
+            {% for form_instance in age_group_formset %}
+              {% if not form_instance.instance.id %}{{ age_group_form(form_instance) }}{% endif %}
             {% endfor %}
           </tbody>
         </table>

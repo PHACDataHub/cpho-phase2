@@ -8,7 +8,7 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:14.11
   primaryUpdateStrategy: unsupervised
 
-# PostGres Best Practices for the Logging 
+# PostGres Best Practices for the Logging
   #  - https://www.enterprisedb.com/blog/how-get-best-out-postgresql-logs
   #  - https://medium.com/google-cloud/correlate-statement-logs-in-cloudsql-for-postgres-with-connection-sessions-5bae4ade38f5
   #  - PostgreSQL Official Documentation on pg_stat_statements: https://www.postgresql.org/docs/current/pgstatstatements.html
@@ -30,12 +30,12 @@ spec:
       pgaudit.log_catalog: "off"
       pgaudit.log_parameter: "on"
       pgaudit.log_relation: "on"
-      log_statement: "none" 
+      log_statement: "none"
 
   nodeMaintenanceWindow:
-    inProgress: true
-    reusePVC: true
-  
+    inProgress: false
+    reusePVC: false
+
   inheritedMetadata:
     annotations:
       proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'

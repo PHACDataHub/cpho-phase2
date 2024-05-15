@@ -154,7 +154,7 @@ There are two types of updates in this section:
 
 ### Operator
 
-To [upgrade cnpg operator](https://cloudnative-pg.io/documentation/1.22/installation_upgrade/#upgrades) on the cluster, run the following commands from the root of this repository and submit a PR with changes:
+To [upgrade cnpg operator](https://cloudnative-pg.io/documentation/current/installation_upgrade/#upgrades) on the cluster, run the following commands from the root of this repository and submit a PR with changes:
 
 ```sh
 curl -sSL https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v<VERISON>/cnpg-<VERSION>.yaml > ./k8s/cnpg-system/cnpg-crds.yaml

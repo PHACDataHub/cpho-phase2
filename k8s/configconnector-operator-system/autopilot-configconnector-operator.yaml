@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-system
@@ -11,7 +11,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   labels:
@@ -56,6 +56,16 @@ spec:
           spec:
             description: ConfigConnectorContextSpec defines the desired state of ConfigConnectorContext
             properties:
+              actuationMode:
+                description: The actuation mode of Config Connector controls how resources
+                  are actuated onto the cloud provider. This can be either 'Reconciling'
+                  or 'Paused'. The default is 'Reconciling' where resources get actuated.
+                  In 'Paused', k8s resources are still reconciled with the api server
+                  but not actuated onto the cloud provider.
+                enum:
+                - Reconciling
+                - Paused
+                type: string
               billingProject:
                 description: Specifies the project to use for preconditions, quota
                   and billing. Should only be used when requestProjectPolicy is set
@@ -78,6 +88,18 @@ spec:
                 - SERVICE_ACCOUNT_PROJECT
                 - RESOURCE_PROJECT
                 - BILLING_PROJECT
+                type: string
+              stateIntoSpec:
+                description: StateIntoSpec is the user override of the default value
+                  for the 'cnrm.cloud.google.com/state-into-spec' annotation if the
+                  annotation is unset for a resource. 'absent' means that unspecified
+                  fields in the resource spec stay unspecified after successful reconciliation.
+                  'merge' means that unspecified fields in the resource spec are populated
+                  after a successful reconciliation if those unspecified fields are
+                  computed/defaulted by the API.
+                enum:
+                - Absent
+                - Merge
                 type: string
             required:
             - googleServiceAccount
@@ -109,7 +131,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   labels:
@@ -179,6 +201,19 @@ spec:
                   - namespaced
             description: ConfigConnectorSpec defines the desired state of ConfigConnector
             properties:
+              actuationMode:
+                description: The actuation mode of Config Connector controls how resources
+                  are actuated onto the cloud provider. This can be either 'Reconciling'
+                  or 'Paused'. In 'Paused', k8s resources are still reconciled with
+                  the api server but not actuated onto the cloud provider. If Config
+                  Connector is running in 'namespaced' mode, then the value in ConfigConnectorContext
+                  (CCC) takes precedence. If CCC doesn't define a value but ConfigConnecor
+                  (CC) does, we defer to that value. Otherwise, the default is 'Reconciling'
+                  where resources get actuated.
+                enum:
+                - Reconciling
+                - Paused
+                type: string
               credentialSecretName:
                 description: The Kubernetes secret that contains the Google Service
                   Account Key's credentials to be used by ConfigConnector to authenticate
@@ -240,7 +275,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   labels:
@@ -490,7 +525,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   labels:
@@ -680,7 +715,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   labels:
@@ -908,7 +943,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   labels:
@@ -1100,7 +1135,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator
@@ -1110,8 +1145,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
-    cnrm.cloud.google.com/version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
+    cnrm.cloud.google.com/version: 1.116.0
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -1145,6 +1180,14 @@ rules:
   - watch
 - apiGroups:
   - apigee.cnrm.cloud.google.com
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apikeys.cnrm.cloud.google.com
   resources:
   - '*'
   verbs:
@@ -1892,7 +1935,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -2084,7 +2127,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-cnrm-viewer-role-binding
@@ -2101,7 +2144,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-rolebinding
@@ -2118,7 +2161,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-service
@@ -2135,7 +2178,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.113.0
+    cnrm.cloud.google.com/operator-version: 1.116.0
   labels:
     cnrm.cloud.google.com/component: configconnector-operator
     cnrm.cloud.google.com/operator-system: "true"
@@ -2151,7 +2194,7 @@ spec:
   template:
     metadata:
       annotations:
-        cnrm.cloud.google.com/operator-version: 1.113.0
+        cnrm.cloud.google.com/operator-version: 1.116.0
       labels:
         cnrm.cloud.google.com/component: configconnector-operator
         cnrm.cloud.google.com/operator-system: "true"
@@ -2161,7 +2204,7 @@ spec:
         - --local-repo=/configconnector-operator/autopilot-channels
         command:
         - /configconnector-operator/manager
-        image: gcr.io/gke-release/cnrm/operator:2d9421c
+        image: gcr.io/gke-release/cnrm/operator:010d66d
         imagePullPolicy: Always
         name: manager
         resources:

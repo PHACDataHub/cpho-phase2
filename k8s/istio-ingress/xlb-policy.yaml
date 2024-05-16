@@ -1,5 +1,3 @@
-# Note: The ./infrastructure/backend-service.yaml must be re-imported if this file is edited. 
-# See https://github.com/PHACDataHub/cpho-phase2/pull/225 for details
 apiVersion: networking.gke.io/v1
 kind: HealthCheckPolicy
 metadata:
@@ -26,6 +24,7 @@ metadata:
   namespace: istio-ingress
 spec:
   default:
+    securityPolicy: hopic-waf
     timeoutSec: 180
     logging:
       enabled: true

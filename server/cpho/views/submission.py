@@ -39,6 +39,7 @@ from .view_util import (
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
+    age_group_sort,
 )
 
 
@@ -194,9 +195,14 @@ class ReviewData(
 
     @cached_property
     def indicator_data_by_dimension_type(self):
-        return group_by(
+        data = group_by(
             list(self.indicator_data), lambda d: d.dimension_type_id
         )
+        age_group_dim_id = DimensionType.objects.get(code="age").id
+        age_data = data.get(age_group_dim_id, [])
+        age_data = age_group_sort(age_data)
+        data[age_group_dim_id] = age_data
+        return data
 
     @cached_property
     def submission_statuses(self):

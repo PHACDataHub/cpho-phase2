@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.forms import BaseInlineFormSet
@@ -167,6 +169,29 @@ class MustPassAuthCheckMixin(View):
 class MustBeAdminOrHsoMixin(MustPassAuthCheckMixin):
     def check_rule(self):
         return test_rule("is_admin_or_hso", self.request.user)
+
+
+def age_group_sortable_score(indicator_datum):
+    match = re.findall(
+        r"[<]?\d+[+]?", indicator_datum.literal_dimension_val.lower()
+    )
+    if match:
+        first_numeric = match[0]
+        if "<" in first_numeric:
+            return str(int(first_numeric.replace("<", "").strip()) - 1).zfill(
+                6
+            )
+        if "+" in first_numeric:
+            return str(int(first_numeric.replace("+", "").strip()) + 1).zfill(
+                6
+            )
+        else:
+            return str(int(first_numeric.replace("+", "").strip())).zfill(6)
+    return indicator_datum.literal_dimension_val.lower()
+
+
+def age_group_sort(qs):
+    return sorted(qs, key=age_group_sortable_score)
 
 
 def upload_mapper():

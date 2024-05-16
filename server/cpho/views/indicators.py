@@ -28,7 +28,12 @@ from cpho.queries import (
 from cpho.text import tdt, tm
 from cpho.util import get_lang_code, group_by
 
-from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin, export_mapper
+from .view_util import (
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+    age_group_sort,
+    export_mapper,
+)
 
 
 # might need to move this to a form_fields.py file
@@ -430,9 +435,14 @@ class ViewIndicatorForPeriod(
 
     @cached_property
     def indicator_data_by_dimension_type(self):
-        return group_by(
+        data = group_by(
             list(self.indicator_data), lambda d: d.dimension_type_id
         )
+        age_group_dim_id = DimensionType.objects.get(code="age").id
+        age_data = data.get(age_group_dim_id, [])
+        age_data = age_group_sort(age_data)
+        data[age_group_dim_id] = age_data
+        return data
 
     def get_context_data(self, *args, **kwargs):
         return {

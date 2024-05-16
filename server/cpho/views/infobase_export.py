@@ -195,13 +195,18 @@ class InfobaseExportView(View):
     def write_indicators(self):
         # todo: use submitted indicators instead
         writer = IndicatorSheetWriter(
-            workbook=self.workbook, iterator=Indicator.objects.all()
+            workbook=self.workbook,
+            iterator=Indicator.objects.all().order_by("name"),
         )
         writer.write()
 
     def write_indicator_data(self):
-        qs = IndicatorDatum.objects.all().select_related(
-            "indicator", "period", "dimension_type", "dimension_value"
+        qs = (
+            IndicatorDatum.objects.all()
+            .select_related(
+                "indicator", "period", "dimension_type", "dimension_value"
+            )
+            .order_by("indicator_id", "period_id", "dimension_type_id")
         )
         writer = IndicatorDatumSheetWriter(
             workbook=self.workbook, iterator=qs.all()
@@ -209,13 +214,19 @@ class InfobaseExportView(View):
         writer.write()
 
     def write_trends(self):
-        qs = TrendAnalysis.objects.all().select_related("indicator")
+        qs = (
+            TrendAnalysis.objects.all()
+            .select_related("indicator")
+            .order_by("indicator_id", "year")
+        )
         writer = TrendSheetWriter(workbook=self.workbook, iterator=qs.all())
         writer.write()
 
     def write_benchmarking(self):
-        qs = Benchmarking.objects.all().select_related(
-            "indicator", "oecd_country"
+        qs = (
+            Benchmarking.objects.all()
+            .select_related("indicator", "oecd_country")
+            .order_by("indicator_id", "labels", "value")
         )
         writer = BenchmarkingSheetWriter(
             workbook=self.workbook, iterator=qs.all()

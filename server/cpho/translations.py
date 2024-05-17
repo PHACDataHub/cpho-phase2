@@ -1198,4 +1198,8 @@ translation_entries = {
         "en": "View",
         "fr": "Voir",
     },
+    "arrow_flag": {
+        "en": "Arrow Flag",
+        "fr": "Drapeau fléché",
+    },
 }

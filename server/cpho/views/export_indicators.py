@@ -61,6 +61,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
             "Period",
             "Reason_for_Null_Data",
             "Value_Units",
+            "Arrow_Flag",
         ]
         writer.writerow(header_row)
 
@@ -102,6 +103,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                             record.reason_for_null, ""
                         ),
                         mapper["value_unit_mapper"].get(record.value_unit, ""),
+                        record.arrow_flag,
                     ]
                 )
 

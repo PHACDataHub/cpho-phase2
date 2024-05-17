@@ -124,6 +124,7 @@ indicator_data_columns = [
     ChoiceColumn(IndicatorDatum, "value_displayed"),
     ModelColumn(IndicatorDatum, "single_year_timeframe"),
     ModelColumn(IndicatorDatum, "multi_year_timeframe"),
+    ModelColumn(IndicatorDatum, "arrow_flag"),
 ]
 
 
@@ -245,9 +246,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename=hopic_infobase_export.xlsx"
+        response["Content-Disposition"] = (
+            f"attachment; filename=hopic_infobase_export.xlsx"
+        )
         self.workbook.save(response)
 
         return response

@@ -75,6 +75,7 @@
                 <th>{{ tm("value_displayed") }}</th>
                 <th>{{ tm("reason_for_null_data") }}</th>
                 <th>{{ tm("period") }}</th>
+                <th>{{ tm("arrow_flag") }}</th>
               </tr>
             </thead>
  
@@ -115,6 +116,10 @@
                   <td class="{{ check_error_class(datum, 'Period').strip() }}">
                     {{ datum["Period"] }}
                     {{ check_error(datum, "Period") }}
+                  </td>
+                  <td class="{{ check_error_class(datum, 'Arrow_Flag').strip() }}">
+                    {{ datum["Arrow_Flag"] }}
+                    {{ check_error(datum, "Arrow_Flag") }}
                   </td>
                 </tr>
               {% endfor %}

@@ -103,7 +103,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                             record.reason_for_null, ""
                         ),
                         mapper["value_unit_mapper"].get(record.value_unit, ""),
-                        record.arrow_flag,
+                        mapper["arrow_flag_mapper"].get(record.arrow_flag, ""),
                     ]
                 )
 

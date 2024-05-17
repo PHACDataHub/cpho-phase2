@@ -227,7 +227,12 @@ def upload_mapper():
             "GOOD": "good",
             "ACCEPTABLE": "acceptable",
             "SUPPRESSED": "suppressed",
-            "VERY GOOD": "very good",
+            "VERY GOOD": "very_good",
+        },
+        "arrow_flag_mapper": {
+            "": "",
+            "UP": "up",
+            "DOWN": "down",
         },
         "reason_for_null_mapper": {
             "": "",
@@ -512,6 +517,9 @@ def export_mapper():
         },
         "data_quality_mapper": {
             v: k for k, v in upload_mapping["data_quality_mapper"].items()
+        },
+        "arrow_flag_mapper": {
+            v: k for k, v in upload_mapping["arrow_flag_mapper"].items()
         },
         "reason_for_null_mapper": {
             v: k for k, v in upload_mapping["reason_for_null_mapper"].items()

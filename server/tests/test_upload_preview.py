@@ -9,11 +9,11 @@ from cpho.models import DimensionType, Indicator, IndicatorDatum, Period
 
 
 def check_preview(val_dict, hso_client, fieldname=None, num_errors=1):
-    data_header = "Category,Topic,Indicator,Detailed Indicator,Sub_Indicator_Measurement,Data_Quality,Value,Value_LowerCI,Value_UpperCI,Value_Displayed,SingleYear_TimeFrame,MultiYear_TimeFrame,Dimension_Type,Dimension_Value,Period,Reason_for_Null_Data,Value_Units\r\n"
+    data_header = "Category,Topic,Indicator,Detailed Indicator,Sub_Indicator_Measurement,Data_Quality,Value,Value_LowerCI,Value_UpperCI,Value_Displayed,SingleYear_TimeFrame,MultiYear_TimeFrame,Dimension_Type,Dimension_Value,Period,Reason_for_Null_Data,Value_Units,Arrow_Flag\r\n"
     if fieldname:
         correct_category_val = val_dict[fieldname]
         val_dict[fieldname] = "incorrect data"
-    data_row = f"{val_dict['category']},{val_dict['topic']},{val_dict['indicator']},{val_dict['detailed_indicator']},{val_dict['sub_indicator_measurement']},{val_dict['data_quality']},{val_dict['value']},{val_dict['value_lower_ci']},{val_dict['value_upper_ci']},{val_dict['value_displayed']},{val_dict['single_year_time_frame']},{val_dict['multi_year_time_frame']},{val_dict['dimension_type']},{val_dict['dimension_value']},{val_dict['period']},{val_dict['reason_for_null']},{val_dict['value_units']}\r\n"
+    data_row = f"{val_dict['category']},{val_dict['topic']},{val_dict['indicator']},{val_dict['detailed_indicator']},{val_dict['sub_indicator_measurement']},{val_dict['data_quality']},{val_dict['value']},{val_dict['value_lower_ci']},{val_dict['value_upper_ci']},{val_dict['value_displayed']},{val_dict['single_year_time_frame']},{val_dict['multi_year_time_frame']},{val_dict['dimension_type']},{val_dict['dimension_value']},{val_dict['period']},{val_dict['reason_for_null']},{val_dict['value_units']},{val_dict['arrow_flag']}\r\n"
     file_data = data_header + data_row
     if fieldname:
         val_dict[fieldname] = correct_category_val
@@ -65,6 +65,7 @@ def test_preview(hso_client):
         "period": "CY2021",
         "reason_for_null": "",
         "value_units": "PERCENTAGE",
+        "arrow_flag": "UP",
     }
     check_preview(val_dict, hso_client, "category")
     check_preview(val_dict, hso_client, "topic")
@@ -75,5 +76,6 @@ def test_preview(hso_client):
     check_preview(val_dict, hso_client, "value_units")
     check_preview(val_dict, hso_client, "dimension_type", num_errors=2)
     check_preview(val_dict, hso_client, "dimension_value")
+    check_preview(val_dict, hso_client, "arrow_flag")
 
     check_preview(val_dict, hso_client)

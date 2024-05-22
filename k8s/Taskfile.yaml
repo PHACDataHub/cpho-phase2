@@ -85,33 +85,25 @@ tasks:
            --description "Secuirty policy with sensible baseline configuration for an external load balancer" \
            --region={{.REGION}}
       - |
-         preconfigured_waf_rules=(
-           # opt out of rules for special character limits in cookies (942420, 942421, 942432); lots of false positives from these
-           # opt out of rules for SQL injection probing (942330, 942370, 942490); lots of false positives from these
-           "'sqli-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id942420-sqli', 'owasp-crs-v030301-id942421-sqli', 'owasp-crs-v030301-id942432-sqli', 'owasp-crs-v030301-id942330-sqli', 'owasp-crs-v030301-id942370-sqli', 'owasp-crs-v030301-id942490-sqli', 'owasp-crs-v030301-id942430-sqli', 'owasp-crs-v030301-id942431-sqli']}"
-           "'xss-v33-stable'"
+        preconfigured_waf_rules=(
            "'lfi-v33-stable'"
            "'rfi-v33-stable'"
-           "'rce-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id932200-rce']}"
+           "'rce-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id932200-rce', 'owasp-crs-v030301-id932190-rce']}"
            "'methodenforcement-v33-stable'"
            "'scannerdetection-v33-stable'"
-           "'protocolattack-v33-stable'"
+           "'protocolattack-v33-stable', {'opt_out_rule_ids': ['owasp-crs-v030301-id921170-protocolattack', 'owasp-crs-v030301-id921150-protocolattack', 'owasp-crs-v030301-id921120-protocolattack']}"
            "'sessionfixation-v33-stable'"
-           # TODO these do not apply, but is there any latency cost to still scanning for them? Maybe enable them anyway
-           #"'php-v33-stable'" 
-           #"'java-v33-stable'" 
-           #"'nodejs-v33-stable'" 
-         )
-         declare -i level_incrementor=9000
-         for rule in "${preconfigured_waf_rules[@]}"; do
-           gcloud compute security-policies rules create "${level_incrementor}" \
-             --security-policy "{{.NAME}}-waf" \
-             --expression "evaluatePreconfiguredWaf(${rule})" \
-             --action deny-403 \
-             --region={{.REGION}}
-           
-           level_incrementor+=1
-         done
+        )
+        level_incrementor=9000
+        for rule in "${preconfigured_waf_rules[@]}"; do
+          gcloud compute security-policies rules create "${level_incrementor}" \
+            --security-policy "{{.NAME}}-waf" \
+            --expression "evaluatePreconfiguredWaf(${rule})" \
+            --action deny-403 \
+            --region="{{.REGION}}" \
+            --project="{{.PROJECT_ID}}"
+          level_incrementor=$((level_incrementor + 1))
+        done
 
   install-asm:
     desc: Install and configure ASM. See https://cloud.google.com/service-mesh/docs/managed/provision-managed-anthos-service-mesh for details

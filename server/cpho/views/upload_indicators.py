@@ -241,7 +241,6 @@ class PreviewUpload(MustPassAuthCheckMixin, TemplateView):
         for datum in csv_data:
             # global error check across all data
             if datum["errors"]:
-                print(datum["errors"])
                 no_errors = False
             # grouping data by indicator, detailed indicator, sub indicator measurement, category, topic
             indicator_grouped_data[

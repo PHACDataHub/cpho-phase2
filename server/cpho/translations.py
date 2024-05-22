@@ -340,14 +340,14 @@ translation_entries = {
         "en": "Table title sex",
         "fr": "Titre du tableau sexe",
     },
-    "title_sex_2": {
-        "en": "Title sex 2",
-        "fr": "Titre sexe 2",
-    },
-    "table_title_sex_2": {
-        "en": "Table title sex 2",
-        "fr": "Titre du tableau sexe 2",
-    },
+    # "title_sex_2": {
+    #     "en": "Title sex 2",
+    #     "fr": "Titre sexe 2",
+    # },
+    # "table_title_sex_2": {
+    #     "en": "Table title sex 2",
+    #     "fr": "Titre du tableau sexe 2",
+    # },
     "age": {
         "en": "Age",
         "fr": "Âge",
@@ -360,14 +360,6 @@ translation_entries = {
         "en": "Table title age",
         "fr": "Titre du tableau âge",
     },
-    "title_age_2": {
-        "en": "Title age 2",
-        "fr": "Titre âge 2",
-    },
-    "table_title_age_2": {
-        "en": "Table title age 2",
-        "fr": "Titre du tableau âge 2",
-    },
     "title_province_territory": {
         "en": "Title province territory",
         "fr": "Titre province territoire",
@@ -375,14 +367,6 @@ translation_entries = {
     "table_title_province_territory": {
         "en": "Table title province territory",
         "fr": "Titre du tableau province territoire",
-    },
-    "title_province_territory_2": {
-        "en": "Title province territory 2",
-        "fr": "Titre province territoire 2",
-    },
-    "table_title_province_territory_2": {
-        "en": "Table title province territory 2",
-        "fr": "Titre du tableau province territoire 2",
     },
     "title_living_arrangement": {
         "en": "Title living arrangement",

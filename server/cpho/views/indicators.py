@@ -161,12 +161,6 @@ class IndicatorForm(ModelForm):
     table_title_sex = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    title_sex_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    table_title_sex_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
     # AGE
     title_age = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
@@ -174,23 +168,11 @@ class IndicatorForm(ModelForm):
     table_title_age = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    title_age_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    table_title_age_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
     # PROVINCE/TERRITORY
     title_province_territory = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     table_title_province_territory = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    title_province_territory_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    table_title_province_territory_2 = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
@@ -313,17 +295,11 @@ class IndicatorForm(ModelForm):
         "table_title_overall",
         "title_sex",
         "table_title_sex",
-        "title_sex_2",
-        "table_title_sex_2",
         "title_age",
         "table_title_age",
-        "title_age_2",
-        "table_title_age_2",
         "title_province_territory",
         "table_title_province_territory",
         "pt_dynamic_text",
-        "title_province_territory_2",
-        "table_title_province_territory_2",
         "title_living_arrangement",
         "table_title_living_arrangement",
         "title_education_household",

@@ -186,20 +186,14 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     # SEX
     title_sex = fields.TextField(null=True, blank=True)
     table_title_sex = fields.TextField(null=True, blank=True)
-    title_sex_2 = fields.TextField(null=True, blank=True)
-    table_title_sex_2 = fields.TextField(null=True, blank=True)
 
     # AGE
     title_age = fields.TextField(null=True, blank=True)
     table_title_age = fields.TextField(null=True, blank=True)
-    title_age_2 = fields.TextField(null=True, blank=True)
-    table_title_age_2 = fields.TextField(null=True, blank=True)
 
     # PROVINCE/TERRITORY
     title_province_territory = fields.TextField(null=True, blank=True)
     table_title_province_territory = fields.TextField(null=True, blank=True)
-    title_province_territory_2 = fields.TextField(null=True, blank=True)
-    table_title_province_territory_2 = fields.TextField(null=True, blank=True)
 
     # LIVING ARRANGEMENT
     title_living_arrangement = fields.TextField(null=True, blank=True)

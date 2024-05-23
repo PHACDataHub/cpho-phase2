@@ -53,26 +53,26 @@ class IndicatorDatum(graphene.ObjectType):
 
     period = graphene.Field(NonNull("api.types.Period"))
 
-    def get_period(self, info):
+    def resolve_period(self, info):
         return PeriodByIdLoader(info.context.dataloaders).load(self.period_id)
 
     dimension_type = graphene.Field(NonNull("api.types.DimensionType"))
 
-    def get_dimension_type(self, info):
+    def resolve_dimension_type(self, info):
         return DimensionTypeByIdLoader(info.context.dataloaders).load(
             self.dimension_type_id
         )
 
     dimension_value = graphene.Field("api.types.DimensionValue")
 
-    def get_dimension_value(self, info):
+    def resolve_dimension_value(self, info):
         return DimensionValueByIdLoader(info.context.dataloaders).load(
             self.dimension_value_id
         )
 
     indicator = graphene.Field(NonNull("api.types.Indicator"))
 
-    def get_indicator(self, info):
+    def resolve_indicator(self, info):
         return IndicatorByIdLoader(info.context.dataloaders).load(
             self.indicator_id
         )

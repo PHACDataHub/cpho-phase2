@@ -13,7 +13,7 @@ def test_import(hso_client):
     # indicator name = Test Upload
     # 2 data points
     data["csv_file"] = io.BytesIO(
-        b'Category,Topic,Indicator,Detailed Indicator,Sub_Indicator_Measurement,Data_Quality,Value,Value_LowerCI,Value_UpperCI,Value_Displayed,SingleYear_TimeFrame,MultiYear_TimeFrame,Dimension_Type,Dimension_Value,Period,Reason_for_Null_Data,Value_Units\r\nHEALTH OUTCOMES,COMMUNICABLE DISEASES,Test Upload,morph cross-platform technologies,embrace best-of-breed applications,CAUTION,78.100478,12.92545,98.81349619,,,,Sex,MALES,CY2021,,PERCENTAGE\r\nHEALTH OUTCOMES,COMMUNICABLE DISEASES,Test Upload,morph cross-platform technologies,embrace best-of-breed applications,ACCEPTABLE,53.61193482,14.15379785,93.3798263,,,,Age Group,custom value,CY2021,,"RATE PER 10,000 PATIENT DAYS"\r\n'
+        b'Category,Topic,Indicator,Detailed Indicator,Sub_Indicator_Measurement,Data_Quality,Value,Value_LowerCI,Value_UpperCI,Value_Displayed,SingleYear_TimeFrame,MultiYear_TimeFrame,Dimension_Type,Dimension_Value,Period,Reason_for_Null_Data,Value_Units,Arrow_Flag\r\nFACTORS INFLUENCING HEALTH,SOCIAL FACTORS,Test Upload,strategize e-business supply-chains,revolutionize cross-media e-business,ACCEPTABLE,58.98178803,5.65398,83.99,%,,,Sex,MALES,CY2022,Suppressed,PERCENTAGE (CRUDE),UP\r\nFACTORS INFLUENCING HEALTH,SOCIAL FACTORS,Test Upload,strategize e-business supply-chains,revolutionize cross-media e-business,,60.611,6.78,95.178702,%,,,Sex,FEMALES,CY2022,Not available,"RATE PER 100,000 POPULATION PER YEAR",DOWN\r\n'
     )
     data["csv_file"].name = "test.csv"
     url = reverse("upload_indicator")

@@ -124,6 +124,7 @@ indicator_data_columns = [
     ChoiceColumn(IndicatorDatum, "value_displayed"),
     ModelColumn(IndicatorDatum, "single_year_timeframe"),
     ModelColumn(IndicatorDatum, "multi_year_timeframe"),
+    ModelColumn(IndicatorDatum, "arrow_flag"),
 ]
 
 

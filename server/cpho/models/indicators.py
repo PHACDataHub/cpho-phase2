@@ -472,6 +472,14 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         on_delete=models.RESTRICT,
     )
 
+    ARROW_FLAG_CHOICES = [
+        ("", "--"),
+        ("up", "\u2191"),
+        ("down", "\u2193"),
+    ]
+
+    arrow_flag = fields.CharField(max_length=50, null=True)
+
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""

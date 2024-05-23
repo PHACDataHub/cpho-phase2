@@ -64,6 +64,7 @@ class IndicatorDatumForm(ModelForm):
             "literal_dimension_val",
             "value_displayed",
             "reason_for_null",
+            "arrow_flag",
             "is_deleted",
             "deletion_time",
         ]
@@ -143,6 +144,16 @@ class IndicatorDatumForm(ModelForm):
             }
         ),
         label=tm("reason_for_null_data"),
+    )
+    arrow_flag = forms.ChoiceField(
+        required=False,
+        choices=IndicatorDatum.ARROW_FLAG_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+        label=tm("arrow_flag"),
     )
     is_deleted = forms.BooleanField(
         required=False,

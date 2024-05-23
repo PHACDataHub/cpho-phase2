@@ -4,7 +4,7 @@ metadata:
   name: server
 data:
   IS_K8S: "true"
-  ALLOWED_HOSTS: "${BRANCH_NAME}.dev.hopic-sdpac.data-donnes.phac-aspc.gc.ca,hopic-sdpac.data-donnes.phac-aspc.gc.ca,34.149.100.163,localhost,34.152.0.41,41.0.152.34.bc.googleusercontent.com"
+  ALLOWED_HOSTS: "${BRANCH_NAME}.dev.hopic-sdpac.data.phac.gc.ca,hopic-sdpac.data.phac.gc.ca,34.149.100.163,localhost,34.152.0.41,41.0.152.34.bc.googleusercontent.com"
   DB_NAME: "cpho-phase2_db"
   DB_HOST: "cpho-postgres14-cluster-rw"
   DB_PORT: "5432"

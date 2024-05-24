@@ -186,20 +186,14 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     # SEX
     title_sex = fields.TextField(null=True, blank=True)
     table_title_sex = fields.TextField(null=True, blank=True)
-    title_sex_2 = fields.TextField(null=True, blank=True)
-    table_title_sex_2 = fields.TextField(null=True, blank=True)
 
     # AGE
     title_age = fields.TextField(null=True, blank=True)
     table_title_age = fields.TextField(null=True, blank=True)
-    title_age_2 = fields.TextField(null=True, blank=True)
-    table_title_age_2 = fields.TextField(null=True, blank=True)
 
     # PROVINCE/TERRITORY
     title_province_territory = fields.TextField(null=True, blank=True)
     table_title_province_territory = fields.TextField(null=True, blank=True)
-    title_province_territory_2 = fields.TextField(null=True, blank=True)
-    table_title_province_territory_2 = fields.TextField(null=True, blank=True)
 
     # LIVING ARRANGEMENT
     title_living_arrangement = fields.TextField(null=True, blank=True)
@@ -477,6 +471,14 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         blank=True,
         on_delete=models.RESTRICT,
     )
+
+    ARROW_FLAG_CHOICES = [
+        ("", "--"),
+        ("up", "\u2191"),
+        ("down", "\u2193"),
+    ]
+
+    arrow_flag = fields.CharField(max_length=50, null=True)
 
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(

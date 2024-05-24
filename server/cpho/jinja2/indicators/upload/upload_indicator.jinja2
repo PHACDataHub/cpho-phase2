@@ -1,4 +1,11 @@
 {% extends 'base.jinja2' %}
+{% import 'breadcrumb_macros.jinja2' as bc %}
+
+{% block content_breadcrumbs %}
+  {{ bc.indicators_index() }}
+  {{ bc.item(tm("upload_indicator") , None, True) }}
+{% endblock %}
+
 {% block content %}
 
   <div class="h2 mb-3">{{ tm("upload_indicator") }}</div>

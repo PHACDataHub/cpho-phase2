@@ -72,6 +72,17 @@
               </td>
             </tr>
             <tr>
+              <td>Arrow_Flag</td>
+              <td>{{ tm("arrow_flag") }}</td>
+              <td>
+                <ul>
+                  {% for key in mapper["arrow_flag_mapper"] %}
+                    {% if key != "" %}<li>{{ key }}</li>{% endif %}
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            <tr>
               <td>Value</td>
               <td>{{ tm("value") }}</td>
               <td>{{ tm("open_number_field_allows_decimals") }}</td>

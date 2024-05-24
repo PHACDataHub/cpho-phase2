@@ -28,7 +28,12 @@ from cpho.queries import (
 from cpho.text import tdt, tm
 from cpho.util import get_lang_code, group_by
 
-from .view_util import MustPassAuthCheckMixin, SinglePeriodMixin, export_mapper
+from .view_util import (
+    MustPassAuthCheckMixin,
+    SinglePeriodMixin,
+    age_group_sort,
+    export_mapper,
+)
 
 
 # might need to move this to a form_fields.py file
@@ -156,12 +161,6 @@ class IndicatorForm(ModelForm):
     table_title_sex = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    title_sex_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    table_title_sex_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
     # AGE
     title_age = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
@@ -169,23 +168,11 @@ class IndicatorForm(ModelForm):
     table_title_age = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
-    title_age_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    table_title_age_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
     # PROVINCE/TERRITORY
     title_province_territory = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
     table_title_province_territory = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    title_province_territory_2 = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    table_title_province_territory_2 = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
@@ -308,17 +295,11 @@ class IndicatorForm(ModelForm):
         "table_title_overall",
         "title_sex",
         "table_title_sex",
-        "title_sex_2",
-        "table_title_sex_2",
         "title_age",
         "table_title_age",
-        "title_age_2",
-        "table_title_age_2",
         "title_province_territory",
         "table_title_province_territory",
         "pt_dynamic_text",
-        "title_province_territory_2",
-        "table_title_province_territory_2",
         "title_living_arrangement",
         "table_title_living_arrangement",
         "title_education_household",
@@ -342,10 +323,13 @@ class ListIndicators(ListView):
 
     def get_queryset(self):
         if test_rule("is_admin_or_hso", self.request.user):
-            return Indicator.objects.all()
+            return Indicator.objects.all().order_by("name")
 
         else:
-            return get_indicators_for_user(self.request.user.id)
+            filtered = get_indicators_for_user(self.request.user.id)
+            filtered = list(filtered)
+            filtered.sort(key=lambda i: i.name)
+            return filtered
 
     def get_context_data(self, **kwargs):
         return {
@@ -430,9 +414,14 @@ class ViewIndicatorForPeriod(
 
     @cached_property
     def indicator_data_by_dimension_type(self):
-        return group_by(
+        data = group_by(
             list(self.indicator_data), lambda d: d.dimension_type_id
         )
+        age_group_dim_id = DimensionType.objects.get(code="age").id
+        age_data = data.get(age_group_dim_id, [])
+        age_data = age_group_sort(age_data)
+        data[age_group_dim_id] = age_data
+        return data
 
     def get_context_data(self, *args, **kwargs):
         return {

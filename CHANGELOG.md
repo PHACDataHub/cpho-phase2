@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.0.0...v1.0.1) (2024-05-23)
+
+
+### Bug Fixes
+
+* added age group custom sorting ([#316](https://github.com/PHACDataHub/cpho-phase2/issues/316)) ([b80687a](https://github.com/PHACDataHub/cpho-phase2/commit/b80687a2ffc3a5e1b5f84184818f4fd3132a56cd))
+* added breadcrumbs for upload ([#305](https://github.com/PHACDataHub/cpho-phase2/issues/305)) ([bb370e0](https://github.com/PHACDataHub/cpho-phase2/commit/bb370e009b56f4bca4084a8b2f12315eff09b0c4))
+* Arrow flags ([#321](https://github.com/PHACDataHub/cpho-phase2/issues/321)) ([8dc97b1](https://github.com/PHACDataHub/cpho-phase2/commit/8dc97b15b46360ff1484b9f062054f2ad768cd82))
+* edited out all Title2 sections ([#324](https://github.com/PHACDataHub/cpho-phase2/issues/324)) ([f375a41](https://github.com/PHACDataHub/cpho-phase2/commit/f375a414375577fed28c0d76b39b4d84b39f22a2))
+* Ordering on homepage and InfoBase export ([#312](https://github.com/PHACDataHub/cpho-phase2/issues/312)) ([4f6373c](https://github.com/PHACDataHub/cpho-phase2/commit/4f6373ca031b18b0f158bb32a7b103d783b6f59d))
+
 ## 1.0.0 (2024-05-06)
 
 

@@ -4,8 +4,6 @@ kind: LoggingLogBucket
 metadata:
   name: hopic-application-logs-pht-01hp04dtnkf
   namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   projectRef:
     external: "projects/pht-01hp04dtnkf"
@@ -22,8 +20,6 @@ kind: LoggingLogSink
 metadata:
   namespace: cnrm-system
   name: hopic-application-logs-sink
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   projectRef:
     external: "pht-01hp04dtnkf"

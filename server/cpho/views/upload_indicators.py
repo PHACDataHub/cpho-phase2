@@ -180,12 +180,13 @@ class UploadForm(forms.Form, IndDataCleanMixin):
                     error_dict["Value"] = tdt(
                         f"Value: {data_value} is not a valid number"
                     )
-                err = self.IndDataCleanValue(
-                    data_value,
-                    value_unit_mapper[data_value_units],
-                )
-                if err:
-                    error_dict["Value"] = str(err)
+                if error_dict.get("Value_Units") is None:
+                    err = self.IndDataCleanValue(
+                        data_value,
+                        value_unit_mapper[data_value_units],
+                    )
+                    if err:
+                        error_dict["Value"] = str(err)
 
             data_value_lower = data_row["Value_LowerCI"]
             if data_value_lower != "":
@@ -244,16 +245,17 @@ class UploadForm(forms.Form, IndDataCleanMixin):
                     f"You do not have permission to edit data for Indicator: {indicator_obj.name}"
                 )
 
-            period_obj = period_mapper[data_period]
+            if "Period" not in error_dict and "Indicator" not in error_dict:
+                period_obj = period_mapper[data_period]
 
-            if indicator_obj is not None and not test_rule(
-                "can_edit_indicator_data",
-                self.user,
-                {"indicator": indicator_obj, "period": period_obj},
-            ):
-                error_dict["Period"] = tdt(
-                    f"You do not have permission to edit data for period: {data_row['Period']}. Period is not current"
-                )
+                if indicator_obj is not None and not test_rule(
+                    "can_edit_indicator_data",
+                    self.user,
+                    {"indicator": indicator_obj, "period": period_obj},
+                ):
+                    error_dict["Period"] = tdt(
+                        f"You do not have permission to edit data for period: {data_row['Period']}. Period is not current"
+                    )
 
             data_dict.append(data_row)
 

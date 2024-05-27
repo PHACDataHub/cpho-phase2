@@ -201,3 +201,42 @@ def test_user_scoped_changelog(vanilla_user, vanilla_user_client):
                 },
             )
         )
+
+
+def test_datum_changelog(vanilla_user_client):
+    if settings.USE_SQLITE:
+        print("skipping changelog test because sqlite is used")
+        return
+
+    year = Period.objects.first().year
+
+    create_versions()
+
+    with patch_rules(is_admin_or_hso=False):
+        resp = vanilla_user_client.get(reverse("global_datum_changelog"))
+        assert resp.status_code == 403
+
+    with (
+        patch_rules(is_admin_or_hso=True),
+        patch("cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2),
+    ):
+        resp = vanilla_user_client.get(reverse("global_datum_changelog"))
+    assert resp.status_code == 200
+
+    url_with_year_param = reverse("global_datum_changelog") + "?year=1999"
+    with (
+        patch_rules(is_admin_or_hso=True),
+        patch("cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2),
+    ):
+        resp_with_year_param = vanilla_user_client.get(url_with_year_param)
+    assert resp_with_year_param.status_code == 200
+    assert len(resp_with_year_param.context["edit_entries"]) == 0
+
+    url_with_year_param = reverse("global_datum_changelog") + f"?year={year}"
+    with (
+        patch_rules(is_admin_or_hso=True),
+        patch("cpho.views.changelog.ChangelogView.get_page_size", lambda _: 2),
+    ):
+        resp_with_year_param = vanilla_user_client.get(url_with_year_param)
+    assert resp_with_year_param.status_code == 200
+    assert len(resp_with_year_param.context["edit_entries"]) == 2

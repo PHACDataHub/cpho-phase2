@@ -20,10 +20,10 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
-from .view_util import MustPassAuthCheckMixin, upload_mapper
+from .view_util import IndDataCleanMixin, MustPassAuthCheckMixin, upload_mapper
 
 
-class UploadForm(forms.Form):
+class UploadForm(forms.Form, IndDataCleanMixin):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
         self.request = kwargs.pop("request", None)
@@ -93,70 +93,135 @@ class UploadForm(forms.Form):
                 data_row[key] = value.strip()
             data_row["line"] = idx + 2
             data_row["errors"] = {}
-            if data_row["Category"] not in mapper["category_mapper"]:
-                data_row["errors"]["Category"] = tdt(
-                    f"Category: {data_row['Category']} is not valid"
-                )
-            if data_row["Topic"] not in mapper["topic_mapper"]:
-                data_row["errors"]["Topic"] = tdt(
-                    tdt(f"Topic: {data_row['Topic']} is not valid")
-                )
-            if data_row["Data_Quality"] not in mapper["data_quality_mapper"]:
-                data_row["errors"]["Data_Quality"] = tdt(
-                    f"Data quality: {data_row['Data_Quality']} is not valid"
-                )
-            if (
-                data_row["Reason_for_Null_Data"]
-                not in mapper["reason_for_null_mapper"]
-            ):
-                data_row["errors"]["Reason_for_Null_Data"] = tdt(
-                    f"Reason_for_Null_Data: {data_row['Reason_for_Null_Data']} is not valid"
-                )
-            if data_row["Value_Units"] not in mapper["value_unit_mapper"]:
-                data_row["errors"]["Value_Units"] = tdt(
-                    f"Value Units: {data_row['Value_Units']} is not valid"
-                )
-            if (
-                data_row["Value_Displayed"]
-                not in mapper["value_displayed_mapper"]
-            ):
-                data_row["errors"]["Value_Displayed"] = tdt(
-                    f"Value displayed: {data_row['Value_Displayed']} is not valid"
-                )
-            if data_row["Dimension_Type"] != "Age Group":
-                if (
-                    data_row["Dimension_Type"]
-                    not in mapper["dimension_type_mapper"]
-                ):
-                    data_row["errors"]["Dimension_Type"] = tdt(
-                        f"Dimension Type: {data_row['Dimension_Type']} is not valid"
-                    )
-                if (
-                    data_row["Dimension_Type"],
-                    data_row["Dimension_Value"],
-                ) not in mapper["non_literal_dimension_value_mapper"]:
-                    data_row["errors"]["Dimension_Value"] = tdt(
-                        f"Combination of Dimension Type: {data_row['Dimension_Type']} and Dimension Value: {data_row['Dimension_Value']} is not valid"
-                    )
-            if data_row["Period"] not in mapper["period_mapper"]:
-                data_row["errors"]["Period"] = tdt(
-                    f"Period: {data_row['Period']} is not valid"
-                )
-            if data_row["Arrow_Flag"] not in mapper["arrow_flag_mapper"]:
-                data_row["errors"]["Arrow_Flag"] = tdt(
-                    f"Arrow Flag: {data_row['Arrow_Flag']} is not valid"
+
+            error_dict = data_row["errors"]
+            # mapper errors for categorical values
+            data_category = data_row["Category"]
+            category_mapper = mapper["category_mapper"]
+            if data_category not in category_mapper:
+                error_dict["Category"] = tdt(
+                    f"Category: {data_category} is not valid"
                 )
 
+            data_topic = data_row["Topic"]
+            topic_mapper = mapper["topic_mapper"]
+            if data_topic not in topic_mapper:
+                error_dict["Topic"] = tdt(f"Topic: {data_topic} is not valid")
+
+            data_data_quality = data_row["Data_Quality"]
+            data_quality_mapper = mapper["data_quality_mapper"]
+            if data_data_quality not in data_quality_mapper:
+                error_dict["Data_Quality"] = tdt(
+                    f"Data quality: {data_data_quality} is not valid"
+                )
+
+            data_reason_for_null = data_row["Reason_for_Null_Data"]
+            reason_for_null_mapper = mapper["reason_for_null_mapper"]
+            if data_reason_for_null not in reason_for_null_mapper:
+                error_dict["Reason_for_Null_Data"] = tdt(
+                    f"Reason for Null Data: {data_reason_for_null} is not valid"
+                )
+
+            data_value_units = data_row["Value_Units"]
+            value_unit_mapper = mapper["value_unit_mapper"]
+            if data_value_units not in value_unit_mapper:
+                error_dict["Value_Units"] = tdt(
+                    f"Value Units: {data_value_units} is not valid"
+                )
+
+            data_value_displayed = data_row["Value_Displayed"]
+            value_displayed_mapper = mapper["value_displayed_mapper"]
+            if data_value_displayed not in value_displayed_mapper:
+                error_dict["Value_Displayed"] = tdt(
+                    f"Value displayed: {data_value_displayed} is not valid"
+                )
+
+            data_dimension_type = data_row["Dimension_Type"]
+            dimension_type_mapper = mapper["dimension_type_mapper"]
+            if data_dimension_type not in dimension_type_mapper:
+                error_dict["Dimension_Type"] = tdt(
+                    f"Dimension Type: {data_dimension_type} is not valid"
+                )
+
+            if data_dimension_type != "Age Group":
+                data_dimension_value = data_row["Dimension_Value"]
+                non_literal_dimension_value_mapper = mapper[
+                    "non_literal_dimension_value_mapper"
+                ]
+                if (
+                    data_dimension_type,
+                    data_dimension_value,
+                ) not in non_literal_dimension_value_mapper:
+                    error_dict["Dimension_Value"] = tdt(
+                        f"Combination of Dimension Type: {data_dimension_type} and Dimension Value: {data_dimension_value} is not valid"
+                    )
+
+            data_period = data_row["Period"]
+            period_mapper = mapper["period_mapper"]
+            if data_period not in period_mapper:
+                error_dict["Period"] = tdt(
+                    f"Period: {data_period} is not valid"
+                )
+
+            data_arrow_flag = data_row["Arrow_Flag"]
+            arrow_flag_mapper = mapper["arrow_flag_mapper"]
+            if data_arrow_flag not in arrow_flag_mapper:
+                error_dict["Arrow_Flag"] = tdt(
+                    f"Arrow Flag: {data_arrow_flag} is not valid"
+                )
+
+            # value errors for open fields
+            data_value = data_row["Value"]
+            data_value_units = data_row["Value_Units"]
+            if data_value != "":
+                try:
+                    float(data_value)
+                except ValueError:
+                    error_dict["Value"] = tdt(
+                        f"Value: {data_value} is not a valid number"
+                    )
+                err = self.IndDataCleanValue(
+                    data_value,
+                    value_unit_mapper[data_value_units],
+                )
+                if err:
+                    error_dict["Value"] = str(err)
+
+            data_value_lower = data_row["Value_LowerCI"]
+            if data_value_lower != "":
+                try:
+                    float(data_value_lower)
+                except ValueError:
+                    error_dict["Value_LowerCI"] = tdt(
+                        f"Value LowerCI: {data_value_lower} is not a valid number"
+                    )
+                err = self.IndDataCleanValueLower(data_value, data_value_lower)
+                if err:
+                    error_dict["Value_LowerCI"] = str(err)
+
+            data_value_upper = data_row["Value_UpperCI"]
+            if data_value_upper != "":
+                try:
+                    float(data_value_upper)
+                except ValueError:
+                    error_dict["Value_UpperCI"] = tdt(
+                        f"Value UpperCI: {data_row['Value_UpperCI']} is not a valid number"
+                    )
+                err = self.IndDataCleanValueUpper(data_value, data_value_upper)
+                if err:
+                    error_dict["Value_UpperCI"] = str(err)
+
             # checking if indicator already exists
+            data_indicator = data_row["Indicator"]
+            data_detailed_indicator = data_row["Detailed Indicator"]
+            data_sub_indicator = data_row["Sub_Indicator_Measurement"]
             try:
                 indicator_obj = Indicator.objects.filter(
-                    name=data_row["Indicator"],
-                    category=mapper["category_mapper"][data_row["Category"]],
-                    topic=mapper["topic_mapper"][data_row["Topic"]],
-                    detailed_indicator=data_row["Detailed Indicator"],
-                    sub_indicator_measurement=data_row[
-                        "Sub_Indicator_Measurement"
-                    ],
+                    name=data_indicator,
+                    category=category_mapper[data_category],
+                    topic=topic_mapper[data_topic],
+                    detailed_indicator=data_detailed_indicator,
+                    sub_indicator_measurement=data_sub_indicator,
                 ).first()
             except Exception:
                 indicator_obj = None
@@ -168,15 +233,26 @@ class UploadForm(forms.Form):
             if indicator_obj is None and not test_rule(
                 "can_create_indicator", self.user
             ):
-                data_row["errors"]["Indicator"] = tdt(
-                    f"Indicator: {data_row['Indicator']} does not exist and you do not have permission to create it"
+                error_dict["Indicator"] = tdt(
+                    f"Indicator: {data_indicator} does not exist and you do not have permission to create it"
                 )
 
             if indicator_obj is not None and not test_rule(
                 "can_access_indicator", self.user, indicator_obj
             ):
-                data_row["errors"]["Indicator"] = tdt(
+                error_dict["Indicator"] = tdt(
                     f"You do not have permission to edit data for Indicator: {indicator_obj.name}"
+                )
+
+            period_obj = period_mapper[data_period]
+
+            if indicator_obj is not None and not test_rule(
+                "can_edit_indicator_data",
+                self.user,
+                {"indicator": indicator_obj, "period": period_obj},
+            ):
+                error_dict["Period"] = tdt(
+                    f"You do not have permission to edit data for period: {data_row['Period']}. Period is not current"
                 )
 
             data_dict.append(data_row)

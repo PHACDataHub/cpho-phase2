@@ -120,6 +120,57 @@ class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
                         raise ValidationError(error_msg)
 
 
+class IndDataCleanMixin:
+    """
+    Mixin for cleaning indicator data values
+    Shared data validation logic between the indicator data form and the indicator data upload.
+    """
+
+    def IndDataCleanValue(self, value, value_unit):
+        if value:
+            value = float(value)
+            if value < 0:
+                return tm("value_cannot_be_negative")
+            if value_unit == "percentage":
+                if value and (value > 100 or value < 0):
+                    return tm("percentage_out_of_bounds_err")
+        return None
+
+    def IndDataCleanValueLower(self, value, value_lower):
+        if (value and value_lower) and float(value) < float(value_lower):
+            return tm("lower_bound_must_be_lower_than_value")
+        return None
+
+    def IndDataCleanValueUpper(self, value, value_upper):
+        if (value and value_upper) and float(value) > float(value_upper):
+            return tm("upper_bound_must_be_greater_than_value")
+        return None
+
+    def IndDataCleanSingleYear(self, single_year):
+        if single_year is None or single_year == "":
+            return None
+        if single_year:
+            try:
+                if not (int(single_year) >= 2000 and int(single_year) <= 2050):
+                    return tm("year_timeframe_between")
+            except ValueError:
+                return tm("must_be_number")
+        return None
+
+    def IndDataCleanMultiYear(self, multi_year):
+        if multi_year is None or multi_year == "":
+            return None
+        if multi_year:
+            try:
+                start_year = int(multi_year.split("-")[0])
+                end_year = int(multi_year.split("-")[1])
+                if not (2000 <= start_year <= end_year <= 2050):
+                    return tm("year_timeframe_between")
+            except ValueError:
+                return tm("multi_year_format")
+        return None
+
+
 class SinglePeriodMixin(View):
     """
     note: this mixin needs to be to the left of generic views in order for the context to include 'period'

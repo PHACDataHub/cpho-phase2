@@ -15,6 +15,7 @@ changelog_models = [
     models.Indicator,
     models.IndicatorDatum,
     models.Benchmarking,
+    models.TrendAnalysis,
 ]
 
 from versionator.changelog.consecutive_versions_fetcher import (
@@ -73,21 +74,27 @@ class IndicatorScopedChangelog(ChangelogView, MustPassAuthCheckMixin):
         indicator_id = self.kwargs["indicator_id"]
 
         class IndicatorScopedFetcher(ConsecutiveVersionsFetcher):
-            def get_base_version_qs_for_single_model(
-                self, indicator_datum_model
-            ):
-                if indicator_datum_model is not models.IndicatorDatum:
-                    raise Exception(
-                        "This changelog only supports IndicatorDatum"
-                    )
+            def get_base_version_qs_for_single_model(self, model):
+                history_model = model._history_class
 
-                history_model = indicator_datum_model._history_class
-                return history_model.objects.filter(
-                    indicator_id=indicator_id
-                ).all()
+                if model in (
+                    models.IndicatorDatum,
+                    models.Benchmarking,
+                    models.TrendAnalysis,
+                ):
+                    return history_model.objects.filter(
+                        indicator_id=indicator_id
+                    ).all()
+
+                elif model == models.Indicator:
+                    return history_model.objects.filter(
+                        eternal_id=indicator_id
+                    )
+                else:
+                    raise NotImplementedError("model not supported")
 
         return create_simple_changelog(
-            [models.IndicatorDatum],
+            changelog_models,
             fetcher_class=IndicatorScopedFetcher,
             page_size=self.get_page_size(),
         )

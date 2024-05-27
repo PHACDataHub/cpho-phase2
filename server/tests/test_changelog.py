@@ -6,7 +6,11 @@ from django.urls import reverse
 
 from phac_aspc.rules import patch_rules
 
-from cpho.model_factories import IndicatorFactory
+from cpho.model_factories import (
+    BenchmarkingFactory,
+    IndicatorFactory,
+    TrendAnalysisFactory,
+)
 from cpho.models import (
     DimensionType,
     DimensionValue,
@@ -61,6 +65,27 @@ def create_versions():
         period=p2, dimension_type=s_cat, dimension_value=f_val, value=8
     )
 
+    # also create some benchmarking and trend analysis
+    bm1 = BenchmarkingFactory(indicator=i1, value=1)
+    bm1.reset_version_attrs()
+    bm1.value = 1.1
+    bm1.save()
+
+    bm2 = BenchmarkingFactory(value=2, indicator=i2)
+    bm2.reset_version_attrs()
+    bm2.value = 2.2
+    bm2.save()
+
+    ta1 = TrendAnalysisFactory(indicator=i1, data_point=1)
+    ta1.reset_version_attrs()
+    ta1.data_point = 1.1
+    ta1.save()
+
+    ta2 = TrendAnalysisFactory(indicator=i2, data_point=2)
+    ta2.reset_version_attrs()
+    ta2.data_point = 2.2
+    ta2.save()
+
 
 def test_global_changelog(vanilla_user_client):
     create_versions()
@@ -79,7 +104,7 @@ def test_global_changelog(vanilla_user_client):
     ):
         resp = vanilla_user_client.get(reverse("global_changelog"))
         assert resp.status_code == 200
-        assert resp.context["num_pages"] == 7
+        assert resp.context["num_pages"] == 11
         assert resp.context["page_num"] == 1
 
         resp = vanilla_user_client.get(
@@ -121,7 +146,7 @@ def test_indicator_changelog(vanilla_user_client):
             )
         )
         assert resp.status_code == 200
-        assert resp.context["num_pages"] == 4
+        assert resp.context["num_pages"] == 6
         assert resp.context["page_num"] == 1
 
         resp = vanilla_user_client.get(

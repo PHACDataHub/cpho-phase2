@@ -90,19 +90,19 @@
               {% for datum in grouped_data[indicator] %}
                 <tr>
                   <td>{{ datum["line"] }}</td>
-                  {{td_with_error_class(datum, "Dimension_Type")}}
-                  {{td_with_error_class(datum, "Dimension_Value")}}
-                  {{td_with_error_class(datum, "Data_Quality")}}
-                  {{td_with_error_class(datum, "Value")}}
-                  {{td_with_error_class(datum, "Value_LowerCI")}}
-                  {{td_with_error_class(datum, "Value_UpperCI")}}
-                  {{td_with_error_class(datum, "SingleYear_TimeFrame")}}
-                  {{td_with_error_class(datum, "MultiYear_TimeFrame")}}
-                  {{td_with_error_class(datum, "Value_Units")}}
-                  {{td_with_error_class(datum, "Value_Displayed")}}
-                  {{td_with_error_class(datum, "Reason_for_Null_Data")}}
-                  {{td_with_error_class(datum, "Period")}}
-                  {{td_with_error_class(datum, "Arrow_Flag")}}
+                  {{ td_with_error_class(datum, "Dimension_Type") }}
+                  {{ td_with_error_class(datum, "Dimension_Value") }}
+                  {{ td_with_error_class(datum, "Data_Quality") }}
+                  {{ td_with_error_class(datum, "Value") }}
+                  {{ td_with_error_class(datum, "Value_LowerCI") }}
+                  {{ td_with_error_class(datum, "Value_UpperCI") }}
+                  {{ td_with_error_class(datum, "SingleYear_TimeFrame") }}
+                  {{ td_with_error_class(datum, "MultiYear_TimeFrame") }}
+                  {{ td_with_error_class(datum, "Value_Units") }}
+                  {{ td_with_error_class(datum, "Value_Displayed") }}
+                  {{ td_with_error_class(datum, "Reason_for_Null_Data") }}
+                  {{ td_with_error_class(datum, "Period") }}
+                  {{ td_with_error_class(datum, "Arrow_Flag") }}
                 </tr>
               {% endfor %}
             </tbody>

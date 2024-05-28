@@ -20,10 +20,10 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
-from .view_util import IndDataCleanMixin, MustPassAuthCheckMixin, upload_mapper
+from .view_util import IndDataCleaner, MustPassAuthCheckMixin, upload_mapper
 
 
-class UploadForm(forms.Form, IndDataCleanMixin):
+class UploadForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
         self.request = kwargs.pop("request", None)
@@ -181,7 +181,7 @@ class UploadForm(forms.Form, IndDataCleanMixin):
                         f"Value: {data_value} is not a valid number"
                     )
                 if error_dict.get("Value_Units") is None:
-                    err = self.IndDataCleanValue(
+                    err = IndDataCleaner.clean_value_data(
                         data_value,
                         value_unit_mapper[data_value_units],
                     )
@@ -196,7 +196,9 @@ class UploadForm(forms.Form, IndDataCleanMixin):
                     error_dict["Value_LowerCI"] = tdt(
                         f"Value LowerCI: {data_value_lower} is not a valid number"
                     )
-                err = self.IndDataCleanValueLower(data_value, data_value_lower)
+                err = IndDataCleaner.clean_value_lower_data(
+                    data_value, data_value_lower
+                )
                 if err:
                     error_dict["Value_LowerCI"] = str(err)
 
@@ -208,9 +210,27 @@ class UploadForm(forms.Form, IndDataCleanMixin):
                     error_dict["Value_UpperCI"] = tdt(
                         f"Value UpperCI: {data_row['Value_UpperCI']} is not a valid number"
                     )
-                err = self.IndDataCleanValueUpper(data_value, data_value_upper)
+                err = IndDataCleaner.clean_value_upper_data(
+                    data_value, data_value_upper
+                )
                 if err:
                     error_dict["Value_UpperCI"] = str(err)
+
+            data_single_year_timeframe = data_row["SingleYear_TimeFrame"]
+            if data_single_year_timeframe != "":
+                err = IndDataCleaner.clean_single_year_data(
+                    data_single_year_timeframe
+                )
+                if err:
+                    error_dict["SingleYear_TimeFrame"] = str(err)
+
+            data_multi_year_timeframe = data_row["MultiYear_TimeFrame"]
+            if data_multi_year_timeframe != "":
+                err = IndDataCleaner.clean_multi_year_data(
+                    data_multi_year_timeframe
+                )
+                if err:
+                    error_dict["MultiYear_TimeFrame"] = str(err)
 
             # checking if indicator already exists
             data_indicator = data_row["Indicator"]

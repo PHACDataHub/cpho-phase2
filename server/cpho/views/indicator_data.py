@@ -26,7 +26,7 @@ from cpho.text import tdt, tm
 from cpho.views.view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
-    IndDataCleanMixin,
+    IndDataCleaner,
     MustPassAuthCheckMixin,
     ReadOnlyFormMixin,
     SinglePeriodMixin,
@@ -51,7 +51,7 @@ class InstanceProvidingFormSet(BaseFormSet):
         }
 
 
-class IndicatorDatumForm(ModelForm, IndDataCleanMixin):
+class IndicatorDatumForm(ModelForm):
     class Meta:
         model = IndicatorDatum
         fields = [
@@ -171,14 +171,13 @@ class IndicatorDatumForm(ModelForm, IndDataCleanMixin):
         if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
             self._errors = ErrorDict()
             return self.cleaned_data
-        value = cleaned_data["value"]
 
         return cleaned_data
 
     def clean_value(self):
         value = self.cleaned_data["value"]
         value_unit = self.cleaned_data["value_unit"]
-        err = self.IndDataCleanValue(value, value_unit)
+        err = IndDataCleaner.clean_value_data(value, value_unit)
         if err:
             self.add_error("value", err)
         return value
@@ -186,7 +185,7 @@ class IndicatorDatumForm(ModelForm, IndDataCleanMixin):
     def clean_value_lower_bound(self):
         value = self.cleaned_data["value"]
         value_lower = self.cleaned_data["value_lower_bound"]
-        err = self.IndDataCleanValueLower(value, value_lower)
+        err = IndDataCleaner.clean_value_lower_data(value, value_lower)
         if err:
             self.add_error("value_lower_bound", err)
         return value_lower
@@ -194,14 +193,14 @@ class IndicatorDatumForm(ModelForm, IndDataCleanMixin):
     def clean_value_upper_bound(self):
         value = self.cleaned_data["value"]
         value_upper = self.cleaned_data["value_upper_bound"]
-        err = self.IndDataCleanValueUpper(value, value_upper)
+        err = IndDataCleaner.clean_value_upper_data(value, value_upper)
         if err:
             self.add_error("value_upper_bound", err)
         return value_upper
 
     def clean_single_year_timeframe(self):
         single_year = self.cleaned_data["single_year_timeframe"]
-        err = self.IndDataCleanSingleYear(single_year)
+        err = IndDataCleaner.clean_single_year_data(single_year)
         if err:
             self.add_error("single_year_timeframe", err)
         return single_year
@@ -209,7 +208,7 @@ class IndicatorDatumForm(ModelForm, IndDataCleanMixin):
     def clean_multi_year_timeframe(self):
         multi_year = self.cleaned_data["multi_year_timeframe"]
 
-        err = self.IndDataCleanMultiYear(multi_year)
+        err = IndDataCleaner.clean_single_year_data(multi_year)
         if err:
             self.add_error("multi_year_timeframe", err)
         return multi_year

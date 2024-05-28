@@ -27,9 +27,9 @@ class CountryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Country
 
+    id = factory.Faker("pyint", min_value=1, max_value=999999)
     name_en = factory.Faker("bs")
     name_fr = factory.Faker("bs")
-    code = factory.Faker("bs")
 
 
 class DimensionValueFactory(factory.django.DjangoModelFactory):

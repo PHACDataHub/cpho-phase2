@@ -47,6 +47,8 @@ def check_preview(val_dict, hso_client, fieldname=None, num_errors=1):
 
 
 def test_preview(hso_client):
+    Period.objects.create(year=2021, year_type="calendar")
+
     val_dict = {
         "category": "HEALTH OUTCOMES",
         "topic": "COMMUNICABLE DISEASES",

@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./k8s/config-connector-resources/
+  path: ./k8s/configconnector-resources/
   prune: true
   sourceRef:
     kind: GitRepository

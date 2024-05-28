@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: config-connector-resources
+  name: configconnector-resources
   annotations:
     cnrm.cloud.google.com/project-id: pht-01hp04dtnkf
 spec: {}

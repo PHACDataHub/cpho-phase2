@@ -66,6 +66,10 @@
       {{ hidden_a11y_label(form.reason_for_null, row_name) }}
     </td>
     <td>
+      {{ form.arrow_flag }}
+      {{ hidden_a11y_label(form.arrow_flag, row_name) }}
+    </td>
+    <td>
       {{ form.id }} {# this is hidden #}
       {{ form.is_deleted }}
       {{ hidden_a11y_label(form.is_deleted, row_name) }}
@@ -116,6 +120,7 @@
               <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
               <th class="width-9">{{ tm("value_displayed") }}</th>
               <th class="width-9">{{ tm("reason_for_null_data") }}</th>
+              <th class="width-9">{{ tm("arrow_flag") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body" class="text-center">
@@ -165,6 +170,10 @@
                   {{ form.reason_for_null }}
                   {{ hidden_a11y_label(form.reason_for_null, row_name) }}
                 </td>
+                <td>
+                  {{ form.arrow_flag }}
+                  {{ hidden_a11y_label(form.arrow_flag, row_name) }}
+                </td>
               </tr>
             {% endfor %}
 
@@ -195,12 +204,20 @@
               <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
               <th class="width-9">{{ tm("value_displayed") }}</th>
               <th class="width-9">{{ tm("reason_for_null_data") }}</th>
-              <th class="width-5">{{ tm("delete") }}</th>
+              <th class="width-9">{{ tm("arrow_flag") }}</th>
+              <th class="width-9">{{ tm("delete") }}</th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body"
                  class="text-center age-group-form-list">
-            {% for form in age_group_formset %}{{ age_group_form(form) }}{% endfor %}
+            {% for item in age_group_sorted %}
+              {% for form_instance in age_group_formset %}
+                {% if form_instance.instance.id == item.id %}{{ age_group_form(form_instance) }}{% endif %}
+              {% endfor %}
+            {% endfor %}
+            {% for form_instance in age_group_formset %}
+              {% if not form_instance.instance.id %}{{ age_group_form(form_instance) }}{% endif %}
+            {% endfor %}
           </tbody>
         </table>
         {% if mode == "edit" %}

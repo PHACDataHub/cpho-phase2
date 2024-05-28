@@ -16,8 +16,6 @@ kind: DNSManagedZone
 metadata:
   name: hopic-ops-managed-zone
   namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   cloudLoggingConfig:
     enableLogging: true
@@ -30,8 +28,6 @@ kind: DNSRecordSet
 metadata:
   name: hopic-ops-dns-record-set
   namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "hopic-sdpac.data-donnes.phac-aspc.gc.ca."
   type: A
@@ -47,8 +43,6 @@ kind: DNSManagedZone
 metadata:
   name: hopic-uni-managed-zone
   namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   cloudLoggingConfig:
     enableLogging: true
@@ -61,8 +55,6 @@ kind: DNSRecordSet
 metadata:
   name: hopic-uni-dns-record-set
   namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "hopic-sdpac.data.phac.gc.ca."
   type: A
@@ -79,8 +71,6 @@ kind: DNSRecordSet
 metadata:
   name: hopic-uni-ephemeral-dns-record-set
   namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   name: "*.dev.hopic-sdpac.data.phac.gc.ca."
   type: A

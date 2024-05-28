@@ -74,6 +74,7 @@ class UploadForm(forms.Form):
             "Period",
             "Reason_for_Null_Data",
             "Value_Units",
+            "Arrow_Flag",
         ]
         missing_headers = []
         for header in required_headers:
@@ -86,6 +87,7 @@ class UploadForm(forms.Form):
 
         errorlist = []
         mapper = upload_mapper()
+        # checking for invalid values in the csv
         for idx, data_row in enumerate(reader):
             for key, value in data_row.items():
                 data_row[key] = value.strip()
@@ -139,6 +141,10 @@ class UploadForm(forms.Form):
             if data_row["Period"] not in mapper["period_mapper"]:
                 data_row["errors"]["Period"] = tdt(
                     f"Period: {data_row['Period']} is not valid"
+                )
+            if data_row["Arrow_Flag"] not in mapper["arrow_flag_mapper"]:
+                data_row["errors"]["Arrow_Flag"] = tdt(
+                    f"Arrow Flag: {data_row['Arrow_Flag']} is not valid"
                 )
 
             # checking if indicator already exists
@@ -318,6 +324,7 @@ class SaveUpload(MustPassAuthCheckMixin, View):
             literal_dimension_val=lit_dim_val,
             period=period_val,
             data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
+            arrow_flag=mapper["arrow_flag_mapper"][datum["Arrow_Flag"]],
             reason_for_null=mapper["reason_for_null_mapper"][
                 datum["Reason_for_Null_Data"]
             ],

@@ -4,4 +4,6 @@ metadata:
   # you can only have one ConfigConnectorContext per namespace
   name: configconnectorcontext.core.cnrm.cloud.google.com
   namespace: cnrm-system
-spec: {}
+spec:
+  stateIntoSpec: Absent
+

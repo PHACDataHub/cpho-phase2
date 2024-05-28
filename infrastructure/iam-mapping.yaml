@@ -3,7 +3,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: project-iampolicy
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -45,7 +45,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-artifactregistry-iam
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -61,7 +61,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-postgres-backup-iam
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -78,7 +78,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-test-coverage-reports-iam
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -97,7 +97,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-gcr-credentials-sync
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -112,7 +112,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-dns01-solver
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -127,7 +127,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-sops-kms
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -142,7 +142,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-backup
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:
@@ -159,7 +159,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPartialPolicy
 metadata:
   name: hopic-wi-server
-  namespace: "cnrm-system"
+  namespace: "configconnector-resources"
 spec:
   bindings:
     - members:

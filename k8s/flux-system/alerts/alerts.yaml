@@ -35,16 +35,12 @@ spec:
     - kind: ImageUpdateAutomation
       name: '*'
   exclusionList:
-    # Due to the dependencies specified between resources, sometimes during reconciliations 
-    # the resources go into a `dependency is not ready` state and Flux immediately starts 
-    # complaining about it. This filter ignores any depedency related alerts given the fact 
-    # that they will be reconciled eventually and eny error during reconciliations will be 
+    # Due to the dependencies specified between resources, sometimes during reconciliations
+    # the resources go into a `dependency is not ready` state and Flux immediately starts
+    # complaining about it. This filter ignores any depedency related alerts given the fact
+    # that they will be reconciled eventually and eny error during reconciliations will be
     # reported separately.
     - "^Dependencies.*"
-    # Following addition is more of a "band-aid" solution to spammy `Namespace/cnrm-system configured`
-    # messages until an actual solution is figured out. This only ignores alerts for cnrm-system's
-    # namespace which, like any other namespace config, is hardly expected to change.
-    - "Namespace/cnrm-system configured"
 ---
 #        _ _   _           _
 #   __ _(_) |_| |__  _   _| |__

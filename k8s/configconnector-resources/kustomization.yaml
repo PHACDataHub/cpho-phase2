@@ -10,7 +10,7 @@ patches:
     version: v1beta1
     kind: ConfigConnectorContext
     name: configconnectorcontext.core.cnrm.cloud.google.com
-    namespace: cnrm-system
+    namespace: configconnector-resources
   patch: |-
     - op: add
       path: /spec/googleServiceAccount

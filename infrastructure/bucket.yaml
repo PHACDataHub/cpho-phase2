@@ -3,7 +3,7 @@ kind: StorageBucket
 metadata:
   # StorageBucket names must be globally unique
   name: hopic-postgres-backup-01hp04dtnkf
-  namespace: cnrm-system
+  namespace: configconnector-resources
   annotations:
     cnrm.cloud.google.com/force-destroy: "false"
     cnrm.cloud.google.com/deletion-policy: abandon
@@ -19,7 +19,7 @@ kind: StorageBucket
 metadata:
   # StorageBucket names must be globally unique
   name: hopic-test-coverage-reports-01hp04dtnkf
-  namespace: cnrm-system
+  namespace: configconnector-resources
   annotations:
     cnrm.cloud.google.com/force-destroy: "false"
     cnrm.cloud.google.com/deletion-policy: abandon

@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - iamppolicy.yaml
 
-namespace: cnrm-system
+namespace: configconnector-resources
 
 commonLabels:
   branch: ${BRANCH_NAME}

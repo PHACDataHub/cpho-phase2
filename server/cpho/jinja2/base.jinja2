@@ -103,11 +103,15 @@
                         <span aria-hidden="true" class="bi bi-people"></span>
                         {{ tm("user_management") }}
                       </a>
+                      <a class="dropdown-item" href="{{ url("global_changelog") }}">
+                        <span aria-hidden="true" class="bi bi-file-diff"></span>
+                        {{ tm("changelog") }}
+                      </a>
+                      <a class="dropdown-item" href="{{ url("global_datum_changelog") }}">
+                        <span aria-hidden="true" class="bi bi-file-diff"></span>
+                        {{ tdt("datum changelog") }}
+                      </a>
                     {% endif %}
-                    <a class="dropdown-item" href="{{ url("global_changelog") }}">
-                      <span aria-hidden="true" class="bi bi-file-diff"></span>
-                      {{ tm("changelog") }}
-                    </a>
                     {% if respects_rule('is_admin_or_hso') %}
                       <a class="dropdown-item" href="{{ url("infobase_export") }}">
                         <i aria-hidden="true" class="bi bi-file-earmark-excel"></i>

@@ -136,6 +136,16 @@ urlpatterns = [
         name="global_changelog",
     ),
     path(
+        "global-datum-changelog/indicator_datum/",
+        views.GlobalDatumChangelog.as_view(),
+        name="global_datum_changelog",
+    ),
+    path(
+        "global-datum-changelog/<int:page_num>/",
+        views.GlobalDatumChangelog.as_view(),
+        name="global_datum_changelog",
+    ),
+    path(
         "indicators/<int:pk>/export/",
         views.ExportIndicator.as_view(),
         name="export_indicator",

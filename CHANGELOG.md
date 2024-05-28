@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.0.1...v1.1.0) (2024-05-28)
+
+
+### Features
+
+* add year-filterable datum changelog ([#327](https://github.com/PHACDataHub/cpho-phase2/issues/327)) ([fc30f71](https://github.com/PHACDataHub/cpho-phase2/commit/fc30f713367e8e0c9bb118cd6ceaa10ba390d4ab))
+
+
+### Bug Fixes
+
+* revamped validation for upload ([#328](https://github.com/PHACDataHub/cpho-phase2/issues/328)) ([19e9353](https://github.com/PHACDataHub/cpho-phase2/commit/19e9353720fc48509abb6e38b6636ccb793477c4))
+
 ## [1.0.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.0.0...v1.0.1) (2024-05-23)
 
 

@@ -284,6 +284,7 @@ def upload_mapper():
             "ACCEPTABLE": "acceptable",
             "SUPPRESSED": "suppressed",
             "VERY GOOD": "very_good",
+            "EXCELLENT": "excellent",
         },
         "arrow_flag_mapper": {
             "": "",
@@ -308,6 +309,7 @@ def upload_mapper():
             "RATE PER 100,000 LIVE BIRTHS": "rate_100k_live_births",
             "RATE PER 100,000 POPULATION PER YEAR": "rate_100k_population_per_year",
             "YEARS": "years",
+            "LITRES": "litres",
             "OTHER": "other",
         },
         "value_displayed_mapper": {
@@ -319,6 +321,7 @@ def upload_mapper():
             "PER 100,000 POPULATION": "per_100k_population",
             "PER 100,000 POPULATION PER YEAR": "per_100k_population_per_year",
             "YEARS": "years",
+            "LITRES": "litres",
             "OTHER": "other",
         },
         "dimension_type_mapper": {
@@ -638,6 +641,7 @@ def metadata_mapper():
             "RATE PER 100,000 (CRUDE RATE)": "rate_per_100k_crude",
             "RATE PER 100,000 LIVE BIRTHS": "rate_per_100k_live_births",
             "YEARS": "years",
+            "LITRES PER PERSON": "litres_per_person",
             "OTHER": "other",
         },
         "value_displayed_mapper": {

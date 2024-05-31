@@ -389,6 +389,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("good", tm("good")),
         ("suppressed", tm("suppressed")),
         ("very_good", tm("very_good")),
+        ("excellent", tm("excellent")),
     ]
 
     data_quality = fields.CharField(
@@ -427,6 +428,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("rate_100k_live_births", tm("rate_100k_live_births")),
         ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
         ("years", tm("years")),
+        ("litres", tm("litres")),
         ("other", tm("other")),
     ]
 
@@ -445,6 +447,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("per_100k_population", tm("per_100k_population")),
         ("per_100k_population_per_year", tm("per_100k_population_per_year")),
         ("years", tm("years")),
+        ("litres", tm("litres")),
         ("other", tm("other")),
     ]
 
@@ -551,6 +554,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("rate_per_1000_population", tm("rate_per_1000_population")),
         ("total_deaths_per_1m", tm("total_deaths_per_1m")),
         ("total_per_100k_persons", tm("total_per_100k_persons")),
+        ("litres_per_person", tm("litres_per_person")),
         ("years", tm("years")),
     ]
     unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)

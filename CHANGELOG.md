@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.0...v1.1.1) (2024-05-31)
+
+
+### Bug Fixes
+
+* 5973 kd adjusting indicator options ([#334](https://github.com/PHACDataHub/cpho-phase2/issues/334)) ([f9c8272](https://github.com/PHACDataHub/cpho-phase2/commit/f9c82724c84f9d1002707e0f79614aac34c659f0))
+
 ## [1.1.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.0.1...v1.1.0) (2024-05-28)
 
 

@@ -908,6 +908,7 @@ translation_entries = {
         "fr": "TAUX PAR 100 000 POPULATION PAR ANNÉE",
     },
     "years": {"en": "years", "fr": "années"},
+    "litres": {"en": "litres", "fr": "litres"},
     "other": {"en": "other", "fr": "autre"},
     # Value displayed choices
     "per_1k_census": {
@@ -996,6 +997,10 @@ translation_entries = {
     "total_per_100k_persons": {
         "en": "Total per 100 000 persons",
         "fr": "Total pour 100 000 personnes",
+    },
+    "litres_per_person": {
+        "en": "Litres per person",
+        "fr": "Litres par personne",
     },
     # comparison
     "better": {"en": "Better", "fr": "Meilleur"},

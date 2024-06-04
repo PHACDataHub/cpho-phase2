@@ -508,9 +508,8 @@ class TrendAnalysisForm(ModelForm):
 
     def clean_data_point(self):
         is_deleted = self.cleaned_data.get("is_deleted", False)
+        data_point = self.cleaned_data.get("data_point", None)
         if not is_deleted:
-
-            data_point = self.cleaned_data.get("data_point")
             if data_point is None:
                 self.add_error(
                     "data_point",
@@ -525,9 +524,12 @@ class TrendAnalysisForm(ModelForm):
 
     def clean_data_point_lower_ci(self):
         is_deleted = self.cleaned_data.get("is_deleted", False)
+        data_point = self.cleaned_data.get("data_point", None)
+        data_point_lower_ci = self.cleaned_data.get(
+            "data_point_lower_ci", None
+        )
         if not is_deleted:
-            data_point = self.cleaned_data.get("data_point")
-            data_point_lower_ci = self.cleaned_data.get("data_point_lower_ci")
+
             if (
                 data_point_lower_ci
                 and data_point
@@ -541,9 +543,12 @@ class TrendAnalysisForm(ModelForm):
 
     def clean_data_point_upper_ci(self):
         is_deleted = self.cleaned_data.get("is_deleted", False)
+        data_point = self.cleaned_data.get("data_point", None)
+        data_point_upper_ci = self.cleaned_data.get(
+            "data_point_upper_ci", None
+        )
         if not is_deleted:
-            data_point = self.cleaned_data.get("data_point")
-            data_point_upper_ci = self.cleaned_data.get("data_point_upper_ci")
+
             if (
                 data_point_upper_ci
                 and data_point

@@ -156,6 +156,18 @@ class TrendAnalysisFactory(factory.django.DjangoModelFactory):
         min_value=1,
         max_value=4,
     )
+    data_point_upper_ci = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=80,
+        max_value=100,
+    )
+    data_point_lower_ci = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=1,
+        max_value=20,
+    )
     trend = factory.LazyFunction(
         lambda: random.choice([p[0] for p in TrendAnalysis.TREND_CHOICES])
     )

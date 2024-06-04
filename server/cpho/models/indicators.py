@@ -637,6 +637,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         ("rate_100k_crude", tm("rate_100k_crude")),
         ("rate_100k_live_births", tm("rate_100k_live_births")),
         ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
+        ("litres", tm("litres")),
         ("years", tm("years")),
         ("other", tm("other")),
     ]

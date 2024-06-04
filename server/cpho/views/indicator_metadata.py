@@ -529,7 +529,6 @@ class TrendAnalysisForm(ModelForm):
             "data_point_lower_ci", None
         )
         if not is_deleted:
-
             if (
                 data_point_lower_ci
                 and data_point
@@ -548,7 +547,6 @@ class TrendAnalysisForm(ModelForm):
             "data_point_upper_ci", None
         )
         if not is_deleted:
-
             if (
                 data_point_upper_ci
                 and data_point

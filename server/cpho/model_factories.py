@@ -122,9 +122,10 @@ class BenchmarkingFactory(factory.django.DjangoModelFactory):
     unit = factory.LazyFunction(
         lambda: random.choice([p[0] for p in Benchmarking.UNIT_CHOICES])
     )
-    year = factory.Faker(
-        "pyfloat", positive=True, min_value=2020, max_value=2022
+    comparison_to_oecd_avg = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Benchmarking.COMPARISON_CHOICES])
     )
+    year = factory.Faker("pyint", min_value=2020, max_value=2022)
     comparison_to_oecd_avg = factory.LazyFunction(
         lambda: random.choice([p[0] for p in Benchmarking.COMPARISON_CHOICES])
     )

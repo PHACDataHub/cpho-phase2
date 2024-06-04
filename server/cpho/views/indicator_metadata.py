@@ -304,12 +304,12 @@ class TrendAnalysisForm(ModelForm):
     class Meta:
         model = TrendAnalysis
         fields = [
+            "is_deleted",
             "year",
             "data_point",
             "line_of_best_fit_point",
             "trend_segment",
             "trend",
-            "is_deleted",
             "data_quality",
             "data_point_lower_ci",
             "data_point_upper_ci",
@@ -506,24 +506,53 @@ class TrendAnalysisForm(ModelForm):
             trend_segment = trend_segment.strip().replace(" ", "")
             return trend_segment
 
+    def clean_data_point(self):
+        is_deleted = self.cleaned_data.get("is_deleted", False)
+        if not is_deleted:
+
+            data_point = self.cleaned_data.get("data_point")
+            if data_point is None:
+                self.add_error(
+                    "data_point",
+                    tm("data_point_required"),
+                )
+            if data_point and data_point < 0:
+                self.add_error(
+                    "data_point",
+                    tm("data_point_error"),
+                )
+        return data_point
+
     def clean_data_point_lower_ci(self):
-        data_point = self.cleaned_data["data_point"]
-        data_point_lower_ci = self.cleaned_data["data_point_lower_ci"]
-        if data_point_lower_ci and data_point_lower_ci > data_point:
-            self.add_error(
-                "data_point_lower_ci",
-                tm("data_point_lower_ci_error"),
-            )
+        is_deleted = self.cleaned_data.get("is_deleted", False)
+        if not is_deleted:
+            data_point = self.cleaned_data.get("data_point")
+            data_point_lower_ci = self.cleaned_data.get("data_point_lower_ci")
+            if (
+                data_point_lower_ci
+                and data_point
+                and data_point_lower_ci > data_point
+            ):
+                self.add_error(
+                    "data_point_lower_ci",
+                    tm("data_point_lower_ci_error"),
+                )
         return data_point_lower_ci
 
     def clean_data_point_upper_ci(self):
-        data_point = self.cleaned_data["data_point"]
-        data_point_upper_ci = self.cleaned_data["data_point_upper_ci"]
-        if data_point_upper_ci and data_point_upper_ci < data_point:
-            self.add_error(
-                "data_point_upper_ci",
-                tm("data_point_upper_ci_error"),
-            )
+        is_deleted = self.cleaned_data.get("is_deleted", False)
+        if not is_deleted:
+            data_point = self.cleaned_data.get("data_point")
+            data_point_upper_ci = self.cleaned_data.get("data_point_upper_ci")
+            if (
+                data_point_upper_ci
+                and data_point
+                and data_point_upper_ci < data_point
+            ):
+                self.add_error(
+                    "data_point_upper_ci",
+                    tm("data_point_upper_ci_error"),
+                )
         return data_point_upper_ci
 
     def save(self, commit=True):

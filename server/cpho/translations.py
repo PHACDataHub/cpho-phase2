@@ -1199,4 +1199,8 @@ translation_entries = {
         "en": "Data point upper CI must be greater than data point",
         "fr": "La limite supérieure du point de données doit être supérieure au point de données",
     },
+    "data_point_required": {
+        "en": "Data point is required",
+        "fr": "Le point de données est requis",
+    },
 }

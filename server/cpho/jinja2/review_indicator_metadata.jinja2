@@ -116,7 +116,7 @@
             {{ field_tr(tm("title_benchmark") , metadata["indicator"][0].title_benchmark) }}
             {{ field_tr(tm("table_title_benchmark") , metadata["indicator"][0].table_title_benchmark) }}
             {{ field_tr(tm("x_axis_benchmark") , metadata["indicator"][0].x_axis_benchmark) }}
-            {{ field_tr(tm("benchmarking_footnotes") , metadata["indicator"][0].benchmarking_sources_english) }}
+            {{ field_tr(tm("benchmarking_footnotes") , metadata["indicator"][0].benchmarking_footnotes) }}
 
           </tbody>
         </table>
@@ -245,8 +245,8 @@
             <th scope="col">{{ tm("trend") }}</th>
             <th scope="col">{{ tm("data_quality") }}</th>
             <th scope="col">{{ tm("unit") }}</th>
-            <th scope="col">{{ tm("data_upper_ci") }}</th>
             <th scope="col">{{ tm("data_lower_ci") }}</th>
+            <th scope="col">{{ tm("data_upper_ci") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -259,8 +259,8 @@
               <td>{{ item.get_trend_display() }}</td>
               <td>{{ item.get_data_quality_display() }}</td>
               <td>{{ item.get_unit_display() }}</td>
-              <td>{{ item.data_point_upper_ci }}</td>
               <td>{{ item.data_point_lower_ci }}</td>
+              <td>{{ item.data_point_upper_ci }}</td>
             </tr>
           {% endfor %}
         </tbody>

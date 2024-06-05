@@ -1191,4 +1191,16 @@ translation_entries = {
         "en": "Arrow Flag",
         "fr": "Drapeau fléché",
     },
+    "data_point_lower_ci_error": {
+        "en": "Data point lower CI must be less than data point",
+        "fr": "La limite inférieure du point de données doit être inférieure au point de données",
+    },
+    "data_point_upper_ci_error": {
+        "en": "Data point upper CI must be greater than data point",
+        "fr": "La limite supérieure du point de données doit être supérieure au point de données",
+    },
+    "data_point_required": {
+        "en": "Data point is required",
+        "fr": "Le point de données est requis",
+    },
 }

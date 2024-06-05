@@ -557,9 +557,13 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("litres_per_person", tm("litres_per_person")),
         ("years", tm("years")),
     ]
-    unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
-    oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
-    value = fields.FloatField(max_length=50)
+    unit = fields.CharField(
+        max_length=50, choices=UNIT_CHOICES, blank=True, null=True
+    )
+    oecd_country = fields.ForeignKey(
+        "cpho.Country", on_delete=models.RESTRICT, blank=True, null=True
+    )
+    value = fields.FloatField(blank=True, null=True)
     year = fields.CharField(max_length=50, blank=True, null=True)
     # standard_deviation = fields.FloatField(null=True)
 
@@ -571,7 +575,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("outlier", tm("outlier")),
     ]
     comparison_to_oecd_avg = fields.CharField(
-        max_length=50, choices=COMPARISON_CHOICES
+        max_length=50, choices=COMPARISON_CHOICES, blank=True, null=True
     )
 
     LABEL_CHOICES = [
@@ -581,7 +585,9 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("women", tm("women")),
         ("men", tm("men")),
     ]
-    labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
+    labels = fields.CharField(
+        max_length=50, blank=True, null=True, choices=LABEL_CHOICES
+    )
     methodology_differences = fields.BooleanField(default=False)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(

@@ -27,7 +27,7 @@ from cpho.models import (
     IndicatorDatum,
     TrendAnalysis,
 )
-from cpho.text import tdt, tm
+from cpho.text import tm
 from cpho.util import get_lang_code, get_regex_pattern
 from cpho.views.view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
@@ -151,27 +151,27 @@ class BenchmarkingForm(ModelForm):
         if not is_deleted:
             # check required fields
             if not oecd_country:
-                self.add_error("oecd_country", tdt("Please select a country"))
+                self.add_error("oecd_country", tm("country_required"))
             if not value:
-                self.add_error("value", tdt("Please enter a value"))
+                self.add_error("value", tm("value_required"))
             if not comparison_to_oecd_avg:
                 self.add_error(
                     "comparison_to_oecd_avg",
-                    tdt("Please select a comparison option"),
+                    tm("comparison_required"),
                 )
 
             # individual field checks
 
             # value
             if value and value < 0:
-                self.add_error("value", tdt("Value cannot be negative"))
+                self.add_error("value", tm("value_cannot_be_negative"))
 
             # year is required for all countries except OECD
             if year is None or year == "":
-                if not oecd_country.name_en in ["OECD"]:
+                if oecd_country and not oecd_country.name_en in ["OECD"]:
                     self.add_error(
                         "year",
-                        tdt("Please enter a year"),
+                        tm("year_required"),
                     )
             # year in the format mm/yyyy covid-19 deaths
             if year:
@@ -181,22 +181,20 @@ class BenchmarkingForm(ModelForm):
                     if not match:
                         self.add_error(
                             "year",
-                            tdt("Year must be in the format MM/YYYY"),
+                            tm("year_format_mm_yyyy"),
                         )
                     if match:
                         month = int(match.group(1).strip())
                         if not (month >= 1 and month <= 12):
                             self.add_error(
                                 "year",
-                                tdt("Month must be between 1 and 12"),
+                                tm("month_format"),
                             )
                         _year = int(match.group(2).strip())
                         if not (_year >= 2000 and _year <= 2050):
                             self.add_error(
                                 "year",
-                                tdt(
-                                    "Year must be between the years 2000 and 2050"
-                                ),
+                                tm("year_timeframe_between"),
                             )
                         self.cleaned_data["year"] = str(year).strip()
                 else:
@@ -204,14 +202,12 @@ class BenchmarkingForm(ModelForm):
                         if not (int(year) >= 2000 and int(year) <= 2050):
                             self.add_error(
                                 "year",
-                                tdt(
-                                    "Year must be between the years 2000 and 2050"
-                                ),
+                                tm("year_timeframe_between"),
                             )
                     except ValueError:
                         self.add_error(
                             "year",
-                            tdt("Year must be a valid number"),
+                            tm("year_must_be_number"),
                         )
 
         return self.cleaned_data
@@ -295,7 +291,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
                 )
             )
         else:
-            print("check this\n\n\n\n\n", formset.errors)
+            print(formset.errors)
             messages.error(self.request, tm("error_saving_form"))
         return self.get(*args, **kwargs)
 

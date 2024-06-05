@@ -1203,4 +1203,28 @@ translation_entries = {
         "en": "Data point is required",
         "fr": "Le point de données est requis",
     },
+    "country_required": {
+        "en": "Please select a country",
+        "fr": "Veuillez sélectionner un pays",
+    },
+    "value_required": {
+        "en": "Please enter a value",
+        "fr": "Veuillez entrer une valeur",
+    },
+    "comparison_required": {
+        "en": "Please select a comparison",
+        "fr": "Veuillez sélectionner une comparaison",
+    },
+    "year_format_mm_yyyy": {
+        "en": "Year must be in the format MM/YYYY",
+        "fr": "L'année doit être au format MM/AAAA",
+    },
+    "month_format": {
+        "en": "Month must be between 1 and 12",
+        "fr": "Le mois doit être compris entre 1 et 12",
+    },
+    "year_must_be_number": {
+        "en": "Year must be a number",
+        "fr": "L'année doit être un nombre",
+    },
 }

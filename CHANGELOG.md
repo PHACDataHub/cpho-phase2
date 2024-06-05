@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.1...v1.1.2) (2024-06-05)
+
+
+### Bug Fixes
+
+* added data migration and field validation for trend upper and lower and other cosmetic changes ([#338](https://github.com/PHACDataHub/cpho-phase2/issues/338)) ([0135a77](https://github.com/PHACDataHub/cpho-phase2/commit/0135a7758d34d19f9ae0384d53fea87a76e5b1f0))
+
 ## [1.1.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.0...v1.1.1) (2024-05-31)
 
 

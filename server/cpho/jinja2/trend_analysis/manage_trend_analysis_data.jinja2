@@ -26,8 +26,8 @@
     <td>{{ form.trend }}</td>
     <td>{{ form.data_quality }}</td>
     <td>{{ form.unit }}</td>
-    <td>{{ form.data_point_lower_ci }}</td>
-    <td>{{ form.data_point_upper_ci }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point_lower_ci) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point_upper_ci) }}</td>
     <td>
       {{ form.is_deleted }}
       {{ form.id }}
@@ -64,8 +64,8 @@
           <th>{{ tm("trend") }}</th>
           <th>{{ tm("data_quality") }}</th>
           <th>{{ tm("unit") }}</th>
-          <th>{{ tm("data_upper_ci") }}</th>
           <th>{{ tm("data_lower_ci") }}</th>
+          <th>{{ tm("data_upper_ci") }}</th>
           <th>{{ tm("delete") }}</th>
         </tr>
       </thead>

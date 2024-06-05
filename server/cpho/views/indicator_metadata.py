@@ -75,6 +75,7 @@ class BenchmarkingForm(ModelForm):
     )
 
     oecd_country = forms.ModelChoiceField(
+        required=False,
         queryset=Country.objects.all().order_by("name_en"),
         widget=forms.Select(
             attrs={
@@ -85,7 +86,7 @@ class BenchmarkingForm(ModelForm):
     )
 
     value = forms.FloatField(
-        required=True,
+        required=False,
         widget=forms.NumberInput(
             attrs={"class": "form-control", "placeholder": tm("value")}
         ),
@@ -98,7 +99,7 @@ class BenchmarkingForm(ModelForm):
     )
 
     comparison_to_oecd_avg = forms.ChoiceField(
-        required=True,
+        required=False,
         choices=Benchmarking.COMPARISON_CHOICES,
         widget=forms.Select(
             attrs={
@@ -128,71 +129,12 @@ class BenchmarkingForm(ModelForm):
         label=tm("methodology_differences"),
     )
 
-    def clean_value(self):
-        value = self.cleaned_data["value"]
-        if value and value < 0:
-            self.add_error("value", tdt("Value cannot be negative"))
-        return value
-
-    def clean_year(self):
-        year = self.cleaned_data["year"]
-
-        if year is None or year == "":
-            if self.cleaned_data["oecd_country"].name_en in ["OECD"]:
-                return None
-            else:
-                self.add_error(
-                    "year",
-                    tdt("Please enter a year"),
-                )
-                return year
-
-        if self.cleaned_data["indicator"].id == 168:
-            pattern = get_regex_pattern("benchmarking_year")["pattern"]
-            match = re.match(pattern, year)
-            if not match:
-                self.add_error(
-                    "year",
-                    tdt("Year must be in the format MM/YYYY"),
-                )
-                return year
-            if match:
-                month = int(match.group(1).strip())
-                if not (month >= 1 and month <= 12):
-                    self.add_error(
-                        "year",
-                        tdt("Month must be between 1 and 12"),
-                    )
-                _year = int(match.group(2).strip())
-                if not (_year >= 2000 and _year <= 2050):
-                    self.add_error(
-                        "year",
-                        tdt("Year must be between the years 2000 and 2050"),
-                    )
-                year = str(year).strip()
-                return year
-
-        if year:
-            try:
-                if not (int(year) >= 2000 and int(year) <= 2050):
-                    self.add_error(
-                        "year",
-                        tdt("Year must be between the years 2000 and 2050"),
-                    )
-            except ValueError:
-                self.add_error(
-                    "year",
-                    tdt("Year must be a valid number"),
-                )
-
-        return year
-
     def clean(self):
         super().clean()
-        if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
-            self._errors = ErrorDict()
+        # if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
+        #     self._errors = ErrorDict()
 
-        is_deleted = self.cleaned_data.get("is_deleted")
+        is_deleted = self.cleaned_data.get("is_deleted", False)
         indicator = self.cleaned_data.get("indicator")
         unit = self.cleaned_data.get("unit")
         oecd_country = self.cleaned_data.get("oecd_country")
@@ -203,7 +145,7 @@ class BenchmarkingForm(ModelForm):
         )
         labels = self.cleaned_data.get("labels")
         methodology_differences = self.cleaned_data.get(
-            "methodology_differences"
+            "methodology_differences", False
         )
 
         if not is_deleted:
@@ -219,8 +161,58 @@ class BenchmarkingForm(ModelForm):
                 )
 
             # individual field checks
+
+            # value
             if value and value < 0:
                 self.add_error("value", tdt("Value cannot be negative"))
+
+            # year is required for all countries except OECD
+            if year is None or year == "":
+                if not oecd_country.name_en in ["OECD"]:
+                    self.add_error(
+                        "year",
+                        tdt("Please enter a year"),
+                    )
+            # year in the format mm/yyyy covid-19 deaths
+            if year:
+                if indicator.id == 168:
+                    pattern = get_regex_pattern("benchmarking_year")["pattern"]
+                    match = re.match(pattern, year)
+                    if not match:
+                        self.add_error(
+                            "year",
+                            tdt("Year must be in the format MM/YYYY"),
+                        )
+                    if match:
+                        month = int(match.group(1).strip())
+                        if not (month >= 1 and month <= 12):
+                            self.add_error(
+                                "year",
+                                tdt("Month must be between 1 and 12"),
+                            )
+                        _year = int(match.group(2).strip())
+                        if not (_year >= 2000 and _year <= 2050):
+                            self.add_error(
+                                "year",
+                                tdt(
+                                    "Year must be between the years 2000 and 2050"
+                                ),
+                            )
+                        self.cleaned_data["year"] = str(year).strip()
+                else:
+                    try:
+                        if not (int(year) >= 2000 and int(year) <= 2050):
+                            self.add_error(
+                                "year",
+                                tdt(
+                                    "Year must be between the years 2000 and 2050"
+                                ),
+                            )
+                    except ValueError:
+                        self.add_error(
+                            "year",
+                            tdt("Year must be a valid number"),
+                        )
 
         return self.cleaned_data
 
@@ -303,7 +295,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
                 )
             )
         else:
-            print(formset.errors)
+            print("check this\n\n\n\n\n", formset.errors)
             messages.error(self.request, tm("error_saving_form"))
         return self.get(*args, **kwargs)
 

@@ -42,8 +42,8 @@ class BenchmarkingForm(ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
-            "indicator",
             "is_deleted",
+            "indicator",
             "unit",
             "oecd_country",
             "value",
@@ -128,23 +128,6 @@ class BenchmarkingForm(ModelForm):
         label=tm("methodology_differences"),
     )
 
-    def clean_comparison_to_oecd_avg(self):
-        comparison_to_oecd_avg = self.cleaned_data["comparison_to_oecd_avg"]
-        if not comparison_to_oecd_avg:
-            self.add_error(
-                "comparison_to_oecd_avg",
-                tdt("Please select a comparison option"),
-            )
-
-        return comparison_to_oecd_avg
-
-    def clean_oecd_country(self):
-        oecd_country = self.cleaned_data["oecd_country"]
-        if not oecd_country:
-            self.add_error("oecd_country", tdt("Please select a country"))
-
-        return oecd_country
-
     def clean_value(self):
         value = self.cleaned_data["value"]
         if value and value < 0:
@@ -208,6 +191,37 @@ class BenchmarkingForm(ModelForm):
         super().clean()
         if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
             self._errors = ErrorDict()
+
+        is_deleted = self.cleaned_data.get("is_deleted")
+        indicator = self.cleaned_data.get("indicator")
+        unit = self.cleaned_data.get("unit")
+        oecd_country = self.cleaned_data.get("oecd_country")
+        value = self.cleaned_data.get("value")
+        year = self.cleaned_data.get("year")
+        comparison_to_oecd_avg = self.cleaned_data.get(
+            "comparison_to_oecd_avg"
+        )
+        labels = self.cleaned_data.get("labels")
+        methodology_differences = self.cleaned_data.get(
+            "methodology_differences"
+        )
+
+        if not is_deleted:
+            # check required fields
+            if not oecd_country:
+                self.add_error("oecd_country", tdt("Please select a country"))
+            if not value:
+                self.add_error("value", tdt("Please enter a value"))
+            if not comparison_to_oecd_avg:
+                self.add_error(
+                    "comparison_to_oecd_avg",
+                    tdt("Please select a comparison option"),
+                )
+
+            # individual field checks
+            if value and value < 0:
+                self.add_error("value", tdt("Value cannot be negative"))
+
         return self.cleaned_data
 
     def save(self, commit=True):

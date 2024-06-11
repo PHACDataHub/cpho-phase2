@@ -87,6 +87,9 @@ from phac_aspc.django.settings.utils import (
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
+# this is largely irrelevant because everyone is logging in via SSO
+AXES_FAILURE_LIMIT = config("MAX_LOGIN_ATTEMPTS", default=100, cast=int)
+
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
 # Additional CORS allowed and CSRF trusted origins should be empty until if/when the app

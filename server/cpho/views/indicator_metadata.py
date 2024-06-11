@@ -102,7 +102,7 @@ class BenchmarkingForm(ModelForm):
         required=False,
         choices=Benchmarking.COMPARISON_CHOICES,
         widget=forms.Select(
-            attrs={
+            attrs={ 
                 "class": "form-select",
             }
         ),
@@ -325,7 +325,7 @@ class TrendAnalysisForm(ModelForm):
     )
 
     data_point = forms.FloatField(
-        required=True,
+        required=False,
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
@@ -415,150 +415,217 @@ class TrendAnalysisForm(ModelForm):
 
     def clean(self):
         super().clean()
-        if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
-            self._errors = ErrorDict()
-        return self.cleaned_data
-
-    def clean_year(self):
-        year = self.cleaned_data["year"]
-
-        if year is None or year == "":
-            self.add_error(
-                "year",
-                tm("year_required"),
-            )
-            return year
-        single_year = re.match(
-            get_regex_pattern("trend_year_single")["pattern"], year
-        )
-        multi_year = re.match(
-            get_regex_pattern("trend_year_multi")["pattern"], year
-        )
-
-        if not single_year and not multi_year:
-            self.add_error(
-                "year",
-                tm("year_format"),
-            )
-            return year
-
-        if single_year:
-            year_val = int(single_year.group(1))
-            if not (year_val >= 2000 and year_val <= 2050):
-                self.add_error(
-                    "year",
-                    tm("year_timeframe_between"),
-                )
-
-        else:
-            start_year = int(multi_year.group(1))
-            end_year = int(multi_year.group(2))
-            if not (2000 <= start_year <= end_year <= 2050):
-                self.add_error(
-                    "year",
-                    tm("year_timeframe_between_multi"),
-                )
-        year = year.strip().replace(" ", "")
-        return year
-
-    def clean_trend_segment(self):
-        trend_segment = self.cleaned_data["trend_segment"]
-
-        if trend_segment is None or trend_segment == "":
-            return trend_segment
-
-        if trend_segment:
-            single_segment = re.match(
-                get_regex_pattern("trend_segment_single")["pattern"],
-                trend_segment,
-            )
-            multi_segment = re.match(
-                get_regex_pattern("trend_segment_multi")["pattern"],
-                trend_segment,
-            )
-            if not single_segment and not multi_segment:
-                self.add_error(
-                    "trend_segment",
-                    tm("trend_segment_format"),
-                )
-                return trend_segment
-            if single_segment:
-                start_year = int(single_segment.group(1))
-                end_year = int(single_segment.group(2))
-                if not (2000 <= start_year <= end_year <= 2050):
-                    self.add_error(
-                        "trend_segment",
-                        tm("trend_timeframe_between"),
-                    )
-
-            else:
-                start_year_start = int(multi_segment.group(1))
-                start_year_end = int(multi_segment.group(2))
-                end_year_start = int(multi_segment.group(3))
-                end_year_end = int(multi_segment.group(4))
-                if (
-                    not (2000 <= start_year_start <= end_year_end <= 2050)
-                    or not (2000 <= start_year_start <= start_year_end <= 2050)
-                    or not (2000 <= end_year_start <= end_year_end <= 2050)
-                ):
-                    self.add_error(
-                        "trend_segment",
-                        tm("trend_timeframe_between_multi"),
-                    )
-            trend_segment = trend_segment.strip().replace(" ", "")
-            return trend_segment
-
-    def clean_data_point(self):
+        # if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
+        #     self._errors = ErrorDict()
         is_deleted = self.cleaned_data.get("is_deleted", False)
-        data_point = self.cleaned_data.get("data_point", None)
+        year = self.cleaned_data.get("year")
+        data_point = self.cleaned_data.get("data_point")
+        line_of_best_fit_point = self.cleaned_data.get("line_of_best_fit_point")
+        trend_segment = self.cleaned_data.get("trend_segment")
+        trend = self.cleaned_data.get("trend")
+        data_quality = self.cleaned_data.get("data_quality")
+        unit = self.cleaned_data.get("unit")
+        data_point_lower_ci = self.cleaned_data.get("data_point_lower_ci")
+        data_point_upper_ci = self.cleaned_data.get("data_point_upper_ci")
+
         if not is_deleted:
+            # check required fields
             if data_point is None:
                 self.add_error(
                     "data_point",
                     tm("data_point_required"),
                 )
-            if data_point and data_point < 0:
+            if not year:
+                self.add_error(
+                    "year",
+                    tm("year_required"),
+                )
+            
+            #data_point
+            if data_point is not None and data_point < 0:
                 self.add_error(
                     "data_point",
                     tm("data_point_error"),
                 )
-        return data_point
-
-    def clean_data_point_lower_ci(self):
-        is_deleted = self.cleaned_data.get("is_deleted", False)
-        data_point = self.cleaned_data.get("data_point", None)
-        data_point_lower_ci = self.cleaned_data.get(
-            "data_point_lower_ci", None
-        )
-        if not is_deleted:
-            if (
-                data_point_lower_ci
-                and data_point
-                and data_point_lower_ci > data_point
-            ):
+            if data_point_lower_ci is not None and data_point is not None and data_point_lower_ci > data_point:
                 self.add_error(
                     "data_point_lower_ci",
                     tm("data_point_lower_ci_error"),
-                )
-        return data_point_lower_ci
-
-    def clean_data_point_upper_ci(self):
-        is_deleted = self.cleaned_data.get("is_deleted", False)
-        data_point = self.cleaned_data.get("data_point", None)
-        data_point_upper_ci = self.cleaned_data.get(
-            "data_point_upper_ci", None
-        )
-        if not is_deleted:
-            if (
-                data_point_upper_ci
-                and data_point
-                and data_point_upper_ci < data_point
-            ):
+                )    
+            if data_point_upper_ci is not None and data_point is not None and data_point_upper_ci < data_point:
                 self.add_error(
                     "data_point_upper_ci",
                     tm("data_point_upper_ci_error"),
                 )
-        return data_point_upper_ci
+
+            #individual field checks
+
+            #year
+            if year:
+                single_year = re.match(
+                    get_regex_pattern("trend_year_single")["pattern"], year
+                )
+                multi_year = re.match(
+                    get_regex_pattern("trend_year_multi")["pattern"], year
+                )
+
+                if not single_year and not multi_year:
+                    self.add_error(
+                        "year",
+                        tm("year_format"),
+                    )
+                
+                else:
+
+                    if single_year:
+                        year_val = int(single_year.group(1))
+                        if not (year_val >= 2000 and year_val <= 2050):
+                            self.add_error(
+                                "year",
+                                tm("year_timeframe_between"),
+                            )
+
+                    else:
+                        start_year = int(multi_year.group(1))
+                        end_year = int(multi_year.group(2))
+                        if not (2000 <= start_year <= end_year <= 2050):
+                            self.add_error(
+                                "year",
+                                tm("year_timeframe_between_multi"),
+                            )
+                    self.cleaned_data["year"] = year.strip().replace(" ", "")
+        
+            #trend_segment 
+            if trend_segment:
+                    single_segment = re.match(
+                        get_regex_pattern("trend_segment_single")["pattern"],
+                        trend_segment,
+                    )
+                    multi_segment = re.match(
+                        get_regex_pattern("trend_segment_multi")["pattern"],
+                        trend_segment,
+                    ) 
+                    if not single_segment and not multi_segment:
+                        self.add_error(
+                            "trend_segment",
+                            tm("trend_segment_format"),
+                        )
+                    else:
+                        if single_segment:
+                            start_year = int(single_segment.group(1))
+                            end_year = int(single_segment.group(2))
+                            if not (2000 <= start_year <= end_year <= 2050):
+                                self.add_error(
+                                    "trend_segment",
+                                    tm("trend_timeframe_between"),
+                                )
+                        else:
+                            start_year_start = int(multi_segment.group(1))
+                            start_year_end = int(multi_segment.group(2))
+                            end_year_start = int(multi_segment.group(3))
+                            end_year_end = int(multi_segment.group(4))
+                            if (
+                                not (2000 <= start_year_start <= end_year_end <= 2050)
+                                or not (2000 <= start_year_start <= start_year_end <= 2050)
+                                or not (2000 <= end_year_start <= end_year_end <= 2050)
+                            ):
+                                self.add_error(
+                                    "trend_segment",
+                                    tm("trend_timeframe_between_multi"),
+                                )
+                        self.cleaned_data["trend_segment"] = trend_segment.strip().replace(" ", "")
+
+        return self.cleaned_data
+
+    # def clean_year(self):
+    #     year = self.cleaned_data["year"]
+
+    #     if year is None or year == "":
+    #         self.add_error(
+
+    #             "year",
+    #             tm("year_required"),
+    #         )
+    #         return year
+    #     single_year = re.match(
+    #         get_regex_pattern("trend_year_single")["pattern"], year
+    #     )
+    #     multi_year = re.match(
+    #         get_regex_pattern("trend_year_multi")["pattern"], year
+    #     )
+
+    #     if not single_year and not multi_year:
+    #         self.add_error(
+    #             "year",
+    #             tm("year_format"),
+    #         )
+    #         return year
+
+    #     if single_year:
+    #         year_val = int(single_year.group(1))
+    #         if not (year_val >= 2000 and year_val <= 2050):
+    #             self.add_error(
+    #                 "year",
+    #                 tm("year_timeframe_between"),
+    #             )
+
+    #     else:
+    #         start_year = int(multi_year.group(1))
+    #         end_year = int(multi_year.group(2))
+    #         if not (2000 <= start_year <= end_year <= 2050):
+    #             self.add_error(
+    #                 "year",
+    #                 tm("year_timeframe_between_multi"),
+    #             )
+    #     year = year.strip().replace(" ", "")
+    #     return year
+
+    # def clean_trend_segment(self):
+    #     trend_segment = self.cleaned_data["trend_segment"]
+
+    #    if trend_segment is None or trend_segment == "":
+    #         return trend_segment
+
+    #     if trend_segment:
+    #         single_segment = re.match(
+    #             get_regex_pattern("trend_segment_single")["pattern"],
+    #             trend_segment,
+    #         )
+    #         multi_segment = re.match(
+    #             get_regex_pattern("trend_segment_multi")["pattern"],
+    #             trend_segment,
+    #         ) 
+    #         if not single_segment and not multi_segment:
+    #             self.add_error(
+    #                 "trend_segment",
+    #                 tm("trend_segment_format"),
+    #             )
+    #             return trend_segment
+    #         if single_segment:
+    #             start_year = int(single_segment.group(1))
+    #             end_year = int(single_segment.group(2))
+    #             if not (2000 <= start_year <= end_year <= 2050):
+    #                 self.add_error(
+    #                     "trend_segment",
+    #                     tm("trend_timeframe_between"),
+    #                 )
+
+    #         else:
+    #             start_year_start = int(multi_segment.group(1))
+    #             start_year_end = int(multi_segment.group(2))
+    #             end_year_start = int(multi_segment.group(3))
+    #             end_year_end = int(multi_segment.group(4))
+    #             if (
+    #                 not (2000 <= start_year_start <= end_year_end <= 2050)
+    #                 or not (2000 <= start_year_start <= start_year_end <= 2050)
+    #                 or not (2000 <= end_year_start <= end_year_end <= 2050)
+    #             ):
+    #                 self.add_error(
+    #                     "trend_segment",
+    #                     tm("trend_timeframe_between_multi"),
+    #                 )
+    #         trend_segment = trend_segment.strip().replace(" ", "")
+    #         return trend_segment
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

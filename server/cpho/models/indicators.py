@@ -618,7 +618,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
     year = fields.CharField(max_length=50, null=True, blank=True)
-    data_point = fields.FloatField()
+    data_point = fields.FloatField(blank=True, null=True)
     line_of_best_fit_point = fields.FloatField(null=True, blank=True)
     trend_segment = fields.CharField(max_length=50, null=True, blank=True)
 
@@ -652,6 +652,8 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         max_length=75,
         choices=UNIT_CHOICES,
         verbose_name=tm("value_unit"),
+        blank=True, 
+        null=True,
     )
     DATA_QUALITY_CHOICES = [
         ("", "--"),

@@ -1203,6 +1203,10 @@ translation_entries = {
         "en": "Data point is required",
         "fr": "Le point de données est requis",
     },
+    "data_point_error": {
+        "en": "Data point cannot be negative",
+        "fr": "Le point de données ne peut pas être négatif",
+    },
     "country_required": {
         "en": "Please select a country",
         "fr": "Veuillez sélectionner un pays",

@@ -652,7 +652,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         max_length=75,
         choices=UNIT_CHOICES,
         verbose_name=tm("value_unit"),
-        blank=True, 
+        blank=True,
         null=True,
     )
     DATA_QUALITY_CHOICES = [

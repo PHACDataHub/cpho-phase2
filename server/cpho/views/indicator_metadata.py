@@ -102,7 +102,7 @@ class BenchmarkingForm(ModelForm):
         required=False,
         choices=Benchmarking.COMPARISON_CHOICES,
         widget=forms.Select(
-            attrs={ 
+            attrs={
                 "class": "form-select",
             }
         ),
@@ -420,7 +420,9 @@ class TrendAnalysisForm(ModelForm):
         is_deleted = self.cleaned_data.get("is_deleted", False)
         year = self.cleaned_data.get("year")
         data_point = self.cleaned_data.get("data_point")
-        line_of_best_fit_point = self.cleaned_data.get("line_of_best_fit_point")
+        line_of_best_fit_point = self.cleaned_data.get(
+            "line_of_best_fit_point"
+        )
         trend_segment = self.cleaned_data.get("trend_segment")
         trend = self.cleaned_data.get("trend")
         data_quality = self.cleaned_data.get("data_quality")
@@ -440,27 +442,35 @@ class TrendAnalysisForm(ModelForm):
                     "year",
                     tm("year_required"),
                 )
-            
-            #data_point
+
+            # data_point
             if data_point is not None and data_point < 0:
                 self.add_error(
                     "data_point",
                     tm("data_point_error"),
                 )
-            if data_point_lower_ci is not None and data_point is not None and data_point_lower_ci > data_point:
+            if (
+                data_point_lower_ci is not None
+                and data_point is not None
+                and data_point_lower_ci > data_point
+            ):
                 self.add_error(
                     "data_point_lower_ci",
                     tm("data_point_lower_ci_error"),
-                )    
-            if data_point_upper_ci is not None and data_point is not None and data_point_upper_ci < data_point:
+                )
+            if (
+                data_point_upper_ci is not None
+                and data_point is not None
+                and data_point_upper_ci < data_point
+            ):
                 self.add_error(
                     "data_point_upper_ci",
                     tm("data_point_upper_ci_error"),
                 )
 
-            #individual field checks
+            # individual field checks
 
-            #year
+            # year
             if year:
                 single_year = re.match(
                     get_regex_pattern("trend_year_single")["pattern"], year
@@ -474,9 +484,8 @@ class TrendAnalysisForm(ModelForm):
                         "year",
                         tm("year_format"),
                     )
-                
-                else:
 
+                else:
                     if single_year:
                         year_val = int(single_year.group(1))
                         if not (year_val >= 2000 and year_val <= 2050):
@@ -494,46 +503,60 @@ class TrendAnalysisForm(ModelForm):
                                 tm("year_timeframe_between_multi"),
                             )
                     self.cleaned_data["year"] = year.strip().replace(" ", "")
-        
-            #trend_segment 
+
+            # trend_segment
             if trend_segment:
-                    single_segment = re.match(
-                        get_regex_pattern("trend_segment_single")["pattern"],
-                        trend_segment,
+                single_segment = re.match(
+                    get_regex_pattern("trend_segment_single")["pattern"],
+                    trend_segment,
+                )
+                multi_segment = re.match(
+                    get_regex_pattern("trend_segment_multi")["pattern"],
+                    trend_segment,
+                )
+                if not single_segment and not multi_segment:
+                    self.add_error(
+                        "trend_segment",
+                        tm("trend_segment_format"),
                     )
-                    multi_segment = re.match(
-                        get_regex_pattern("trend_segment_multi")["pattern"],
-                        trend_segment,
-                    ) 
-                    if not single_segment and not multi_segment:
-                        self.add_error(
-                            "trend_segment",
-                            tm("trend_segment_format"),
-                        )
+                else:
+                    if single_segment:
+                        start_year = int(single_segment.group(1))
+                        end_year = int(single_segment.group(2))
+                        if not (2000 <= start_year <= end_year <= 2050):
+                            self.add_error(
+                                "trend_segment",
+                                tm("trend_timeframe_between"),
+                            )
                     else:
-                        if single_segment:
-                            start_year = int(single_segment.group(1))
-                            end_year = int(single_segment.group(2))
-                            if not (2000 <= start_year <= end_year <= 2050):
-                                self.add_error(
-                                    "trend_segment",
-                                    tm("trend_timeframe_between"),
-                                )
-                        else:
-                            start_year_start = int(multi_segment.group(1))
-                            start_year_end = int(multi_segment.group(2))
-                            end_year_start = int(multi_segment.group(3))
-                            end_year_end = int(multi_segment.group(4))
-                            if (
-                                not (2000 <= start_year_start <= end_year_end <= 2050)
-                                or not (2000 <= start_year_start <= start_year_end <= 2050)
-                                or not (2000 <= end_year_start <= end_year_end <= 2050)
-                            ):
-                                self.add_error(
-                                    "trend_segment",
-                                    tm("trend_timeframe_between_multi"),
-                                )
-                        self.cleaned_data["trend_segment"] = trend_segment.strip().replace(" ", "")
+                        start_year_start = int(multi_segment.group(1))
+                        start_year_end = int(multi_segment.group(2))
+                        end_year_start = int(multi_segment.group(3))
+                        end_year_end = int(multi_segment.group(4))
+                        if (
+                            not (
+                                2000
+                                <= start_year_start
+                                <= end_year_end
+                                <= 2050
+                            )
+                            or not (
+                                2000
+                                <= start_year_start
+                                <= start_year_end
+                                <= 2050
+                            )
+                            or not (
+                                2000 <= end_year_start <= end_year_end <= 2050
+                            )
+                        ):
+                            self.add_error(
+                                "trend_segment",
+                                tm("trend_timeframe_between_multi"),
+                            )
+                    self.cleaned_data[
+                        "trend_segment"
+                    ] = trend_segment.strip().replace(" ", "")
 
         return self.cleaned_data
 
@@ -594,7 +617,7 @@ class TrendAnalysisForm(ModelForm):
     #         multi_segment = re.match(
     #             get_regex_pattern("trend_segment_multi")["pattern"],
     #             trend_segment,
-    #         ) 
+    #         )
     #         if not single_segment and not multi_segment:
     #             self.add_error(
     #                 "trend_segment",

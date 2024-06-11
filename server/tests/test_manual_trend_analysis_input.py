@@ -83,27 +83,28 @@ def test_trend_analysis(vanilla_user_client):
     assert data2020.is_deleted == True
     assert data2020.deletion_time is not None
 
+
 def test_trend_analysis_form_validation(vanilla_user_client):
     ind = IndicatorFactory()
     ind.save()
-    url = reverse("manage_trend_analysis_data", args=[ind.id])   
+    url = reverse("manage_trend_analysis_data", args=[ind.id])
 
-    #Test with missing required fields
+    # Test with missing required fields
     data = {
         "trend_analysis-TOTAL_FORMS": 1,
         "trend_analysis-INITIAL_FORMS": 0,
         "trend_analysis-MIN_NUM_FORMS": 0,
         "trend_analysis-MAX_NUM_FORMS": 1000,
         "trend_analysis-0-year": "",
-        "trend_analysis-0-data_point": "",   
-        "trend_analysis-0-data_point_upper_ci": 9.0, 
+        "trend_analysis-0-data_point": "",
+        "trend_analysis-0-data_point_upper_ci": 9.0,
     }
 
     with patch_rules(can_edit_trend_analysis=True):
         response = vanilla_user_client.post(url, data=data)
         assert response.context["trend_analysis_formset"].errors is not None
-    
-    #Test with negative data_point
+
+    # Test with negative data_point
 
     data = {
         "trend_analysis-TOTAL_FORMS": 1,
@@ -118,7 +119,7 @@ def test_trend_analysis_form_validation(vanilla_user_client):
         response = vanilla_user_client.post(url, data=data)
         assert response.context["trend_analysis_formset"].errors is not None
 
-    #Test data_point_upper_ci < data_point
+    # Test data_point_upper_ci < data_point
 
     data = {
         "trend_analysis-TOTAL_FORMS": 1,

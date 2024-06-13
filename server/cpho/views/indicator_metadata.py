@@ -14,7 +14,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import FormView, TemplateView
-
 from phac_aspc.rules import test_rule
 
 from cpho.constants import SUBMISSION_STATUSES
@@ -559,96 +558,6 @@ class TrendAnalysisForm(ModelForm):
                     ] = trend_segment.strip().replace(" ", "")
 
         return self.cleaned_data
-
-    # def clean_year(self):
-    #     year = self.cleaned_data["year"]
-
-    #     if year is None or year == "":
-    #         self.add_error(
-
-    #             "year",
-    #             tm("year_required"),
-    #         )
-    #         return year
-    #     single_year = re.match(
-    #         get_regex_pattern("trend_year_single")["pattern"], year
-    #     )
-    #     multi_year = re.match(
-    #         get_regex_pattern("trend_year_multi")["pattern"], year
-    #     )
-
-    #     if not single_year and not multi_year:
-    #         self.add_error(
-    #             "year",
-    #             tm("year_format"),
-    #         )
-    #         return year
-
-    #     if single_year:
-    #         year_val = int(single_year.group(1))
-    #         if not (year_val >= 2000 and year_val <= 2050):
-    #             self.add_error(
-    #                 "year",
-    #                 tm("year_timeframe_between"),
-    #             )
-
-    #     else:
-    #         start_year = int(multi_year.group(1))
-    #         end_year = int(multi_year.group(2))
-    #         if not (2000 <= start_year <= end_year <= 2050):
-    #             self.add_error(
-    #                 "year",
-    #                 tm("year_timeframe_between_multi"),
-    #             )
-    #     year = year.strip().replace(" ", "")
-    #     return year
-
-    # def clean_trend_segment(self):
-    #     trend_segment = self.cleaned_data["trend_segment"]
-
-    #    if trend_segment is None or trend_segment == "":
-    #         return trend_segment
-
-    #     if trend_segment:
-    #         single_segment = re.match(
-    #             get_regex_pattern("trend_segment_single")["pattern"],
-    #             trend_segment,
-    #         )
-    #         multi_segment = re.match(
-    #             get_regex_pattern("trend_segment_multi")["pattern"],
-    #             trend_segment,
-    #         )
-    #         if not single_segment and not multi_segment:
-    #             self.add_error(
-    #                 "trend_segment",
-    #                 tm("trend_segment_format"),
-    #             )
-    #             return trend_segment
-    #         if single_segment:
-    #             start_year = int(single_segment.group(1))
-    #             end_year = int(single_segment.group(2))
-    #             if not (2000 <= start_year <= end_year <= 2050):
-    #                 self.add_error(
-    #                     "trend_segment",
-    #                     tm("trend_timeframe_between"),
-    #                 )
-
-    #         else:
-    #             start_year_start = int(multi_segment.group(1))
-    #             start_year_end = int(multi_segment.group(2))
-    #             end_year_start = int(multi_segment.group(3))
-    #             end_year_end = int(multi_segment.group(4))
-    #             if (
-    #                 not (2000 <= start_year_start <= end_year_end <= 2050)
-    #                 or not (2000 <= start_year_start <= start_year_end <= 2050)
-    #                 or not (2000 <= end_year_start <= end_year_end <= 2050)
-    #             ):
-    #                 self.add_error(
-    #                     "trend_segment",
-    #                     tm("trend_timeframe_between_multi"),
-    #                 )
-    #         trend_segment = trend_segment.strip().replace(" ", "")
-    #         return trend_segment
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

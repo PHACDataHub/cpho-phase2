@@ -213,6 +213,7 @@ MIDDLEWARE = configure_middleware(
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "data_fetcher.middleware.GlobalRequestMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "server.middleware.MustBeLoggedInMiddleware",
     ]

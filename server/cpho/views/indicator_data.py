@@ -168,87 +168,49 @@ class IndicatorDatumForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
-        #     self._errors = ErrorDict()
-        #     return self.cleaned_data
-
-        is_deleted = cleaned_data.get("is_deleted")
+        is_deleted = cleaned_data.get("is_deleted", False)
         value = cleaned_data.get("value")
         value_unit = cleaned_data.get("value_unit")
         value_lower_bound = cleaned_data.get("value_lower_bound")
         value_upper_bound = cleaned_data.get("value_upper_bound")
         single_year_timeframe = cleaned_data.get("single_year_timeframe")
         multi_year_timeframe = cleaned_data.get("multi_year_timeframe")
-        
-        if is_deleted:
-            self._errors = ErrorDict()
-            return cleaned_data
 
-        if value:
-            err = IndDataCleaner.clean_value_data(value, value_unit)
-            if err:
-                self.add_error("value", err)
+        if not is_deleted:
+            if value:
+                err = IndDataCleaner.clean_value_data(value, value_unit)
+                if err:
+                    self.add_error("value", err)
 
-        if value_lower_bound:
-            err = IndDataCleaner.clean_value_lower_data(value, value_lower_bound)
-            if err:
-                self.add_error("value_lower_bound", err)
+            if value_lower_bound:
+                err = IndDataCleaner.clean_value_lower_data(
+                    value, value_lower_bound
+                )
+                if err:
+                    self.add_error("value_lower_bound", err)
 
-        if value_upper_bound:
-            err = IndDataCleaner.clean_value_upper_data(value, value_upper_bound)
-            if err:
-                self.add_error("value_upper_bound", err)
+            if value_upper_bound:
+                err = IndDataCleaner.clean_value_upper_data(
+                    value, value_upper_bound
+                )
+                if err:
+                    self.add_error("value_upper_bound", err)
 
-        if single_year_timeframe:
-            err = IndDataCleaner.clean_single_year_data(single_year_timeframe)
-            if err:
-                self.add_error("single_year_timeframe", err)
+            if single_year_timeframe:
+                err = IndDataCleaner.clean_single_year_data(
+                    single_year_timeframe
+                )
+                if err:
+                    self.add_error("single_year_timeframe", err)
 
-        if multi_year_timeframe:
-            err = IndDataCleaner.clean_multi_year_data(multi_year_timeframe)
-            if err:
-                self.add_error("multi_year_timeframe", err)
+            if multi_year_timeframe:
+                err = IndDataCleaner.clean_multi_year_data(
+                    multi_year_timeframe
+                )
+                if err:
+                    self.add_error("multi_year_timeframe", err)
 
         return cleaned_data
-
-    # def clean_value(self):
-    #     value = self.cleaned_data["value"]
-    #     value_unit = self.cleaned_data["value_unit"]
-    #     err = IndDataCleaner.clean_value_data(value, value_unit)
-    #     if err:
-    #         self.add_error("value", err)
-    #     return value
-
-    # def clean_value_lower_bound(self):
-    #     value = self.cleaned_data["value"]
-    #     value_lower = self.cleaned_data["value_lower_bound"]
-    #     err = IndDataCleaner.clean_value_lower_data(value, value_lower)
-    #     if err:
-    #         self.add_error("value_lower_bound", err)
-    #     return value_lower
-
-    # def clean_value_upper_bound(self):
-    #     value = self.cleaned_data["value"]
-    #     value_upper = self.cleaned_data["value_upper_bound"]
-    #     err = IndDataCleaner.clean_value_upper_data(value, value_upper)
-    #     if err:
-    #         self.add_error("value_upper_bound", err)
-    #     return value_upper
-
-    # def clean_single_year_timeframe(self):
-    #     single_year = self.cleaned_data["single_year_timeframe"]
-    #     err = IndDataCleaner.clean_single_year_data(single_year)
-    #     if err:
-    #         self.add_error("single_year_timeframe", err)
-    #     return single_year
-
-    # def clean_multi_year_timeframe(self):
-    #     multi_year = self.cleaned_data["multi_year_timeframe"]
-
-    #     err = IndDataCleaner.clean_single_year_data(multi_year)
-    #     if err:
-    #         self.add_error("multi_year_timeframe", err)
-    #     return multi_year
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

@@ -14,6 +14,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import FormView, TemplateView
+
 from phac_aspc.rules import test_rule
 
 from cpho.constants import SUBMISSION_STATUSES

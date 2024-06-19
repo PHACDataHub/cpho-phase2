@@ -1231,4 +1231,8 @@ translation_entries = {
         "en": "Year must be a number",
         "fr": "L'année doit être un nombre",
     },
+    "required_if_not_deleted_err": {
+        "en": "This field is required",
+        "fr": "Ce champ est requis",
+    },
 }

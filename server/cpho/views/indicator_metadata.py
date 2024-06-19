@@ -34,11 +34,12 @@ from cpho.views.view_util import (
     DimensionTypeOrAllMixin,
     MustPassAuthCheckMixin,
     ReadOnlyFormMixin,
+    RequiredIfNotDeletedMixin,
     SinglePeriodMixin,
 )
 
 
-class BenchmarkingForm(ModelForm):
+class BenchmarkingForm(RequiredIfNotDeletedMixin, ModelForm):
     class Meta:
         model = Benchmarking
         fields = [
@@ -129,6 +130,12 @@ class BenchmarkingForm(ModelForm):
         label=tm("methodology_differences"),
     )
 
+    REQUIRED_UNLESS_DELETED = [
+        "oecd_country",
+        "value",
+        "comparison_to_oecd_avg",
+    ]
+
     def clean(self):
         super().clean()
         # if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
@@ -149,18 +156,6 @@ class BenchmarkingForm(ModelForm):
         )
 
         if not is_deleted:
-            # check required fields
-            if not oecd_country:
-                self.add_error("oecd_country", tm("country_required"))
-            if not value:
-                self.add_error("value", tm("value_required"))
-            if not comparison_to_oecd_avg:
-                self.add_error(
-                    "comparison_to_oecd_avg",
-                    tm("comparison_required"),
-                )
-
-            # individual field checks
 
             # value
             if value and value < 0:
@@ -302,7 +297,7 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
         return context
 
 
-class TrendAnalysisForm(ModelForm):
+class TrendAnalysisForm(RequiredIfNotDeletedMixin, ModelForm):
     class Meta:
         model = TrendAnalysis
         fields = [
@@ -413,6 +408,11 @@ class TrendAnalysisForm(ModelForm):
         label=tm("delete"),
     )
 
+    REQUIRED_UNLESS_DELETED = [
+        "data_point",
+        "year",
+    ]
+
     def clean(self):
         super().clean()
         # if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
@@ -431,18 +431,6 @@ class TrendAnalysisForm(ModelForm):
         data_point_upper_ci = self.cleaned_data.get("data_point_upper_ci")
 
         if not is_deleted:
-            # check required fields
-            if data_point is None:
-                self.add_error(
-                    "data_point",
-                    tm("data_point_required"),
-                )
-            if not year:
-                self.add_error(
-                    "year",
-                    tm("year_required"),
-                )
-
             # data_point
             if data_point is not None and data_point < 0:
                 self.add_error(
@@ -554,9 +542,9 @@ class TrendAnalysisForm(ModelForm):
                                 "trend_segment",
                                 tm("trend_timeframe_between_multi"),
                             )
-                    self.cleaned_data[
-                        "trend_segment"
-                    ] = trend_segment.strip().replace(" ", "")
+                    self.cleaned_data["trend_segment"] = (
+                        trend_segment.strip().replace(" ", "")
+                    )
 
         return self.cleaned_data
 

@@ -156,7 +156,6 @@ class BenchmarkingForm(RequiredIfNotDeletedMixin, ModelForm):
         )
 
         if not is_deleted:
-
             # value
             if value and value < 0:
                 self.add_error("value", tm("value_cannot_be_negative"))
@@ -542,9 +541,9 @@ class TrendAnalysisForm(RequiredIfNotDeletedMixin, ModelForm):
                                 "trend_segment",
                                 tm("trend_timeframe_between_multi"),
                             )
-                    self.cleaned_data["trend_segment"] = (
-                        trend_segment.strip().replace(" ", "")
-                    )
+                    self.cleaned_data[
+                        "trend_segment"
+                    ] = trend_segment.strip().replace(" ", "")
 
         return self.cleaned_data
 

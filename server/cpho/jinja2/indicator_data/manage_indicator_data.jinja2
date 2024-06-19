@@ -106,8 +106,7 @@
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto;
-                      display:block">
+               style="overflow-x:auto; display:block">
           <thead class="table-light text-center">
             <tr>
               <th class="width-10">{{ dimension_type.name }}</th>
@@ -189,8 +188,7 @@
  
         <table class="table mb-0"
                id="{{ dimension_type }}-table"
-               style="overflow-x:auto;
-                      display:block">
+               style="overflow-x:auto; display:block">
  
           <thead class="table-light text-center">
             <tr>
@@ -204,8 +202,12 @@
               <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
               <th class="width-9">{{ tm("value_displayed") }}</th>
               <th class="width-9">{{ tm("reason_for_null_data") }}</th>
-              <th class="width-9">{{ tm("arrow_flag") }}</th>
-              <th class="width-9">{{ tm("delete") }}</th>
+              <th class="width-9">
+                {{ tm("arrow_flag") }}
+              </th>
+              <th class="width-9">
+                {{ tm("delete") }}
+              </th>
             </tr>
           </thead>
           <tbody id="{{ dimension_type }}-table-body"
@@ -222,24 +224,28 @@
         </table>
         {% if mode == "edit" %}
           <div class="text-center py-1">
-            <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tm("add_another_age_group") }}</button>
+            <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">
+              {{ tm("add_another_age_group") }}
+            </button>
           </div>
         {% endif %}
         {% if age_group_formset.non_form_errors() %}
-          <div class="error-div">{{ age_group_formset.non_form_errors() }}</div>
+          <div class="error-div">
+            {{ age_group_formset.non_form_errors() }}
+          </div>
         {% endif %}
         {% if predefined_values_formset.non_form_errors() %}
-          <div class="error-div">{{ predefined_values_formset.non_form_errors() }}</div>
+          <div class="error-div">
+            {{ predefined_values_formset.non_form_errors() }}
+          </div>
         {% endif %}
  
       </div>
     {% endif %}
 
-    {% if mode == "edit" %}
-      <input type="submit"
-             class="btn btn-primary float-end my-3"
-             value="{{ tm("save") }}">
-    {% endif %}
+    {% if mode == "edit" %}<input type="submit"
+       class="btn btn-primary float-end my-3"
+       value="{{ tm("save") }}">{% endif %}
   </form>
 
   {% if show_age_group %}

@@ -46,17 +46,13 @@
             <div class="col-md-6">
               <p>{{ tdt("users") }}</p>
               <ul>
-                {% for user in directory.users.all() %}
-                  <li>{{ user }}</li>
-                {% endfor %}
+                {% for user in directory.users.all() %}<li>{{ user }}</li>{% endfor %}
               </ul>
             </div>
             <div class="col-md-6">
               <p>{{ tdt("indicators") }}</p>
               <ul>
-                {% for indicator in directory.indicators.all() %}
-                  <li>{{ indicator }}</li>
-                {% endfor %}
+                {% for indicator in directory.indicators.all() %}<li>{{ indicator }}</li>{% endfor %}
               </ul>
             </div>
           </div>

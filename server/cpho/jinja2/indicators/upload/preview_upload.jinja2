@@ -16,9 +16,7 @@
     <button id="upload-btn"
             class="btn btn-primary"
             type="submit"
-            {% if not no_errors %}disabled{% endif %}>
-      {{ tm("upload_data") }}
-    </button>
+            {% if not no_errors %}disabled{% endif %}>{{ tm("upload_data") }}</button>
     <a href="{{ url("list_indicators") }}" class="btn btn-danger">{{ tm("cancel") }}</a>
   </form>
 

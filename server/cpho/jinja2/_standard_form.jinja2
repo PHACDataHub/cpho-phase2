@@ -3,15 +3,11 @@
 
 {% if form.non_field_errors() %}
   <div class="alert alert-danger">
-    {% for error in form.non_field_errors() %}
-      {{ error }}
-    {% endfor %}
+    {% for error in form.non_field_errors() %}{{ error }}{% endfor %}
   </div>
 {% endif %}
 
-{% for field in form.hidden_fields() %}
-  {{ field }}
-{% endfor %}
+{% for field in form.hidden_fields() %}{{ field }}{% endfor %}
 
 
 {% for field in form.visible_fields() %}

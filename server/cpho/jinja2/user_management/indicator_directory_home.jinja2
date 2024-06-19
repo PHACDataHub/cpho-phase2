@@ -49,9 +49,7 @@
   </div>
 
   <details class="border rounded p-3" {% if form.errors %}open{% endif %}>
-    <summary class="fw-bold">
-      {{ tm("add_new_user") }}
-    </summary>
+    <summary class="fw-bold">{{ tm("add_new_user") }}</summary>
     <form method="post">
       {% include '_standard_form.jinja2' %}
 

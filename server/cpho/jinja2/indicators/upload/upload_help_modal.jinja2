@@ -77,153 +77,83 @@
               <td>
                 <ul>
                   {% for key in mapper["arrow_flag_mapper"] %}
-                    {% if key != "" %}
-                      <li>
-                        {{ key }}
-                      </li>
-                    {% endif %}
+                    {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
               </td>
             </tr>
             <tr>
-              <td>
-                Value
-              </td>
-              <td>
-                {{ tm("value") }}
-              </td>
-              <td>
-                {{ tm("open_number_field_allows_decimals") }}
-              </td>
+              <td>Value</td>
+              <td>{{ tm("value") }}</td>
+              <td>{{ tm("open_number_field_allows_decimals") }}</td>
             </tr>
             <tr>
-              <td>
-                Value_LowerCI
-              </td>
-              <td>
-                {{ tm("data_lower_ci") }}
-              </td>
-              <td>
-                {{ tm("open_number_field_allows_decimals") }}
-              </td>
+              <td>Value_LowerCI</td>
+              <td>{{ tm("data_lower_ci") }}</td>
+              <td>{{ tm("open_number_field_allows_decimals") }}</td>
             </tr>
             <tr>
-              <td>
-                Value_UpperCI
-              </td>
-              <td>
-                {{ tm("data_upper_ci") }}
-              </td>
-              <td>
-                {{ tm("open_number_field_allows_decimals") }}
-              </td>
+              <td>Value_UpperCI</td>
+              <td>{{ tm("data_upper_ci") }}</td>
+              <td>{{ tm("open_number_field_allows_decimals") }}</td>
             </tr>
             <tr>
-              <td>
-                SingleYear_TimeFrame
-              </td>
-              <td>
-                {{ tm("single_year_timeframe") }}
-              </td>
-              <td>
-                {{ tm("yyyy") }}
-              </td>
+              <td>SingleYear_TimeFrame</td>
+              <td>{{ tm("single_year_timeframe") }}</td>
+              <td>{{ tm("yyyy") }}</td>
             </tr>
             <tr>
-              <td>
-                MultiYear_TimeFrame
-              </td>
-              <td>
-                {{ tm("multi_year_timeframe") }}
-              </td>
-              <td>
-                {{ tm("yyyy_yyyy") }}
-              </td>
+              <td>MultiYear_TimeFrame</td>
+              <td>{{ tm("multi_year_timeframe") }}</td>
+              <td>{{ tm("yyyy_yyyy") }}</td>
             </tr>
             <tr>
-              <td>
-                Value_Units
-              </td>
-              <td>
-                {{ tm("unit") }}
-              </td>
+              <td>Value_Units</td>
+              <td>{{ tm("unit") }}</td>
               <td>
                 <ul>
                   {% for key in mapper["value_unit_mapper"] %}
-                    {% if key != "" %}
-                      <li>
-                        {{ key }}
-                      </li>
-                    {% endif %}
+                    {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
               </td>
             </tr>
             <tr>
-              <td>
-                Value_Displayed
-              </td>
-              <td>
-                {{ tm("value_displayed") }}
-              </td>
+              <td>Value_Displayed</td>
+              <td>{{ tm("value_displayed") }}</td>
               <td>
                 <ul>
                   {% for key in mapper["value_displayed_mapper"] %}
-                    {% if key != "" %}
-                      <li>
-                        {{ key }}
-                      </li>
-                    {% endif %}
+                    {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
               </td>
             </tr>
             <tr>
-              <td>
-                Reason_for_Null_Data
-              </td>
-              <td>
-                {{ tm("reason_for_null_data") }} {{ tm("default_is_empty") }}
-              </td>
+              <td>Reason_for_Null_Data</td>
+              <td>{{ tm("reason_for_null_data") }} {{ tm("default_is_empty") }}</td>
               <td>
                 <ul>
                   {% for key in mapper["reason_for_null_mapper"] %}
-                    {% if key != "" %}
-                      <li>
-                        {{ key }}
-                      </li>
-                    {% endif %}
+                    {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
               </td>
             </tr>
             <tr>
-              <td>
-                Dimension_Type
-              </td>
-              <td>
-                {{ tm("dimension_type") }}
-              </td>
+              <td>Dimension_Type</td>
+              <td>{{ tm("dimension_type") }}</td>
               <td>
                 <ul>
                   {% for key in mapper["dimension_type_mapper"] %}
-                    {% if key != "" %}
-                      <li>
-                        {{ key }}
-                      </li>
-                    {% endif %}
+                    {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
               </td>
             </tr>
             <tr>
-              <td>
-                Dimension_Value
-              </td>
-              <td>
-                {{ tm("dimension_value") }}
-              </td>
+              <td>Dimension_Value</td>
+              <td>{{ tm("dimension_value") }}</td>
               <td>
                 <div class="d-flex flex-row bd-highlight mb-3">
                   <div class="p-2 border">
@@ -231,11 +161,7 @@
                     <hr>
                     <ul>
                       {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Province" %}
-                          <li>
-                            {{ key[1] }}
-                          </li>
-                        {% endif %}
+                        {% if key[0] == "Province" %}<li>{{ key[1] }}</li>{% endif %}
                       {% endfor %}
                     </ul>
                   </div>
@@ -244,11 +170,7 @@
                     <hr>
                     <ul>
                       {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Gender" %}
-                          <li>
-                            {{ key[1] }}
-                          </li>
-                        {% endif %}
+                        {% if key[0] == "Gender" %}<li>{{ key[1] }}</li>{% endif %}
                       {% endfor %}
                     </ul>
                   </div>
@@ -257,11 +179,7 @@
                     <hr>
                     <ul>
                       {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Region" %}
-                          <li>
-                            {{ key[1] }}
-                          </li>
-                        {% endif %}
+                        {% if key[0] == "Region" %}<li>{{ key[1] }}</li>{% endif %}
                       {% endfor %}
                     </ul>
                   </div>
@@ -270,11 +188,7 @@
                     <hr>
                     <ul>
                       {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Sex" %}
-                          <li>
-                            {{ key[1] }}
-                          </li>
-                        {% endif %}
+                        {% if key[0] == "Sex" %}<li>{{ key[1] }}</li>{% endif %}
                       {% endfor %}
                     </ul>
                   </div>
@@ -282,18 +196,14 @@
                     <span class="fw-bold">{{ tm("no_stratifier") }}</span>
                     <hr>
                     <ul>
-                      <li>
-                        CANADA
-                      </li>
+                      <li>CANADA</li>
                     </ul>
                   </div>
                   <div class="p-2 border">
                     <span class="fw-bold">{{ tm("age_group") }}</span>
                     <hr>
                     <ul>
-                      <li>
-                        {{ tm("open_text_field") }}
-                      </li>
+                      <li>{{ tm("open_text_field") }}</li>
                     </ul>
                   </div>
                   <div class="p-2 border">
@@ -301,11 +211,7 @@
                     <hr>
                     <ul>
                       {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Living Arrangement" %}
-                          <li>
-                            {{ key[1] }}
-                          </li>
-                        {% endif %}
+                        {% if key[0] == "Living Arrangement" %}<li>{{ key[1] }}</li>{% endif %}
                       {% endfor %}
                     </ul>
                   </div>
@@ -313,41 +219,25 @@
               </div>
             </tr>
             <tr>
-              <td>
-                Period
-              </td>
-              <td>
-                {{ tm("period") }}
-              </td>
+              <td>Period</td>
+              <td>{{ tm("period") }}</td>
               <td>
                 <div class="row">
                   <div class="col-4">
                     <ul>
-                      {% for key in mapper["period_mapper"] %}
-                        <li>
-                          {{ key }}
-                        </li>
-                      {% endfor %}
+                      {% for key in mapper["period_mapper"] %}<li>{{ key }}</li>{% endfor %}
                     </ul>
                   </div>
                   <div class="col-8">
                     <span class="fw-bold">{{ tm("legend") }}</span>
                     <ul class="mt-0 mb-2">
-                      <li>
-                        FY: {{ tm("fiscal_year") }}
-                      </li>
-                      <li>
-                        CY: {{ tm("calendar_year") }}
-                      </li>
-                      <li>
-                        Q:  {{ tm("quarter") }} (1-4)
-                      </li>
+                      <li>FY: {{ tm("fiscal_year") }}</li>
+                      <li>CY: {{ tm("calendar_year") }}</li>
+                      <li>Q:  {{ tm("quarter") }} (1-4)</li>
                     </ul>
                     <span class="fw-bold">{{ tm("note") }}</span>
                     <ul class="mt-0 mb-2">
-                      <li>
-                        {{ tm("quarters_are_only_valid_for_fiscal_years") }}
-                      </li>
+                      <li>{{ tm("quarters_are_only_valid_for_fiscal_years") }}</li>
                       {# <li>{{ tdt("Indicators uploaded with blank period column will default to the current calendar year") }}</li> #}
                     </ul>
                   </div>
@@ -358,9 +248,7 @@
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

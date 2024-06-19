@@ -479,3 +479,173 @@ def test_readonly_indicator_data(vanilla_user_client):
         formset = response.context["predefined_values_formset"]
         for form in formset:
             assert isinstance(form, IndicatorDatumForm)
+
+
+def test_indicator_data_form_validation(vanilla_user_client):
+    period = Period.objects.first()
+    ind = IndicatorFactory()
+    age_cat = DimensionType.objects.get(code="age")
+    url = reverse(
+        "manage_indicator_data", args=[ind.id, period.id, age_cat.pk]
+    )
+    # only delete set to true
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 1,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-is_deleted": "on",
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        # no context if form is valid
+        assert response.context is None
+
+    # test with negative value
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 1,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": -5.0,
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["age_group_formset"].errors is not None
+
+    # check with inconsistent upper ci
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 1,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5.0,
+        "agegroup-0-value_upper_bound": 4.0,
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["age_group_formset"].errors is not None
+
+    # check with inconsistent lower ci
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 1,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5.0,
+        "agegroup-0-value_lower_bound": 6.0,
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["age_group_formset"].errors is not None
+
+    # check with inconsistent single year timeframe
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 1,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5.0,
+        "agegroup-0-single_year_timeframe": "hello",
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["age_group_formset"].errors is not None
+
+    # check with inconsistent multiple year timeframe
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 1,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5.0,
+        "agegroup-0-multi_year_timeframe": "2020",
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["age_group_formset"].errors is not None
+
+    # Dupe: check literal dimension value cannot be the same (unique together check)
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 2,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5.0,
+        "agegroup-1-literal_dimension_val": "0-25",
+        "agegroup-1-value": 6.0,
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["age_group_formset"].errors is not None
+
+    # Dupe with one delete
+    data = {
+        "predefined-TOTAL_FORMS": 0,
+        "predefined-INITIAL_FORMS": 0,
+        "predefined-MIN_NUM_FORMS": 0,
+        "predefined-MAX_NUM_FORMS": 1000,
+        "agegroup-TOTAL_FORMS": 2,
+        "agegroup-INITIAL_FORMS": 0,
+        "agegroup-MIN_NUM_FORMS": 0,
+        "agegroup-MAX_NUM_FORMS": 1000,
+        "agegroup-0-literal_dimension_val": "0-25",
+        "agegroup-0-value": 5.0,
+        "agegroup-1-literal_dimension_val": "0-25",
+        "agegroup-1-value": 6.0,
+        "agegroup-1-is_deleted": "on",
+    }
+    with patch_rules(
+        can_edit_indicator_data=False, can_view_indicator_data=True
+    ):
+        response = vanilla_user_client.post(url, data=data)
+        # no context if form is valid
+        assert response.context is None

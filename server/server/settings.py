@@ -45,7 +45,9 @@ if IS_LOCAL and IS_DEV:
         "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
     )
     INTERNAL_IPS = (
-        config("INTERNAL_IPS", default="") if ENABLE_DEBUG_TOOLBAR else ""
+        config("INTERNAL_IPS", default="", cast=Csv())
+        if ENABLE_DEBUG_TOOLBAR
+        else ""
     )
 
     # Disable session timeout

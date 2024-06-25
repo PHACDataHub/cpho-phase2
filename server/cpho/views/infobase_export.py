@@ -67,11 +67,10 @@ indicator_columns = [
 ]
 
 
-class IndicatorSheetWriter(AbstractSheetWriter):
+class IndicatorSheetWriter(ModelToSheetWriter):
     sheet_name = "indicator"
-
-    def get_column_configs(self):
-        return indicator_columns
+    columns = indicator_columns
+    queryset = Indicator.objects.all().order_by("name")
 
 
 indicator_data_columns = [
@@ -124,9 +123,14 @@ indicator_data_columns = [
 
 class IndicatorDatumSheetWriter(ModelToSheetWriter):
     sheet_name = "indicator_data"
-
-    def get_column_configs(self):
-        return indicator_data_columns
+    queryset = (
+        IndicatorDatum.objects.all()
+        .select_related(
+            "indicator", "period", "dimension_type", "dimension_value"
+        )
+        .order_by("indicator_id", "period_id", "dimension_type_id")
+    )
+    column = indicator_data_columns
 
 
 benchmarking_columns = [
@@ -151,8 +155,13 @@ benchmarking_columns = [
 
 
 class BenchmarkingSheetWriter(ModelToSheetWriter):
-    def get_column_configs(self):
-        return benchmarking_columns
+    columns = benchmarking_columns
+    sheet_name = "benchmarking"
+    queryset = (
+        Benchmarking.objects.all()
+        .select_related("indicator", "oecd_country")
+        .order_by("indicator_id", "labels", "value")
+    )
 
 
 trend_columns = [
@@ -178,8 +187,13 @@ trend_columns = [
 
 
 class TrendSheetWriter(ModelToSheetWriter):
-    def get_column_configs(self):
-        return trend_columns
+    columns = trend_columns
+    sheet_name = "trend analysis"
+    queryset = (
+        TrendAnalysis.objects.all()
+        .select_related("indicator")
+        .order_by("indicator_id", "year")
+    )
 
 
 class InfobaseExportView(View):
@@ -189,43 +203,19 @@ class InfobaseExportView(View):
 
     def write_indicators(self):
         # todo: use submitted indicators instead
-        writer = IndicatorSheetWriter(
-            workbook=self.workbook,
-            iterator=Indicator.objects.all().order_by("name"),
-        )
+        writer = IndicatorSheetWriter(workbook=self.workbook)
         writer.write()
 
     def write_indicator_data(self):
-        qs = (
-            IndicatorDatum.objects.all()
-            .select_related(
-                "indicator", "period", "dimension_type", "dimension_value"
-            )
-            .order_by("indicator_id", "period_id", "dimension_type_id")
-        )
-        writer = IndicatorDatumSheetWriter(
-            workbook=self.workbook, iterator=qs.all()
-        )
+        writer = IndicatorDatumSheetWriter(workbook=self.workbook)
         writer.write()
 
     def write_trends(self):
-        qs = (
-            TrendAnalysis.objects.all()
-            .select_related("indicator")
-            .order_by("indicator_id", "year")
-        )
-        writer = TrendSheetWriter(workbook=self.workbook, iterator=qs.all())
+        writer = TrendSheetWriter(workbook=self.workbook)
         writer.write()
 
     def write_benchmarking(self):
-        qs = (
-            Benchmarking.objects.all()
-            .select_related("indicator", "oecd_country")
-            .order_by("indicator_id", "labels", "value")
-        )
-        writer = BenchmarkingSheetWriter(
-            workbook=self.workbook, iterator=qs.all()
-        )
+        writer = BenchmarkingSheetWriter(workbook=self.workbook)
         writer.write()
 
     def get(self, request, *args, **kwargs):

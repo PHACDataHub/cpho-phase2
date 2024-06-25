@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.2...v1.1.3) (2024-06-19)
+
+
+### Bug Fixes
+
+* revamp validation ([#341](https://github.com/PHACDataHub/cpho-phase2/issues/341)) ([778dece](https://github.com/PHACDataHub/cpho-phase2/commit/778dece22e5d6d2ca9b9d23f93889886f69392a8))
+
 ## [1.1.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.1...v1.1.2) (2024-06-05)
 
 

@@ -43,6 +43,21 @@ class ReadOnlyFormMixin:
                 self.initial[field_name] = value_to_display
 
 
+class RequiredIfNotDeletedMixin:
+    def clean(self):
+        super().clean()
+        if self.REQUIRED_UNLESS_DELETED:
+            is_deleted = self.cleaned_data.get("is_deleted")
+            for field_name in self.REQUIRED_UNLESS_DELETED:
+                field_value = self.cleaned_data.get(field_name, None)
+                print(field_name, field_value, not (field_value))
+                if not is_deleted and not field_value:
+                    self.add_error(
+                        field_name, tm("required_if_not_deleted_err")
+                    )
+        return self.cleaned_data
+
+
 class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
     def clean(
         self,

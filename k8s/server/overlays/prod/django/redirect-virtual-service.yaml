@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: server-redirect-virtual-service
+spec:
+  hosts:
+    - hopic-sdpac.data-donnes.phac-aspc.gc.ca
+  gateways:
+  - istio-ingress/mesh-gateway
+  http:
+  - name: redirect-to-data-domain
+    match:
+    - uri:
+        prefix: /
+    redirect:
+      authority: hopic-sdpac.data.phac.gc.ca

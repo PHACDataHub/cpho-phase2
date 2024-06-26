@@ -13,4 +13,4 @@ spec:
     - uri:
         prefix: /
     redirect:
-      uri: hopic-sdpac.data.phac.gc.ca
+      authority: hopic-sdpac.data.phac.gc.ca

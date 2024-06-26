@@ -73,7 +73,7 @@ tasks:
       - |
         gcloud iam service-accounts add-iam-policy-binding \
           {{.NAME}}-provisioner@{{.PROJECT_ID}}.iam.gserviceaccount.com \
-          --member="serviceAccount:{{.PROJECT_ID}}.svc.id.goog[cnrm-system/cnrm-controller-manager-cnrm-system]" \
+          --member="serviceAccount:{{.PROJECT_ID}}.svc.id.goog[cnrm-system/cnrm-controller-manager-configconnector-resources]" \
           --role="roles/iam.workloadIdentityUser" --project {{.PROJECT_ID}}
       - |
         gcloud projects add-iam-policy-binding {{.PROJECT_ID}} \

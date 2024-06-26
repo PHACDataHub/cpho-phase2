@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.1.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.2...v1.1.3) (2024-06-19)
+
+
+### Bug Fixes
+
+* revamp validation ([#341](https://github.com/PHACDataHub/cpho-phase2/issues/341)) ([778dece](https://github.com/PHACDataHub/cpho-phase2/commit/778dece22e5d6d2ca9b9d23f93889886f69392a8))
+
+## [1.1.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.1...v1.1.2) (2024-06-05)
+
+
+### Bug Fixes
+
+* added data migration and field validation for trend upper and lower and other cosmetic changes ([#338](https://github.com/PHACDataHub/cpho-phase2/issues/338)) ([0135a77](https://github.com/PHACDataHub/cpho-phase2/commit/0135a7758d34d19f9ae0384d53fea87a76e5b1f0))
+
+## [1.1.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.0...v1.1.1) (2024-05-31)
+
+
+### Bug Fixes
+
+* 5973 kd adjusting indicator options ([#334](https://github.com/PHACDataHub/cpho-phase2/issues/334)) ([f9c8272](https://github.com/PHACDataHub/cpho-phase2/commit/f9c82724c84f9d1002707e0f79614aac34c659f0))
+
+## [1.1.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.0.1...v1.1.0) (2024-05-28)
+
+
+### Features
+
+* add year-filterable datum changelog ([#327](https://github.com/PHACDataHub/cpho-phase2/issues/327)) ([fc30f71](https://github.com/PHACDataHub/cpho-phase2/commit/fc30f713367e8e0c9bb118cd6ceaa10ba390d4ab))
+
+
+### Bug Fixes
+
+* revamped validation for upload ([#328](https://github.com/PHACDataHub/cpho-phase2/issues/328)) ([19e9353](https://github.com/PHACDataHub/cpho-phase2/commit/19e9353720fc48509abb6e38b6636ccb793477c4))
+
 ## [1.0.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.0.0...v1.0.1) (2024-05-23)
 
 

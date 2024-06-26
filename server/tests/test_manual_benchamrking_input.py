@@ -114,3 +114,157 @@ def test_benchmarking(vanilla_user_client):
     canada_data = all_data.get(oecd_country=canada)
     assert canada_data.is_deleted == True
     assert canada_data.deletion_time is not None
+
+
+def test_benchmarking_form_validation(vanilla_user_client):
+    aus = Country.objects.get(name_en="Australia")
+    oecd = Country.objects.get(name_en="OECD")
+    ind = IndicatorFactory()
+    ind.save()
+    comparison_better = Benchmarking.COMPARISON_CHOICES[1][0]
+    label_anxiety = Benchmarking.LABEL_CHOICES[1][0]
+    url = reverse("manage_benchmarking_data", args=[ind.id])
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.get(url)
+        assert response.status_code == 200
+
+    # only delete set to true
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-is_deleted": "on",
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        # no context if form is valid
+        assert response.context is None
+
+    # submit with just value
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-value": 1,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["benchmarking_formset"].errors is not None
+
+    # check no year required for oecd
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": oecd.id,
+        "benchmarking-0-value": 1,
+        "benchmarking-0-comparison_to_oecd_avg": comparison_better,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        # no context if form is valid
+        assert response.context is None
+
+    # check year required if country not oecd
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": aus.id,
+        "benchmarking-0-value": 1,
+        "benchmarking-0-comparison_to_oecd_avg": comparison_better,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["benchmarking_formset"].errors is not None
+
+    # check value required
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": aus.id,
+        "benchmarking-0-year": 2020,
+        "benchmarking-0-comparison_to_oecd_avg": comparison_better,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["benchmarking_formset"].errors is not None
+
+    # check comparison required
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": aus.id,
+        "benchmarking-0-year": 2020,
+        "benchmarking-0-value": 1,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["benchmarking_formset"].errors is not None
+
+    # check year format
+    data = {
+        "benchmarking-TOTAL_FORMS": 1,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": aus.id,
+        "benchmarking-0-year": 20,
+        "benchmarking-0-value": 1,
+        "benchmarking-0-comparison_to_oecd_avg": comparison_better,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["benchmarking_formset"].errors is not None
+
+    # Dupe: check country and label cannot be the same (unique together check)
+    data = {
+        "benchmarking-TOTAL_FORMS": 2,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": aus.id,
+        "benchmarking-0-year": 2020,
+        "benchmarking-0-value": 1,
+        "benchmarking-0-comparison_to_oecd_avg": comparison_better,
+        "benchmarking-0-labels": label_anxiety,
+        "benchmarking-1-oecd_country": aus.id,
+        "benchmarking-1-year": 2020,
+        "benchmarking-1-value": 1,
+        "benchmarking-1-comparison_to_oecd_avg": comparison_better,
+        "benchmarking-1-labels": label_anxiety,
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        assert response.context["benchmarking_formset"].errors is not None
+
+    # Dupe with one delete
+    data = {
+        "benchmarking-TOTAL_FORMS": 2,
+        "benchmarking-INITIAL_FORMS": 0,
+        "benchmarking-MIN_NUM_FORMS": 0,
+        "benchmarking-MAX_NUM_FORMS": 1000,
+        "benchmarking-0-oecd_country": aus.id,
+        "benchmarking-0-year": 2020,
+        "benchmarking-0-value": 1,
+        "benchmarking-0-comparison_to_oecd_avg": comparison_better,
+        "benchmarking-0-labels": label_anxiety,
+        "benchmarking-1-oecd_country": aus.id,
+        "benchmarking-1-year": 2020,
+        "benchmarking-1-value": 1,
+        "benchmarking-1-comparison_to_oecd_avg": comparison_better,
+        "benchmarking-1-labels": label_anxiety,
+        "benchmarking-1-is_deleted": "on",
+    }
+    with patch_rules(can_view_benchmarking=True, can_edit_benchmarking=True):
+        response = vanilla_user_client.post(url, data=data)
+        # no context if form is valid
+        assert response.context is None

@@ -2,6 +2,13 @@
 {% from 'cpho_macros.jinja2' import check_error, check_error_class %}
 {% block content %}
 
+  {% macro td_with_error_class(datum, field) %}
+    <td class="{{ check_error_class(datum, field).strip() }}">
+      {{ datum[field] }}
+      {{ check_error(datum, field) }}
+    </td>
+  {% endmacro %}
+
   <form id='upload-form'
         class="mt-4"
         onsubmit="showLoading()"
@@ -83,44 +90,19 @@
               {% for datum in grouped_data[indicator] %}
                 <tr>
                   <td>{{ datum["line"] }}</td>
-                  <td class="{{ check_error_class(datum, 'Dimension_Type').strip() }}">
-                    {{ datum["Dimension_Type"] }}
-                    {{ check_error(datum, "Dimension_Type") }}
-                  </td>
-                  <td class="{{ check_error_class(datum, 'Dimension_Value').strip() }}">
-                    {{ datum["Dimension_Value"] }}
-                    {{ check_error(datum, "Dimension_Value") }}
-                  </td>
-                  <td class="{{ check_error_class(datum, 'Data_Quality').strip() }}">
-                    {{ datum["Data_Quality"] }}
-                    {{ check_error(datum, "Data_Quality") }}
-                  </td>
- 
-                  <td>{{ datum["Value"] }}</td>
-                  <td>{{ datum["Value_LowerCI"] }}</td>
-                  <td>{{ datum["Value_UpperCI"] }}</td>
-                  <td>{{ datum["SingleYear_TimeFrame"] }}</td>
-                  <td>{{ datum["MultiYear_TimeFrame"] }}</td>
-                  <td class="{{ check_error_class(datum, 'Value_Units').strip() }}">
-                    {{ datum["Value_Units"] }}
-                    {{ check_error(datum, "Value_Units") }}
-                  </td>
-                  <td class="{{ check_error_class(datum, 'Value_Displayed').strip() }}">
-                    {{ datum["Value_Displayed"] }}
-                    {{ check_error(datum, "Value_Displayed") }}
-                  </td>
-                  <td class="{{ check_error_class(datum, 'Reason_for_Null_Data').strip() }}">
-                    {{ datum["Reason_for_Null_Data"] }}
-                    {{ check_error(datum, "Reason_for_Null_Data") }}
-                  </td>
-                  <td class="{{ check_error_class(datum, 'Period').strip() }}">
-                    {{ datum["Period"] }}
-                    {{ check_error(datum, "Period") }}
-                  </td>
-                  <td class="{{ check_error_class(datum, 'Arrow_Flag').strip() }}">
-                    {{ datum["Arrow_Flag"] }}
-                    {{ check_error(datum, "Arrow_Flag") }}
-                  </td>
+                  {{ td_with_error_class(datum, "Dimension_Type") }}
+                  {{ td_with_error_class(datum, "Dimension_Value") }}
+                  {{ td_with_error_class(datum, "Data_Quality") }}
+                  {{ td_with_error_class(datum, "Value") }}
+                  {{ td_with_error_class(datum, "Value_LowerCI") }}
+                  {{ td_with_error_class(datum, "Value_UpperCI") }}
+                  {{ td_with_error_class(datum, "SingleYear_TimeFrame") }}
+                  {{ td_with_error_class(datum, "MultiYear_TimeFrame") }}
+                  {{ td_with_error_class(datum, "Value_Units") }}
+                  {{ td_with_error_class(datum, "Value_Displayed") }}
+                  {{ td_with_error_class(datum, "Reason_for_Null_Data") }}
+                  {{ td_with_error_class(datum, "Period") }}
+                  {{ td_with_error_class(datum, "Arrow_Flag") }}
                 </tr>
               {% endfor %}
             </tbody>

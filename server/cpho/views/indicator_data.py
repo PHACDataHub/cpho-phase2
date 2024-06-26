@@ -26,6 +26,7 @@ from cpho.text import tdt, tm
 from cpho.views.view_util import (
     BaseInlineFormSetWithUniqueTogetherCheck,
     DimensionTypeOrAllMixin,
+    IndDataCleaner,
     MustPassAuthCheckMixin,
     ReadOnlyFormMixin,
     SinglePeriodMixin,
@@ -54,11 +55,11 @@ class IndicatorDatumForm(ModelForm):
     class Meta:
         model = IndicatorDatum
         fields = [
+            "value_unit",
             "value",
             "data_quality",
             "value_lower_bound",
             "value_upper_bound",
-            "value_unit",
             "single_year_timeframe",
             "multi_year_timeframe",
             "literal_dimension_val",
@@ -167,89 +168,49 @@ class IndicatorDatumForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if hasattr(self, "cleaned_data") and self.cleaned_data["is_deleted"]:
-            self._errors = ErrorDict()
-            return self.cleaned_data
-        value = cleaned_data["value"]
-        value_unit = cleaned_data["value_unit"]
-        if value_unit == "%":
-            if value and (value > 100 or value < 0):
-                self.add_error(
-                    "value",
-                    tm("percentage_out_of_bounds_err"),
+        is_deleted = cleaned_data.get("is_deleted", False)
+        value = cleaned_data.get("value")
+        value_unit = cleaned_data.get("value_unit")
+        value_lower_bound = cleaned_data.get("value_lower_bound")
+        value_upper_bound = cleaned_data.get("value_upper_bound")
+        single_year_timeframe = cleaned_data.get("single_year_timeframe")
+        multi_year_timeframe = cleaned_data.get("multi_year_timeframe")
+
+        if not is_deleted:
+            if value:
+                err = IndDataCleaner.clean_value_data(value, value_unit)
+                if err:
+                    self.add_error("value", err)
+
+            if value_lower_bound:
+                err = IndDataCleaner.clean_value_lower_data(
+                    value, value_lower_bound
                 )
+                if err:
+                    self.add_error("value_lower_bound", err)
+
+            if value_upper_bound:
+                err = IndDataCleaner.clean_value_upper_data(
+                    value, value_upper_bound
+                )
+                if err:
+                    self.add_error("value_upper_bound", err)
+
+            if single_year_timeframe:
+                err = IndDataCleaner.clean_single_year_data(
+                    single_year_timeframe
+                )
+                if err:
+                    self.add_error("single_year_timeframe", err)
+
+            if multi_year_timeframe:
+                err = IndDataCleaner.clean_multi_year_data(
+                    multi_year_timeframe
+                )
+                if err:
+                    self.add_error("multi_year_timeframe", err)
+
         return cleaned_data
-
-    def clean_value(self):
-        value = self.cleaned_data["value"]
-        if value and value < 0:
-            print("invalid")
-            self.add_error("value", tm("value_cannot_be_negative"))
-        return value
-
-    def clean_value_lower_bound(self):
-        value = self.cleaned_data["value"]
-        value_lower = self.cleaned_data["value_lower_bound"]
-        if (value and value_lower) and value < value_lower:
-            self.add_error(
-                "value_lower_bound",
-                tm("lower_bound_must_be_lower_than_value"),
-            )
-        return value_lower
-
-    def clean_value_upper_bound(self):
-        value = self.cleaned_data["value"]
-        value_upper = self.cleaned_data["value_upper_bound"]
-        if (value and value_upper) and value > value_upper:
-            self.add_error(
-                "value_upper_bound",
-                tm("upper_bound_must_be_greater_than_value"),
-            )
-        return value_upper
-
-    def clean_single_year_timeframe(self):
-        single_year = self.cleaned_data["single_year_timeframe"]
-
-        if single_year is None or single_year == "":
-            return None
-
-        if single_year:
-            try:
-                if not (int(single_year) >= 2000 and int(single_year) <= 2050):
-                    self.add_error(
-                        "single_year_timeframe",
-                        tm("year_timeframe_between"),
-                    )
-            except ValueError:
-                self.add_error(
-                    "single_year_timeframe",
-                    tm("must_be_number"),
-                )
-
-        return single_year
-
-    def clean_multi_year_timeframe(self):
-        multi_year = self.cleaned_data["multi_year_timeframe"]
-
-        if multi_year is None or multi_year == "":
-            return None
-
-        if multi_year:
-            try:
-                start_year = int(multi_year.split("-")[0])
-                end_year = int(multi_year.split("-")[1])
-                if not (2000 <= start_year <= end_year <= 2050):
-                    self.add_error(
-                        "multi_year_timeframe",
-                        tm("year_timeframe_between"),
-                    )
-            except ValueError:
-                self.add_error(
-                    "multi_year_timeframe",
-                    tm("multi_year_format"),
-                )
-
-        return multi_year
 
     def save(self, commit=True):
         if self.cleaned_data["is_deleted"]:

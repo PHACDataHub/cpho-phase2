@@ -27,9 +27,9 @@ class CountryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Country
 
+    id = factory.Faker("pyint", min_value=1, max_value=999999)
     name_en = factory.Faker("bs")
     name_fr = factory.Faker("bs")
-    code = factory.Faker("bs")
 
 
 class DimensionValueFactory(factory.django.DjangoModelFactory):
@@ -122,9 +122,10 @@ class BenchmarkingFactory(factory.django.DjangoModelFactory):
     unit = factory.LazyFunction(
         lambda: random.choice([p[0] for p in Benchmarking.UNIT_CHOICES])
     )
-    year = factory.Faker(
-        "pyfloat", positive=True, min_value=2020, max_value=2022
+    comparison_to_oecd_avg = factory.LazyFunction(
+        lambda: random.choice([p[0] for p in Benchmarking.COMPARISON_CHOICES])
     )
+    year = factory.Faker("pyint", min_value=2020, max_value=2022)
     comparison_to_oecd_avg = factory.LazyFunction(
         lambda: random.choice([p[0] for p in Benchmarking.COMPARISON_CHOICES])
     )
@@ -155,6 +156,18 @@ class TrendAnalysisFactory(factory.django.DjangoModelFactory):
         positive=True,
         min_value=1,
         max_value=4,
+    )
+    data_point_upper_ci = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=80,
+        max_value=100,
+    )
+    data_point_lower_ci = factory.Faker(
+        "pyfloat",
+        positive=True,
+        min_value=1,
+        max_value=20,
     )
     trend = factory.LazyFunction(
         lambda: random.choice([p[0] for p in TrendAnalysis.TREND_CHOICES])

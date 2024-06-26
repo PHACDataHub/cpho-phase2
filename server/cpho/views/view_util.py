@@ -43,6 +43,21 @@ class ReadOnlyFormMixin:
                 self.initial[field_name] = value_to_display
 
 
+class RequiredIfNotDeletedMixin:
+    def clean(self):
+        super().clean()
+        if self.REQUIRED_UNLESS_DELETED:
+            is_deleted = self.cleaned_data.get("is_deleted")
+            for field_name in self.REQUIRED_UNLESS_DELETED:
+                field_value = self.cleaned_data.get(field_name, None)
+                print(field_name, field_value, not (field_value))
+                if not is_deleted and not field_value:
+                    self.add_error(
+                        field_name, tm("required_if_not_deleted_err")
+                    )
+        return self.cleaned_data
+
+
 class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
     def clean(
         self,
@@ -118,6 +133,62 @@ class BaseInlineFormSetWithUniqueTogetherCheck(BaseInlineFormSet):
                         form.add_error(None, tm("duplicate_form"))
 
                         raise ValidationError(error_msg)
+
+
+class IndDataCleaner:
+    """
+    Mixin for cleaning indicator data values
+    Shared data validation logic between the indicator data form and the indicator data upload.
+    """
+
+    @staticmethod
+    def clean_value_data(value, value_unit):
+        if value:
+            value = float(value)
+            if value < 0:
+                return tm("value_cannot_be_negative")
+            if value_unit == "percentage":
+                if value and (value > 100 or value < 0):
+                    return tm("percentage_out_of_bounds_err")
+        return None
+
+    @staticmethod
+    def clean_value_lower_data(value, value_lower):
+        if (value and value_lower) and float(value) < float(value_lower):
+            return tm("lower_bound_must_be_lower_than_value")
+        return None
+
+    @staticmethod
+    def clean_value_upper_data(value, value_upper):
+        if (value and value_upper) and float(value) > float(value_upper):
+            return tm("upper_bound_must_be_greater_than_value")
+        return None
+
+    @staticmethod
+    def clean_single_year_data(single_year):
+        if single_year is None or single_year == "":
+            return None
+        if single_year:
+            try:
+                if not (int(single_year) >= 2000 and int(single_year) <= 2050):
+                    return tm("year_timeframe_between")
+            except Exception:
+                return tm("must_be_number")
+        return None
+
+    @staticmethod
+    def clean_multi_year_data(multi_year):
+        if multi_year is None or multi_year == "":
+            return None
+        if multi_year:
+            try:
+                start_year = int(multi_year.split("-")[0])
+                end_year = int(multi_year.split("-")[1])
+                if not (2000 <= start_year <= end_year <= 2050):
+                    return tm("year_timeframe_between")
+            except Exception:
+                return tm("multi_year_format")
+        return None
 
 
 class SinglePeriodMixin(View):
@@ -228,6 +299,7 @@ def upload_mapper():
             "ACCEPTABLE": "acceptable",
             "SUPPRESSED": "suppressed",
             "VERY GOOD": "very_good",
+            "EXCELLENT": "excellent",
         },
         "arrow_flag_mapper": {
             "": "",
@@ -252,6 +324,7 @@ def upload_mapper():
             "RATE PER 100,000 LIVE BIRTHS": "rate_100k_live_births",
             "RATE PER 100,000 POPULATION PER YEAR": "rate_100k_population_per_year",
             "YEARS": "years",
+            "LITRES": "litres",
             "OTHER": "other",
         },
         "value_displayed_mapper": {
@@ -263,6 +336,7 @@ def upload_mapper():
             "PER 100,000 POPULATION": "per_100k_population",
             "PER 100,000 POPULATION PER YEAR": "per_100k_population_per_year",
             "YEARS": "years",
+            "LITRES": "litres",
             "OTHER": "other",
         },
         "dimension_type_mapper": {
@@ -582,6 +656,7 @@ def metadata_mapper():
             "RATE PER 100,000 (CRUDE RATE)": "rate_per_100k_crude",
             "RATE PER 100,000 LIVE BIRTHS": "rate_per_100k_live_births",
             "YEARS": "years",
+            "LITRES PER PERSON": "litres_per_person",
             "OTHER": "other",
         },
         "value_displayed_mapper": {

@@ -389,6 +389,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("good", tm("good")),
         ("suppressed", tm("suppressed")),
         ("very_good", tm("very_good")),
+        ("excellent", tm("excellent")),
     ]
 
     data_quality = fields.CharField(
@@ -427,6 +428,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("rate_100k_live_births", tm("rate_100k_live_births")),
         ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
         ("years", tm("years")),
+        ("litres", tm("litres")),
         ("other", tm("other")),
     ]
 
@@ -445,6 +447,7 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("per_100k_population", tm("per_100k_population")),
         ("per_100k_population_per_year", tm("per_100k_population_per_year")),
         ("years", tm("years")),
+        ("litres", tm("litres")),
         ("other", tm("other")),
     ]
 
@@ -551,11 +554,16 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("rate_per_1000_population", tm("rate_per_1000_population")),
         ("total_deaths_per_1m", tm("total_deaths_per_1m")),
         ("total_per_100k_persons", tm("total_per_100k_persons")),
+        ("litres_per_person", tm("litres_per_person")),
         ("years", tm("years")),
     ]
-    unit = fields.CharField(max_length=50, null=True, choices=UNIT_CHOICES)
-    oecd_country = fields.ForeignKey("cpho.Country", on_delete=models.RESTRICT)
-    value = fields.FloatField(max_length=50)
+    unit = fields.CharField(
+        max_length=50, choices=UNIT_CHOICES, blank=True, null=True
+    )
+    oecd_country = fields.ForeignKey(
+        "cpho.Country", on_delete=models.RESTRICT, blank=True, null=True
+    )
+    value = fields.FloatField(blank=True, null=True)
     year = fields.CharField(max_length=50, blank=True, null=True)
     # standard_deviation = fields.FloatField(null=True)
 
@@ -567,7 +575,7 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("outlier", tm("outlier")),
     ]
     comparison_to_oecd_avg = fields.CharField(
-        max_length=50, choices=COMPARISON_CHOICES
+        max_length=50, choices=COMPARISON_CHOICES, blank=True, null=True
     )
 
     LABEL_CHOICES = [
@@ -577,7 +585,9 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("women", tm("women")),
         ("men", tm("men")),
     ]
-    labels = fields.CharField(max_length=50, null=True, choices=LABEL_CHOICES)
+    labels = fields.CharField(
+        max_length=50, blank=True, null=True, choices=LABEL_CHOICES
+    )
     methodology_differences = fields.BooleanField(default=False)
     is_deleted = fields.BooleanField(default=False)
     deletion_time = fields.CharField(
@@ -608,7 +618,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         Indicator, on_delete=models.CASCADE, related_name="trend_analysis"
     )
     year = fields.CharField(max_length=50, null=True, blank=True)
-    data_point = fields.FloatField()
+    data_point = fields.FloatField(blank=True, null=True)
     line_of_best_fit_point = fields.FloatField(null=True, blank=True)
     trend_segment = fields.CharField(max_length=50, null=True, blank=True)
 
@@ -633,6 +643,7 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         ("rate_100k_crude", tm("rate_100k_crude")),
         ("rate_100k_live_births", tm("rate_100k_live_births")),
         ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
+        ("litres", tm("litres")),
         ("years", tm("years")),
         ("other", tm("other")),
     ]
@@ -641,6 +652,8 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         max_length=75,
         choices=UNIT_CHOICES,
         verbose_name=tm("value_unit"),
+        blank=True,
+        null=True,
     )
     DATA_QUALITY_CHOICES = [
         ("", "--"),

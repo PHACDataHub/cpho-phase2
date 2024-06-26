@@ -908,6 +908,7 @@ translation_entries = {
         "fr": "TAUX PAR 100 000 POPULATION PAR ANNÉE",
     },
     "years": {"en": "years", "fr": "années"},
+    "litres": {"en": "litres", "fr": "litres"},
     "other": {"en": "other", "fr": "autre"},
     # Value displayed choices
     "per_1k_census": {
@@ -996,6 +997,10 @@ translation_entries = {
     "total_per_100k_persons": {
         "en": "Total per 100 000 persons",
         "fr": "Total pour 100 000 personnes",
+    },
+    "litres_per_person": {
+        "en": "Litres per person",
+        "fr": "Litres par personne",
     },
     # comparison
     "better": {"en": "Better", "fr": "Meilleur"},
@@ -1185,5 +1190,49 @@ translation_entries = {
     "arrow_flag": {
         "en": "Arrow Flag",
         "fr": "Drapeau fléché",
+    },
+    "data_point_lower_ci_error": {
+        "en": "Data point lower CI must be less than data point",
+        "fr": "La limite inférieure du point de données doit être inférieure au point de données",
+    },
+    "data_point_upper_ci_error": {
+        "en": "Data point upper CI must be greater than data point",
+        "fr": "La limite supérieure du point de données doit être supérieure au point de données",
+    },
+    "data_point_required": {
+        "en": "Data point is required",
+        "fr": "Le point de données est requis",
+    },
+    "data_point_error": {
+        "en": "Data point cannot be negative",
+        "fr": "Le point de données ne peut pas être négatif",
+    },
+    "country_required": {
+        "en": "Please select a country",
+        "fr": "Veuillez sélectionner un pays",
+    },
+    "value_required": {
+        "en": "Please enter a value",
+        "fr": "Veuillez entrer une valeur",
+    },
+    "comparison_required": {
+        "en": "Please select a comparison",
+        "fr": "Veuillez sélectionner une comparaison",
+    },
+    "year_format_mm_yyyy": {
+        "en": "Year must be in the format MM/YYYY",
+        "fr": "L'année doit être au format MM/AAAA",
+    },
+    "month_format": {
+        "en": "Month must be between 1 and 12",
+        "fr": "Le mois doit être compris entre 1 et 12",
+    },
+    "year_must_be_number": {
+        "en": "Year must be a number",
+        "fr": "L'année doit être un nombre",
+    },
+    "required_if_not_deleted_err": {
+        "en": "This field is required",
+        "fr": "Ce champ est requis",
     },
 }

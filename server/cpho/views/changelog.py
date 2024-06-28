@@ -76,6 +76,7 @@ class IndicatorScopedChangelog(ChangelogView, MustPassAuthCheckMixin):
 
         class IndicatorScopedConfig(ChangelogConfig):
             models = [
+                models.Indicator,
                 models.IndicatorDatum,
                 models.Benchmarking,
                 models.TrendAnalysis,

@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.db import models
 
+from data_fetcher.core import DataFetcher
 from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
@@ -316,7 +317,7 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         return relevant
 
 
-class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
+class IndicatorDatumChangelogNameFetcher(DataFetcher):
     @staticmethod
     def get_name(datum):
         if datum.dimension_type.is_literal:
@@ -324,16 +325,12 @@ class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
 
         return f"{datum.indicator} ({datum.period}) {datum.dimension_type}: {datum.dimension_value}"
 
-    def batch_load(self, datum_ids):
-        IndicatorDatum = apps.get_model("cpho", "IndicatorDatum")
-
-        data = IndicatorDatum.objects.filter(
-            id__in=datum_ids
-        ).prefetch_related(
+    def batch_load_dict(self, datum_ids):
+        data = IndicatorDatum.objects.filter(id__in=datum_ids).select_related(
             "indicator", "dimension_value", "dimension_type", "period"
         )
         by_id = {datum.id: datum for datum in data}
-        return [self.get_name(by_id[x]) for x in datum_ids]
+        return by_id
 
 
 class ActiveObjManager(models.Manager):
@@ -346,7 +343,7 @@ class ActiveObjManager(models.Manager):
 class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
-    changelog_live_name_loader_class = IndicatorDatumChangelogNameLoader
+    changelog_live_name_fetcher_class = IndicatorDatumChangelogNameFetcher
 
     class Meta:
         unique_together = [
@@ -503,9 +500,25 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         )
 
 
+class BenchmarkLiveNameFetcher(DataFetcher):
+    """
+    changelog won't prefetch related fields
+    so we define a live-name fetcher
+    """
+
+    def batch_load_dict(self, keys):
+        data = Benchmarking.objects.filter(id__in=keys).prefetch_related(
+            "indicator", "oecd_country"
+        )
+        by_id = {datum.id: datum.__str__() for datum in data}
+        return by_id
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
 class Benchmarking(models.Model, SubmissionHelpersMixin):
+    changelog_live_name_fetcher_class = BenchmarkLiveNameFetcher
+
     class Meta:
         unique_together = [
             (
@@ -598,9 +611,20 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         return str(self.indicator) + " : " + str(self.oecd_country)
 
 
+class TrendRecordLiveNameFetcher(DataFetcher):
+    def batch_load_dict(self, keys):
+        data = TrendAnalysis.objects.filter(id__in=keys).prefetch_related(
+            "indicator"
+        )
+        by_id = {datum.id: datum.__str__() for datum in data}
+        return by_id
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
 class TrendAnalysis(models.Model, SubmissionHelpersMixin):
+    changelog_live_name_fetcher_class = TrendRecordLiveNameFetcher
+
     class Meta:
         unique_together = [
             (

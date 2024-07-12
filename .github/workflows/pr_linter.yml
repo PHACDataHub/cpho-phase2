@@ -31,8 +31,10 @@ jobs:
         if: steps.PR.outcome == 'success' && steps.PR.outputs.pr
         run: |
           echo "Here is all the PR JSON information ${prNumber} ${prTitle} at ${prUrl} is ${prJSON}"
-          title_regex='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\([a-zA-Z\_\-\.\0-9]+\))?(!)?: .*'
-          if [[ ${prTitle} =~ $title_regex ]]; then echo 'prTitle matched regex!'; else echo 'prTitle does not match conventional commit regex, please reformat!!!' && exit 1; fi
+          title_regex='^(build|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\([a-zA-Z\_\-\.\0-9]+\))?(!)?: .*'
+          release_please_title_regex = '^chore\(main\): release \d+\.\d+\.\d+'
+          if [[ ${prTitle} =~ $release_please_title_regex ]]; then echo 'Release PR! title formatting nto needed' && exit 0; else echo 'Not a release PR; checking title format!!!' ; fi
+          if [[ ${prTitle} =~ $title_regex ]]; then echo 'prTitle matched regex!'; else echo 'prTitle does not match conventional commit regex, please reformat. NOTE: chore is not allowed!!!' && exit 1; fi
         env:
           # JSON object with the full PR object
           # toJSON(fromJSON(...pr)) parses it into memory and then format is with pretty-print.

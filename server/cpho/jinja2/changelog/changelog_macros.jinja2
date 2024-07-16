@@ -18,46 +18,46 @@
       {% for edit_entry in edit_entries %}
         {% if not edit_entry.diffs %}
           <tr>
-            <td>{{ date_display(edit_entry.version.instance.timestamp) }}</td>
+            <td>{{ date_display(edit_entry.right_version.timestamp) }}</td>
             {% if show_user %}
               <td>
-                {% if edit_entry.version.edited_by %}
-                  {{ edit_entry.version.edited_by.pretty_name }}
+                {% if edit_entry.author %}
+                  {{ edit_entry.author.pretty_name }}
                 {% else %}
                   {{ tm("n/a") }}
                 {% endif %}
               </td>
             {% endif %}
             <td class='font-weight-bold'>{{ tm("saved") }}</td>
-            {% if show_model_type %}<td>{{ edit_entry.model_name }}</td>{% endif %}
+            {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
             <td>{{ edit_entry.live_name }}</td>
             <td colspan="3">{{ tm("no_change_detected_compared_to_previous_version") }}</td>
           </tr>
         {% endif %}
         {% for diff in edit_entry.diffs %}
           <tr>
-            <td>{{ date_display(edit_entry.version.instance.timestamp) }}</td>
+            <td>{{ date_display(edit_entry.right_version.timestamp) }}</td>
             {% if show_user %}
               <td>
-                {% if edit_entry.version.edited_by %}
-                  {{ edit_entry.version.edited_by.pretty_name }}
+                {% if edit_entry.author %}
+                  {{ edit_entry.author.pretty_name }}
                 {% else %}
                   {{ tm("n/a") }}
                 {% endif %}
               </td>
             {% endif %}
             <td class='font-weight-bold'>{{ diff.action }}</td>
-            {% if show_model_type %}<td>{{ edit_entry.model_name }}</td>{% endif %}
+            {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
             <td>{{ edit_entry.live_name }}</td>
             <td>
               {% if diff.field %}{{ diff.field.verbose_name }}{% endif %}
             </td>
             {###############autoescape content is escaped ######################}
             {% autoescape false %}
-              <td>{{ diff.diffed_before }}</td>
+              <td>{{ diff.get_before_diff() }}</td>
             {% endautoescape %}
             {% autoescape false %}
-              <td>{{ diff.diffed_after }}</td>
+              <td>{{ diff.get_after_diff() }}</td>
             {% endautoescape %}
             {% block extra_columns %}{% endblock %}
           </tr>

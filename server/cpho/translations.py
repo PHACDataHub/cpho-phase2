@@ -1235,4 +1235,8 @@ translation_entries = {
         "en": "This field is required",
         "fr": "Ce champ est requis",
     },
+    "benchmarking_sources_english": {
+        "en": "Benchmarking Sources english",
+        "fr": "Sources de comparaison anglais",
+    },
 }

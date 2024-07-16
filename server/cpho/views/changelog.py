@@ -18,10 +18,7 @@ changelog_models = [
     models.TrendAnalysis,
 ]
 
-from versionator.changelog.consecutive_versions_fetcher import (
-    ConsecutiveVersionsFetcher,
-)
-from versionator.changelog.simple_changelog import create_simple_changelog
+from versionator.changelog import Changelog, ChangelogConfig
 
 
 class ChangelogView(TemplateView):
@@ -34,16 +31,17 @@ class ChangelogView(TemplateView):
     def get_context_data(self, **kwargs):
         page_num = self.kwargs.get("page_num", 1)
         changelog_object = self.get_changelog_object()
-        data = changelog_object.get_page(page_num)
+        entries = changelog_object.get_entries(page_num)
+        num_pages = changelog_object.get_page_count()
 
         ctx = {
-            "edit_entries": data["changelog_entries"],
-            "has_next_page": data["has_next_page"],
-            "num_pages": data["num_pages"],
+            "edit_entries": entries,
+            "has_next_page": page_num < num_pages,
+            "num_pages": num_pages,
             "page_num": page_num,
         }
 
-        if page_num < data["num_pages"]:
+        if page_num < num_pages:
             ctx["next_page_num"] = page_num + 1
 
         if page_num > 1:
@@ -56,9 +54,12 @@ class GlobalChangelog(ChangelogView, MustBeAdminOrHsoMixin):
     template_name = "changelog/global_changelog.jinja2"
 
     def get_changelog_object(self):
-        return create_simple_changelog(
-            changelog_models, page_size=self.get_page_size()
+        changelog_config = ChangelogConfig(
+            changelog_models,
+            page_size=self.get_page_size(),
         )
+
+        return Changelog(changelog_config)
 
 
 class IndicatorScopedChangelog(ChangelogView, MustPassAuthCheckMixin):
@@ -73,8 +74,15 @@ class IndicatorScopedChangelog(ChangelogView, MustPassAuthCheckMixin):
     def get_changelog_object(self):
         indicator_id = self.kwargs["indicator_id"]
 
-        class IndicatorScopedFetcher(ConsecutiveVersionsFetcher):
-            def get_base_version_qs_for_single_model(self, model):
+        class IndicatorScopedConfig(ChangelogConfig):
+            models = [
+                models.Indicator,
+                models.IndicatorDatum,
+                models.Benchmarking,
+                models.TrendAnalysis,
+            ]
+
+            def get_base_version_queryset_for_single_model(self, model):
                 history_model = model._history_class
 
                 if model in (
@@ -93,11 +101,9 @@ class IndicatorScopedChangelog(ChangelogView, MustPassAuthCheckMixin):
                 else:
                     raise NotImplementedError("model not supported")
 
-        return create_simple_changelog(
-            changelog_models,
-            fetcher_class=IndicatorScopedFetcher,
-            page_size=self.get_page_size(),
-        )
+        config = IndicatorScopedConfig(page_size=self.get_page_size())
+
+        return Changelog(config)
 
     def get_context_data(self, **kwargs):
         return {
@@ -121,16 +127,16 @@ class UserScopedChangelog(ChangelogView):
     def get_changelog_object(self):
         user_id = self.kwargs["user_id"]
 
-        class UserScopedFetcher(ConsecutiveVersionsFetcher):
-            def get_base_version_qs_for_single_model(self, live_model):
+        class UserScopedConfig(ChangelogConfig):
+            models = changelog_models
+
+            def get_base_version_queryset_for_single_model(self, live_model):
                 history_model = live_model._history_class
                 return history_model.objects.filter(edited_by_id=user_id).all()
 
-        return create_simple_changelog(
-            [models.Indicator, models.IndicatorDatum, models.Benchmarking],
-            fetcher_class=UserScopedFetcher,
-            page_size=self.get_page_size(),
-        )
+        config = UserScopedConfig(page_size=self.get_page_size())
+
+        return Changelog(config)
 
     def get_context_data(self, **kwargs):
         return {
@@ -150,16 +156,16 @@ class GlobalDatumChangelog(GlobalChangelog):
             except ValueError:
                 raise forms.ValidationError("Year must be an integer")
 
-        class YearFilteredDatumFetcher(ConsecutiveVersionsFetcher):
-            def get_base_version_qs_for_single_model(self, live_model):
+        class YearFilteredDatumConfig(ChangelogConfig):
+            models = [models.IndicatorDatum]
+
+            def get_base_version_queryset_for_single_model(self, live_model):
                 history_model = live_model._history_class
                 qs = history_model.objects.all()
                 if year:
                     qs = qs.filter(period__year=year)
                 return qs
 
-        return create_simple_changelog(
-            [models.IndicatorDatum],
-            fetcher_class=YearFilteredDatumFetcher,
-            page_size=self.get_page_size(),
-        )
+        config = YearFilteredDatumConfig(page_size=self.get_page_size())
+
+        return Changelog(config)

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.3...v1.2.0) (2024-07-16)
+
+
+### Features
+
+* configure data domain ([#330](https://github.com/PHACDataHub/cpho-phase2/issues/330)) ([983a6cb](https://github.com/PHACDataHub/cpho-phase2/commit/983a6cb06109ce640c0768da0bdb1de11e9fe44d))
+
 ## [1.1.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.2...v1.1.3) (2024-06-19)
 
 

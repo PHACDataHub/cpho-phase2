@@ -6,7 +6,7 @@ django-graphiql-debug-toolbar==0.2.0
 django-extensions==3.2.3
 django-htmx-autocomplete==0.8.2
 django-phac_aspc-helpers==3.1.1
-Django==5.0.6
+Django==5.0.7
 django-versionator==2.0.1
 django-versionator[changelog]==2.0.1
 Faker==15.1.1

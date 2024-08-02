@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.0...v1.2.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* Allow all cross-origin requests ([#365](https://github.com/PHACDataHub/cpho-phase2/issues/365)) ([6cb2be5](https://github.com/PHACDataHub/cpho-phase2/commit/6cb2be50bbcdb2d1796c1568cd0e05c8122f4c81))
+
 ## [1.2.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.3...v1.2.0) (2024-07-16)
 
 

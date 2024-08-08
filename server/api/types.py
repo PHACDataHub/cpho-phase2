@@ -66,6 +66,8 @@ class IndicatorDatum(graphene.ObjectType):
     dimension_value = graphene.Field("api.types.DimensionValue")
 
     def resolve_dimension_value(self, info):
+        if not self.dimension_value_id:
+            return None
         return DimensionValueByIdLoader(info.context.dataloaders).load(
             self.dimension_value_id
         )

@@ -27,6 +27,7 @@ from .dataloaders import (
 class Indicator(DjangoObjectType):
     class Meta:
         model = IndicatorModel
+        fields = "__all__"
 
     data = graphene.Field(
         NonNull(List(NonNull("api.types.IndicatorDatum"))),
@@ -36,6 +37,11 @@ class Indicator(DjangoObjectType):
     submitted_periods = graphene.Field(
         NonNull(List(NonNull("api.types.Period")))
     )
+
+    relevant_period_types_enum = graphene.Enum(
+        "relevant_period_types_values", IndicatorModel.PERIOD_TYPE_CHOICES
+    )
+    relevant_period_types = List(relevant_period_types_enum)
 
     def resolve_data(self, info, year=None):
         if year:

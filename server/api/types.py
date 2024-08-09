@@ -18,7 +18,9 @@ from .dataloaders import (
     DimensionValueByIdLoader,
     IndicatorByIdLoader,
     PeriodByIdLoader,
+    SubmittedDatumByIndicatorLoader,
     SubmittedDatumByIndicatorYearLoader,
+    SubmittedPeriodsByIndicatorLoader,
 )
 
 
@@ -28,13 +30,27 @@ class Indicator(DjangoObjectType):
 
     data = graphene.Field(
         NonNull(List(NonNull("api.types.IndicatorDatum"))),
-        year=graphene.Argument(graphene.Int, required=True),
+        year=graphene.Argument(graphene.Int),
     )
 
-    def resolve_data(self, info, year):
-        return SubmittedDatumByIndicatorYearLoader(
+    submitted_periods = graphene.Field(
+        NonNull(List(NonNull("api.types.Period")))
+    )
+
+    def resolve_data(self, info, year=None):
+        if year:
+            return SubmittedDatumByIndicatorYearLoader(
+                info.context.dataloaders
+            ).load((self.id, year))
+        else:
+            return SubmittedDatumByIndicatorLoader(
+                info.context.dataloaders
+            ).load(self.id)
+
+    def resolve_submitted_periods(self, info):
+        return SubmittedPeriodsByIndicatorLoader(
             info.context.dataloaders
-        ).load((self.id, year))
+        ).load(self.id)
 
 
 class IndicatorDatum(graphene.ObjectType):

@@ -7,6 +7,7 @@ from graphene import List, NonNull
 from graphene_django import DjangoObjectType
 from rest_framework import serializers
 
+from cpho.models import Country as CountryModel
 from cpho.models import DimensionType as DimensionTypeModel
 from cpho.models import DimensionValue as DimensionValueModel
 from cpho.models import Indicator as IndicatorModel
@@ -18,6 +19,7 @@ from .dataloaders import (
     DimensionValueByIdLoader,
     IndicatorByIdLoader,
     PeriodByIdLoader,
+    SubmittedBenchmarkingByIndicatorLoader,
     SubmittedDatumByIndicatorLoader,
     SubmittedDatumByIndicatorYearLoader,
     SubmittedPeriodsByIndicatorLoader,
@@ -27,7 +29,6 @@ from .dataloaders import (
 class Indicator(DjangoObjectType):
     class Meta:
         model = IndicatorModel
-        fields = "__all__"
 
     data = graphene.Field(
         NonNull(List(NonNull("api.types.IndicatorDatum"))),
@@ -43,6 +44,10 @@ class Indicator(DjangoObjectType):
     )
     relevant_period_types = List(relevant_period_types_enum)
 
+    benchmarking = graphene.Field(
+        List("api.types.Benchmarking"),
+    )
+
     def resolve_data(self, info, year=None):
         if year:
             return SubmittedDatumByIndicatorYearLoader(
@@ -55,6 +60,11 @@ class Indicator(DjangoObjectType):
 
     def resolve_submitted_periods(self, info):
         return SubmittedPeriodsByIndicatorLoader(
+            info.context.dataloaders
+        ).load(self.id)
+
+    def resolve_benchmarking(self, info):
+        return SubmittedBenchmarkingByIndicatorLoader(
             info.context.dataloaders
         ).load(self.id)
 
@@ -115,3 +125,18 @@ class DimensionValue(DjangoObjectType):
 class Period(DjangoObjectType):
     class Meta:
         model = PeriodModel
+
+
+class Benchmarking(graphene.ObjectType):
+    value = graphene.Float()
+    oecd_country = graphene.Field("api.types.Country")
+    year = graphene.String()
+    unit = graphene.String()
+    comparison_to_oecd = graphene.String()
+    labels = graphene.String()
+    methodology_differences = graphene.String()
+
+
+class Country(DjangoObjectType):
+    class Meta:
+        model = CountryModel

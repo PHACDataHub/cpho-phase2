@@ -3,6 +3,8 @@ from collections import defaultdict
 from django.db.models import Q
 
 from cpho.models import (
+    Benchmarking,
+    BenchmarkingHistory,
     DimensionType,
     DimensionValue,
     Indicator,
@@ -72,6 +74,28 @@ class SubmittedDatumByIndicatorLoader(SingletonDataLoader):
             pk__in=version_ids,
             is_deleted=False,
         ).select_related("period")
+
+        versions_by_indicator = defaultdict(list)
+        for version in versions:
+            versions_by_indicator[version.indicator_id].append(version)
+
+        return [
+            versions_by_indicator[indicator_id]
+            for indicator_id in indicator_ids
+        ]
+
+
+class SubmittedBenchmarkingByIndicatorLoader(SingletonDataLoader):
+    def batch_load(self, indicator_ids):
+        benchmarkings = Benchmarking.objects.filter(
+            indicator_id__in=indicator_ids
+        ).with_last_submitted_version_id()
+
+        version_ids = [x.last_submitted_version_id for x in benchmarkings]
+        versions = BenchmarkingHistory.objects.filter(
+            pk__in=version_ids,
+            is_deleted=False,
+        ).select_related("oecd_country")
 
         versions_by_indicator = defaultdict(list)
         for version in versions:

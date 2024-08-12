@@ -23,6 +23,7 @@ from .dataloaders import (
     SubmittedDatumByIndicatorLoader,
     SubmittedDatumByIndicatorYearLoader,
     SubmittedPeriodsByIndicatorLoader,
+    SubmittedTrendAnalysisByIndicatorLoader,
 )
 
 
@@ -48,6 +49,10 @@ class Indicator(DjangoObjectType):
         List("api.types.Benchmarking"),
     )
 
+    trend = graphene.Field(
+        List("api.types.TrendAnalysis"),
+    )
+
     def resolve_data(self, info, year=None):
         if year:
             return SubmittedDatumByIndicatorYearLoader(
@@ -65,6 +70,11 @@ class Indicator(DjangoObjectType):
 
     def resolve_benchmarking(self, info):
         return SubmittedBenchmarkingByIndicatorLoader(
+            info.context.dataloaders
+        ).load(self.id)
+
+    def resolve_trend(self, info):
+        return SubmittedTrendAnalysisByIndicatorLoader(
             info.context.dataloaders
         ).load(self.id)
 
@@ -140,3 +150,15 @@ class Benchmarking(graphene.ObjectType):
 class Country(DjangoObjectType):
     class Meta:
         model = CountryModel
+
+
+class TrendAnalysis(graphene.ObjectType):
+    year = graphene.String()
+    data_point = graphene.Float()
+    line_of_best_fit = graphene.Float()
+    trend_segment = graphene.String()
+    trend = graphene.String()
+    data_quality = graphene.String()
+    unit = graphene.String()
+    data_point_lower_ci = graphene.Float()
+    data_point_upper_ci = graphene.Float()

@@ -11,6 +11,8 @@ from cpho.models import (
     IndicatorDatum,
     IndicatorDatumHistory,
     Period,
+    TrendAnalysis,
+    TrendAnalysisHistory,
 )
 
 from .util import (
@@ -96,6 +98,28 @@ class SubmittedBenchmarkingByIndicatorLoader(SingletonDataLoader):
             pk__in=version_ids,
             is_deleted=False,
         ).select_related("oecd_country")
+
+        versions_by_indicator = defaultdict(list)
+        for version in versions:
+            versions_by_indicator[version.indicator_id].append(version)
+
+        return [
+            versions_by_indicator[indicator_id]
+            for indicator_id in indicator_ids
+        ]
+
+
+class SubmittedTrendAnalysisByIndicatorLoader(SingletonDataLoader):
+    def batch_load(self, indicator_ids):
+        trend_analyses = TrendAnalysis.objects.filter(
+            indicator_id__in=indicator_ids
+        ).with_last_submitted_version_id()
+
+        version_ids = [x.last_submitted_version_id for x in trend_analyses]
+        versions = TrendAnalysisHistory.objects.filter(
+            pk__in=version_ids,
+            is_deleted=False,
+        )
 
         versions_by_indicator = defaultdict(list)
         for version in versions:

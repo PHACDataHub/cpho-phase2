@@ -7,6 +7,7 @@ from graphene import List, NonNull
 from graphene_django import DjangoObjectType
 from rest_framework import serializers
 
+from cpho.models import Country as CountryModel
 from cpho.models import DimensionType as DimensionTypeModel
 from cpho.models import DimensionValue as DimensionValueModel
 from cpho.models import Indicator as IndicatorModel
@@ -18,23 +19,66 @@ from .dataloaders import (
     DimensionValueByIdLoader,
     IndicatorByIdLoader,
     PeriodByIdLoader,
+    SubmittedBenchmarkingByIndicatorLoader,
+    SubmittedDatumByIndicatorLoader,
     SubmittedDatumByIndicatorYearLoader,
+    SubmittedPeriodsByIndicatorLoader,
+    SubmittedTrendAnalysisByIndicatorLoader,
 )
 
 
 class Indicator(DjangoObjectType):
     class Meta:
         model = IndicatorModel
+        # workaround for empty choices returning errors in graphene-django
+        convert_choices_to_enum = False
 
     data = graphene.Field(
         NonNull(List(NonNull("api.types.IndicatorDatum"))),
-        year=graphene.Argument(graphene.Int, required=True),
+        year=graphene.Argument(graphene.Int),
     )
 
-    def resolve_data(self, info, year):
-        return SubmittedDatumByIndicatorYearLoader(
+    submitted_periods = graphene.Field(
+        NonNull(List(NonNull("api.types.Period")))
+    )
+
+    relevant_period_types_enum = graphene.Enum(
+        "relevant_period_types_values", IndicatorModel.PERIOD_TYPE_CHOICES
+    )
+    relevant_period_types = List(relevant_period_types_enum)
+
+    benchmarking = graphene.Field(
+        List("api.types.Benchmarking"),
+    )
+
+    trend = graphene.Field(
+        List("api.types.TrendAnalysis"),
+    )
+
+    def resolve_data(self, info, year=None):
+        if year:
+            return SubmittedDatumByIndicatorYearLoader(
+                info.context.dataloaders
+            ).load((self.id, year))
+        else:
+            return SubmittedDatumByIndicatorLoader(
+                info.context.dataloaders
+            ).load(self.id)
+
+    def resolve_submitted_periods(self, info):
+        return SubmittedPeriodsByIndicatorLoader(
             info.context.dataloaders
-        ).load((self.id, year))
+        ).load(self.id)
+
+    def resolve_benchmarking(self, info):
+        return SubmittedBenchmarkingByIndicatorLoader(
+            info.context.dataloaders
+        ).load(self.id)
+
+    def resolve_trend(self, info):
+        return SubmittedTrendAnalysisByIndicatorLoader(
+            info.context.dataloaders
+        ).load(self.id)
 
 
 class IndicatorDatum(graphene.ObjectType):
@@ -66,6 +110,8 @@ class IndicatorDatum(graphene.ObjectType):
     dimension_value = graphene.Field("api.types.DimensionValue")
 
     def resolve_dimension_value(self, info):
+        if not self.dimension_value_id:
+            return None
         return DimensionValueByIdLoader(info.context.dataloaders).load(
             self.dimension_value_id
         )
@@ -91,3 +137,30 @@ class DimensionValue(DjangoObjectType):
 class Period(DjangoObjectType):
     class Meta:
         model = PeriodModel
+
+
+class Benchmarking(graphene.ObjectType):
+    value = graphene.Float()
+    oecd_country = graphene.Field("api.types.Country")
+    year = graphene.String()
+    unit = graphene.String()
+    comparison_to_oecd = graphene.String()
+    labels = graphene.String()
+    methodology_differences = graphene.String()
+
+
+class Country(DjangoObjectType):
+    class Meta:
+        model = CountryModel
+
+
+class TrendAnalysis(graphene.ObjectType):
+    year = graphene.String()
+    data_point = graphene.Float()
+    line_of_best_fit = graphene.Float()
+    trend_segment = graphene.String()
+    trend = graphene.String()
+    data_quality = graphene.String()
+    unit = graphene.String()
+    data_point_lower_ci = graphene.Float()
+    data_point_upper_ci = graphene.Float()

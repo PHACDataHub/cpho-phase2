@@ -30,6 +30,8 @@ from .dataloaders import (
 class Indicator(DjangoObjectType):
     class Meta:
         model = IndicatorModel
+        # workaround for empty choices returning errors in graphene-django
+        convert_choices_to_enum = False
 
     data = graphene.Field(
         NonNull(List(NonNull("api.types.IndicatorDatum"))),

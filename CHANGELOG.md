@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.1...v1.2.2) (2024-08-13)
+
+
+### Bug Fixes
+
+* PR title linter to fail on chore; and ignore release please titles ([#359](https://github.com/PHACDataHub/cpho-phase2/issues/359)) ([37072e1](https://github.com/PHACDataHub/cpho-phase2/commit/37072e1619a51fd100fcc57655a14db7250199df))
+* Revamp GraphQL ([#371](https://github.com/PHACDataHub/cpho-phase2/issues/371)) ([3f9a919](https://github.com/PHACDataHub/cpho-phase2/commit/3f9a919ca2527abc6b47e0e96267d5fdeac9272f))
+
 ## [1.2.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.0...v1.2.1) (2024-08-02)
 
 

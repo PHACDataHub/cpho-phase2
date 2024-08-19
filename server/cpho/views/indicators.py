@@ -55,31 +55,84 @@ class IndicatorForm(ModelForm):
             user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        non_hso_readonly_fields = [
-            "name",
-            "category",
-            "topic",
-            "detailed_indicator",
-            "sub_indicator_measurement",
-            "relevant_dimensions",
-            "relevant_period_types",
-            "g1",
-            "g2_lower",
-            "g2_upper",
-            "g3_lower",
-            "g3_upper",
-            "g4_lower",
-            "g4_upper",
-            "g5",
-        ]
         if user and not test_rule("is_admin_or_hso", user):
-            for field in non_hso_readonly_fields:
+            for field in self.non_hso_readonly_fields:
                 self.fields[field].disabled = True
 
-    name = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
-    )
+        fr_fields = [field for field in self.fields if field.endswith("_fr")]
+        self.hso_only_field_names = self.hso_only_field_names + fr_fields
+
+    def charField(required=False, french=False, label=None):
+        class_string = "form-control"
+        if french:
+            class_string += " fr-field"
+
+        return forms.CharField(
+            required=required,
+            widget=forms.TextInput(attrs={"class": class_string}),
+            label=label if label else None,
+        )
+
+    def ckEditorField(required=False, french=False, label=None):
+        class_string = "form-control"
+        if french:
+            class_string += " fr-field"
+
+        return forms.CharField(
+            required=required,
+            widget=CKEditorWidget(
+                config_name="notes", attrs={"class": class_string}
+            ),
+            label=label if label else None,
+        )
+
+    non_hso_readonly_fields = [
+        "name",
+        "category",
+        "topic",
+        "detailed_indicator",
+        "sub_indicator_measurement",
+        "relevant_dimensions",
+        "relevant_period_types",
+        "g1",
+        "g2_lower",
+        "g2_upper",
+        "g3_lower",
+        "g3_upper",
+        "g4_lower",
+        "g4_upper",
+        "g5",
+    ]
+
+    hso_only_field_names = [
+        "title_overall",
+        "table_title_overall",
+        "title_sex",
+        "table_title_sex",
+        "title_age",
+        "table_title_age",
+        "title_province_territory",
+        "table_title_province_territory",
+        "pt_dynamic_text",
+        "title_living_arrangement",
+        "table_title_living_arrangement",
+        "title_education_household",
+        "table_title_education_household",
+        "title_income_quintiles",
+        "table_title_income_quintiles",
+        "title_trend",
+        "table_title_trend",
+        "visual_description_trend",
+        "x_axis_trend",
+        "y_axis_trend",
+        "title_benchmark",
+        "table_title_benchmark",
+        "x_axis_benchmark",
+        "benchmarking_dynamic_text",
+    ]
+    name = charField(required=True, label=tm("name"))
+    name_fr = charField(french=True, label=tm("name_french"))
+
     category = forms.ChoiceField(
         required=False,
         choices=Indicator.CATEGORY_CHOICES,
@@ -88,6 +141,7 @@ class IndicatorForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("category"),
     )
 
     topic = forms.ChoiceField(
@@ -98,18 +152,26 @@ class IndicatorForm(ModelForm):
                 "class": "form-select",
             }
         ),
+        label=tm("topic"),
     )
-    detailed_indicator = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    detailed_indicator = charField(label=tm("detailed_indicator"))
+    detailed_indicator_fr = charField(
+        french=True, label=tm("detailed_indicator_french")
     )
-    sub_indicator_measurement = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    sub_indicator_measurement = charField(
+        label=tm("sub_indicator_measurement")
+    )
+    sub_indicator_measurement_fr = charField(
+        french=True, label=tm("sub_indicator_measurement_french")
     )
 
     relevant_period_types = forms.MultipleChoiceField(
         required=False,
         choices=Indicator.PERIOD_TYPE_CHOICES,
         widget=forms.CheckboxSelectMultiple(),
+        label=tm("relevant_period_types"),
     )
 
     # make it display name_en attribute of DimensionType model
@@ -118,128 +180,181 @@ class IndicatorForm(ModelForm):
         queryset=DimensionType.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
         initial=DimensionType.objects.all(),
+        label=tm("relevant_dimensions"),
     )
 
     # GENERAL
-    measure_text = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    measure_text = charField(label=tm("measure_text"))
+    measure_text_fr = charField(french=True, label=tm("measure_text_french"))
+
+    impact_text = ckEditorField(label=tm("impact_text"))
+    impact_text_fr = ckEditorField(french=True, label=tm("impact_text_french"))
+
+    title_overall = charField(label=tm("title_overall"))
+    title_overall_fr = charField(french=True, label=tm("title_overall_french"))
+
+    table_title_overall = charField(label=tm("table_title_overall"))
+    table_title_overall_fr = charField(
+        french=True, label=tm("table_title_overall_french")
     )
-    impact_text = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
+
+    general_footnotes = ckEditorField(label=tm("general_footnotes"))
+    general_footnotes_fr = ckEditorField(
+        french=True, label=tm("general_footnotes_french")
     )
-    title_overall = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    main_source_english = ckEditorField(label=tm("main_source_english"))
+    main_source_fr = ckEditorField(french=True, label=tm("main_source_french"))
+
+    other_relevant_sources_english = ckEditorField(
+        label=tm("other_relevant_sources_english")
     )
-    table_title_overall = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    other_relevant_sources_fr = ckEditorField(
+        french=True, label=tm("other_relevant_sources_french")
     )
-    general_footnotes = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
+
+    recommendations_for_hso = ckEditorField(
+        label=tm("recommendations_for_hso")
     )
-    main_source_english = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
+    recommendations_for_hso_fr = ckEditorField(
+        french=True, label=tm("recommendations_for_hso_french")
     )
-    other_relevant_sources_english = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
-    )
+
     # SEX
-    title_sex = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_sex = charField(label=tm("title_sex"))
+    title_sex_fr = charField(french=True, label=tm("title_sex_french"))
+
+    table_title_sex = charField(label=tm("table_title_sex"))
+    table_title_sex_fr = charField(
+        french=True, label=tm("table_title_sex_french")
     )
-    table_title_sex = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
+
     # AGE
-    title_age = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_age = charField(label=tm("title_age"))
+    title_age_fr = charField(french=True, label=tm("title_age_french"))
+
+    table_title_age = charField(label=tm("table_title_age"))
+    table_title_age_fr = charField(
+        french=True, label=tm("table_title_age_french")
     )
-    table_title_age = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
+
     # PROVINCE/TERRITORY
-    title_province_territory = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_province_territory = charField(label=tm("title_province_territory"))
+    title_province_territory_fr = charField(
+        french=True, label=tm("title_province_territory_french")
     )
-    table_title_province_territory = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    table_title_province_territory = charField(
+        label=tm("table_title_province_territory")
+    )
+    table_title_province_territory_fr = charField(
+        french=True, label=tm("table_title_province_territory_french")
+    )
+
+    pt_dynamic_text = charField(label=tm("pt_dynamic_text"))
+    pt_dynamic_text_fr = charField(
+        french=True, label=tm("pt_dynamic_text_french")
     )
 
     # LIVING ARRANGEMENT
-    title_living_arrangement = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_living_arrangement = charField(label=tm("title_living_arrangement"))
+    title_living_arrangement_fr = charField(
+        french=True, label=tm("title_living_arrangement_french")
     )
-    table_title_living_arrangement = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    table_title_living_arrangement = charField(
+        label=tm("table_title_living_arrangement")
     )
+    table_title_living_arrangement_fr = charField(
+        french=True, label=tm("table_title_living_arrangement_french")
+    )
+
     # EDUCATION HOUSEHOLD
-    title_education_household = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_education_household = charField(
+        label=tm("title_education_household")
     )
-    table_title_education_household = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_education_household_fr = charField(
+        french=True, label=tm("title_education_household_french")
     )
+
+    table_title_education_household = charField(
+        label=tm("table_title_education_household")
+    )
+    table_title_education_household_fr = charField(
+        french=True, label=tm("table_title_education_household_french")
+    )
+
     # INCOME QUINTILES
-    title_income_quintiles = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_income_quintiles = charField(label=tm("title_income_quintiles"))
+    title_income_quintiles_fr = charField(
+        french=True, label=tm("title_income_quintiles_french")
     )
-    table_title_income_quintiles = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    table_title_income_quintiles = charField(
+        label=tm("table_title_income_quintiles")
     )
+    table_title_income_quintiles_fr = charField(
+        french=True, label=tm("table_title_income_quintiles_french")
+    )
+
     # TREND
-    title_trend = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_trend = charField(label=tm("title_trend"))
+    title_trend_fr = charField(french=True, label=tm("title_trend_french"))
+
+    table_title_trend = charField(label=tm("table_title_trend"))
+    table_title_trend_fr = charField(
+        french=True, label=tm("table_title_trend_french")
     )
-    table_title_trend = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    visual_description_trend = charField(label=tm("visual_description_trend"))
+    visual_description_trend_fr = charField(
+        french=True, label=tm("visual_description_trend_french")
     )
-    visual_description_trend = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    x_axis_trend = charField(label=tm("x_axis_trend"))
+    x_axis_trend_fr = charField(french=True, label=tm("x_axis_trend_french"))
+
+    y_axis_trend = charField(label=tm("y_axis_trend"))
+    y_axis_trend_fr = charField(french=True, label=tm("y_axis_trend_french"))
+
+    trend_footnotes = ckEditorField(label=tm("trend_footnotes"))
+    trend_footnotes_fr = ckEditorField(
+        french=True, label=tm("trend_footnotes_french")
     )
-    x_axis_trend = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    y_axis_trend = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
-    )
-    trend_footnotes = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
-    )
+
     # BENCHMARKING
-    title_benchmark = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+    title_benchmark = charField(label=tm("title_benchmark"))
+    title_benchmark_fr = charField(
+        french=True, label=tm("title_benchmark_french")
     )
-    table_title_benchmark = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    table_title_benchmark = charField(label=tm("table_title_benchmark"))
+    table_title_benchmark_fr = charField(
+        french=True, label=tm("table_title_benchmark_french")
     )
-    x_axis_benchmark = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"class": "form-control"})
+
+    x_axis_benchmark = charField(label=tm("x_axis_benchmark"))
+    x_axis_benchmark_fr = charField(
+        french=True, label=tm("x_axis_benchmark_french")
     )
-    benchmarking_footnotes = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
+
+    benchmarking_dynamic_text = charField(
+        label=tm("benchmarking_dynamic_text")
     )
-    benchmarking_sources_english = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
+    benchmarking_dynamic_text_fr = charField(
+        french=True, label=tm("benchmarking_dynamic_text_french")
+    )
+
+    benchmarking_footnotes = ckEditorField(label=tm("benchmarking_footnotes"))
+    benchmarking_footnotes_fr = ckEditorField(
+        french=True, label=tm("benchmarking_footnotes_french")
+    )
+
+    benchmarking_sources_english = ckEditorField(
+        label=tm("benchmarking_sources_english")
+    )
+    benchmarking_sources_fr = ckEditorField(
+        french=True, label=tm("benchmarking_sources_french")
     )
 
     # QUINTILES
@@ -275,46 +390,6 @@ class IndicatorForm(ModelForm):
         required=False,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
-
-    recommendations_for_hso = forms.CharField(
-        required=False,
-        widget=CKEditorWidget(
-            config_name="notes", attrs={"class": "form-control"}
-        ),
-        label=tm("recommendations_for_hso"),
-    )
-
-    pt_dynamic_text = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
-        label=tm("pt_dynamic_text"),
-    )
-
-    hso_only_field_names = [
-        "title_overall",
-        "table_title_overall",
-        "title_sex",
-        "table_title_sex",
-        "title_age",
-        "table_title_age",
-        "title_province_territory",
-        "table_title_province_territory",
-        "pt_dynamic_text",
-        "title_living_arrangement",
-        "table_title_living_arrangement",
-        "title_education_household",
-        "table_title_education_household",
-        "title_income_quintiles",
-        "table_title_income_quintiles",
-        "title_trend",
-        "table_title_trend",
-        "visual_description_trend",
-        "x_axis_trend",
-        "y_axis_trend",
-        "title_benchmark",
-        "table_title_benchmark",
-        "x_axis_benchmark",
-    ]
 
 
 class ListIndicators(ListView):

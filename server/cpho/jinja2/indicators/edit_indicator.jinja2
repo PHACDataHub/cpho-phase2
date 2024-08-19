@@ -8,6 +8,52 @@
 {% endblock %}
 
 {% block content %}
+ 
   <div class="h5">{{ tm("edit_indicator") }} : {{ object.name }}</div>
+
+  {% if respects_rule('is_admin_or_hso') %}
+    <div style="line-height: 2.25rem;" class="form-switch">
+      <input class="form-check-input align-middle"
+             type="checkbox"
+             onchange="toggleFrenchFields(this.checked)"
+             id="show_french"
+             name="confirm_checkbox">
+      <label class="form-check-label confirm_checkbox_label align-middle ms-2"
+             for="show_french"
+             id="show_french_label"
+             style="white-space:nowrap">{{ tm("show_french_fields") }}</label>
+    </div>
+  {% endif %}
   {% include 'indicators/_indicator_form.jinja2' %}
+
+
+  <script>
+
+  function toggleFrenchFields(is_checked) {
+    const form_inputs = document.querySelectorAll(".form-input-row");
+    let french_fields = [];
+    form_inputs.forEach((input) => {
+      if (input.querySelector('.fr-field')) {
+        input.classList.add('d-none');
+        french_fields.push(input);
+      }
+    });
+    if (!is_checked) {
+      french_fields.forEach((input) => {
+      input.classList.add('d-none');
+      });
+    }
+    if (is_checked) {
+        french_fields.forEach((input) => {
+        input.classList.remove('d-none');
+      });
+    }
+  }
+  window.addEventListener('load', (event) => {
+    setTimeout(() => {
+      toggleFrenchFields(false);
+    }, 0);
+  });
+
+  </script>
 {% endblock %}

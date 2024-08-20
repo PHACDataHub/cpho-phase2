@@ -16,16 +16,34 @@ def test_create_indicator(vanilla_user_client):
             url,
             data={
                 "name": "Test Indicator",
+                "name_fr": "Test Indicator FR",
                 "category": Indicator.CATEGORY_CHOICES[-1][0],
                 "topic": Indicator.TOPIC_CHOICES[-1][0],
                 "detailed_indicator": "Test Detailed Indicator",
                 "sub_indicator_measurement": "Test Sub Indicator Measurement",
+                "sub_indicator_measurement_fr": "Test Sub Indicator Measurement FR",
+                "measure_text_fr": "Test Measure Text FR",
+                "impact_text_fr": "Test Impact Text FR",
+                "title_age_fr": "Test Title Age FR",
+                "title_province_territory_fr": "Test Title Province Territory FR",
             },
         )
         assert response.status_code == 302
 
     indicator = Indicator.objects.latest("pk")
     assert indicator.name == "Test Indicator"
+    assert indicator.name_fr == "Test Indicator FR"
+    assert (
+        indicator.sub_indicator_measurement_fr
+        == "Test Sub Indicator Measurement FR"
+    )
+    assert indicator.measure_text_fr == "Test Measure Text FR"
+    assert indicator.impact_text_fr == "Test Impact Text FR"
+    assert indicator.title_age_fr == "Test Title Age FR"
+    assert (
+        indicator.title_province_territory_fr
+        == "Test Title Province Territory FR"
+    )
 
 
 def test_edit_indicator(vanilla_user_client):

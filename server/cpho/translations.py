@@ -1239,4 +1239,176 @@ translation_entries = {
         "en": "Benchmarking Sources english",
         "fr": "Sources de comparaison anglais",
     },
+    "factors_influencing_health": {
+        "en": "Factors influencing health",
+        "fr": "Facteurs influençant la santé",
+    },
+    "general_health_status": {
+        "en": "General health status",
+        "fr": "État de santé général",
+    },
+    "health_outcomes": {
+        "en": "Health outcomes",
+        "fr": "Résultats de santé",
+    },
+    "pt_dynamic_text_french": {
+        "en": "PT Dynamic Text (French)",
+        "fr": "Texte dynamique PT (français)",
+    },
+    "name_french": {
+        "en": "Name (French)",
+        "fr": "Nom (français)",
+    },
+    "detailed_indicator_french": {
+        "en": "Detailed Indicator (French)",
+        "fr": "Indicateur détaillé (français)",
+    },
+    "sub_indicator_measurement_french": {
+        "en": "Sub-indicator Measurement (French)",
+        "fr": "Mesure du sous-indicateur (français)",
+    },
+    "relevant_period_types": {
+        "en": "Relevant Period Types",
+        "fr": "Types de périodes pertinents",
+    },
+    "measure_text_french": {
+        "en": "Measure Text (French)",
+        "fr": "Texte de mesure (français)",
+    },
+    "impact_text_french": {
+        "en": "Impact Text (French)",
+        "fr": "Texte d'impact (français)",
+    },
+    "title_overall_french": {
+        "en": "Title Overall (French)",
+        "fr": "Titre général (français)",
+    },
+    "table_title_overall_french": {
+        "en": "Table Title Overall (French)",
+        "fr": "Titre du tableau général (français)",
+    },
+    "general_footnotes_french": {
+        "en": "General Footnotes (French)",
+        "fr": "Notes générales (français)",
+    },
+    "main_source_french": {
+        "en": "Main Source (French)",
+        "fr": "Source principale (français)",
+    },
+    "other_relevant_sources_french": {
+        "en": "Other Relevant Sources (French)",
+        "fr": "Autres sources pertinentes (français)",
+    },
+    "recommendations_for_hso_french": {
+        "en": "Recommendations for HSO (French)",
+        "fr": "Recommandations pour le DSP (français)",
+    },
+    "table_title_overall": {
+        "en": "Table title overall",
+        "fr": "Titre du tableau général",
+    },
+    "title_sex_french": {
+        "en": "Title sex (French)",
+        "fr": "Titre sexe (français)",
+    },
+    "table_title_sex_french": {
+        "en": "Table title sex (French)",
+        "fr": "Titre du tableau sexe (français)",
+    },
+    "title_age_french": {
+        "en": "Title age (French)",
+        "fr": "Titre âge (français)",
+    },
+    "table_title_age_french": {
+        "en": "Table title age (French)",
+        "fr": "Titre du tableau âge (français)",
+    },
+    "title_province_territory_french": {
+        "en": "Title province territory (French)",
+        "fr": "Titre province territoire (français)",
+    },
+    "table_title_province_territory_french": {
+        "en": "Table title province territory (French)",
+        "fr": "Titre du tableau province territoire (français)",
+    },
+    "title_living_arrangement_french": {
+        "en": "Title living arrangement (French)",
+        "fr": "Titre arrangement de vie (français)",
+    },
+    "table_title_living_arrangement_french": {
+        "en": "Table title living arrangement (French)",
+        "fr": "Titre du tableau arrangement de vie (français)",
+    },
+    "title_education_household_french": {
+        "en": "Title education household (French)",
+        "fr": "Titre éducation ménage (français)",
+    },
+    "table_title_education_household_french": {
+        "en": "Table title education household (French)",
+        "fr": "Titre du tableau éducation ménage (français)",
+    },
+    "title_income_quintiles_french": {
+        "en": "Title income quintiles (French)",
+        "fr": "Titre quintiles de revenu (français)",
+    },
+    "table_title_income_quintiles_french": {
+        "en": "Table title income quintiles (French)",
+        "fr": "Titre du tableau quintiles de revenu (français)",
+    },
+    "title_trend_french": {
+        "en": "Title trend (French)",
+        "fr": "Titre tendance (français)",
+    },
+    "table_title_trend_french": {
+        "en": "Table title trend (French)",
+        "fr": "Titre du tableau tendance (français)",
+    },
+    "visual_description_trend_french": {
+        "en": "Visual description trend (French)",
+        "fr": "Description visuelle tendance (français)",
+    },
+    "x_axis_trend_french": {
+        "en": "X axis trend (French)",
+        "fr": "Axe x tendance (français)",
+    },
+    "y_axis_trend_french": {
+        "en": "Y axis trend (French)",
+        "fr": "Axe y tendance (français)",
+    },
+    "trend_footnotes_french": {
+        "en": "Trend footnotes (French)",
+        "fr": "Notes de bas de page de tendance (français)",
+    },
+    "title_benchmark_french": {
+        "en": "Title benchmark (French)",
+        "fr": "Titre de référence (français)",
+    },
+    "table_title_benchmark_french": {
+        "en": "Table title benchmark (French)",
+        "fr": "Titre du tableau de référence (français)",
+    },
+    "x_axis_benchmark_french": {
+        "en": "X axis benchmark (French)",
+        "fr": "Axe x de référence (français)",
+    },
+    "benchmarking_dynamic_text_french": {
+        "en": "Benchmarking dynamic text (French)",
+        "fr": "Texte dynamique de comparaison (français)",
+    },
+    "benchmarking_footnotes_french": {
+        "en": "Benchmarking footnotes (French)",
+        "fr": "Notes de bas de page de comparaison (français)",
+    },
+    "benchmarking_sources_french": {
+        "en": "Benchmarking sources (French)",
+        "fr": "Sources de comparaison (français)",
+    },
+    "benchmarking_dynamic_text": {
+        "en": "Benchmarking dynamic text",
+        "fr": "Texte dynamique de comparaison",
+    },
+    "show_french_fields": {
+        "en": "Show French Fields",
+        "fr": "Afficher les champs en français",
+    },
 }

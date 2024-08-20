@@ -5,7 +5,7 @@
   {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
   {% set non_hso_field_display = field.name not in form.hso_only_field_names %}
   {% if (hso_field_display or non_hso_field_display) %}
-    <div class="row g-3 form-group mb-3">
+    <div class="form-input-row row g-3 form-group mb-3">
       <div class="col-lg-3">
         <div>
           <div class="d-inline">{{ field.label_tag(attrs={'class': 'col col-form-label', 'aria-label': field.label }) }}</div>
@@ -47,10 +47,17 @@
     <h5 class="card-header">{{ tm("indicator_information") }}</h5>
     <div class="card-body">
       {{ form_field(form.name) }}
+      {{ form_field(form.name_fr) }}
+
       {{ form_field(form.category) }}
       {{ form_field(form.topic) }}
+
       {{ form_field(form.detailed_indicator) }}
+      {{ form_field(form.detailed_indicator_fr) }}
+
       {{ form_field(form.sub_indicator_measurement) }}
+      {{ form_field(form.sub_indicator_measurement_fr) }}
+
       {{ fieldset_field(form.relevant_dimensions, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
       {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
     </div>
@@ -60,13 +67,28 @@
     <h5 class="card-header">{{ tm("general_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.measure_text) }}
+      {{ form_field(form.measure_text_fr) }}
+
       {{ form_field(form.title_overall) }}
+      {{ form_field(form.title_overall_fr) }}
+
       {{ form_field(form.table_title_overall) }}
+      {{ form_field(form.table_title_overall_fr) }}
+
       {{ form_field(form.impact_text, rich=true) }}
+      {{ form_field(form.impact_text_fr, rich=true) }}
+
       {{ form_field(form.general_footnotes, rich=true) }}
+      {{ form_field(form.general_footnotes_fr, rich=true) }}
+
       {{ form_field(form.main_source_english, rich=true) }}
+      {{ form_field(form.main_source_fr, rich=true) }}
+
       {{ form_field(form.other_relevant_sources_english, rich=true) }}
+      {{ form_field(form.other_relevant_sources_fr, rich=true) }}
+
       {{ form_field(form.recommendations_for_hso, rich=true) }}
+      {{ form_field(form.recommendations_for_hso_fr, rich=true) }}
     </div>
   </div>
 
@@ -74,7 +96,10 @@
     <h5 class="card-header">{{ tm("sex_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_sex) }}
+      {{ form_field(form.title_sex_fr) }}
+
       {{ form_field(form.table_title_sex) }}
+      {{ form_field(form.table_title_sex_fr) }}
     </div>
   </div>
 
@@ -82,7 +107,10 @@
     <h5 class="card-header">{{ tm("age_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_age) }}
+      {{ form_field(form.title_age_fr) }}
+
       {{ form_field(form.table_title_age) }}
+      {{ form_field(form.table_title_age_fr) }}
     </div>
   </div>
 
@@ -90,8 +118,13 @@
     <h5 class="card-header">{{ tm("province_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_province_territory) }}
+      {{ form_field(form.title_province_territory_fr) }}
+
       {{ form_field(form.table_title_province_territory) }}
+      {{ form_field(form.table_title_province_territory_fr) }}
+
       {{ form_field(form.pt_dynamic_text) }}
+      {{ form_field(form.pt_dynamic_text_fr) }}
     </div>
   </div>
 
@@ -99,7 +132,10 @@
     <h5 class="card-header">{{ tm("living_arrangement_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_living_arrangement) }}
+      {{ form_field(form.title_living_arrangement_fr) }}
+
       {{ form_field(form.table_title_living_arrangement) }}
+      {{ form_field(form.table_title_living_arrangement_fr) }}
     </div>
   </div>
 
@@ -107,7 +143,10 @@
     <h5 class="card-header">{{ tm("education_household_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_education_household) }}
+      {{ form_field(form.title_education_household_fr) }}
+
       {{ form_field(form.table_title_education_household) }}
+      {{ form_field(form.table_title_education_household_fr) }}
     </div>
   </div>
 
@@ -115,7 +154,10 @@
     <h5 class="card-header">{{ tm("income_quintiles_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_income_quintiles) }}
+      {{ form_field(form.title_income_quintiles_fr) }}
+
       {{ form_field(form.table_title_income_quintiles) }}
+      {{ form_field(form.table_title_income_quintiles_fr) }}
     </div>
   </div>
 
@@ -123,11 +165,22 @@
     <h5 class="card-header">{{ tm("trend_analysis_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_trend) }}
+      {{ form_field(form.title_trend_fr) }}
+
       {{ form_field(form.table_title_trend) }}
+      {{ form_field(form.table_title_trend_fr) }}
+
       {{ form_field(form.visual_description_trend) }}
+      {{ form_field(form.visual_description_trend_fr) }}
+
       {{ form_field(form.x_axis_trend) }}
+      {{ form_field(form.x_axis_trend_fr) }}
+
       {{ form_field(form.y_axis_trend) }}
+      {{ form_field(form.y_axis_trend_fr) }}
+
       {{ form_field(form.trend_footnotes, rich=true) }}
+      {{ form_field(form.trend_footnotes_fr, rich=true) }}
     </div>
   </div>
 
@@ -135,11 +188,22 @@
     <h5 class="card-header">{{ tm("benchmarking_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_benchmark) }}
+      {{ form_field(form.title_benchmark_fr) }}
+
       {{ form_field(form.table_title_benchmark) }}
-      {# {{ form_field(form.benchmarking_legend) }} #}
+      {{ form_field(form.table_title_benchmark_fr) }}
+
       {{ form_field(form.x_axis_benchmark) }}
+      {{ form_field(form.x_axis_benchmark_fr) }}
+
+      {{ form_field(form.benchmarking_dynamic_text) }}
+      {{ form_field(form.benchmarking_dynamic_text_fr) }}
+
       {{ form_field(form.benchmarking_footnotes, rich=true) }}
+      {{ form_field(form.benchmarking_footnotes_fr, rich=true) }}
+
       {{ form_field(form.benchmarking_sources_english, rich=true) }}
+      {{ form_field(form.benchmarking_sources_fr, rich=true) }}
     </div>
   </div>
 

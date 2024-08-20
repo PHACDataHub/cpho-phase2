@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.2...v1.2.3) (2024-08-19)
+
+
+### Bug Fixes
+
+* added french fields and benchmarking dynamic text field ([#374](https://github.com/PHACDataHub/cpho-phase2/issues/374)) ([6cefdc8](https://github.com/PHACDataHub/cpho-phase2/commit/6cefdc85d42272f458de63dfeb6b6f6dbc6ad5e5))
+
 ## [1.2.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.1...v1.2.2) (2024-08-13)
 
 

@@ -21,40 +21,77 @@ from cpho.util import get
 indicator_columns = [
     ModelColumn(Indicator, "id"),
     ModelColumn(Indicator, "name"),
+    ModelColumn(Indicator, "name_fr"),
     ChoiceColumn(Indicator, "category"),
     ChoiceColumn(Indicator, "topic"),
     ModelColumn(Indicator, "detailed_indicator"),
+    ModelColumn(Indicator, "detailed_indicator_fr"),
     ModelColumn(Indicator, "sub_indicator_measurement"),
+    ModelColumn(Indicator, "sub_indicator_measurement_fr"),
     ModelColumn(Indicator, "measure_text"),
+    ModelColumn(Indicator, "measure_text_fr"),
     ModelColumn(Indicator, "title_overall"),
+    ModelColumn(Indicator, "title_overall_fr"),
     ModelColumn(Indicator, "table_title_overall"),
+    ModelColumn(Indicator, "table_title_overall_fr"),
     ModelColumn(Indicator, "impact_text"),
+    ModelColumn(Indicator, "impact_text_fr"),
     ModelColumn(Indicator, "general_footnotes"),
+    ModelColumn(Indicator, "general_footnotes_fr"),
     ModelColumn(Indicator, "main_source_english"),
+    ModelColumn(Indicator, "main_source_fr"),
     ModelColumn(Indicator, "other_relevant_sources_english"),
+    ModelColumn(Indicator, "other_relevant_sources_fr"),
     ModelColumn(Indicator, "title_sex"),
+    ModelColumn(Indicator, "title_sex_fr"),
     ModelColumn(Indicator, "table_title_sex"),
+    ModelColumn(Indicator, "table_title_sex_fr"),
     ModelColumn(Indicator, "title_age"),
+    ModelColumn(Indicator, "title_age_fr"),
     ModelColumn(Indicator, "table_title_age"),
+    ModelColumn(Indicator, "table_title_age_fr"),
     ModelColumn(Indicator, "title_province_territory"),
+    ModelColumn(Indicator, "title_province_territory_fr"),
     ModelColumn(Indicator, "table_title_province_territory"),
+    ModelColumn(Indicator, "table_title_province_territory_fr"),
+    ModelColumn(Indicator, "pt_dynamic_text"),
+    ModelColumn(Indicator, "pt_dynamic_text_fr"),
     ModelColumn(Indicator, "title_living_arrangement"),
+    ModelColumn(Indicator, "title_living_arrangement_fr"),
     ModelColumn(Indicator, "table_title_living_arrangement"),
+    ModelColumn(Indicator, "table_title_living_arrangement_fr"),
     ModelColumn(Indicator, "title_education_household"),
+    ModelColumn(Indicator, "title_education_household_fr"),
     ModelColumn(Indicator, "table_title_education_household"),
+    ModelColumn(Indicator, "table_title_education_household_fr"),
     ModelColumn(Indicator, "title_income_quintiles"),
+    ModelColumn(Indicator, "title_income_quintiles_fr"),
     ModelColumn(Indicator, "table_title_income_quintiles"),
+    ModelColumn(Indicator, "table_title_income_quintiles_fr"),
     ModelColumn(Indicator, "title_trend"),
+    ModelColumn(Indicator, "title_trend_fr"),
     ModelColumn(Indicator, "table_title_trend"),
+    ModelColumn(Indicator, "table_title_trend_fr"),
     ModelColumn(Indicator, "visual_description_trend"),
+    ModelColumn(Indicator, "visual_description_trend_fr"),
     ModelColumn(Indicator, "x_axis_trend"),
+    ModelColumn(Indicator, "x_axis_trend_fr"),
     ModelColumn(Indicator, "y_axis_trend"),
+    ModelColumn(Indicator, "y_axis_trend_fr"),
     ModelColumn(Indicator, "trend_footnotes"),
+    ModelColumn(Indicator, "trend_footnotes_fr"),
     ModelColumn(Indicator, "title_benchmark"),
+    ModelColumn(Indicator, "title_benchmark_fr"),
     ModelColumn(Indicator, "table_title_benchmark"),
+    ModelColumn(Indicator, "table_title_benchmark_fr"),
     ModelColumn(Indicator, "x_axis_benchmark"),
+    ModelColumn(Indicator, "x_axis_benchmark_fr"),
+    ModelColumn(Indicator, "benchmarking_dynamic_text"),
+    ModelColumn(Indicator, "benchmarking_dynamic_text_fr"),
     ModelColumn(Indicator, "benchmarking_footnotes"),
+    ModelColumn(Indicator, "benchmarking_footnotes_fr"),
     ModelColumn(Indicator, "benchmarking_sources_english"),
+    ModelColumn(Indicator, "benchmarking_sources_fr"),
     # quintiles
     ModelColumn(Indicator, "g1"),
     ModelColumn(Indicator, "g2_lower"),
@@ -130,7 +167,7 @@ class IndicatorDatumSheetWriter(ModelToSheetWriter):
         )
         .order_by("indicator_id", "period_id", "dimension_type_id")
     )
-    column = indicator_data_columns
+    columns = indicator_data_columns
 
 
 benchmarking_columns = [
@@ -230,9 +267,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename=hopic_infobase_export.xlsx"
+        response["Content-Disposition"] = (
+            f"attachment; filename=hopic_infobase_export.xlsx"
+        )
         self.workbook.save(response)
 
         return response

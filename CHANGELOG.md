@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.3...v1.2.4) (2024-08-21)
+
+
+### Bug Fixes
+
+* fixed export bug; French fields export ([#377](https://github.com/PHACDataHub/cpho-phase2/issues/377)) ([ec4aa21](https://github.com/PHACDataHub/cpho-phase2/commit/ec4aa215b892b53f290993adfc7c0a1d1d94d3fd))
+
 ## [1.2.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.2...v1.2.3) (2024-08-19)
 
 

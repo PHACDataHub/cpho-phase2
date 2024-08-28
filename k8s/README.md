@@ -274,7 +274,7 @@ This deployment architecture is built on top of the [node-microservices-demo](ht
 >  - Blue: CI/CD
 >  - Sky Blue: Observability
 
-![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)
+![Current k8s architecture](../architecture-diagram/architecture-k8s.png)
 
 > See `./architecture-diagram/README.md` at the root of this repository for other diagrams.
 

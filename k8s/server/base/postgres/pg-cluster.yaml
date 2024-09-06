@@ -32,7 +32,7 @@ spec:
       pgaudit.log_relation: "on"
       log_statement: "none"
 
-  enablePDB: true
+  enablePDB: false
 
 
   inheritedMetadata:

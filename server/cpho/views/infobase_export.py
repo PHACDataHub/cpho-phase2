@@ -301,7 +301,9 @@ class ExportHelpers:
     def get_submitted_benchmarking(cls):
         eternal_ids = [x.eternal_id for x in cls.get_submitted_indicators()]
         benchmarking_data = Benchmarking.objects.filter(
-            indicator_id__in=eternal_ids, is_deleted=False
+            # might not be necessary as benchmarking gets submitted with indicator but just in case
+            indicator_id__in=eternal_ids,
+            is_deleted=False,
         ).with_last_submitted_version_id()
         version_ids = [
             x.last_submitted_version_id
@@ -319,7 +321,9 @@ class ExportHelpers:
     def get_submitted_trend_analysis(cls):
         eternal_ids = [x.eternal_id for x in cls.get_submitted_indicators()]
         trend_data = TrendAnalysis.objects.filter(
-            indicator_id__in=eternal_ids, is_deleted=False
+            # might not be necessary as trend gets submitted with indicator but just in case
+            indicator_id__in=eternal_ids,
+            is_deleted=False,
         ).with_last_submitted_version_id()
         version_ids = [
             x.last_submitted_version_id
@@ -405,9 +409,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response["Content-Disposition"] = (
-            f"attachment; filename=hopic_infobase_export.xlsx"
-        )
+        response[
+            "Content-Disposition"
+        ] = f"attachment; filename=hopic_infobase_export.xlsx"
         self.workbook.save(response)
 
         return response

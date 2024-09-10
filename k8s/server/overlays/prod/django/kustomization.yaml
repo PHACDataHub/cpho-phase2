@@ -6,7 +6,6 @@ resources:
   - secrets.enc.yaml
   - hpa.yaml
   - virtual-service.yaml
-  - redirect-virtual-service.yaml
 
 patches:
   - path: deployment.yaml

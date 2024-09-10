@@ -21,8 +21,8 @@ patches:
               - name: manager
                 resources:
                   requests:
-                    cpu: 250m
-                    memory: 512Mi
+                    cpu: 50m
+                    memory: 112Mi
   # patch kustomize-controller service account to access GCP KMS for decrypting secrets
   # See https://fluxcd.io/flux/guides/mozilla-sops/#google-cloud
   - patch: |
@@ -32,7 +32,7 @@ patches:
         name: kustomize-controller
         namespace: flux-system
         annotations:
-          iam.gke.io/gcp-service-account: sops-kms@pht-01hp04dtnkf.iam.gserviceaccount.com      
+          iam.gke.io/gcp-service-account: sops-kms@pht-01hp04dtnkf.iam.gserviceaccount.com
     target:
       kind: ServiceAccount
       name: kustomize-controller

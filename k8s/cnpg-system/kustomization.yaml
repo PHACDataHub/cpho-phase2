@@ -27,8 +27,8 @@ patches:
               - name: manager
                 resources:
                   requests:
-                    cpu: 200m
-                    memory: 400Mi
+                    cpu: 50m
+                    memory: 112Mi
               - name: istio-proxy
                 image: auto
                 resources:

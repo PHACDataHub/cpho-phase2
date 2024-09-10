@@ -19,7 +19,7 @@ spec:
   storage:
     storageClass: standard
     size: 2Gi
-
+  
   serviceAccountTemplate:
     metadata:
       annotations:
@@ -37,5 +37,5 @@ spec:
 
   resources:
     requests:
-      cpu: 50m
-      memory: 250Mi
+      cpu: 200m # + `isito-proxy` container = 250m
+      memory: 500Mi # + `isito-proxy` container = 612MiB

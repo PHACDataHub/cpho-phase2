@@ -5,7 +5,6 @@ metadata:
   namespace: istio-ingress
 spec:
   dnsNames:
-    - hopic-sdpac.data-donnes.phac-aspc.gc.ca
     - hopic-sdpac.data.phac.gc.ca
     - "*.dev.hopic-sdpac.data.phac.gc.ca"
   issuerRef:

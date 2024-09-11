@@ -29,15 +29,15 @@ patches:
                   requests:
                     cpu: 50m
                     memory: 112Mi
+                  limits:
+                    cpu: 250m
+                    memory: 512Mi
               - name: istio-proxy
                 image: auto
                 resources:
                   requests:
                     cpu: 50m
                     memory: 112Mi
-                limits:
-                  cpu: 250m
-                  memory: 512Mi
     target:
       kind: Deployment
       name: cnpg-controller-manager

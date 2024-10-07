@@ -138,7 +138,7 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     ]
 
     name = fields.CharField(max_length=50)
-    name_fr = fields.CharField(max_length=50, null=True, blank=True)
+    name_fr = fields.CharField(max_length=100, null=True, blank=True)
 
     category = fields.CharField(
         max_length=50,

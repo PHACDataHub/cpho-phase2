@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.db import models
 
+from data_fetcher.core import DataFetcher
 from pleasant_promises.dataloader import SingletonDataLoader
 
 from server import fields
@@ -112,9 +113,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     CATEGORY_CHOICES = [
         ("", "--"),
-        ("factors_influencing_health", tdt("Factors Influencing Health")),
+        ("factors_influencing_health", tm("factors_influencing_health")),
         ("general_health_status", tdt("General Health Status")),
-        ("health_outcomes", tdt("Health Outcomes")),
+        ("health_outcomes", tm("health_outcomes")),
     ]
 
     TOPIC_CHOICES = [
@@ -137,6 +138,7 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     ]
 
     name = fields.CharField(max_length=50)
+    name_fr = fields.CharField(max_length=50, null=True, blank=True)
 
     category = fields.CharField(
         max_length=50,
@@ -151,8 +153,14 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     )
 
     detailed_indicator = fields.CharField(max_length=300)
+    detailed_indicator_fr = fields.CharField(
+        max_length=300, null=True, blank=True
+    )
 
     sub_indicator_measurement = fields.CharField(max_length=150)
+    sub_indicator_measurement_fr = fields.CharField(
+        max_length=150, null=True, blank=True
+    )
 
     relevant_dimensions = fields.ManyToManyField(
         "cpho.DimensionType",
@@ -168,52 +176,109 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     # GENERAL
     measure_text = fields.TextField(null=True, blank=True)
+    measure_text_fr = fields.TextField(null=True, blank=True)
+
     title_overall = fields.TextField(null=True, blank=True)
+    title_overall_fr = fields.TextField(null=True, blank=True)
+
     table_title_overall = fields.TextField(null=True, blank=True)
+    table_title_overall_fr = fields.TextField(null=True, blank=True)
+
     impact_text = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
+    impact_text_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
     general_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
+    general_footnotes_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
     main_source_english = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
+    main_source_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
     other_relevant_sources_english = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    other_relevant_sources_fr = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 
     # SEX
     title_sex = fields.TextField(null=True, blank=True)
+    title_sex_fr = fields.TextField(null=True, blank=True)
+
     table_title_sex = fields.TextField(null=True, blank=True)
+    table_title_sex_fr = fields.TextField(null=True, blank=True)
 
     # AGE
     title_age = fields.TextField(null=True, blank=True)
+    title_age_fr = fields.TextField(null=True, blank=True)
+
     table_title_age = fields.TextField(null=True, blank=True)
+    table_title_age_fr = fields.TextField(null=True, blank=True)
 
     # PROVINCE/TERRITORY
     title_province_territory = fields.TextField(null=True, blank=True)
+    title_province_territory_fr = fields.TextField(null=True, blank=True)
+
     table_title_province_territory = fields.TextField(null=True, blank=True)
+    table_title_province_territory_fr = fields.TextField(null=True, blank=True)
+
+    pt_dynamic_text = fields.TextField(null=True, blank=True)
+    pt_dynamic_text_fr = fields.TextField(null=True, blank=True)
 
     # LIVING ARRANGEMENT
     title_living_arrangement = fields.TextField(null=True, blank=True)
+    title_living_arrangement_fr = fields.TextField(null=True, blank=True)
+
     table_title_living_arrangement = fields.TextField(null=True, blank=True)
+    table_title_living_arrangement_fr = fields.TextField(null=True, blank=True)
 
     # EDUCATION HOUSEHOLD
     title_education_household = fields.TextField(null=True, blank=True)
+    title_education_household_fr = fields.TextField(null=True, blank=True)
+
     table_title_education_household = fields.TextField(null=True, blank=True)
+    table_title_education_household_fr = fields.TextField(
+        null=True, blank=True
+    )
 
     # INCOME QUINTILES
     title_income_quintiles = fields.TextField(null=True, blank=True)
+    title_income_quintiles_fr = fields.TextField(null=True, blank=True)
+
     table_title_income_quintiles = fields.TextField(null=True, blank=True)
+    table_title_income_quintiles_fr = fields.TextField(null=True, blank=True)
 
     # TREND
     title_trend = fields.TextField(null=True, blank=True)
+    title_trend_fr = fields.TextField(null=True, blank=True)
+
     table_title_trend = fields.TextField(null=True, blank=True)
+    table_title_trend_fr = fields.TextField(null=True, blank=True)
+
     visual_description_trend = fields.TextField(null=True, blank=True)
+    visual_description_trend_fr = fields.TextField(null=True, blank=True)
+
     x_axis_trend = fields.TextField(null=True, blank=True)
+    x_axis_trend_fr = fields.TextField(null=True, blank=True)
+
     y_axis_trend = fields.TextField(null=True, blank=True)
+    y_axis_trend_fr = fields.TextField(null=True, blank=True)
+
     trend_footnotes = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    trend_footnotes_fr = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 
@@ -222,12 +287,28 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     #     max_length=300, null=True, blank=True
     # )
     title_benchmark = fields.TextField(null=True, blank=True)
+    title_benchmark_fr = fields.TextField(null=True, blank=True)
+
     table_title_benchmark = fields.TextField(null=True, blank=True)
+    table_title_benchmark_fr = fields.TextField(null=True, blank=True)
+
     x_axis_benchmark = fields.TextField(null=True, blank=True)
+    x_axis_benchmark_fr = fields.TextField(null=True, blank=True)
+
+    benchmarking_dynamic_text = fields.TextField(null=True, blank=True)
+    benchmarking_dynamic_text_fr = fields.TextField(null=True, blank=True)
+
     benchmarking_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
+    benchmarking_footnotes_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
     benchmarking_sources_english = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+    benchmarking_sources_fr = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
 
@@ -257,8 +338,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     recommendations_for_hso = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
-
-    pt_dynamic_text = fields.TextField(null=True, blank=True)
+    recommendations_for_hso_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
 
     def __str__(self):
         return " ".join(
@@ -316,7 +398,7 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         return relevant
 
 
-class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
+class IndicatorDatumChangelogNameFetcher(DataFetcher):
     @staticmethod
     def get_name(datum):
         if datum.dimension_type.is_literal:
@@ -324,16 +406,12 @@ class IndicatorDatumChangelogNameLoader(SingletonDataLoader):
 
         return f"{datum.indicator} ({datum.period}) {datum.dimension_type}: {datum.dimension_value}"
 
-    def batch_load(self, datum_ids):
-        IndicatorDatum = apps.get_model("cpho", "IndicatorDatum")
-
-        data = IndicatorDatum.objects.filter(
-            id__in=datum_ids
-        ).prefetch_related(
+    def batch_load_dict(self, datum_ids):
+        data = IndicatorDatum.objects.filter(id__in=datum_ids).select_related(
             "indicator", "dimension_value", "dimension_type", "period"
         )
         by_id = {datum.id: datum for datum in data}
-        return [self.get_name(by_id[x]) for x in datum_ids]
+        return by_id
 
 
 class ActiveObjManager(models.Manager):
@@ -346,7 +424,7 @@ class ActiveObjManager(models.Manager):
 class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
-    changelog_live_name_loader_class = IndicatorDatumChangelogNameLoader
+    changelog_live_name_fetcher_class = IndicatorDatumChangelogNameFetcher
 
     class Meta:
         unique_together = [
@@ -503,9 +581,25 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         )
 
 
+class BenchmarkLiveNameFetcher(DataFetcher):
+    """
+    changelog won't prefetch related fields
+    so we define a live-name fetcher
+    """
+
+    def batch_load_dict(self, keys):
+        data = Benchmarking.objects.filter(id__in=keys).prefetch_related(
+            "indicator", "oecd_country"
+        )
+        by_id = {datum.id: datum.__str__() for datum in data}
+        return by_id
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
 class Benchmarking(models.Model, SubmissionHelpersMixin):
+    changelog_live_name_fetcher_class = BenchmarkLiveNameFetcher
+
     class Meta:
         unique_together = [
             (
@@ -598,9 +692,20 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         return str(self.indicator) + " : " + str(self.oecd_country)
 
 
+class TrendRecordLiveNameFetcher(DataFetcher):
+    def batch_load_dict(self, keys):
+        data = TrendAnalysis.objects.filter(id__in=keys).prefetch_related(
+            "indicator"
+        )
+        by_id = {datum.id: datum.__str__() for datum in data}
+        return by_id
+
+
 @add_to_admin
 @track_versions_with_editor_and_submission
 class TrendAnalysis(models.Model, SubmissionHelpersMixin):
+    changelog_live_name_fetcher_class = TrendRecordLiveNameFetcher
+
     class Meta:
         unique_together = [
             (

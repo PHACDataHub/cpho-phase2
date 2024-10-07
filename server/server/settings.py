@@ -45,7 +45,9 @@ if IS_LOCAL and IS_DEV:
         "ENABLE_DEBUG_TOOLBAR", default=False, cast=bool
     )
     INTERNAL_IPS = (
-        config("INTERNAL_IPS", default="") if ENABLE_DEBUG_TOOLBAR else ""
+        config("INTERNAL_IPS", default="", cast=Csv())
+        if ENABLE_DEBUG_TOOLBAR
+        else ""
     )
 
     # Disable session timeout
@@ -169,6 +171,7 @@ else:
 # Application definition
 INSTALLED_APPS = configure_apps(
     [
+        "corsheaders",
         "cpho.apps.CphoConfig",
         "django.contrib.admin",
         "django.contrib.auth",
@@ -195,6 +198,7 @@ INSTALLED_APPS = configure_apps(
 
 MIDDLEWARE = configure_middleware(
     [
+        "corsheaders.middleware.CorsMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "whitenoise.middleware.WhiteNoiseMiddleware",
         *(
@@ -211,6 +215,7 @@ MIDDLEWARE = configure_middleware(
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "data_fetcher.middleware.GlobalRequestMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "server.middleware.MustBeLoggedInMiddleware",
     ]
@@ -345,3 +350,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CORS
+# for infobase and potentially anyone else who may want to use public data,
+CORS_ALLOW_ALL_ORIGINS = True

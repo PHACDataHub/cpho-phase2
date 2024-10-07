@@ -2,9 +2,7 @@ apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSPolicy
 metadata:
   name: hopic-net-dnspolicy
-  namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
+  namespace: configconnector-resources
 spec:
   description: "Enables DNS logging for the hopic-net VPC"
   enableLogging: true

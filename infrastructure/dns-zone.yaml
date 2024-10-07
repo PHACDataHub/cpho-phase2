@@ -2,7 +2,7 @@ apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeAddress
 metadata:
   name: hopic-external-ip
-  namespace: cnrm-system
+  namespace: configconnector-resources
   annotations:
     cnrm.cloud.google.com/state-into-spec: merge
 spec:
@@ -15,9 +15,7 @@ apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSManagedZone
 metadata:
   name: hopic-ops-managed-zone
-  namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
+  namespace: configconnector-resources
 spec:
   cloudLoggingConfig:
     enableLogging: true
@@ -29,9 +27,7 @@ apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSRecordSet
 metadata:
   name: hopic-ops-dns-record-set
-  namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
+  namespace: configconnector-resources
 spec:
   name: "hopic-sdpac.data-donnes.phac-aspc.gc.ca."
   type: A
@@ -42,20 +38,45 @@ spec:
     - name: hopic-external-ip
       kind: ComputeAddress
 ---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSManagedZone
+metadata:
+  name: hopic-uni-managed-zone
+  namespace: configconnector-resources
+spec:
+  cloudLoggingConfig:
+    enableLogging: true
+  description: HoPiC DNS Zone for production DNS
+  dnsName: hopic-sdpac.data.phac.gc.ca.
+  visibility: public
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  name: hopic-uni-dns-record-set
+  namespace: configconnector-resources
+spec:
+  name: "hopic-sdpac.data.phac.gc.ca."
+  type: A
+  ttl: 300
+  managedZoneRef:
+    name: hopic-uni-managed-zone
+  rrdatasRefs:
+    - name: hopic-external-ip
+      kind: ComputeAddress
+---
 # ephemeral DNS config
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSRecordSet
 metadata:
-  name: hopic-ops-ephemeral-dns-record-set
-  namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
+  name: hopic-uni-ephemeral-dns-record-set
+  namespace: configconnector-resources
 spec:
-  name: "*.dev.hopic-sdpac.data-donnes.phac-aspc.gc.ca."
+  name: "*.dev.hopic-sdpac.data.phac.gc.ca."
   type: A
   ttl: 300
   managedZoneRef:
-    name: hopic-ops-managed-zone
+    name: hopic-uni-managed-zone
   rrdatasRefs:
     - name: hopic-external-ip
       kind: ComputeAddress

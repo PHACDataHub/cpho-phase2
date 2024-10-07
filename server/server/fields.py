@@ -18,7 +18,6 @@ from phac_aspc.django.fields import CommaSeparatedCharField
 migration_ignored_attrs = [
     "help_text",
     "is_searchable",
-    "description",
     "verbose_name",
     "verbose_name_plural",
     "ordering",
@@ -37,9 +36,8 @@ class SearchableFieldMixin:
 
 
 class DescriptionMixin:
-    def __init__(self, *args, extra_options=None, description="", **kwargs):
+    def __init__(self, *args, extra_options=None, **kwargs):
         self.extra_options = extra_options or {}
-        self.description = description
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):

@@ -2,10 +2,9 @@ apiVersion: kms.cnrm.cloud.google.com/v1beta1
 kind: KMSCryptoKey
 metadata:
   name: sops-flux-key
-  namespace: cnrm-system
+  namespace: configconnector-resources
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
-    cnrm.cloud.google.com/state-into-spec: merge
 spec:
   keyRingRef:
     name: sops
@@ -16,8 +15,6 @@ apiVersion: kms.cnrm.cloud.google.com/v1beta1
 kind: KMSKeyRing
 metadata:
   name: sops
-  namespace: cnrm-system
-  annotations:
-    cnrm.cloud.google.com/state-into-spec: merge
+  namespace: configconnector-resources
 spec:
   location: northamerica-northeast1

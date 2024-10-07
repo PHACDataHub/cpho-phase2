@@ -1,6 +1,7 @@
 import logging
 import traceback
 
+from graphene.validation import DisableIntrospection, depth_limit_validator
 from graphene_django.views import GraphQLView as BaseGraphQLView
 from graphql_core_promise import PromiseExecutionContext
 from pleasant_promises.graphene import promised_generator_middleware
@@ -9,6 +10,8 @@ from server.middleware import AllowUnauthenticatedMixin
 
 from .schema import schema
 from .util import GraphQLContext
+
+GRAPHQL_DEPTH_LIMIT = 5
 
 
 class CustomGraphqlView(BaseGraphQLView):
@@ -58,6 +61,8 @@ class GraphQLView(CustomGraphqlView, AllowUnauthenticatedMixin):
     To be accessed in prod at /graphql
     """
 
+    validation_rules = [depth_limit_validator(GRAPHQL_DEPTH_LIMIT)]
+
     pass
 
 
@@ -65,6 +70,11 @@ class GraphiQLView(CustomGraphqlView):
     """
     To be accessed in development at /graphiql
     """
+
+    validation_rules = [
+        # DisableIntrospection,
+        depth_limit_validator(GRAPHQL_DEPTH_LIMIT),
+    ]
 
     @classmethod
     def as_view(cls, *args, **kwargs):

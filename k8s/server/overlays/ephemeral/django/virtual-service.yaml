@@ -4,7 +4,7 @@ metadata:
   name: server-virtual-service
 spec:
   hosts:
-    - ${BRANCH_NAME}.dev.hopic-sdpac.data-donnes.phac-aspc.gc.ca
+    - ${BRANCH_NAME}.dev.hopic-sdpac.data.phac.gc.ca
   gateways:
   - istio-ingress/mesh-gateway
   http:

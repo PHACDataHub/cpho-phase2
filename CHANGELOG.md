@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.2.4](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.3...v1.2.4) (2024-08-21)
+
+
+### Bug Fixes
+
+* fixed export bug; French fields export ([#377](https://github.com/PHACDataHub/cpho-phase2/issues/377)) ([ec4aa21](https://github.com/PHACDataHub/cpho-phase2/commit/ec4aa215b892b53f290993adfc7c0a1d1d94d3fd))
+
+## [1.2.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.2...v1.2.3) (2024-08-19)
+
+
+### Bug Fixes
+
+* added french fields and benchmarking dynamic text field ([#374](https://github.com/PHACDataHub/cpho-phase2/issues/374)) ([6cefdc8](https://github.com/PHACDataHub/cpho-phase2/commit/6cefdc85d42272f458de63dfeb6b6f6dbc6ad5e5))
+
+## [1.2.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.1...v1.2.2) (2024-08-13)
+
+
+### Bug Fixes
+
+* PR title linter to fail on chore; and ignore release please titles ([#359](https://github.com/PHACDataHub/cpho-phase2/issues/359)) ([37072e1](https://github.com/PHACDataHub/cpho-phase2/commit/37072e1619a51fd100fcc57655a14db7250199df))
+* Revamp GraphQL ([#371](https://github.com/PHACDataHub/cpho-phase2/issues/371)) ([3f9a919](https://github.com/PHACDataHub/cpho-phase2/commit/3f9a919ca2527abc6b47e0e96267d5fdeac9272f))
+
+## [1.2.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.0...v1.2.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* Allow all cross-origin requests ([#365](https://github.com/PHACDataHub/cpho-phase2/issues/365)) ([6cb2be5](https://github.com/PHACDataHub/cpho-phase2/commit/6cb2be50bbcdb2d1796c1568cd0e05c8122f4c81))
+
+## [1.2.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.3...v1.2.0) (2024-07-16)
+
+
+### Features
+
+* configure data domain ([#330](https://github.com/PHACDataHub/cpho-phase2/issues/330)) ([983a6cb](https://github.com/PHACDataHub/cpho-phase2/commit/983a6cb06109ce640c0768da0bdb1de11e9fe44d))
+
 ## [1.1.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.1.2...v1.1.3) (2024-06-19)
 
 

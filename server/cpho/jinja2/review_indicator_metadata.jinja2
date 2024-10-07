@@ -14,6 +14,14 @@
     <td>{{ value|safe if value }}</td>
   </tr>
 {% endmacro %}
+
+{% macro header_tr(header_name) %}
+  <tr>
+    <td colspan="2">
+      <div class="h5">{{ header_name }}</div>
+    </td>
+  </tr>
+{% endmacro %}
  
 {% block content %}
   {% set indicator = view.indicator %}
@@ -55,8 +63,9 @@
       </div>
     </div>
     <div class="card-body">
+      {% set ind = metadata["indicator"][0] %}
       <div>
-        <div>
+        <div class='my-3'>
           <strong>{{ tm("indicator_details") }}</strong>
         </div>
         <table class="table table-hover">
@@ -67,56 +76,137 @@
             </tr>
           </thead>
           <tbody>
-            {{ field_tr(tm("name") , metadata["indicator"][0].name) }}
-            {{ field_tr(tm("category") , metadata["indicator"][0].get_category_display() ) }}
-            {{ field_tr(tm("topic") , metadata["indicator"][0].get_topic_display() ) }}
-            {{ field_tr(tm("detailed_indicator") , metadata["indicator"][0].detailed_indicator) }}
-            {{ field_tr(tm("sub_indicator_measurement") , metadata["indicator"][0].sub_indicator_measurement) }}
+            {{ field_tr(tm("name") , ind.name) }}
+            {{ field_tr(tm("name_french") , ind.name_fr) }}
+ 
+            {{ field_tr(tm("category") , ind.get_category_display() ) }}
+            {{ field_tr(tm("topic") , ind.get_topic_display() ) }}
+
+            {{ field_tr(tm("detailed_indicator") , ind.detailed_indicator) }}
+            {{ field_tr(tm("detailed_indicator_french") , ind.detailed_indicator_fr) }}
+
+            {{ field_tr(tm("sub_indicator_measurement") , ind.sub_indicator_measurement) }}
+            {{ field_tr(tm("sub_indicator_measurement_french") , ind.sub_indicator_measurement_fr) }}
             <tr>
               <td>{{ tm("relevant_dimensions") }}</td>
               <td>
                 <ul>
-                  {% for item in metadata["indicator"][0].relevant_dimensions.all() %}<li>{{ item.name }}</li>{% endfor %}
+                  {% for item in ind.relevant_dimensions.all() %}<li>{{ item.name }}</li>{% endfor %}
                 </ul>
               </td>
             </tr>
+
+            {{ header_tr(tm("general_metadata") ) }}
  
-            {{ field_tr(tm("measure_text") , metadata["indicator"][0].measure_text) }}
-            {{ field_tr(tm("impact_text") , metadata["indicator"][0].impact_text) }}
-            {{ field_tr(tm("title_overall") , metadata["indicator"][0].title_overall) }}
-            {{ field_tr(tm("general_footnotes") , metadata["indicator"][0].general_footnotes) }}
-            {{ field_tr(tm("main_source_english") , metadata["indicator"][0].main_source_english) }}
-            {{ field_tr(tm("other_relevant_sources_english") , metadata["indicator"][0].other_relevant_sources_english) }}
+ 
+            {{ field_tr(tm("measure_text") , ind.measure_text) }}
+            {{ field_tr(tm("measure_text_french") , ind.measure_text_fr) }}
+ 
+            {{ field_tr(tm("impact_text") , ind.impact_text) }}
+            {{ field_tr(tm("impact_text_french") , ind.impact_text_fr) }}
 
-            {{ field_tr(tm("title_sex") , metadata["indicator"][0].title_sex) }}
-            {{ field_tr(tm("table_title_sex") , metadata["indicator"][0].table_title_sex) }}
+            {{ field_tr(tm("title_overall") , ind.title_overall) }}
+            {{ field_tr(tm("title_overall_french") , ind.title_overall_fr) }}
 
-            {{ field_tr(tm("title_age") , metadata["indicator"][0].title_age) }}
-            {{ field_tr(tm("table_title_age") , metadata["indicator"][0].table_title_age) }}
+            {{ field_tr(tm("table_title_overall") , ind.table_title_overall) }}
+            {{ field_tr(tm("table_title_overall_french") , ind.table_title_overall_fr) }}
 
-            {{ field_tr(tm("title_province_territory") , metadata["indicator"][0].title_province_territory) }}
-            {{ field_tr(tm("table_title_province_territory") , metadata["indicator"][0].table_title_province_territory) }}
+            {{ field_tr(tm("general_footnotes") , ind.general_footnotes) }}
+            {{ field_tr(tm("general_footnotes_french") , ind.general_footnotes_fr) }}
 
-            {{ field_tr(tm("title_living_arrangement") , metadata["indicator"][0].title_living_arrangement) }}
-            {{ field_tr(tm("table_title_living_arrangement") , metadata["indicator"][0].table_title_living_arrangement) }}
+            {{ field_tr(tm("main_source_english") , ind.main_source_english) }}
+            {{ field_tr(tm("main_source_french") , ind.main_source_fr) }}
 
-            {{ field_tr(tm("title_education_household") , metadata["indicator"][0].title_education_household) }}
-            {{ field_tr(tm("table_title_education_household") , metadata["indicator"][0].table_title_education_household) }}
+            {{ field_tr(tm("other_relevant_sources_english") , ind.other_relevant_sources_english) }}
+            {{ field_tr(tm("other_relevant_sources_french") , ind.other_relevant_sources_fr) }}
 
-            {{ field_tr(tm("title_income_quintiles") , metadata["indicator"][0].title_income_quintiles) }}
-            {{ field_tr(tm("table_title_income_quintiles") , metadata["indicator"][0].table_title_income_quintiles) }}
+            {{ field_tr(tm("recommendations_for_hso") , ind.recommendations_for_hso) }}
+            {{ field_tr(tm("recommendations_for_hso_french") , ind.recommendations_for_hso_fr) }}
+ 
+            {{ header_tr(tm("sex_metadata") ) }}
 
-            {{ field_tr(tm("title_trend") , metadata["indicator"][0].title_trend) }}
-            {{ field_tr(tm("table_title_trend") , metadata["indicator"][0].table_title_trend) }}
-            {{ field_tr(tm("visual_description_trend") , metadata["indicator"][0].visual_description_trend) }}
-            {{ field_tr(tm("x_axis_trend") , metadata["indicator"][0].x_axis_trend) }}
-            {{ field_tr(tm("y_axis_trend") , metadata["indicator"][0].y_axis_trend) }}
-            {{ field_tr(tm("trend_footnotes") , metadata["indicator"][0].trend_footnotes) }}
+            {{ field_tr(tm("title_sex") , ind.title_sex) }}
+            {{ field_tr(tm("title_sex_french") , ind.title_sex_fr) }}
 
-            {{ field_tr(tm("title_benchmark") , metadata["indicator"][0].title_benchmark) }}
-            {{ field_tr(tm("table_title_benchmark") , metadata["indicator"][0].table_title_benchmark) }}
-            {{ field_tr(tm("x_axis_benchmark") , metadata["indicator"][0].x_axis_benchmark) }}
-            {{ field_tr(tm("benchmarking_footnotes") , metadata["indicator"][0].benchmarking_footnotes) }}
+            {{ field_tr(tm("table_title_sex") , ind.table_title_sex) }}
+            {{ field_tr(tm("table_title_sex_french") , ind.table_title_sex_fr) }}
+
+            {{ header_tr(tm("age_metadata") ) }}
+            {{ field_tr(tm("title_age") , ind.title_age) }}
+            {{ field_tr(tm("title_age_french") , ind.title_age_fr) }}
+
+            {{ field_tr(tm("table_title_age") , ind.table_title_age) }}
+            {{ field_tr(tm("table_title_age_french") , ind.table_title_age_fr) }}
+
+            {{ header_tr(tm("province_metadata") ) }}
+            {{ field_tr(tm("title_province_territory") , ind.title_province_territory) }}
+            {{ field_tr(tm("title_province_territory_french") , ind.title_province_territory_fr) }}
+
+            {{ field_tr(tm("table_title_province_territory") , ind.table_title_province_territory) }}
+            {{ field_tr(tm("table_title_province_territory_french") , ind.table_title_province_territory_fr) }}
+
+            {{ field_tr(tm("pt_dynamic_text") , ind.pt_dynamic_text) }}
+            {{ field_tr(tm("pt_dynamic_text_french") , ind.pt_dynamic_text_fr) }}
+
+            {{ header_tr(tm("living_arrangement_metadata") ) }}
+            {{ field_tr(tm("title_living_arrangement") , ind.title_living_arrangement) }}
+            {{ field_tr(tm("title_living_arrangement_french") , ind.title_living_arrangement_fr) }}
+
+            {{ field_tr(tm("table_title_living_arrangement") , ind.table_title_living_arrangement) }}
+            {{ field_tr(tm("table_title_living_arrangement_french") , ind.table_title_living_arrangement_fr) }}
+
+            {{ header_tr(tm("education_household_metadata") ) }}
+            {{ field_tr(tm("title_education_household") , ind.title_education_household) }}
+            {{ field_tr(tm("title_education_household_french") , ind.title_education_household_fr) }}
+
+            {{ field_tr(tm("table_title_education_household") , ind.table_title_education_household) }}
+            {{ field_tr(tm("table_title_education_household_french") , ind.table_title_education_household_fr) }}
+
+            {{ header_tr(tm("income_quintiles_metadata") ) }}
+            {{ field_tr(tm("title_income_quintiles") , ind.title_income_quintiles) }}
+            {{ field_tr(tm("title_income_quintiles_french") , ind.title_income_quintiles_fr) }}
+
+            {{ field_tr(tm("table_title_income_quintiles") , ind.table_title_income_quintiles) }}
+            {{ field_tr(tm("table_title_income_quintiles_french") , ind.table_title_income_quintiles_fr) }}
+
+            {{ header_tr(tm("trend_analysis_metadata") ) }}
+            {{ field_tr(tm("title_trend") , ind.title_trend) }}
+            {{ field_tr(tm("title_trend_french") , ind.title_trend_fr) }}
+
+            {{ field_tr(tm("table_title_trend") , ind.table_title_trend) }}
+            {{ field_tr(tm("table_title_trend_french") , ind.table_title_trend_fr) }}
+
+            {{ field_tr(tm("visual_description_trend") , ind.visual_description_trend) }}
+            {{ field_tr(tm("visual_description_trend_french") , ind.visual_description_trend_fr) }}
+
+            {{ field_tr(tm("x_axis_trend") , ind.x_axis_trend) }}
+            {{ field_tr(tm("x_axis_trend_french") , ind.x_axis_trend_fr) }}
+
+            {{ field_tr(tm("y_axis_trend") , ind.y_axis_trend) }}
+            {{ field_tr(tm("y_axis_trend_french") , ind.y_axis_trend_fr) }}
+
+            {{ field_tr(tm("trend_footnotes") , ind.trend_footnotes) }}
+            {{ field_tr(tm("trend_footnotes_french") , ind.trend_footnotes_fr) }}
+
+            {{ header_tr(tm("benchmarking_metadata") ) }}
+            {{ field_tr(tm("title_benchmark") , ind.title_benchmark) }}
+            {{ field_tr(tm("title_benchmark_french") , ind.title_benchmark_fr) }}
+
+            {{ field_tr(tm("table_title_benchmark") , ind.table_title_benchmark) }}
+            {{ field_tr(tm("table_title_benchmark_french") , ind.table_title_benchmark_fr) }}
+
+            {{ field_tr(tm("x_axis_benchmark") , ind.x_axis_benchmark) }}
+            {{ field_tr(tm("x_axis_benchmark_french") , ind.x_axis_benchmark_fr) }}
+
+            {{ field_tr(tm("benchmarking_dynamic_text") , ind.benchmarking_dynamic_text) }}
+            {{ field_tr(tm("benchmarking_dynamic_text_french") , ind.benchmarking_dynamic_text_fr) }}
+
+            {{ field_tr(tm("benchmarking_footnotes") , ind.benchmarking_footnotes) }}
+            {{ field_tr(tm("benchmarking_footnotes_french") , ind.benchmarking_footnotes_fr) }}
+
+            {{ field_tr(tm("benchmarking_sources_english") , ind.benchmarking_sources_english) }}
+            {{ field_tr(tm("benchmarking_sources_french") , ind.benchmarking_sources_fr) }}
+
 
           </tbody>
         </table>
@@ -143,14 +233,14 @@
           <tbody>
             <tr>
               <td>{{ tm("quintile_values") }}</td>
-              <td>{{ metadata["indicator"][0].g1 }}</td>
-              <td>{{ metadata["indicator"][0].g2_lower }}</td>
-              <td>{{ metadata["indicator"][0].g2_upper }}</td>
-              <td>{{ metadata["indicator"][0].g3_lower }}</td>
-              <td>{{ metadata["indicator"][0].g3_upper }}</td>
-              <td>{{ metadata["indicator"][0].g4_lower }}</td>
-              <td>{{ metadata["indicator"][0].g4_upper }}</td>
-              <td>{{ metadata["indicator"][0].g5 }}</td>
+              <td>{{ ind.g1 }}</td>
+              <td>{{ ind.g2_lower }}</td>
+              <td>{{ ind.g2_upper }}</td>
+              <td>{{ ind.g3_lower }}</td>
+              <td>{{ ind.g3_upper }}</td>
+              <td>{{ ind.g4_lower }}</td>
+              <td>{{ ind.g4_upper }}</td>
+              <td>{{ ind.g5 }}</td>
             </tr>
           </tbody>
         </table>

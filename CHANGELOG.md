@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.5](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.4...v1.2.5) (2024-10-07)
+
+
+### Bug Fixes
+
+* approved data in infobase export ([#384](https://github.com/PHACDataHub/cpho-phase2/issues/384)) ([1206432](https://github.com/PHACDataHub/cpho-phase2/commit/12064328871e61bec6d65ccda97f432a638088b1))
+* include methodology diff in infobase exort ([#388](https://github.com/PHACDataHub/cpho-phase2/issues/388)) ([9640054](https://github.com/PHACDataHub/cpho-phase2/commit/96400540f6843ce08720436959ab29d3873efbaa))
+
 ## [1.2.4](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.3...v1.2.4) (2024-08-21)
 
 

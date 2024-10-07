@@ -204,6 +204,10 @@ benchmarking_columns = [
     ModelColumn(BenchmarkingHistory, "year"),
     ChoiceColumn(BenchmarkingHistory, "comparison_to_oecd_avg"),
     ChoiceColumn(BenchmarkingHistory, "labels"),
+    CustomColumn(
+        "Methodology differences",
+        lambda x: "True" if x.methodology_differences else "False",
+    ),
 ]
 
 trend_columns = [
@@ -367,7 +371,7 @@ class BenchmarkingSheetWriter(ModelToSheetWriter):
 
 class TrendSheetWriter(ModelToSheetWriter):
     columns = trend_columns
-    sheet_name = "trend"
+    sheet_name = "trend analysis"
 
     def get_queryset(self):
         data = ExportHelpers.get_submitted_trend_analysis()
@@ -409,9 +413,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename=hopic_infobase_export.xlsx"
+        response["Content-Disposition"] = (
+            f"attachment; filename=hopic_infobase_export.xlsx"
+        )
         self.workbook.save(response)
 
         return response

@@ -171,6 +171,7 @@ else:
 # Application definition
 INSTALLED_APPS = configure_apps(
     [
+        "corsheaders",
         "cpho.apps.CphoConfig",
         "django.contrib.admin",
         "django.contrib.auth",
@@ -197,6 +198,7 @@ INSTALLED_APPS = configure_apps(
 
 MIDDLEWARE = configure_middleware(
     [
+        "corsheaders.middleware.CorsMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "whitenoise.middleware.WhiteNoiseMiddleware",
         *(
@@ -348,3 +350,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CORS
+# for infobase and potentially anyone else who may want to use public data,
+CORS_ALLOW_ALL_ORIGINS = True

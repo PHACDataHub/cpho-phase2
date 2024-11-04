@@ -1,3 +1,4 @@
+# https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24.1/releases/cnpg-1.24.1.yaml
 apiVersion: v1
 kind: Namespace
 metadata:

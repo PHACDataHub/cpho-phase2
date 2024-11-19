@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-system
@@ -11,7 +11,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -144,7 +144,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -296,7 +296,106 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
+    controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    cnrm.cloud.google.com/operator-system: "true"
+  name: controllerreconcilers.customize.core.cnrm.cloud.google.com
+spec:
+  group: customize.core.cnrm.cloud.google.com
+  names:
+    kind: ControllerReconciler
+    listKind: ControllerReconcilerList
+    plural: controllerreconcilers
+    singular: controllerreconciler
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          ControllerReconciler is the Schema for reconciliation related customization for
+          config connector controllers in cluster mode.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ControllerReconcilerSpec is the specification of ControllerReconciler.
+            properties:
+              pprof:
+                description: Configures the debug endpoint on the service.
+                properties:
+                  port:
+                    description: The port that the pprof server binds to if enabled
+                    type: integer
+                  support:
+                    description: Control if pprof should be turned on and which types
+                      should be enabled.
+                    enum:
+                    - none
+                    - all
+                    type: string
+                type: object
+              rateLimit:
+                description: |-
+                  RateLimit configures the token bucket rate limit to the kubernetes client used
+                  by the manager container of the config connector controller manager in cluster mode.
+                  Please note this rate limit is shared among all the Config Connector resources' requests.
+                  If not specified, the default will be Token Bucket with qps 20, burst 30.
+                properties:
+                  burst:
+                    description: The burst of the token bucket rate limit for all
+                      the requests to the kubernetes client.
+                    type: integer
+                  qps:
+                    description: The QPS of the token bucket rate limit for all the
+                      requests to the kubernetes client.
+                    type: integer
+                type: object
+            type: object
+          status:
+            description: ControllerReconcilerStatus defines the observed state of
+              ControllerReconciler.
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              healthy:
+                type: boolean
+              phase:
+                type: string
+            required:
+            - healthy
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -565,7 +664,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -778,7 +877,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -797,7 +896,7 @@ spec:
       openAPIV3Schema:
         description: |-
           NamespacedControllerReconciler is the Schema for reconciliation related customization for
-          namespaced config connector controllers.
+          config connector controllers in namespaced mode.
         properties:
           apiVersion:
             description: |-
@@ -819,6 +918,20 @@ spec:
           spec:
             description: NamespacedControllerReconciler is the specification of NamespacedControllerReconciler.
             properties:
+              pprof:
+                description: Configures the debug endpoint on the service.
+                properties:
+                  port:
+                    description: The port that the pprof server binds to if enabled
+                    type: integer
+                  support:
+                    description: Control if pprof should be turned on and which types
+                      should be enabled.
+                    enum:
+                    - none
+                    - all
+                    type: string
+                type: object
               rateLimit:
                 description: |-
                   RateLimit configures the token bucket rate limit to the kubernetes client used
@@ -863,7 +976,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -1110,7 +1223,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -1325,7 +1438,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator
@@ -1335,8 +1448,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
-    cnrm.cloud.google.com/version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
+    cnrm.cloud.google.com/version: 1.125.0
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -1681,6 +1794,14 @@ rules:
   - list
   - watch
 - apiGroups:
+  - discoveryengine.cnrm.cloud.google.com
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - dlp.cnrm.cloud.google.com
   resources:
   - '*'
@@ -1945,6 +2066,14 @@ rules:
   - list
   - watch
 - apiGroups:
+  - privilegedaccessmanager.cnrm.cloud.google.com
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - pubsub.cnrm.cloud.google.com
   resources:
   - '*'
@@ -1994,6 +2123,14 @@ rules:
   - watch
 - apiGroups:
   - secretmanager.cnrm.cloud.google.com
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - securesourcemanager.cnrm.cloud.google.com
   resources:
   - '*'
   verbs:
@@ -2125,7 +2262,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/operator-system: "true"
@@ -2243,6 +2380,7 @@ rules:
   - validatingwebhookconfigurationcustomizations
   - mutatingwebhookconfigurationcustomizations
   - namespacedcontrollerreconcilers
+  - controllerreconcilers
   verbs:
   - create
   - delete
@@ -2259,6 +2397,7 @@ rules:
   - validatingwebhookconfigurationcustomizations/status
   - mutatingwebhookconfigurationcustomizations/status
   - namespacedcontrollerreconcilers/status
+  - controllerreconcilers/status
   verbs:
   - get
   - patch
@@ -2319,7 +2458,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-cnrm-viewer-role-binding
@@ -2336,7 +2475,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-rolebinding
@@ -2353,7 +2492,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   labels:
     cnrm.cloud.google.com/operator-system: "true"
   name: configconnector-operator-service
@@ -2370,7 +2509,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   annotations:
-    cnrm.cloud.google.com/operator-version: 1.121.0
+    cnrm.cloud.google.com/operator-version: 1.125.0
   labels:
     cnrm.cloud.google.com/component: configconnector-operator
     cnrm.cloud.google.com/operator-system: "true"
@@ -2386,7 +2525,7 @@ spec:
   template:
     metadata:
       annotations:
-        cnrm.cloud.google.com/operator-version: 1.121.0
+        cnrm.cloud.google.com/operator-version: 1.125.0
       labels:
         cnrm.cloud.google.com/component: configconnector-operator
         cnrm.cloud.google.com/operator-system: "true"
@@ -2396,7 +2535,7 @@ spec:
         - --local-repo=/configconnector-operator/autopilot-channels
         command:
         - /configconnector-operator/manager
-        image: gcr.io/gke-release/cnrm/operator:cac1d63
+        image: gcr.io/gke-release/cnrm/operator:fdff987
         imagePullPolicy: Always
         name: manager
         resources:

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.5...v1.2.6) (2024-12-09)
+
+
+### Bug Fixes
+
+* upgrade autocomplete ([#399](https://github.com/PHACDataHub/cpho-phase2/issues/399)) ([3ba507d](https://github.com/PHACDataHub/cpho-phase2/commit/3ba507d841250d5d75162c1fe2aed8edfdd2f47c))
+
 ## [1.2.5](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.4...v1.2.5) (2024-10-07)
 
 

@@ -354,3 +354,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS
 # for infobase and potentially anyone else who may want to use public data,
 CORS_ALLOW_ALL_ORIGINS = True
+
+AUTOCOMPLETE_BLOCK_UNAUTHENTICATED = True

@@ -286,6 +286,9 @@ else:
             "HOST": config("DB_HOST"),
             "PORT": config("DB_PORT"),
             "TEST": {"NAME": config("TEST_DB_NAME", default="cpho_test_db")},
+            "OPTIONS": {
+                "pool": True,
+            },
         }
     }
 

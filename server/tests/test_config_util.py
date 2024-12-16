@@ -47,7 +47,7 @@ def test_is_running_tests_returns_false_outside_test_execution_environment():
             manage_py_path,
             "shell",
             "--command",
-            "from server.config_util import is_running_tests; assert not is_running_tests()",
+            "from server.config_util import is_running_tests; print(f'is_running_tests: {is_running_tests()}'); assert not is_running_tests()",
         ],
         check=True,
         stdout=sys.stdout,

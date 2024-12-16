@@ -28,9 +28,9 @@ django-ckeditor==6.7.1
 PyYAML==6.0.1 # necessary to apply fixtures in prod
 
 # opentelemetry
-opentelemetry-sdk==1.19.0
-opentelemetry-instrumentation-django==0.40b0
-opentelemetry-instrumentation-psycopg2==0.40b0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-django==0.50b0
+opentelemetry-instrumentation-psycopg==0.50b0
 opentelemetry-resourcedetector-gcp==1.5.0a0
 opentelemetry-propagator-gcp==1.5.0
 opentelemetry-exporter-gcp-trace==1.5.0

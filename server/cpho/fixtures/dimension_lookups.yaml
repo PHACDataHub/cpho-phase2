@@ -104,6 +104,14 @@
     name_fr: Female
     value: f
     order: 1.0
+- model: cpho.dimensionvalue
+  pk: 85
+  fields:
+    dimension_type: 1
+    name_en: Both sexes
+    name_fr: Les deux sexes
+    value: both
+    order: 2.0
 
 # dimension value for Province
 - model: cpho.dimensionvalue
@@ -210,6 +218,14 @@
     name_fr: Nunavut
     value: nu
     order: 12.0
+- model: cpho.dimensionvalue
+  pk: 86
+  fields:
+    dimension_type: 2
+    name_en: Canada
+    name_fr: Canada
+    value: canada
+    order: 13.0
   
 # dimension value for Region
 - model: cpho.dimensionvalue
@@ -296,6 +312,14 @@
     name_fr: "Femmes+"
     value: women_plus
     order: 6.0
+- model: cpho.dimensionvalue
+  pk: 87
+  fields:
+    dimension_type: 6
+    name_en: "All genders"
+    name_fr: "Tous les genres"
+    value: all_genders
+    order: 7.0
 
 # dimension value for Living Arrangement
 - model: cpho.dimensionvalue
@@ -751,3 +775,9 @@
     name_fr: "10"
     value: "10"
     order: 5.0
+
+# note:
+# ids 85,86,87 used up by new dimension values under sex/gender/prov
+
+
+

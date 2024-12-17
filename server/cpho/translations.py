@@ -1411,4 +1411,24 @@ translation_entries = {
         "en": "Show French Fields",
         "fr": "Afficher les champs en français",
     },
+    "sdg_goal": {
+        "en": "SDG Goal",
+        "fr": "Objectif de développement durable",
+    },
+    "sdg_goal_french": {
+        "en": "SDG Goal (French)",
+        "fr": "Objectif de développement durable (français)",
+    },
+    "year_of_dashboard_update": {
+        "en": "Year of Dashboard Update",
+        "fr": "Année de mise à jour du tableau de bord",
+    },
+    "y_axis_trend_min": {
+        "en": "Y axis trend min",
+        "fr": "Axe y tendance min",
+    },
+    "y_axis_trend_max": {
+        "en": "Y axis trend max",
+        "fr": "Axe y tendance max",
+    },
 }

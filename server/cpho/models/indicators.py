@@ -184,6 +184,11 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     table_title_overall = fields.TextField(null=True, blank=True)
     table_title_overall_fr = fields.TextField(null=True, blank=True)
 
+    sdg_goal = fields.RichTextField(config_name="notes", null=True, blank=True)
+    sdg_goal_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
     impact_text = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
@@ -274,6 +279,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     y_axis_trend = fields.TextField(null=True, blank=True)
     y_axis_trend_fr = fields.TextField(null=True, blank=True)
+
+    y_axis_trend_min = fields.FloatField(null=True, blank=True)
+    y_axis_trend_max = fields.FloatField(null=True, blank=True)
 
     trend_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True

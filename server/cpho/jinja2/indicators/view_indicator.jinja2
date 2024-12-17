@@ -102,7 +102,7 @@
                 <table class="table table-hover">
                   <thead>
                     <tr class="text-center">
-                      <th>{{ tm("period") }}</th>
+                      <th>{{ tm("year_of_dashboard_update") }}</th>
                       <th>{{ tm("data_count") }}</th>
                       <th>{{ tm("hso_submission") }}</th>
                       <th>{{ tm("program_submission") }}</th>
@@ -110,7 +110,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for period,data_count in data_counts_by_period.items() %}
+                    {% for period in sorted_all_shown_periods %}
+                      {% set data_count = data_counts_by_period[period] %}
                       {% if data_count or period.is_current %}
                         {% set submission_statuses = submission_statuses_by_period[period] %}
                         {% set metadata_submission = false %}

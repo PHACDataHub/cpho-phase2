@@ -70,6 +70,22 @@
     code: income_quintiles
     is_literal: false
     order: 7.0
+- model: cpho.dimensiontype
+  pk: 10
+  fields:
+    name_en: Hospital setting
+    name_fr: Milieu hospitalier
+    code: hospital_setting
+    is_literal: false
+    order: 8.0
+- model: cpho.dimensiontype
+  pk: 11
+  fields:
+    name_en: Grade
+    name_fr: Niveau scolaire
+    code: school_grade
+    is_literal: false
+    order: 9.0
 
 # dimension value for Sex
 - model: cpho.dimensionvalue
@@ -88,6 +104,14 @@
     name_fr: Female
     value: f
     order: 1.0
+- model: cpho.dimensionvalue
+  pk: 85
+  fields:
+    dimension_type: 1
+    name_en: Both sexes
+    name_fr: Les deux sexes
+    value: both
+    order: 2.0
 
 # dimension value for Province
 - model: cpho.dimensionvalue
@@ -194,6 +218,14 @@
     name_fr: Nunavut
     value: nu
     order: 12.0
+- model: cpho.dimensionvalue
+  pk: 86
+  fields:
+    dimension_type: 2
+    name_en: Canada
+    name_fr: Canada
+    value: canada
+    order: 13.0
   
 # dimension value for Region
 - model: cpho.dimensionvalue
@@ -280,6 +312,14 @@
     name_fr: "Femmes+"
     value: women_plus
     order: 6.0
+- model: cpho.dimensionvalue
+  pk: 87
+  fields:
+    dimension_type: 6
+    name_en: "All genders"
+    name_fr: "Tous les genres"
+    value: all_genders
+    order: 7.0
 
 # dimension value for Living Arrangement
 - model: cpho.dimensionvalue
@@ -671,5 +711,73 @@
     name_fr: "Les deux sexes : Manquant"
     value: both_quintile_missing
     order: 18.0
+- model: cpho.dimensionvalue
+  pk: 77
+  fields:
+    dimension_type: 10
+    name_en: "Pediatric hospitals"
+    name_fr: "Hôpitaux pédiatriques"
+    value: pediatric
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 78
+  fields:
+    dimension_type: 10
+    name_en: "Mixed hospitals"
+    name_fr: "Hôpitaux mixtes"
+    value: mixed
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 79
+  fields:
+    dimension_type: 10
+    name_en: "Adult hospitals"
+    name_fr: "Hôpitaux adultes"
+    value: adult
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 80
+  fields:
+    dimension_type: 11
+    name_en: "6"
+    name_fr: "6"
+    value: "6"
+    order: 1.0
+- model: cpho.dimensionvalue
+  pk: 81
+  fields:
+    dimension_type: 11
+    name_en: "7"
+    name_fr: "7"
+    value: "7"
+    order: 2.0
+- model: cpho.dimensionvalue
+  pk: 82
+  fields:
+    dimension_type: 11
+    name_en: "8"
+    name_fr: "8"
+    value: "8"
+    order: 3.0
+- model: cpho.dimensionvalue
+  pk: 83
+  fields:
+    dimension_type: 11
+    name_en: "9"
+    name_fr: "9"
+    value: "9"
+    order: 4.0
+- model: cpho.dimensionvalue
+  pk: 84
+  fields:
+    dimension_type: 11
+    name_en: "10"
+    name_fr: "10"
+    value: "10"
+    order: 5.0
 
-  
+# note:
+# ids 85,86,87 used up by new dimension values under sex/gender/prov
+
+
+

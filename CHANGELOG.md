@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.5...v1.3.0) (2024-12-19)
+
+
+### Features
+
+* New dimension types and values ([#403](https://github.com/PHACDataHub/cpho-phase2/issues/403)) ([1ac993b](https://github.com/PHACDataHub/cpho-phase2/commit/1ac993b3522a1f370edd9e4c08b1fc2b8006779d))
+
+
+### Bug Fixes
+
+* Sdg goal; trend y axis min max; period sorting ([#404](https://github.com/PHACDataHub/cpho-phase2/issues/404)) ([35bac20](https://github.com/PHACDataHub/cpho-phase2/commit/35bac203293400ee4d1d66a74394afc09cff48a5))
+* upgrade autocomplete ([#399](https://github.com/PHACDataHub/cpho-phase2/issues/399)) ([3ba507d](https://github.com/PHACDataHub/cpho-phase2/commit/3ba507d841250d5d75162c1fe2aed8edfdd2f47c))
+
 ## [1.2.5](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.4...v1.2.5) (2024-10-07)
 
 

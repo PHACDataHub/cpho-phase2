@@ -375,12 +375,17 @@ class ManageIndicatorData(
 
     @cached_property
     def possible_values_by_dimension_type(self):
-        return {
+        values_by_dim = {
             dt: dt.possible_values.all()
             for dt in DimensionType.objects.all()
             .prefetch_related("possible_values")
             .filter(is_literal=False)
         }
+
+        for dt, values in values_by_dim.items():
+            values_by_dim[dt] = sorted(values, key=lambda x: x.order)
+
+        return values_by_dim
 
     @cached_property
     def has_age_group_forms(self):

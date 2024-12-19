@@ -14,14 +14,13 @@ from django.views.generic import (
     View,
 )
 
-from autocomplete import HTMXAutoComplete
-from autocomplete import widgets as ac_widgets
+from autocomplete import AutocompleteWidget
 from phac_aspc.rules import test_rule
 
 from server.form_util import StandardFormMixin
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
-from cpho.forms import MultiIndicatorAutocomplete, MultiUserAutocomplete
+from cpho.forms import IndicatorAutocomplete, UserAutocomplete
 from cpho.models import (
     DimensionType,
     Indicator,
@@ -213,10 +212,10 @@ class IndicatorDirectoryForm(forms.ModelForm, StandardFormMixin):
     indicators = forms.ModelMultipleChoiceField(
         queryset=Indicator.objects.all(),
         required=False,
-        widget=ac_widgets.Autocomplete(
-            use_ac=MultiIndicatorAutocomplete,
-            attrs={
-                "id": "indicators__textinput",
+        widget=AutocompleteWidget(
+            ac_class=IndicatorAutocomplete,
+            options={
+                "multiselect": True,
             },
         ),
         label=tdt("indicators"),
@@ -225,10 +224,10 @@ class IndicatorDirectoryForm(forms.ModelForm, StandardFormMixin):
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
         required=False,
-        widget=ac_widgets.Autocomplete(
-            use_ac=MultiUserAutocomplete,
-            attrs={
-                "id": "users__textinput",
+        widget=AutocompleteWidget(
+            ac_class=UserAutocomplete,
+            options={
+                "multiselect": True,
             },
         ),
         label=tdt("users"),

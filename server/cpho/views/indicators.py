@@ -129,6 +129,9 @@ class IndicatorForm(ModelForm):
         "table_title_benchmark",
         "x_axis_benchmark",
         "benchmarking_dynamic_text",
+        "sdg_goal",
+        "y_axis_trend_min",
+        "y_axis_trend_max",
     ]
     name = charField(required=True, label=tm("name"))
     name_fr = charField(french=True, label=tm("name_french"))
@@ -197,6 +200,9 @@ class IndicatorForm(ModelForm):
     table_title_overall_fr = charField(
         french=True, label=tm("table_title_overall_french")
     )
+
+    sdg_goal = ckEditorField(label=tm("sdg_goal"))
+    sdg_goal_fr = ckEditorField(french=True, label=tm("sdg_goal_french"))
 
     general_footnotes = ckEditorField(label=tm("general_footnotes"))
     general_footnotes_fr = ckEditorField(
@@ -316,6 +322,15 @@ class IndicatorForm(ModelForm):
 
     y_axis_trend = charField(label=tm("y_axis_trend"))
     y_axis_trend_fr = charField(french=True, label=tm("y_axis_trend_french"))
+
+    y_axis_trend_min = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    y_axis_trend_max = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
 
     trend_footnotes = ckEditorField(label=tm("trend_footnotes"))
     trend_footnotes_fr = ckEditorField(
@@ -445,6 +460,11 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
             p: len([datum for datum in all_data if datum.period_id == p.id])
             for p in all_shown_periods
         }
+
+        sorted_all_shown_periods = sorted(
+            all_shown_periods, key=lambda p: ((-p.year), (p.quarter or -1))
+        )
+
         submission_statuses_by_period = {
             p: get_submission_statuses(indicator, p) for p in all_shown_periods
         }
@@ -463,6 +483,7 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
                 indicator
             ),
             "alternate_periods": alternate_periods,
+            "sorted_all_shown_periods": sorted_all_shown_periods,
         }
 
 

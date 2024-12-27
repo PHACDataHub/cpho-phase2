@@ -193,6 +193,7 @@ INSTALLED_APPS = configure_apps(
         ),
         "rules.apps.AutodiscoverRulesConfig",
         "ckeditor",
+        "django_htmx",
     ]
 )
 
@@ -218,6 +219,7 @@ MIDDLEWARE = configure_middleware(
         "data_fetcher.middleware.GlobalRequestMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "server.middleware.MustBeLoggedInMiddleware",
+        "django_htmx.middleware.HtmxMiddleware",
     ]
 )
 

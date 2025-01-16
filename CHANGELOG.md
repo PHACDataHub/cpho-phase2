@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.0...v1.3.1) (2025-01-16)
+
+
+### Bug Fixes
+
+* add htmx debugging ([#407](https://github.com/PHACDataHub/cpho-phase2/issues/407)) ([57fd7cc](https://github.com/PHACDataHub/cpho-phase2/commit/57fd7cc38aa55ba3d24e3d85c5a6107d64041a2b))
+* grade and hospital settings metadata ([#410](https://github.com/PHACDataHub/cpho-phase2/issues/410)) ([557fba3](https://github.com/PHACDataHub/cpho-phase2/commit/557fba31e8aee1cc1b3bb74d9b24c21f0eccb068))
+
 ## [1.3.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.5...v1.3.0) (2024-12-19)
 
 

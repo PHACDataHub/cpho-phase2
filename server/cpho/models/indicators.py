@@ -224,6 +224,20 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     table_title_sex = fields.TextField(null=True, blank=True)
     table_title_sex_fr = fields.TextField(null=True, blank=True)
 
+    # GRADE
+    title_grade = fields.TextField(null=True, blank=True)
+    title_grade_fr = fields.TextField(null=True, blank=True)
+
+    table_title_grade = fields.TextField(null=True, blank=True)
+    table_title_grade_fr = fields.TextField(null=True, blank=True)
+
+    # HOSPITAL SETTING
+    title_hospital_setting = fields.TextField(null=True, blank=True)
+    title_hospital_setting_fr = fields.TextField(null=True, blank=True)
+
+    table_title_hospital_setting = fields.TextField(null=True, blank=True)
+    table_title_hospital_setting_fr = fields.TextField(null=True, blank=True)
+
     # AGE
     title_age = fields.TextField(null=True, blank=True)
     title_age_fr = fields.TextField(null=True, blank=True)

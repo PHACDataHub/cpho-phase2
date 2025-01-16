@@ -58,6 +58,14 @@ indicator_columns = [
     ModelColumn(IndicatorHistory, "title_sex_fr"),
     ModelColumn(IndicatorHistory, "table_title_sex"),
     ModelColumn(IndicatorHistory, "table_title_sex_fr"),
+    ModelColumn(IndicatorHistory, "title_grade"),
+    ModelColumn(IndicatorHistory, "title_grade_fr"),
+    ModelColumn(IndicatorHistory, "table_title_grade"),
+    ModelColumn(IndicatorHistory, "table_title_grade_fr"),
+    ModelColumn(IndicatorHistory, "title_hospital_setting"),
+    ModelColumn(IndicatorHistory, "title_hospital_setting_fr"),
+    ModelColumn(IndicatorHistory, "table_title_hospital_setting"),
+    ModelColumn(IndicatorHistory, "table_title_hospital_setting_fr"),
     ModelColumn(IndicatorHistory, "title_age"),
     ModelColumn(IndicatorHistory, "title_age_fr"),
     ModelColumn(IndicatorHistory, "table_title_age"),
@@ -417,9 +425,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename=hopic_infobase_export.xlsx"
+        response["Content-Disposition"] = (
+            f"attachment; filename=hopic_infobase_export.xlsx"
+        )
         self.workbook.save(response)
 
         return response

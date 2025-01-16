@@ -1431,4 +1431,44 @@ translation_entries = {
         "en": "Y axis trend max",
         "fr": "Axe y tendance max",
     },
+    "title_grade": {
+        "en": "Title grade",
+        "fr": "Titre grade",
+    },
+    "title_grade_french": {
+        "en": "Title grade (French)",
+        "fr": "Titre grade (français)",
+    },
+    "table_title_grade": {
+        "en": "Table title grade",
+        "fr": "Titre du tableau grade",
+    },
+    "table_title_grade_french": {
+        "en": "Table title grade (French)",
+        "fr": "Titre du tableau grade (français)",
+    },
+    "title_hospital_setting": {
+        "en": "Title hospital setting",
+        "fr": "Titre cadre hospitalier",
+    },
+    "title_hospital_setting_french": {
+        "en": "Title hospital setting (French)",
+        "fr": "Titre cadre hospitalier (français)",
+    },
+    "table_title_hospital_setting": {
+        "en": "Table title hospital setting",
+        "fr": "Titre du tableau cadre hospitalier",
+    },
+    "table_title_hospital_setting_french": {
+        "en": "Table title hospital setting (French)",
+        "fr": "Titre du tableau cadre hospitalier (français)",
+    },
+    "grade_metadata": {
+        "en": "Grade Metadata",
+        "fr": "Métadonnées de grade",
+    },
+    "hospital_setting_metadata": {
+        "en": "Hospital Setting Metadata",
+        "fr": "Métadonnées de cadre hospitalier",
+    },
 }

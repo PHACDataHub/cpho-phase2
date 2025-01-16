@@ -107,6 +107,29 @@
   </div>
 
   <div class="card my-4 hideable-card">
+    <h5 class="card-header">{{ tm("grade_metadata") }}</h5>
+    <div class="card-body">
+      {{ form_field(form.title_grade) }}
+      {{ form_field(form.title_grade_fr) }}
+
+      {{ form_field(form.table_title_grade) }}
+      {{ form_field(form.table_title_grade_fr) }}
+    </div>
+  </div>
+
+  <div class="card my-4 hideable-card">
+    <h5 class="card-header">{{ tm("hospital_setting_metadata") }}</h5>
+    <div class="card-body">
+      {{ form_field(form.title_hospital_setting) }}
+      {{ form_field(form.title_hospital_setting_fr) }}
+
+      {{ form_field(form.table_title_hospital_setting) }}
+      {{ form_field(form.table_title_hospital_setting_fr) }}
+    </div>
+  </div>
+
+  
+  <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tm("age_metadata") }}</h5>
     <div class="card-body">
       {{ form_field(form.title_age) }}

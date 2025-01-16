@@ -111,6 +111,10 @@ class IndicatorForm(ModelForm):
         "table_title_sex",
         "title_age",
         "table_title_age",
+        "title_grade",
+        "table_title_grade",
+        "title_hospital_setting",
+        "table_title_hospital_setting",
         "title_province_territory",
         "table_title_province_territory",
         "pt_dynamic_text",
@@ -233,6 +237,28 @@ class IndicatorForm(ModelForm):
     table_title_sex = charField(label=tm("table_title_sex"))
     table_title_sex_fr = charField(
         french=True, label=tm("table_title_sex_french")
+    )
+
+    # GRADE
+    title_grade = charField(label=tm("title_grade"))
+    title_grade_fr = charField(french=True, label=tm("title_grade_french"))
+
+    table_title_grade = charField(label=tm("table_title_grade"))
+    table_title_grade_fr = charField(
+        french=True, label=tm("table_title_grade_french")
+    )
+
+    # HOSPITAL SETTING
+    title_hospital_setting = charField(label=tm("title_hospital_setting"))
+    title_hospital_setting_fr = charField(
+        french=True, label=tm("title_hospital_setting_french")
+    )
+
+    table_title_hospital_setting = charField(
+        label=tm("table_title_hospital_setting")
+    )
+    table_title_hospital_setting_fr = charField(
+        french=True, label=tm("table_title_hospital_setting_french")
     )
 
     # AGE

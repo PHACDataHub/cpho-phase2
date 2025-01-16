@@ -425,9 +425,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response["Content-Disposition"] = (
-            f"attachment; filename=hopic_infobase_export.xlsx"
-        )
+        response[
+            "Content-Disposition"
+        ] = f"attachment; filename=hopic_infobase_export.xlsx"
         self.workbook.save(response)
 
         return response

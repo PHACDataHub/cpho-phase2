@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.1...v1.3.2) (2025-01-20)
+
+
+### Bug Fixes
+
+* non-admin indicator form clearing admin fields ([#412](https://github.com/PHACDataHub/cpho-phase2/issues/412)) ([6d6b632](https://github.com/PHACDataHub/cpho-phase2/commit/6d6b63210f9f06e769c87a09652d30af020187b8))
+
 ## [1.3.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.0...v1.3.1) (2025-01-16)
 
 

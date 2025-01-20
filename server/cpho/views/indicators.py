@@ -55,12 +55,16 @@ class IndicatorForm(ModelForm):
             user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        if user and not test_rule("is_admin_or_hso", user):
-            for field in self.non_hso_readonly_fields:
-                self.fields[field].disabled = True
-
         fr_fields = [field for field in self.fields if field.endswith("_fr")]
         self.hso_only_field_names = self.hso_only_field_names + fr_fields
+
+        if user and not test_rule("is_admin_or_hso", user):
+            for field in (
+                self.hso_only_field_names + self.non_hso_readonly_fields
+            ):
+                # for field in self.non_hso_readonly_fields:
+
+                self.fields[field].disabled = True
 
     def charField(required=False, french=False, label=None):
         class_string = "form-control"

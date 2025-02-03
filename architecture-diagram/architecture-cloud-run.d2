@@ -13,11 +13,6 @@ github: github {
   shape: image
 }
 
-slack: Slack alerts\nchannel {
-  icon: ./icons/general/Slack_icon_2019.svg
-  shape: image
-}
-
 gcp: Google Cloud {
   style: {
     stroke: "#000000"
@@ -192,10 +187,7 @@ gcp: Google Cloud {
 devs <-> github
 devs -> gcp.regional.project_vpc.cloud_sql: TBD: DB data\nmaintenance access
 devs -> gcp.regional.secret_manager: Write access
-gcp.regional.cloud_run_vpc.cloud_run -> slack: Error log\nalerts
 gcp.uptime_checks <-> gcp.load_balancer.forwarding_rule: App health check\nrequest
-gcp.uptime_checks -> slack: Outage\nalerts
-slack -> devs
 
 # CI/CD path
 github -> gcp.regional.ci_cd.cloud_build: Cloud Build trigger\non "main" branch

@@ -310,5 +310,4 @@ Checkout the [official documentation](https://cloud.google.com/config-connector/
 
 - The current GKE autopilot cluster is binded to a [fleet](https://cloud.google.com/anthos/fleet-management/docs) in the `php-fleet-monitoring` project. As a result, some enterprise features might be visible only in the `php-fleet-monitoring` project's space. This is to have a single pane of glass for kubernetes clusters.
 - Some cloud resources, specifically the cloud storage bucket and KMS, have a special annotation (`cnrm.cloud.google.com/deletion-policy: abandon`) set to prevent deletion of cloud resources if the cluster goes down. See https://github.com/PHACDataHub/cpho-phase2/pull/221 for further details.
-- Flux sends reconciliation alerts to the slack channel, however, [some of these alerts](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/flux-system/alerts/alerts.yaml#L37-L47) are ignored due to https://github.com/PHACDataHub/cpho-phase2/pull/208.
 - Not all infrastructure is expressed in the `./infrastructure` directory, some of it is contained in the `./k8s/Taskfile.yaml`. This is due to https://github.com/PHACDataHub/cpho-phase2/pull/193#issue-2121787136.

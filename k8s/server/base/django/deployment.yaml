@@ -38,11 +38,6 @@ spec:
             secretKeyRef:
               name: django-secret-key
               key: secret-key
-        - name: SLACK_WEBHOOK_URL
-          valueFrom:
-            secretKeyRef:
-              name: slack-webhook-url
-              key: slack-url
         - name: DB_USER
           valueFrom:
             secretKeyRef:

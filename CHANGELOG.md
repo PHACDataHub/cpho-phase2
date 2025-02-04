@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.2...v1.4.0) (2025-02-04)
+
+
+### Features
+
+* remove Slack integrations ([#414](https://github.com/PHACDataHub/cpho-phase2/issues/414)) ([6e803b6](https://github.com/PHACDataHub/cpho-phase2/commit/6e803b6460c151e154723ac343dd47bbc877c8fe))
+
 ## [1.3.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.1...v1.3.2) (2025-01-20)
 
 

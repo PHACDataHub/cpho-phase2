@@ -871,8 +871,8 @@ translation_entries = {
     },
     # value units
     "daily_dose_1k_census": {
-        "en": "Defined Daily Dose/1,000 Census",
-        "fr": "Dose quotidienne définie/1 000 recensements",
+        "en": "Defined Daily Dose/1,000 Census Inhabitants",
+        "fr": "Dose quotidienne définie/1 000 habitants recensements",
     },
     "percentage": {"en": "Percentage", "fr": "Pourcentage"},
     "percent_age_standardized": {
@@ -888,7 +888,7 @@ translation_entries = {
         "fr": "Taux pour 10 000 jours-patients",
     },
     "rate_100k_age_standardized": {
-        "en": "RATE PER 100,000 (AGE STANDARDIZED)",
+        "en": "RATE PER 100,000 (AGE-STANDARDIZED)",
         "fr": "TAUX PAR 100 000 (AJUSTÉ SELON L'ÂGE)",
     },
     "rate_100k_age_specific_crude": {

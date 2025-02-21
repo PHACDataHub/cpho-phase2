@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def update_value_units(apps, schema_editor):
     IndicatorDatum = apps.get_model("cpho", "IndicatorDatum")
     IndicatorDatumHistory = apps.get_model("cpho", "IndicatorDatumHistory")
@@ -9,115 +10,94 @@ def update_value_units(apps, schema_editor):
     unit_updates = {
         "percent_age_standardized": "percentage",
         "percentage_crude": "percentage",
-        "rate_100k_population_per_year": "percentage",
-        "other": None,
+        "rate_100k_population_per_year": "rate_100k_age_standardized",
+        "other": "",
     }
-
-    # if IndicatorDatum.objects.filter(value_unit="other").exists():
-    #     IndicatorDatum.objects.filter(value_unit="other").delete()
-    #     if IndicatorDatum.objects.filter(value_unit="other").exists():
-    #         raise ValueError("Failed: 'other' was not deleted.")
-
-    # for old_value, new_value in unit_updates.items():
-    #     IndicatorDatum.objects.filter(value_unit=old_value).update(value_unit=new_value)
-
-    #     if IndicatorDatum.objects.filter(value_unit=old_value).exists():
-    #         raise Exception(f"Failed: '{old_value}' was not updated to '{new_value}'.")
-
-    # Check if other exists in either table
-    has_other_current = IndicatorDatum.objects.filter(value_unit="other").exists()
-    has_other_history = IndicatorDatumHistory.objects.filter(value_unit="other").exists()
-
-    if has_other_current or has_other_history:
-        #no dependencies exist before deleting other
-        has_dimension_type_current = IndicatorDatum.objects.filter(value_unit="other", dimension_type__isnull=False).exists()
-        has_dimension_value_current = IndicatorDatum.objects.filter(value_unit="other", dimension_value__isnull=False).exists()
-
-        has_dimension_type_history = IndicatorDatumHistory.objects.filter(value_unit="other", dimension_type__isnull=False).exists()
-        has_dimension_value_history = IndicatorDatumHistory.objects.filter(value_unit="other", dimension_value__isnull=False).exists()
-
-        if has_dimension_type_current or has_dimension_value_current or has_dimension_type_history or has_dimension_value_history:
-            raise ValueError("Cannot delete 'other' because it has linked dimension_type or dimension_value records in current or historical data.")
-
-        # delete other from both tables if it has no dependencies
-        IndicatorDatum.objects.filter(value_unit="other").delete()
-        IndicatorDatumHistory.objects.filter(value_unit="other").delete()
-
-        # make sure deletion was successful
-        if IndicatorDatum.objects.filter(value_unit="other").exists():
-            raise ValueError("Failed: 'other' was not deleted from IndicatorDatum.")
-
-        if IndicatorDatumHistory.objects.filter(value_unit="other").exists():
-            raise ValueError("Failed: 'other' was not deleted from IndicatorDatumHistory.")
-
     for old_value, new_value in unit_updates.items():
         if new_value:
             # main table
-            IndicatorDatum.objects.filter(value_unit=old_value).update(value_unit=new_value)
+            IndicatorDatum.objects.filter(value_unit=old_value).update(
+                value_unit=new_value
+            )
             # history table
-            IndicatorDatumHistory.objects.filter(value_unit=old_value).update(value_unit=new_value)
+            IndicatorDatumHistory.objects.filter(value_unit=old_value).update(
+                value_unit=new_value
+            )
 
             if IndicatorDatum.objects.filter(value_unit=old_value).exists():
-                raise ValueError(f"Failed: '{old_value}' was not updated to '{new_value}' in IndicatorDatum.")
+                raise ValueError(
+                    f"Failed: '{old_value}' was not updated to '{new_value}' in IndicatorDatum."
+                )
 
-            if IndicatorDatumHistory.objects.filter(value_unit=old_value).exists():
-                raise ValueError(f"Failed: '{old_value}' was not updated to '{new_value}' in IndicatorDatumHistory.")
+            if IndicatorDatumHistory.objects.filter(
+                value_unit=old_value
+            ).exists():
+                raise ValueError(
+                    f"Failed: '{old_value}' was not updated to '{new_value}' in IndicatorDatumHistory."
+                )
 
 
 def benchmarking_countries_update(apps, schema_editor):
     Benchmarking = apps.get_model("cpho", "Benchmarking")
     BenchmarkingHistory = apps.get_model("cpho", "BenchmarkingHistory")
+    Country = apps.get_model("cpho", "Country")
+
+    korea = Country.objects.get(name_en="Republic of Korea")
+    england_wales = Country.objects.get(name_en="England & Wales")
+    uk_britain_ireland = Country.objects.get(
+        name_en="United Kingdom of Great Britain and Northern Ireland"
+    )
+    slovakia = Country.objects.get(name_en="Slovakia")
+    slovak_republic = Country.objects.get(name_en="Slovak Republic")
+    uk = Country.objects.get(name_en="United Kingdom")
 
     country_updates = {
-        "Republic of Korea": None,
-        "England & Wales": "United Kingdom",
-        "United Kingdom of Great Britain and Northern Ireland": "United Kingdom", 
-        "Slovakia": "Slovak Republic",
-
+        korea: None,
+        england_wales: uk,
+        uk_britain_ireland: uk,
+        slovakia: slovak_republic,
     }
 
-    # korea = Country.objects.filter(name_en="Republic of Korea")
-    # korea_benchmarking = Benchmarking.objects.filter(oecd_country = korea)
+    for old_country, new_country in country_updates.items():
+        Benchmarking.objects.filter(oecd_country=old_country).update(
+            oecd_country=new_country
+        )
+        BenchmarkingHistory.objects.filter(oecd_country=old_country).update(
+            oecd_country=new_country
+        )
 
-    # if len(korea_benchmarking) > 0:
-    #     for item in korea_benchmarking:
-    #         item.delete()
+        if Benchmarking.objects.filter(oecd_country=old_country).exists():
+            raise ValueError(
+                f"Failed: '{old_country}' was not updated to '{new_country}' in Benchmarking."
+            )
 
-    if BenchmarkingHistory.objects.filter(oecd_country__name_en="Republic of Korea").exists():
-        BenchmarkingHistory.objects.filter(oecd_country__name_en="Republic of Korea").delete()
-        if BenchmarkingHistory.objects.filter(oecd_country__name_en="Republic of Korea").exists():
-            raise ValueError("Failed: 'Republic of Korea' was not deleted from BenchmarkingHistory.")
+        if BenchmarkingHistory.objects.filter(
+            oecd_country=old_country
+        ).exists():
+            raise ValueError(
+                f"Failed: '{old_country}' was not updated to '{new_country}' in BenchmarkingHistory."
+            )
 
-    if Benchmarking.objects.filter(oecd_country__name_en="Republic of Korea").exists():
-        Benchmarking.objects.filter(oecd_country__name_en="Republic of Korea").delete()
-        if Benchmarking.objects.filter(oecd_country__name_en="Republic of Korea").exists():
-            raise ValueError("Failed: 'Republic of Korea' was not deleted from Benchmarking.")
+    # delete Korea Country is not history tracked
+    korea.delete()
+    if Country.objects.filter(name_en="Republic of Korea").exists():
+        raise ValueError(f"Failed: 'Republic of Korea' was not deleted.")
 
-    for old_name, new_name in country_updates.items():
-        if new_name:
-            BenchmarkingHistory.objects.filter(oecd_country__name_en=old_name).update(oecd_country__name_en=new_name)
-            Benchmarking.objects.filter(oecd_country__name_en=old_name).update(oecd_country__name_en=new_name)
-
-            if BenchmarkingHistory.objects.filter(oecd_country__name_en=old_name).exists():
-                raise ValueError(f"Failed: '{old_name}' was not updated to '{new_name}' in BenchmarkingHistory.")
-
-            if Benchmarking.objects.filter(oecd_country__name_en=old_name).exists():
-                raise ValueError(f"Failed: '{old_name}' was not updated to '{new_name}' in Benchmarking.")
 
 def update_country_names(apps, schema_editor):
     Country = apps.get_model("cpho", "Country")
 
-    country_renames = {
-        "Turkey": "Türkiye",
-        "OECD": "OECD Average"
-    }
+    country_renames = {"Turkey": "Türkiye", "OECD": "OECD Average"}
 
     for old_name, new_name in country_renames.items():
         Country.objects.filter(name_en=old_name).update(name_en=new_name)
 
     for old_name, new_name in country_renames.items():
         if Country.objects.filter(name_en=old_name).exists():
-            raise ValueError(f"failed: '{old_name}' was not renamed to '{new_name}'")
+            raise ValueError(
+                f"failed: '{old_name}' was not renamed to '{new_name}'"
+            )
+
 
 def update_benchmarking_values(apps, schema_editor):
     Benchmarking = apps.get_model("cpho", "Benchmarking")
@@ -137,17 +117,26 @@ def update_benchmarking_values(apps, schema_editor):
     }
 
     for old_value, new_value in benchmarking_updates.items():
-        BenchmarkingHistory.objects.filter(unit=old_value).update(unit=new_value)
         Benchmarking.objects.filter(unit=old_value).update(unit=new_value)
 
-        if BenchmarkingHistory.objects.filter(unit=old_value).exists():
-            raise ValueError(f"Failed: '{old_value}' was not updated in BenchmarkingHistory.")
+        BenchmarkingHistory.objects.filter(unit=old_value).update(
+            unit=new_value
+        )
 
         if Benchmarking.objects.filter(unit=old_value).exists():
-            raise ValueError(f"Failed: '{old_value}' was not updated in Benchmarking.")
+            raise ValueError(
+                f"Failed: '{old_value}' was not updated in Benchmarking."
+            )
+
+        if BenchmarkingHistory.objects.filter(unit=old_value).exists():
+            raise ValueError(
+                f"Failed: '{old_value}' was not updated in BenchmarkingHistory."
+            )
+
 
 def no_op(apps, schema_editor):
     pass
+
 
 class Migration(migrations.Migration):
     dependencies = [

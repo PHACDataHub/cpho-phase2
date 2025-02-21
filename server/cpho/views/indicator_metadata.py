@@ -162,7 +162,9 @@ class BenchmarkingForm(RequiredIfNotDeletedMixin, ModelForm):
 
             # year is required for all countries except OECD
             if year is None or year == "":
-                if oecd_country and not oecd_country.name_en in ["OECD"]:
+                if oecd_country and not oecd_country.name_en in [
+                    "OECD Average"
+                ]:
                     self.add_error(
                         "year",
                         tm("year_required"),
@@ -541,9 +543,9 @@ class TrendAnalysisForm(RequiredIfNotDeletedMixin, ModelForm):
                                 "trend_segment",
                                 tm("trend_timeframe_between_multi"),
                             )
-                    self.cleaned_data[
-                        "trend_segment"
-                    ] = trend_segment.strip().replace(" ", "")
+                    self.cleaned_data["trend_segment"] = (
+                        trend_segment.strip().replace(" ", "")
+                    )
 
         return self.cleaned_data
 

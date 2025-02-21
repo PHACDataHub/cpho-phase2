@@ -641,15 +641,9 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
             "deaths_per_million_inhabitants",
             tm("deaths_per_million_inhabitants"),
         ),
-        ("litres_per_capita", tm("litres_per_capita")),
         ("percent", tm("percent")),
-        (
-            "percent_people_fully_vaccinated",
-            tm("percent_people_fully_vaccinated"),
-        ),
         ("rate_per_100k_population", tm("rate_per_100k_population")),
         ("rate_per_1000_population", tm("rate_per_1000_population")),
-        ("total_deaths_per_1m", tm("total_deaths_per_1m")),
         ("litres_per_person", tm("litres_per_person")),
         ("years", tm("years")),
     ]

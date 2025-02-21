@@ -140,6 +140,9 @@ def update_benchmarking_values(apps, schema_editor):
         "percent_population_health_good_or_very_good": "percent",
         "total_per_100k_persons": "rate_per_100k_population",
         "incidence_100k_population": "rate_per_100k_population",
+        "litres_per_capita": "litres_per_person",
+        "percent_people_fully_vaccinated": "",
+        "total_deaths_per_1m": "",
     }
 
     for old_value, new_value in benchmarking_updates.items():

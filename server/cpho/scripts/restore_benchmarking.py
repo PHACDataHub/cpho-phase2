@@ -109,7 +109,7 @@ def get_indicator(Indicator_Trend, Detailed_Indicator_Trend):
 
 def get_country(country):
     if country == "OECD Average":
-        country = "OECD"
+        country = "OECD Average"
     qs = Country.objects.filter(name_en=country)
     if len(qs) == 1:
         return qs[0]

@@ -142,7 +142,7 @@ def update_benchmarking_values(apps, schema_editor):
         "incidence_100k_population": "rate_per_100k_population",
         "litres_per_capita": "litres_per_person",
         "percent_people_fully_vaccinated": "",
-        "total_deaths_per_1m": "",
+        "total_deaths_per_1m": "deaths_per_million_inhabitants",
     }
 
     for old_value, new_value in benchmarking_updates.items():

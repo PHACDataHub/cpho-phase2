@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.0...v1.4.1) (2025-02-24)
+
+
+### Bug Fixes
+
+* data migration for Benchmarking countries, benchmarking units and indicator datum units ([#417](https://github.com/PHACDataHub/cpho-phase2/issues/417)) ([1d88961](https://github.com/PHACDataHub/cpho-phase2/commit/1d88961bae19379eb21ae108854ee703ea4ac4b5))
+
 ## [1.4.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.2...v1.4.0) (2025-02-04)
 
 

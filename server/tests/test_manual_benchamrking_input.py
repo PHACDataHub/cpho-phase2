@@ -118,7 +118,7 @@ def test_benchmarking(vanilla_user_client):
 
 def test_benchmarking_form_validation(vanilla_user_client):
     aus = Country.objects.get(name_en="Australia")
-    oecd = Country.objects.get(name_en="OECD")
+    oecd = Country.objects.get(name_en="OECD Average")
     ind = IndicatorFactory()
     ind.save()
     comparison_better = Benchmarking.COMPARISON_CHOICES[1][0]

@@ -7,7 +7,6 @@ import requests
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
-from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 from opentelemetry.propagate import set_global_textmap
 from opentelemetry.propagators.cloud_trace_propagator import (
     CloudTraceFormatPropagator,
@@ -158,15 +157,6 @@ def instrument_app_for_open_telemetry():
             }
         )
 
-    PsycopgInstrumentor().instrument(
-        tracer_provider=tracer_provider,
-        enable_commenter=True,
-        commenter_options={},
-        # This instrumentor expects the `psycopg` package. This repo uses the `psycopg[binary]` package.
-        # Compatible with both, but need to disable the instrumentor's dependency checking
-        skip_dep_check=True,
-    )
-
     DjangoInstrumentor().instrument(
         tracer_provider=tracer_provider,
         meter_provider=None,  # TODO
@@ -178,8 +168,7 @@ def instrument_app_for_open_telemetry():
         excluded_urls=config(
             "OTEL_PYTHON_DJANGO_EXCLUDED_URLS", default="healthcheck"
         ),
-        # confusingly named (typo included), this actually adds a sqlcommenter middleware, and is
-        # redundant to the preferable PsycopgInstrumentor commenter
+        # confusingly named (typo included), when True this actually adds a sqlcommenter django middleware
         is_sql_commentor_enabled=False,
     )
 

@@ -168,7 +168,10 @@ def instrument_app_for_open_telemetry():
         excluded_urls=config(
             "OTEL_PYTHON_DJANGO_EXCLUDED_URLS", default="healthcheck"
         ),
-        # confusingly named (typo included), when True this actually adds a sqlcommenter django middleware
+        # Confusingly named (typo included), when True this actually adds a sqlcommenter django middleware.
+        # When enabled, trace metadata is inserted as comments in each SQL query, allowing the corresponding logging
+        # output on the DB side to be associated back to the initiating trace.
+        # Currently disabled; may have a performance impact and, more importantly, currently causes test_infobase_export.py to fail
         is_sql_commentor_enabled=False,
     )
 

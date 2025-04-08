@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.4.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.0...v1.4.1) (2025-02-24)
+
+
+### Bug Fixes
+
+* data migration for Benchmarking countries, benchmarking units and indicator datum units ([#417](https://github.com/PHACDataHub/cpho-phase2/issues/417)) ([1d88961](https://github.com/PHACDataHub/cpho-phase2/commit/1d88961bae19379eb21ae108854ee703ea4ac4b5))
+
+## [1.4.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.2...v1.4.0) (2025-02-04)
+
+
+### Features
+
+* remove Slack integrations ([#414](https://github.com/PHACDataHub/cpho-phase2/issues/414)) ([6e803b6](https://github.com/PHACDataHub/cpho-phase2/commit/6e803b6460c151e154723ac343dd47bbc877c8fe))
+
+## [1.3.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.1...v1.3.2) (2025-01-20)
+
+
+### Bug Fixes
+
+* non-admin indicator form clearing admin fields ([#412](https://github.com/PHACDataHub/cpho-phase2/issues/412)) ([6d6b632](https://github.com/PHACDataHub/cpho-phase2/commit/6d6b63210f9f06e769c87a09652d30af020187b8))
+
+## [1.3.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.3.0...v1.3.1) (2025-01-16)
+
+
+### Bug Fixes
+
+* add htmx debugging ([#407](https://github.com/PHACDataHub/cpho-phase2/issues/407)) ([57fd7cc](https://github.com/PHACDataHub/cpho-phase2/commit/57fd7cc38aa55ba3d24e3d85c5a6107d64041a2b))
+* grade and hospital settings metadata ([#410](https://github.com/PHACDataHub/cpho-phase2/issues/410)) ([557fba3](https://github.com/PHACDataHub/cpho-phase2/commit/557fba31e8aee1cc1b3bb74d9b24c21f0eccb068))
+
+## [1.3.0](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.5...v1.3.0) (2024-12-19)
+
+
+### Features
+
+* New dimension types and values ([#403](https://github.com/PHACDataHub/cpho-phase2/issues/403)) ([1ac993b](https://github.com/PHACDataHub/cpho-phase2/commit/1ac993b3522a1f370edd9e4c08b1fc2b8006779d))
+
+
+### Bug Fixes
+
+* Sdg goal; trend y axis min max; period sorting ([#404](https://github.com/PHACDataHub/cpho-phase2/issues/404)) ([35bac20](https://github.com/PHACDataHub/cpho-phase2/commit/35bac203293400ee4d1d66a74394afc09cff48a5))
+* upgrade autocomplete ([#399](https://github.com/PHACDataHub/cpho-phase2/issues/399)) ([3ba507d](https://github.com/PHACDataHub/cpho-phase2/commit/3ba507d841250d5d75162c1fe2aed8edfdd2f47c))
+
 ## [1.2.5](https://github.com/PHACDataHub/cpho-phase2/compare/v1.2.4...v1.2.5) (2024-10-07)
 
 

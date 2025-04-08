@@ -161,16 +161,11 @@ gcp: PHAC Google Cloud Org {
   }
 }
 
-slack: Slack alerts\nchannel {
-  icon: ./icons/general/Slack_icon_2019.svg
-  shape: image
-}
-
 # unauthed traffic flow
 unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
 unauthed-traffic -> gcp.project.region.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
 gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: red}}
-gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: red}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django: "mTLS" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.server.django -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
 active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stroke: red}}
@@ -178,7 +173,7 @@ active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stro
 # authed traffic flow
 authed-traffic -> gcp.project.region.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
 gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: green}}
-gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: green}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.server.django -> gcp.project.region.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
 
 # cert management
@@ -191,6 +186,3 @@ gcp.project.region.vpc.fw.k8s.istio_ingress.tls-cert -> gcp.project.region.loadb
 
 # postgres pod management
 gcp.project.region.vpc.fw.k8s.server.pg -> gcp.project.region.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS) {style: {stroke: black}}
-
-# dev notifications
-gcp.project.region.vpc.fw.k8s.server.django -> slack: Application error\nalerts (HTTPS) {style: {stroke: gold}}

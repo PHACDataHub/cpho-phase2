@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.urls import include, path, re_path
 from django.views.decorators.csrf import csrf_exempt
 
-from autocomplete import HTMXAutoComplete
+from autocomplete import urls as autocomplete_urls
 
 from server.middleware import allow_unauthenticated
 
@@ -28,7 +28,7 @@ urlpatterns = i18n_patterns(
     path("phac_admin/", admin.site.urls),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    *HTMXAutoComplete.url_dispatcher("ac"),
+    path("ac/", autocomplete_urls),
     path("", include(cpho_urls)),
     path(
         "graphiql/",

@@ -26,11 +26,6 @@ letsencrypt: Let's Encrypt {
   shape: image
 }
 
-slack: Slack alerts\nchannel {
-  icon: ./icons/general/Slack_icon_2019.svg
-  shape: image
-}
-
 devs: Developers {
   icon: ./icons/general/Developer_(94088)_-_The_Noun_Project.svg
   shape: image
@@ -346,7 +341,7 @@ gcp: PHAC Google Cloud Org {
 unauthed-traffic -> gcp.project.clouddns: Client DNS\nlookup
 unauthed-traffic -> gcp.project.region.loadbalancer: Unauthenticated\nclient request\n(HTTPS) {style: {stroke: red}}
 gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: red}}
-gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: red}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django.svc: "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.server.django.svc -> gcp.project.region.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: red}}
 gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> active-directory: oAuth redirect\nfor SSO (HTTPS) {style: {stroke: red}}
@@ -355,7 +350,7 @@ active-directory -> authed-traffic: oAuth return\nredirect (HTTPS) {style: {stro
 # authed traffic flow
 authed-traffic -> gcp.project.region.loadbalancer: Client request\nwith bearer token\n(HTTPS) {style: {stroke: green}}
 gcp.project.region.loadbalancer -> gcp.project.region.cloudarmor: "" {style: {stroke: green}}
-gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress : "" {style: {stroke: green}}
+gcp.project.region.cloudarmor -> gcp.project.region.vpc.fw.k8s.istio_ingress.ingress: "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.istio_ingress.ingress -> gcp.project.region.vpc.fw.k8s.server.django.svc: "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.server.django.svc -> gcp.project.region.vpc.fw.k8s.server.django.pods.pod1: "" {style: {stroke: green}}
 gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> gcp.project.region.vpc.fw.k8s.server.pg: PostgreSQL protocol\nwith mutual TLS {style: {stroke: green}}
@@ -380,11 +375,6 @@ gcp.project.region.vpc.fw.k8s.server.pg.r_svc -> gcp.project.region.vpc.fw.k8s.s
 gcp.project.region.vpc.fw.k8s.server.pg.r_svc -> gcp.project.region.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
 gcp.project.region.vpc.fw.k8s.server.pg.primary_boundary.pod -> gcp.project.region.vpc.fw.k8s.server.pg.standby_boundary.pod: "" {style: {stroke: black}}
 gcp.project.region.vpc.fw.k8s.server.pg -> gcp.project.region.cloudstorage: Scheduled (nightly) and manual\nDB dumps (HTTPS) {style: {stroke: black}}
-
-# dev notifications
-slack -> devs: "" {style: {stroke: gold}}
-gcp.project.region.vpc.fw.k8s.server.django.pods.pod1 -> slack: Application error\nalerts (HTTPS) {style: {stroke: gold}}
-gcp.project.region.vpc.fw.k8s.flux_system -> slack: Flux system and\ncluster status\nnotifications\n (HTTPS) {style: {stroke: gold}}
 
 # ci / cd
 gcp.project.region.vpc.fw.k8s.flux_system -> gh: Pull cluster configuration\n(HTTPS) {style: {stroke: blue}}

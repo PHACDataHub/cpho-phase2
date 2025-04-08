@@ -871,8 +871,8 @@ translation_entries = {
     },
     # value units
     "daily_dose_1k_census": {
-        "en": "Defined Daily Dose/1,000 Census",
-        "fr": "Dose quotidienne définie/1 000 recensements",
+        "en": "Defined Daily Dose/1,000 Census Inhabitants",
+        "fr": "Dose quotidienne définie/1 000 habitants recensements",
     },
     "percentage": {"en": "Percentage", "fr": "Pourcentage"},
     "percent_age_standardized": {
@@ -888,7 +888,7 @@ translation_entries = {
         "fr": "Taux pour 10 000 jours-patients",
     },
     "rate_100k_age_standardized": {
-        "en": "RATE PER 100,000 (AGE STANDARDIZED)",
+        "en": "RATE PER 100,000 (AGE-STANDARDIZED)",
         "fr": "TAUX PAR 100 000 (AJUSTÉ SELON L'ÂGE)",
     },
     "rate_100k_age_specific_crude": {
@@ -1410,5 +1410,65 @@ translation_entries = {
     "show_french_fields": {
         "en": "Show French Fields",
         "fr": "Afficher les champs en français",
+    },
+    "sdg_goal": {
+        "en": "SDG Goal",
+        "fr": "Objectif de développement durable",
+    },
+    "sdg_goal_french": {
+        "en": "SDG Goal (French)",
+        "fr": "Objectif de développement durable (français)",
+    },
+    "year_of_dashboard_update": {
+        "en": "Year of Dashboard Update",
+        "fr": "Année de mise à jour du tableau de bord",
+    },
+    "y_axis_trend_min": {
+        "en": "Y axis trend min",
+        "fr": "Axe y tendance min",
+    },
+    "y_axis_trend_max": {
+        "en": "Y axis trend max",
+        "fr": "Axe y tendance max",
+    },
+    "title_grade": {
+        "en": "Title grade",
+        "fr": "Titre grade",
+    },
+    "title_grade_french": {
+        "en": "Title grade (French)",
+        "fr": "Titre grade (français)",
+    },
+    "table_title_grade": {
+        "en": "Table title grade",
+        "fr": "Titre du tableau grade",
+    },
+    "table_title_grade_french": {
+        "en": "Table title grade (French)",
+        "fr": "Titre du tableau grade (français)",
+    },
+    "title_hospital_setting": {
+        "en": "Title hospital setting",
+        "fr": "Titre cadre hospitalier",
+    },
+    "title_hospital_setting_french": {
+        "en": "Title hospital setting (French)",
+        "fr": "Titre cadre hospitalier (français)",
+    },
+    "table_title_hospital_setting": {
+        "en": "Table title hospital setting",
+        "fr": "Titre du tableau cadre hospitalier",
+    },
+    "table_title_hospital_setting_french": {
+        "en": "Table title hospital setting (French)",
+        "fr": "Titre du tableau cadre hospitalier (français)",
+    },
+    "grade_metadata": {
+        "en": "Grade Metadata",
+        "fr": "Métadonnées de grade",
+    },
+    "hospital_setting_metadata": {
+        "en": "Hospital Setting Metadata",
+        "fr": "Métadonnées de cadre hospitalier",
     },
 }

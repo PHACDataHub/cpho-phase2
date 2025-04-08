@@ -75,6 +75,9 @@
       {{ form_field(form.table_title_overall) }}
       {{ form_field(form.table_title_overall_fr) }}
 
+      {{ form_field(form.sdg_goal, rich=true) }}
+      {{ form_field(form.sdg_goal_fr, rich=true) }}
+
       {{ form_field(form.impact_text, rich=true) }}
       {{ form_field(form.impact_text_fr, rich=true) }}
 
@@ -103,6 +106,29 @@
     </div>
   </div>
 
+  <div class="card my-4 hideable-card">
+    <h5 class="card-header">{{ tm("grade_metadata") }}</h5>
+    <div class="card-body">
+      {{ form_field(form.title_grade) }}
+      {{ form_field(form.title_grade_fr) }}
+
+      {{ form_field(form.table_title_grade) }}
+      {{ form_field(form.table_title_grade_fr) }}
+    </div>
+  </div>
+
+  <div class="card my-4 hideable-card">
+    <h5 class="card-header">{{ tm("hospital_setting_metadata") }}</h5>
+    <div class="card-body">
+      {{ form_field(form.title_hospital_setting) }}
+      {{ form_field(form.title_hospital_setting_fr) }}
+
+      {{ form_field(form.table_title_hospital_setting) }}
+      {{ form_field(form.table_title_hospital_setting_fr) }}
+    </div>
+  </div>
+
+ 
   <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tm("age_metadata") }}</h5>
     <div class="card-body">
@@ -178,6 +204,9 @@
 
       {{ form_field(form.y_axis_trend) }}
       {{ form_field(form.y_axis_trend_fr) }}
+
+      {{ form_field(form.y_axis_trend_min) }}
+      {{ form_field(form.y_axis_trend_max) }}
 
       {{ form_field(form.trend_footnotes, rich=true) }}
       {{ form_field(form.trend_footnotes_fr, rich=true) }}

@@ -4,7 +4,8 @@ django-debug-toolbar==4.4.2
 django-data-fetcher==2.2
 django-graphiql-debug-toolbar==0.2.0
 django-extensions==3.2.3
-django-htmx-autocomplete==0.8.2
+django-htmx==1.21.0
+django-htmx-autocomplete==1.0.5
 django-phac_aspc-helpers==3.1.1
 Django==5.1.4
 django-versionator==2.0.1

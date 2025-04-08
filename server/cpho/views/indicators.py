@@ -55,12 +55,16 @@ class IndicatorForm(ModelForm):
             user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        if user and not test_rule("is_admin_or_hso", user):
-            for field in self.non_hso_readonly_fields:
-                self.fields[field].disabled = True
-
         fr_fields = [field for field in self.fields if field.endswith("_fr")]
         self.hso_only_field_names = self.hso_only_field_names + fr_fields
+
+        if user and not test_rule("is_admin_or_hso", user):
+            for field in (
+                self.hso_only_field_names + self.non_hso_readonly_fields
+            ):
+                # for field in self.non_hso_readonly_fields:
+
+                self.fields[field].disabled = True
 
     def charField(required=False, french=False, label=None):
         class_string = "form-control"
@@ -111,6 +115,10 @@ class IndicatorForm(ModelForm):
         "table_title_sex",
         "title_age",
         "table_title_age",
+        "title_grade",
+        "table_title_grade",
+        "title_hospital_setting",
+        "table_title_hospital_setting",
         "title_province_territory",
         "table_title_province_territory",
         "pt_dynamic_text",
@@ -129,6 +137,9 @@ class IndicatorForm(ModelForm):
         "table_title_benchmark",
         "x_axis_benchmark",
         "benchmarking_dynamic_text",
+        "sdg_goal",
+        "y_axis_trend_min",
+        "y_axis_trend_max",
     ]
     name = charField(required=True, label=tm("name"))
     name_fr = charField(french=True, label=tm("name_french"))
@@ -198,6 +209,9 @@ class IndicatorForm(ModelForm):
         french=True, label=tm("table_title_overall_french")
     )
 
+    sdg_goal = ckEditorField(label=tm("sdg_goal"))
+    sdg_goal_fr = ckEditorField(french=True, label=tm("sdg_goal_french"))
+
     general_footnotes = ckEditorField(label=tm("general_footnotes"))
     general_footnotes_fr = ckEditorField(
         french=True, label=tm("general_footnotes_french")
@@ -227,6 +241,28 @@ class IndicatorForm(ModelForm):
     table_title_sex = charField(label=tm("table_title_sex"))
     table_title_sex_fr = charField(
         french=True, label=tm("table_title_sex_french")
+    )
+
+    # GRADE
+    title_grade = charField(label=tm("title_grade"))
+    title_grade_fr = charField(french=True, label=tm("title_grade_french"))
+
+    table_title_grade = charField(label=tm("table_title_grade"))
+    table_title_grade_fr = charField(
+        french=True, label=tm("table_title_grade_french")
+    )
+
+    # HOSPITAL SETTING
+    title_hospital_setting = charField(label=tm("title_hospital_setting"))
+    title_hospital_setting_fr = charField(
+        french=True, label=tm("title_hospital_setting_french")
+    )
+
+    table_title_hospital_setting = charField(
+        label=tm("table_title_hospital_setting")
+    )
+    table_title_hospital_setting_fr = charField(
+        french=True, label=tm("table_title_hospital_setting_french")
     )
 
     # AGE
@@ -316,6 +352,15 @@ class IndicatorForm(ModelForm):
 
     y_axis_trend = charField(label=tm("y_axis_trend"))
     y_axis_trend_fr = charField(french=True, label=tm("y_axis_trend_french"))
+
+    y_axis_trend_min = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    y_axis_trend_max = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
 
     trend_footnotes = ckEditorField(label=tm("trend_footnotes"))
     trend_footnotes_fr = ckEditorField(
@@ -445,6 +490,11 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
             p: len([datum for datum in all_data if datum.period_id == p.id])
             for p in all_shown_periods
         }
+
+        sorted_all_shown_periods = sorted(
+            all_shown_periods, key=lambda p: ((-p.year), (p.quarter or -1))
+        )
+
         submission_statuses_by_period = {
             p: get_submission_statuses(indicator, p) for p in all_shown_periods
         }
@@ -463,6 +513,7 @@ class ViewIndicator(MustPassAuthCheckMixin, TemplateView):
                 indicator
             ),
             "alternate_periods": alternate_periods,
+            "sorted_all_shown_periods": sorted_all_shown_periods,
         }
 
 

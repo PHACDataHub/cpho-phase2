@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.translation import activate, get_language
 
 import phac_aspc.django.helpers.templatetags as phac_aspc
+from django_htmx.templatetags.django_htmx import django_htmx_script
 from jinja2 import Environment, pass_context
 from phac_aspc.rules import test_rule
 
@@ -183,6 +184,7 @@ def environment(**options):
             "hasattr": hasattr,
             "len": len,
             "list": list,
+            "django_htmx_script": django_htmx_script,
             "url": reverse,
             "url_to_other_lang": url_to_other_lang,
             "get_lang_code": get_lang_code,

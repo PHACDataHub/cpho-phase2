@@ -184,6 +184,11 @@ class Indicator(models.Model, SubmissionHelpersMixin):
     table_title_overall = fields.TextField(null=True, blank=True)
     table_title_overall_fr = fields.TextField(null=True, blank=True)
 
+    sdg_goal = fields.RichTextField(config_name="notes", null=True, blank=True)
+    sdg_goal_fr = fields.RichTextField(
+        config_name="notes", null=True, blank=True
+    )
+
     impact_text = fields.RichTextField(
         config_name="notes", null=True, blank=True
     )
@@ -218,6 +223,20 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     table_title_sex = fields.TextField(null=True, blank=True)
     table_title_sex_fr = fields.TextField(null=True, blank=True)
+
+    # GRADE
+    title_grade = fields.TextField(null=True, blank=True)
+    title_grade_fr = fields.TextField(null=True, blank=True)
+
+    table_title_grade = fields.TextField(null=True, blank=True)
+    table_title_grade_fr = fields.TextField(null=True, blank=True)
+
+    # HOSPITAL SETTING
+    title_hospital_setting = fields.TextField(null=True, blank=True)
+    title_hospital_setting_fr = fields.TextField(null=True, blank=True)
+
+    table_title_hospital_setting = fields.TextField(null=True, blank=True)
+    table_title_hospital_setting_fr = fields.TextField(null=True, blank=True)
 
     # AGE
     title_age = fields.TextField(null=True, blank=True)
@@ -274,6 +293,9 @@ class Indicator(models.Model, SubmissionHelpersMixin):
 
     y_axis_trend = fields.TextField(null=True, blank=True)
     y_axis_trend_fr = fields.TextField(null=True, blank=True)
+
+    y_axis_trend_min = fields.FloatField(null=True, blank=True)
+    y_axis_trend_max = fields.FloatField(null=True, blank=True)
 
     trend_footnotes = fields.RichTextField(
         config_name="notes", null=True, blank=True
@@ -497,17 +519,13 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
         ("", "--"),
         ("daily_dose_1k_census", tm("daily_dose_1k_census")),
         ("percentage", tm("percentage")),
-        ("percent_age_standardized", tm("percent_age_standardized")),
-        ("percentage_crude", tm("percentage_crude")),
         ("rate_10k_patient_days", tm("rate_10k_patient_days")),
         ("rate_100k_age_standardized", tm("rate_100k_age_standardized")),
         ("rate_100k_age_specific_crude", tm("rate_100k_age_specific_crude")),
         ("rate_100k_crude", tm("rate_100k_crude")),
         ("rate_100k_live_births", tm("rate_100k_live_births")),
-        ("rate_100k_population_per_year", tm("rate_100k_population_per_year")),
         ("years", tm("years")),
         ("litres", tm("litres")),
-        ("other", tm("other")),
     ]
 
     value_unit = fields.CharField(
@@ -618,36 +636,14 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
     )
     UNIT_CHOICES = [
         ("", "--"),
-        ("age_standard_rate_per_100k", tm("age_standard_rate_per_100k")),
-        ("age_standard_percentage", tm("age_standard_percentage")),
         ("ddd_per_1000_per_day", tm("ddd_per_1000_per_day")),
         (
             "deaths_per_million_inhabitants",
             tm("deaths_per_million_inhabitants"),
         ),
-        ("incidence_100k_population", tm("incidence_100k_population")),
-        ("litres_per_capita", tm("litres_per_capita")),
         ("percent", tm("percent")),
-        ("percent_children", tm("percent_children")),
-        (
-            "percent_births_below_2500_grams",
-            tm("percent_births_below_2500_grams"),
-        ),
-        (
-            "percent_people_fully_vaccinated",
-            tm("percent_people_fully_vaccinated"),
-        ),
-        ("percent_population", tm("percent_population")),
-        (
-            "percent_population_health_good_or_very_good",
-            tm("percent_population_health_good_or_very_good"),
-        ),
-        ("percentage_value", tm("percentage_value")),
-        ("rate_per_100k", tm("rate_per_100k")),
         ("rate_per_100k_population", tm("rate_per_100k_population")),
         ("rate_per_1000_population", tm("rate_per_1000_population")),
-        ("total_deaths_per_1m", tm("total_deaths_per_1m")),
-        ("total_per_100k_persons", tm("total_per_100k_persons")),
         ("litres_per_person", tm("litres_per_person")),
         ("years", tm("years")),
     ]

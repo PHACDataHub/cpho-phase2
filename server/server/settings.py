@@ -69,7 +69,6 @@ PHAC_ASPC_LOGGING_LOWEST_LEVEL = (
     "INFO"  # set to DEBUG if you want to get hit with the firehose
 )
 PHAC_ASPC_LOGGING_PRETTY_FORMAT_CONSOLE_LOGS = IS_LOCAL
-PHAC_ASPC_LOGGING_SLACK_WEBHOOK_URL = config("SLACK_WEBHOOK_URL", None)
 
 PHAC_ASPC_OAUTH_USE_BACKEND = "server.auth_backend.OAuthBackend"
 DISABLE_AUTO_REGISTRATION = config(
@@ -193,6 +192,7 @@ INSTALLED_APPS = configure_apps(
         ),
         "rules.apps.AutodiscoverRulesConfig",
         "ckeditor",
+        "django_htmx",
     ]
 )
 
@@ -218,6 +218,7 @@ MIDDLEWARE = configure_middleware(
         "data_fetcher.middleware.GlobalRequestMiddleware",
         "versionator.middleware.WhodidMiddleware",
         "server.middleware.MustBeLoggedInMiddleware",
+        "django_htmx.middleware.HtmxMiddleware",
     ]
 )
 
@@ -357,3 +358,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS
 # for infobase and potentially anyone else who may want to use public data,
 CORS_ALLOW_ALL_ORIGINS = True
+
+AUTOCOMPLETE_BLOCK_UNAUTHENTICATED = True

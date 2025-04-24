@@ -365,6 +365,7 @@ def upload_mapper():
             ("Province", "NU"): all_dimension_val_dict["nu"],
             ("Province", "NT"): all_dimension_val_dict["nt"],
             ("Province", "YT"): all_dimension_val_dict["yt"],
+            ("Province", "CANADA"): all_dimension_val_dict["canada"],
             ("Region", "ATLANTIC"): all_dimension_val_dict["atlantic"],
             ("Region", "PRAIRIE"): all_dimension_val_dict["prairies"],
             ("Region", "TERRITORIES"): all_dimension_val_dict["territories"],
@@ -374,8 +375,10 @@ def upload_mapper():
             ("Gender", "GIRLS"): all_dimension_val_dict["girls"],
             ("Gender", "MEN+"): all_dimension_val_dict["men_plus"],
             ("Gender", "WOMEN+"): all_dimension_val_dict["women_plus"],
+            ("Gender", "ALL"): all_dimension_val_dict["all_genders"],
             ("Sex", "MALES"): all_dimension_val_dict["m"],
             ("Sex", "FEMALES"): all_dimension_val_dict["f"],
+            ("Sex", "BOTH"): all_dimension_val_dict["both"],
             ("Canada", "CANADA"): all_dimension_val_dict["canada"],
             (
                 "Living Arrangement",
@@ -582,6 +585,10 @@ def export_mapper():
 
     upload_mapping = upload_mapper()
 
+    canada_prov_dimension = DimensionValue.objects.get(
+        dimension_type__code="province", value="canada"
+    )
+
     export_mapping = {
         "category_mapper": {
             v: k for k, v in upload_mapping["category_mapper"].items()
@@ -608,10 +615,13 @@ def export_mapper():
             v: k for k, v in upload_mapping["dimension_type_mapper"].items()
         },
         "non_literal_dimension_value_mapper": {
-            v: k[1]
-            for k, v in upload_mapping[
-                "non_literal_dimension_value_mapper"
-            ].items()
+            **{
+                v: k[1]
+                for k, v in upload_mapping[
+                    "non_literal_dimension_value_mapper"
+                ].items()
+            },
+            canada_prov_dimension: "CANADA",
         },
     }
 

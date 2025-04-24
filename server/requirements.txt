@@ -7,7 +7,7 @@ django-extensions==3.2.3
 django-htmx==1.21.0
 django-htmx-autocomplete==1.0.5
 django-phac_aspc-helpers==3.1.1
-Django==5.0.11
+Django==5.1.4
 django-versionator==2.0.1
 django-versionator[changelog]==2.0.1
 Faker==15.1.1
@@ -17,7 +17,7 @@ ipython==8.10.0
 Jinja2==3.1.4
 openpyxl==3.0.10
 promise==2.3
-psycopg2-binary==2.9.5
+psycopg[binary,pool]==3.2.3
 python-dateutil==2.8.2
 python-decouple==3.6
 pytz==2022.2.1
@@ -29,9 +29,8 @@ django-ckeditor==6.7.1
 PyYAML==6.0.1 # necessary to apply fixtures in prod
 
 # opentelemetry
-opentelemetry-sdk==1.19.0
-opentelemetry-instrumentation-django==0.40b0
-opentelemetry-instrumentation-psycopg2==0.40b0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-django==0.50b0
 opentelemetry-resourcedetector-gcp==1.5.0a0
 opentelemetry-propagator-gcp==1.5.0
 opentelemetry-exporter-gcp-trace==1.5.0

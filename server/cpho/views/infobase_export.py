@@ -251,6 +251,8 @@ trend_columns = [
     ChoiceColumn(TrendAnalysisHistory, "trend"),
     ChoiceColumn(TrendAnalysisHistory, "data_quality"),
     ChoiceColumn(TrendAnalysisHistory, "unit"),
+    ModelColumn(TrendAnalysisHistory, "data_point_lower_ci"),
+    ModelColumn(TrendAnalysisHistory, "data_point_upper_ci"),
 ]
 
 
@@ -425,9 +427,9 @@ class InfobaseExportView(View):
         response = HttpResponse(
             headers={"Content-Type": "application/vnd.ms-excel"}
         )
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename=hopic_infobase_export.xlsx"
+        response["Content-Disposition"] = (
+            f"attachment; filename=hopic_infobase_export.xlsx"
+        )
         self.workbook.save(response)
 
         return response

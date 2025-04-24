@@ -1,7 +1,7 @@
 """
 This contains custom fields that should be used in place of the default Django fields.
 
-The django migration engines serializes all fields and their attributes. 
+The django migration engines serializes all fields and their attributes.
 There are many attributes that are not relevant to the database schema. The fields below override serialization and strip irrelevant attributes.
 
 These fields strip attributes from serialization so we don't get extra migrations when we change verbose names or related_names

@@ -543,9 +543,9 @@ class TrendAnalysisForm(RequiredIfNotDeletedMixin, ModelForm):
                                 "trend_segment",
                                 tm("trend_timeframe_between_multi"),
                             )
-                    self.cleaned_data[
-                        "trend_segment"
-                    ] = trend_segment.strip().replace(" ", "")
+                    self.cleaned_data["trend_segment"] = (
+                        trend_segment.strip().replace(" ", "")
+                    )
 
         return self.cleaned_data
 

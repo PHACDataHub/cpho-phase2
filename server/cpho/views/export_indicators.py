@@ -76,6 +76,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                     deduced_dimension_value = mapper[
                         "non_literal_dimension_value_mapper"
                     ].get(record.dimension_value, "")
+
                 writer.writerow(
                     [
                         mapper["category_mapper"].get(indicator.category, ""),

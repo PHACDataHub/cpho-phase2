@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.1...v1.4.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* add missing export values for new dimension-values ([#425](https://github.com/PHACDataHub/cpho-phase2/issues/425)) ([56a8dc0](https://github.com/PHACDataHub/cpho-phase2/commit/56a8dc0746a287f49fe56c0beee63b030c49b519))
+* add missing fields to export ([#422](https://github.com/PHACDataHub/cpho-phase2/issues/422)) ([9aa60f7](https://github.com/PHACDataHub/cpho-phase2/commit/9aa60f749be74d1ca7210af259d2ec68b1d44294))
+* upgrade black and reformat project ([#424](https://github.com/PHACDataHub/cpho-phase2/issues/424)) ([ae077e5](https://github.com/PHACDataHub/cpho-phase2/commit/ae077e5506b48d78fc0afa1cdb090b0fe020103b))
+* upgrade django, enable connection pooling ([#400](https://github.com/PHACDataHub/cpho-phase2/issues/400)) ([a2affed](https://github.com/PHACDataHub/cpho-phase2/commit/a2affede2db098401d27e6f7f590c7128b2e170d))
+
 ## [1.4.1](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.0...v1.4.1) (2025-02-24)
 
 

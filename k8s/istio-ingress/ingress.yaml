@@ -50,8 +50,11 @@ spec:
           value: "true"
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 50m
+            memory: 112Mi
+          limits:
+            cpu: 250m
+            memory: 512Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

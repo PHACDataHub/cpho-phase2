@@ -173,7 +173,7 @@ See the [official documentation](https://cloudnative-pg.io/documentation/1.22/#c
 
 Ephemeral environments for the Django server and PostgreSQL database i.e, `server` namespace are implemented using kustomize and Flux. The `./k8s/server` directory is organized into [kustomize bases and overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). The overlays are further divided into `prod` and `ephemeral` directories that contain kubernetes configurations for production and ephemeral environments respectively.
 
-The `prod` directory syncs (as per the configuration [here](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/server/overlays/prod/sync.yaml)) against the `prod` branch of the repository and serves traffic at `hopic-sdpac.data-donnes.phac-aspc.gc.ca`. On the other hand, the `ephemeral` directory syncs (as per the configuration(s) [here](https://github.com/PHACDataHub/cpho-phase2/tree/prod/k8s/server/ephemeral-instances)) against any branch that is configured to use ephemeral environments and serves traffic at `*.dev.hopic-sdpac.data-donnes.phac-aspc.gc.ca`, where `*` is replaced by the github branch name that the environment is built from. 
+The `prod` directory syncs (as per the configuration [here](https://github.com/PHACDataHub/cpho-phase2/blob/prod/k8s/server/overlays/prod/sync.yaml)) against the `prod` branch of the repository and serves traffic at `hopic-sdpac.data.phac-aspc.gc.ca`. On the other hand, the `ephemeral` directory syncs (as per the configuration(s) [here](https://github.com/PHACDataHub/cpho-phase2/tree/prod/k8s/server/ephemeral-instances)) against any branch that is configured to use ephemeral environments and serves traffic at `*.dev.hopic-sdpac.data.phac-aspc.gc.ca`, where `*` is replaced by the github branch name that the environment is built from. 
 
 As an example, suppose you need an ephemeral environment on a branch called `dev-test`. The first step would be to create that branch with -
 
@@ -274,7 +274,7 @@ This deployment architecture is built on top of the [node-microservices-demo](ht
 >  - Blue: CI/CD
 >  - Sky Blue: Observability
 
-![Current k8s architecture](../architecture-diagram/architecture-k8s.svg)
+![Current k8s architecture](../architecture-diagram/architecture-k8s.png)
 
 > See `./architecture-diagram/README.md` at the root of this repository for other diagrams.
 

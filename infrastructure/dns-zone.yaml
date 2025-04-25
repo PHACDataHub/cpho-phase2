@@ -14,33 +14,6 @@ spec:
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSManagedZone
 metadata:
-  name: hopic-ops-managed-zone
-  namespace: configconnector-resources
-spec:
-  cloudLoggingConfig:
-    enableLogging: true
-  description: HoPiC DNS Zone for alpha DNS
-  dnsName: hopic-sdpac.data-donnes.phac-aspc.gc.ca.
-  visibility: public
----
-apiVersion: dns.cnrm.cloud.google.com/v1beta1
-kind: DNSRecordSet
-metadata:
-  name: hopic-ops-dns-record-set
-  namespace: configconnector-resources
-spec:
-  name: "hopic-sdpac.data-donnes.phac-aspc.gc.ca."
-  type: A
-  ttl: 300
-  managedZoneRef:
-    name: hopic-ops-managed-zone
-  rrdatasRefs:
-    - name: hopic-external-ip
-      kind: ComputeAddress
----
-apiVersion: dns.cnrm.cloud.google.com/v1beta1
-kind: DNSManagedZone
-metadata:
   name: hopic-uni-managed-zone
   namespace: configconnector-resources
 spec:

@@ -22,7 +22,7 @@ To update the svg, cd in to `./architecture-diagram` and run `d2 --layout dagre 
 
 ### Kubernetes
 
-![Current k8s architecture](architecture-k8s.svg)
+![Current k8s architecture](architecture-k8s.png)
 
 ### Network
 

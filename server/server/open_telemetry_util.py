@@ -75,6 +75,7 @@ def instrument_app_for_open_telemetry():
         retry_delay = 0.25
 
         logger.info("Attempting to connect to Google Cloud metadata server...")
+        project_id = None
         for retry_count in range(retry_limit):
             try:
                 project_id = requests.get(
@@ -87,7 +88,7 @@ def instrument_app_for_open_telemetry():
                 if retry_count < retry_limit - 1:
                     time.sleep(retry_delay)
                 else:
-                    raise error
+                    logger.error(error)
         logger.info("Metadata server reachable!")
 
         span_exporter = CloudTraceSpanExporter(
@@ -105,9 +106,12 @@ def instrument_app_for_open_telemetry():
         # Manually call detect and merge as needed instead, not a big deal, this only happens once
         # and isn't CPU intensive at all.
         # Note: for merge, the order matters with priority given to preceding resource objects
-        resource = (
-            GoogleCloudResourceDetector(raise_on_error=True).detect()
-        ).merge(ProcessResourceDetector(raise_on_error=True).detect())
+        if not project_id:
+            resource = ProcessResourceDetector(raise_on_error=True).detect()
+        else:
+            resource = (
+                GoogleCloudResourceDetector(raise_on_error=True).detect()
+            ).merge(ProcessResourceDetector(raise_on_error=True).detect())
 
     # Propagate the X-Cloud-Trace-Context header if present. Add it otherwise
     set_global_textmap(CloudTraceFormatPropagator())

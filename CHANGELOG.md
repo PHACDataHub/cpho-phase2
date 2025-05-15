@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.2...v1.4.3) (2025-05-15)
+
+
+### Bug Fixes
+
+* revert weird deps change ([#428](https://github.com/PHACDataHub/cpho-phase2/issues/428)) ([98434c8](https://github.com/PHACDataHub/cpho-phase2/commit/98434c8f9c6983822094bfe6d4212ea48bf1cfaf))
+* turn off connection pooling ([#426](https://github.com/PHACDataHub/cpho-phase2/issues/426)) ([6803eff](https://github.com/PHACDataHub/cpho-phase2/commit/6803eff01acff71e460893c4aa27a6317e98ca10))
+
 ## [1.4.2](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.1...v1.4.2) (2025-04-24)
 
 

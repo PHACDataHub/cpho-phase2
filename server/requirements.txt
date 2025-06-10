@@ -22,7 +22,7 @@ psycopg2-binary==2.9.5
 python-dateutil==2.8.2
 python-decouple==3.6
 pytz==2022.2.1
-requests==2.32.0
+requests==2.32.4
 whitenoise==6.4.0
 rules==3.3
 django-ckeditor==6.7.1

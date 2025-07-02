@@ -19,7 +19,7 @@
     {# <link rel="stylesheet" href="{{ static('site.css') }}"/> #}
     <link rel="stylesheet" href="{{ static("cpho.css") }}">
     {{ phac_aspc.phac_aspc_wet_css(base_only=True) }}
-    <script src="{{ static('third_party/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ static('third_party/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ static('third_party/js/htmx.min.js') }}"></script>
     <script src="{{ static('third_party/js/idiomorph.min.js') }}"></script>
     <script src="{{ static('third_party/js/idiomorph-ext.min.js') }}"></script>
@@ -166,6 +166,6 @@
       </div>
     </footer>
     <script src="{{ static('third_party/js/bootstrap.bundle.min.js') }}"></script>
-    {{ phac_aspc.phac_aspc_wet_scripts() }}
+    {{ phac_aspc.phac_aspc_wet_scripts(include_jquery=False) }}
   </body>
 </html>

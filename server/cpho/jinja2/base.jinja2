@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_lang() }}">
   <head>
     <title>
       {% block title %}{{ tm("site_title") }}{% endblock %}
@@ -13,7 +13,7 @@
           rel="icon"
           type="image/x-icon"
           class="wb-init wb-favicon-inited">
-    <link rel="stylesheet" href="{{ static("third_party/css/bootstrap.min.css") }}" />
+    <link rel="stylesheet" href="{{ static("third_party/css/bootstrap.min.css") }}">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     {# <link rel="stylesheet" href="{{ static('site.css') }}"/> #}
@@ -129,7 +129,7 @@
     <main class="pb-5">
       {% if messages %}
         {% for message in messages %}
-          <div class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
+          <div role="alert" class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
         {% endfor %}
       {% endif %}
       <div>

@@ -105,8 +105,8 @@
         </div>
         <div class="card-body">
           <div style="overflow-x:auto; width:100%;">
-          <table class="table mb-0" id="{{ dimension_type }}-table" style="max-width:100%; table-layout:auto;">
-            <thead class="table-light text-center" style="width:100%;">
+          <table class="table mb-0" id="{{ dimension_type }}-table">
+            <thead class="table-light text-center">
               <tr>
                 <th class="width-10">{{ dimension_type.name }}</th>
                 <th class="width-9">{{ tm("value") }}</th>
@@ -121,7 +121,7 @@
                 <th class="width-9">{{ tm("arrow_flag") }}</th>
               </tr>
             </thead>
-            <tbody id="{{ dimension_type }}-table-body" class="text-center" style="width:100%;">
+            <tbody id="{{ dimension_type }}-table-body" class="text-center">
               {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
                 <tr>
                   {% set form = forms_by_dimension_value[possible_value] %}

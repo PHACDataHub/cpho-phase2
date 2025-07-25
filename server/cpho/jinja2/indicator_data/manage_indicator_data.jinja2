@@ -188,8 +188,8 @@
           <div class="h3">{{ tm("managing_data_for_stratifier") }} {{ tm("age") }}</div>
         </div>
         <div style="overflow-x:auto; width:100%;">
-          <table class="table mb-0" id="{{ dimension_type }}-table" style="max-width:100%; table-layout:auto;">
-            <thead class="table-light text-center" style="width:100%;">
+          <table class="table mb-0" id="{{ dimension_type }}-table">
+            <thead class="table-light text-center">
               <tr>
                 <th class="width-9">{{ tm("age") }}</th>
                 <th class="width-9">{{ tm("value") }}</th>
@@ -205,7 +205,7 @@
                 <th class="width-9">{{ tm("delete") }}</th>
               </tr>
             </thead>
-            <tbody id="{{ dimension_type }}-table-body" class="text-center age-group-form-list" style="width:100%;">
+            <tbody id="{{ dimension_type }}-table-body" class="text-center age-group-form-list">
               {% for item in age_group_sorted %}
                 {% for form_instance in age_group_formset %}
                   {% if form_instance.instance.id == item.id %}{{ age_group_form(form_instance) }}{% endif %}

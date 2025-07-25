@@ -129,7 +129,8 @@
     <main class="pb-5">
       {% if messages %}
         {% for message in messages %}
-          <div role="alert" class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
+          <div role="alert"
+               class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
         {% endfor %}
       {% endif %}
       <div>

@@ -5,6 +5,7 @@ resources:
   - configmap.yaml
   - secrets.enc.yaml
   - virtual-service.yaml
+  - test.yaml
 
 patches:
   - path: deployment.yaml

@@ -19,7 +19,7 @@ spec:
 
   storage:
     storageClass: standard
-    size: 1Gi
+    size: 2Gi
 
   serviceAccountTemplate:
     metadata:

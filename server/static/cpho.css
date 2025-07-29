@@ -136,26 +136,38 @@ span.new-ind-tag {
     display: block;
 }
 
-.width-15{
-    width:15%
+.width-15 {
+    width: 15%
 }
 
-.width-55{
-    width:55%
+.width-55 {
+    width: 55%
 }
 
-.width-30{
-    width:30%
+.width-30 {
+    width: 30%
 }
 
-.width-10{
-    width:10%
+.width-10 {
+    width: 10%
 }
 
-.width-9{
-    width:9%
+.width-9 {
+    width: 9%
 }
 
-.width-5{
-    width:5%
+.width-5 {
+    width: 5%
+}
+
+/* Accessibility */
+.btn:focus {
+    color: white;
+    background-color: #0535d2;
+    outline-offset: 0.125rem;
+    border-color: #0535d2;
+    box-shadow: 0 0 0 0.125rem white;
+    outline-color: rgb(5, 53, 210);
+    outline-style: solid;
+    outline-width: 0.25rem;
 }

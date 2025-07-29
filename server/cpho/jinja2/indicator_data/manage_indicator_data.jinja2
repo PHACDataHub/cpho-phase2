@@ -103,82 +103,83 @@
         <div class="card-header">
           <div class="h3">{{ tm("managing_data_for_stratifier") }} : {{ dimension_type.name }}</div>
         </div>
- 
-        <table class="table mb-0"
-               id="{{ dimension_type }}-table"
-               style="overflow-x:auto;
-                      display:block">
-          <thead class="table-light text-center">
-            <tr>
-              <th class="width-10">{{ dimension_type.name }}</th>
-              <th class="width-9">{{ tm("value") }}</th>
-              <th class="width-9">{{ tm("value_unit") }}</th>
-              <th class="width-9">{{ tm("value_lower_bound") }}</th>
-              <th class="width-9">{{ tm("value_upper_bound") }}</th>
-              <th class="width-9">{{ tm("data_quality") }}</th>
-              <th class="width-9">{{ tm("single_year_timeframe") }}</th>
-              <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
-              <th class="width-9">{{ tm("value_displayed") }}</th>
-              <th class="width-9">{{ tm("reason_for_null_data") }}</th>
-              <th class="width-9">{{ tm("arrow_flag") }}</th>
-            </tr>
-          </thead>
-          <tbody id="{{ dimension_type }}-table-body" class="text-center">
-            {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
-              <tr>
-                {% set form = forms_by_dimension_value[possible_value] %}
-                {% set row_name = possible_value.name %}
-                <td class="fw-bold">{{ row_name }}</td>
-                <td>
-                  {{ form.value }}
-                  {{ hidden_a11y_label(form.value, row_name) }}
-                  {{ check_display_error(form.errors.value, form.value) }}
-                </td>
-                <td>
-                  {{ form.value_unit }}
-                  {{ hidden_a11y_label(form.value_unit, row_name) }}
-                </td>
-                <td>
-                  {{ form.value_lower_bound }}
-                  {{ hidden_a11y_label(form.value_lower_bound, row_name) }}
-                  {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
-                </td>
-                <td>
-                  {{ form.value_upper_bound }}
-                  {{ hidden_a11y_label(form.value_upper_bound, row_name) }}
-                  {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
-                </td>
-                <td>
-                  {{ form.data_quality }}
-                  {{ hidden_a11y_label(form.data_quality, row_name) }}
-                </td>
-                <td>
-                  {{ form.single_year_timeframe }}
-                  {{ hidden_a11y_label(form.single_year_timeframe, row_name) }}
-                  {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
-                </td>
-                <td>
-                  {{ form.multi_year_timeframe }}
-                  {{ hidden_a11y_label(form.multi_year_timeframe, row_name) }}
-                  {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
-                </td>
-                <td>
-                  {{ form.value_displayed }}
-                  {{ hidden_a11y_label(form.value_displayed, row_name) }}
-                </td>
-                <td>
-                  {{ form.reason_for_null }}
-                  {{ hidden_a11y_label(form.reason_for_null, row_name) }}
-                </td>
-                <td>
-                  {{ form.arrow_flag }}
-                  {{ hidden_a11y_label(form.arrow_flag, row_name) }}
-                </td>
-              </tr>
-            {% endfor %}
+        <div class="card-body">
+          <div style="overflow-x:auto; width:100%;">
+            <table class="table mb-0" id="{{ dimension_type }}-table">
+              <thead class="table-light text-center">
+                <tr>
+                  <th class="width-10">{{ dimension_type.name }}</th>
+                  <th class="width-9">{{ tm("value") }}</th>
+                  <th class="width-9">{{ tm("value_unit") }}</th>
+                  <th class="width-9">{{ tm("value_lower_bound") }}</th>
+                  <th class="width-9">{{ tm("value_upper_bound") }}</th>
+                  <th class="width-9">{{ tm("data_quality") }}</th>
+                  <th class="width-9">{{ tm("single_year_timeframe") }}</th>
+                  <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
+                  <th class="width-9">{{ tm("value_displayed") }}</th>
+                  <th class="width-9">{{ tm("reason_for_null_data") }}</th>
+                  <th class="width-9">{{ tm("arrow_flag") }}</th>
+                </tr>
+              </thead>
+              <tbody id="{{ dimension_type }}-table-body" class="text-center">
+                {% for possible_value in possible_values_by_dimension_type[dimension_type] %}
+                  <tr>
+                    {% set form = forms_by_dimension_value[possible_value] %}
+                    {% set row_name = possible_value.name %}
+                    <td class="fw-bold">{{ row_name }}</td>
+                    <td>
+                      {{ form.value }}
+                      {{ hidden_a11y_label(form.value, row_name) }}
+                      {{ check_display_error(form.errors.value, form.value) }}
+                    </td>
+                    <td>
+                      {{ form.value_unit }}
+                      {{ hidden_a11y_label(form.value_unit, row_name) }}
+                    </td>
+                    <td>
+                      {{ form.value_lower_bound }}
+                      {{ hidden_a11y_label(form.value_lower_bound, row_name) }}
+                      {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
+                    </td>
+                    <td>
+                      {{ form.value_upper_bound }}
+                      {{ hidden_a11y_label(form.value_upper_bound, row_name) }}
+                      {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
+                    </td>
+                    <td>
+                      {{ form.data_quality }}
+                      {{ hidden_a11y_label(form.data_quality, row_name) }}
+                    </td>
+                    <td>
+                      {{ form.single_year_timeframe }}
+                      {{ hidden_a11y_label(form.single_year_timeframe, row_name) }}
+                      {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
+                    </td>
+                    <td>
+                      {{ form.multi_year_timeframe }}
+                      {{ hidden_a11y_label(form.multi_year_timeframe, row_name) }}
+                      {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
+                    </td>
+                    <td>
+                      {{ form.value_displayed }}
+                      {{ hidden_a11y_label(form.value_displayed, row_name) }}
+                    </td>
+                    <td>
+                      {{ form.reason_for_null }}
+                      {{ hidden_a11y_label(form.reason_for_null, row_name) }}
+                    </td>
+                    <td>
+                      {{ form.arrow_flag }}
+                      {{ hidden_a11y_label(form.arrow_flag, row_name) }}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
-          </tbody>
-        </table>
+        </div>
+ 
       </div>
     {% endfor %}
     {% if show_age_group %}
@@ -186,40 +187,37 @@
         <div class="card-header">
           <div class="h3">{{ tm("managing_data_for_stratifier") }} {{ tm("age") }}</div>
         </div>
- 
-        <table class="table mb-0"
-               id="{{ dimension_type }}-table"
-               style="overflow-x:auto;
-                      display:block">
- 
-          <thead class="table-light text-center">
-            <tr>
-              <th class="width-9">{{ tm("age") }}</th>
-              <th class="width-9">{{ tm("value") }}</th>
-              <th class="width-9">{{ tm("value_unit") }}</th>
-              <th class="width-9">{{ tm("value_lower_bound") }}</th>
-              <th class="width-9">{{ tm("value_upper_bound") }}</th>
-              <th class="width-9">{{ tm("data_quality") }}</th>
-              <th class="width-9">{{ tm("single_year_timeframe") }}</th>
-              <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
-              <th class="width-9">{{ tm("value_displayed") }}</th>
-              <th class="width-9">{{ tm("reason_for_null_data") }}</th>
-              <th class="width-9">{{ tm("arrow_flag") }}</th>
-              <th class="width-9">{{ tm("delete") }}</th>
-            </tr>
-          </thead>
-          <tbody id="{{ dimension_type }}-table-body"
-                 class="text-center age-group-form-list">
-            {% for item in age_group_sorted %}
-              {% for form_instance in age_group_formset %}
-                {% if form_instance.instance.id == item.id %}{{ age_group_form(form_instance) }}{% endif %}
+        <div style="overflow-x:auto; width:100%;">
+          <table class="table mb-0" id="{{ dimension_type }}-table">
+            <thead class="table-light text-center">
+              <tr>
+                <th class="width-9">{{ tm("age") }}</th>
+                <th class="width-9">{{ tm("value") }}</th>
+                <th class="width-9">{{ tm("value_unit") }}</th>
+                <th class="width-9">{{ tm("value_lower_bound") }}</th>
+                <th class="width-9">{{ tm("value_upper_bound") }}</th>
+                <th class="width-9">{{ tm("data_quality") }}</th>
+                <th class="width-9">{{ tm("single_year_timeframe") }}</th>
+                <th class="width-9">{{ tm("multi_year_timeframe") }}</th>
+                <th class="width-9">{{ tm("value_displayed") }}</th>
+                <th class="width-9">{{ tm("reason_for_null_data") }}</th>
+                <th class="width-9">{{ tm("arrow_flag") }}</th>
+                <th class="width-9">{{ tm("delete") }}</th>
+              </tr>
+            </thead>
+            <tbody id="{{ dimension_type }}-table-body"
+                   class="text-center age-group-form-list">
+              {% for item in age_group_sorted %}
+                {% for form_instance in age_group_formset %}
+                  {% if form_instance.instance.id == item.id %}{{ age_group_form(form_instance) }}{% endif %}
+                {% endfor %}
               {% endfor %}
-            {% endfor %}
-            {% for form_instance in age_group_formset %}
-              {% if not form_instance.instance.id %}{{ age_group_form(form_instance) }}{% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
+              {% for form_instance in age_group_formset %}
+                {% if not form_instance.instance.id %}{{ age_group_form(form_instance) }}{% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
         {% if mode == "edit" %}
           <div class="text-center py-1">
             <button type="button" class="btn btn-primary btn-sm px-4" id="add-form">{{ tm("add_another_age_group") }}</button>
@@ -231,7 +229,6 @@
         {% if predefined_values_formset.non_form_errors() %}
           <div class="error-div">{{ predefined_values_formset.non_form_errors() }}</div>
         {% endif %}
- 
       </div>
     {% endif %}
 

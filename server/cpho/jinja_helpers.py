@@ -109,7 +109,7 @@ def message_type(message):
 
 
 @pass_context
-def ipython(context):
+def ipython(context, *args, **kwargs):
     from IPython import embed
 
     embed()

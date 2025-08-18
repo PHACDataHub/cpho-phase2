@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_lang() }}">
   <head>
     <title>
       {% block title %}{{ tm("site_title") }}{% endblock %}
@@ -13,13 +13,13 @@
           rel="icon"
           type="image/x-icon"
           class="wb-init wb-favicon-inited">
-    <link rel="stylesheet" href="{{ static("third_party/css/bootstrap.min.css") }}" />
+    <link rel="stylesheet" href="{{ static("third_party/css/bootstrap.min.css") }}">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     {# <link rel="stylesheet" href="{{ static('site.css') }}"/> #}
     <link rel="stylesheet" href="{{ static("cpho.css") }}">
     {{ phac_aspc.phac_aspc_wet_css(base_only=True) }}
-    <script src="{{ static('third_party/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ static('third_party/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ static('third_party/js/htmx.min.js') }}"></script>
     <script src="{{ static('third_party/js/idiomorph.min.js') }}"></script>
     <script src="{{ static('third_party/js/idiomorph-ext.min.js') }}"></script>
@@ -129,7 +129,8 @@
     <main class="pb-5">
       {% if messages %}
         {% for message in messages %}
-          <div class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
+          <div role="alert"
+               class="px-5 my-0 rounded-0 django-message alert alert-{{ message_type(message) }}">{{ message }}</div>
         {% endfor %}
       {% endif %}
       <div>
@@ -166,6 +167,6 @@
       </div>
     </footer>
     <script src="{{ static('third_party/js/bootstrap.bundle.min.js') }}"></script>
-    {{ phac_aspc.phac_aspc_wet_scripts() }}
+    {{ phac_aspc.phac_aspc_wet_scripts(include_jquery=False) }}
   </body>
 </html>

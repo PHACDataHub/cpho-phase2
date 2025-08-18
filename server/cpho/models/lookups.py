@@ -22,6 +22,8 @@ class DimensionType(models.Model):
 
     code = fields.CharField(max_length=50)  # codes are dev-friendly
 
+    excel_code = fields.CharField(max_length=100, blank=True, null=True)
+
     is_literal = models.BooleanField(default=False)
 
     order = fields.FloatField(default=0.0)
@@ -29,6 +31,12 @@ class DimensionType(models.Model):
     @property
     def name(self):
         return getattr(self, f"name_{get_lang_code()}")
+
+    def get_excel_code(self):
+        if self.excel_code:
+            return self.excel_code
+        else:
+            return self.code
 
     def __str__(self):
         return " ".join(
@@ -56,6 +64,14 @@ class DimensionValue(models.Model):
     )  # value is the 'unilingual' version, this can be useful for data-processing
 
     order = fields.FloatField(default=0.0)
+
+    excel_code = fields.CharField(max_length=100, blank=True, null=True)
+
+    def get_excel_code(self):
+        if self.excel_code:
+            return self.excel_code
+        else:
+            return self.value
 
     @property
     def name(self):

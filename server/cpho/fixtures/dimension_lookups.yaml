@@ -4,6 +4,7 @@
     name_en: Sex
     name_fr: Sexe
     code: sex
+    excel_code: "Sex"
     is_literal: false
     order: 1.0
 - model: cpho.dimensiontype
@@ -12,6 +13,7 @@
     name_en: Province
     name_fr: Province
     code: province
+    excel_code: "Province"
     is_literal: false
     order: 2.0
 - model: cpho.dimensiontype
@@ -20,6 +22,7 @@
     name_en: Region
     name_fr: Région
     code: region
+    excel_code: "Region"
     is_literal: false
     order: 3.0
 - model: cpho.dimensiontype
@@ -28,6 +31,7 @@
     name_en: Canada
     name_fr: Canada
     code: canada
+    excel_code: "Canada"
     is_literal: false
     order: 0.0
 - model: cpho.dimensiontype
@@ -36,6 +40,7 @@
     name_en: Age
     name_fr: Âge
     code: age
+    excel_code: "Age Group"
     is_literal: true
     order: 8.0
 - model: cpho.dimensiontype
@@ -44,6 +49,7 @@
     name_en: Gender
     name_fr: Genre
     code: gender
+    excel_code: "Gender"
     is_literal: false
     order: 4.0
 - model: cpho.dimensiontype
@@ -52,6 +58,7 @@
     name_en: Living Arrangement
     name_fr: Conditions de vie
     code: living_arrangement
+    excel_code: "Living Arrangement"
     is_literal: false
     order: 5.0
 - model: cpho.dimensiontype
@@ -60,6 +67,7 @@
     name_en: Education Household
     name_fr: Éducation Ménage
     code: education_household
+    excel_code: "Education Household"
     is_literal: false
     order: 6.0
 - model: cpho.dimensiontype
@@ -68,6 +76,7 @@
     name_en: Income Quintiles
     name_fr: Quintiles de revenu
     code: income_quintiles
+    excel_code: "Income Quintiles"
     is_literal: false
     order: 7.0
 - model: cpho.dimensiontype
@@ -76,6 +85,7 @@
     name_en: Hospital setting
     name_fr: Milieu hospitalier
     code: hospital_setting
+    excel_code: "Hospital Setting"
     is_literal: false
     order: 8.0
 - model: cpho.dimensiontype
@@ -84,6 +94,7 @@
     name_en: Grade
     name_fr: Niveau scolaire
     code: school_grade
+    excel_code: "School Grade"
     is_literal: false
     order: 9.0
 
@@ -93,8 +104,9 @@
   fields:
     dimension_type: 1
     name_en: Male
-    name_fr: Male
+    name_fr: Male 
     value: m
+    excel_code: "MALES"
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 2
@@ -103,6 +115,7 @@
     name_en: Female
     name_fr: Female
     value: f
+    excel_code: "FEMALES"
     order: 1.0
 - model: cpho.dimensionvalue
   pk: 85
@@ -111,6 +124,7 @@
     name_en: Both sexes
     name_fr: Les deux sexes
     value: both
+    excel_code: "BOTH"
     order: 2.0
 
 # dimension value for Province
@@ -121,6 +135,7 @@
     name_en: Newfoundland and Labrador
     name_fr: Terre-Neuve-et-Labrador
     value: nl
+    excel_code: "NL"
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 4
@@ -129,6 +144,7 @@
     name_en: Prince Edward Island
     name_fr: Île-du-Prince-Édouard
     value: pe
+    excel_code: "PE"
     order: 1.0
 - model: cpho.dimensionvalue
   pk: 5
@@ -137,6 +153,7 @@
     name_en: Nova Scotia
     name_fr: Nouvelle-Écosse
     value: ns
+    excel_code: "NS"
     order: 2.0
 - model: cpho.dimensionvalue
   pk: 6
@@ -145,6 +162,7 @@
     name_en: New Brunswick
     name_fr: Nouveau-Brunswick
     value: nb
+    excel_code: "NB"
     order: 3.0
 - model: cpho.dimensionvalue
   pk: 7
@@ -153,6 +171,7 @@
     name_en: Quebec
     name_fr: Québec
     value: qc
+    excel_code: "QC"
     order: 4.0
 - model: cpho.dimensionvalue
   pk: 8
@@ -161,6 +180,7 @@
     name_en: Ontario
     name_fr: Ontario
     value: 'on'
+    excel_code: "ON"
     order: 5.0
 - model: cpho.dimensionvalue
   pk: 9
@@ -169,6 +189,7 @@
     name_en: Manitoba
     name_fr: Manitoba
     value: mb
+    excel_code: "MB"
     order: 6.0
 - model: cpho.dimensionvalue
   pk: 10
@@ -177,6 +198,7 @@
     name_en: Saskatchewan
     name_fr: Saskatchewan
     value: sk
+    excel_code: "SK"
     order: 7.0
 - model: cpho.dimensionvalue
   pk: 11
@@ -184,6 +206,7 @@
     dimension_type: 2
     name_en: Alberta
     name_fr: Alberta
+    excel_code: "AB"
     value: ab
     order: 8.0
 - model: cpho.dimensionvalue
@@ -193,6 +216,7 @@
     name_en: British Columbia
     name_fr: Colombie-Britannique
     value: bc
+    excel_code: "BC"
     order: 9.0
 - model: cpho.dimensionvalue 
   pk: 13
@@ -201,6 +225,7 @@
     name_en: Yukon
     name_fr: Yukon
     value: yt
+    excel_code: "YT"
     order: 10.0
 - model: cpho.dimensionvalue
   pk: 14
@@ -209,6 +234,7 @@
     name_en: Northwest Territories
     name_fr: Territoires du Nord-Ouest
     value: nt
+    excel_code: "NT"
     order: 11.0
 - model: cpho.dimensionvalue
   pk: 15
@@ -217,6 +243,7 @@
     name_en: Nunavut
     name_fr: Nunavut
     value: nu
+    excel_code: "NU"
     order: 12.0
 - model: cpho.dimensionvalue
   pk: 86
@@ -225,6 +252,7 @@
     name_en: Canada
     name_fr: Canada
     value: canada
+    excel_code: "CANADA"
     order: 13.0
   
 # dimension value for Region
@@ -235,6 +263,7 @@
     name_en: Atlantic
     name_fr: Atlantique
     value: atlantic
+    excel_code: "ATLANTIC"
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 17
@@ -243,6 +272,7 @@
     name_en: Prairies
     name_fr: Prairies
     value: prairies
+    excel_code: "PRAIRIE"
     order: 3.0
 - model: cpho.dimensionvalue
   pk: 18
@@ -251,6 +281,7 @@
     name_en: Territories
     name_fr: Territoires
     value: territories
+    excel_code: "TERRITORIES"
     order: 5.0
 
 # dimension value for Country
@@ -261,6 +292,7 @@
     name_en: Canada
     name_fr: Canada
     value: canada
+    excel_code: "CANADA"
     order: 0.0
 
 # dimension value for Gender
@@ -271,6 +303,7 @@
     name_en: Men
     name_fr: Hommes
     value: men
+    excel_code: "MEN"
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 21
@@ -279,6 +312,7 @@
     name_en: Women
     name_fr: Femmes
     value: women
+    excel_code: "WOMEN"
     order: 1.0
 - model: cpho.dimensionvalue
   pk: 22
@@ -287,6 +321,7 @@
     name_en: Boys
     name_fr: Garçons
     value: boys
+    excel_code: "BOYS"
     order: 2.0
 - model: cpho.dimensionvalue
   pk: 23
@@ -295,6 +330,7 @@
     name_en: Girls
     name_fr: Filles
     value: girls
+    excel_code: "GIRLS"
     order: 4.0
 - model: cpho.dimensionvalue
   pk: 24
@@ -303,6 +339,7 @@
     name_en: "Men+"
     name_fr: "Hommes+"
     value: men_plus
+    excel_code: "MEN+"
     order: 5.0
 - model: cpho.dimensionvalue
   pk: 25
@@ -311,7 +348,35 @@
     name_en: "Women+"
     name_fr: "Femmes+"
     value: women_plus
+    excel_code: "WOMEN+"
     order: 6.0
+- model: cpho.dimensionvalue
+  pk: 88
+  fields:
+    dimension_type: 6
+    name_en: "Boys+"
+    name_fr: "Garçons+"
+    value: boys_plus
+    excel_code: "BOYS+"
+    order: 7.0
+- model: cpho.dimensionvalue
+  pk: 89
+  fields:
+    dimension_type: 6
+    name_en: "Girls+"
+    name_fr: "Filles+"
+    value: girls_plus
+    excel_code: "GIRLS+"
+    order: 8.0
+- model: cpho.dimensionvalue
+  pk: 90
+  fields:
+    dimension_type: 6
+    name_en: "Trans- and gender diverse"
+    name_fr: "Trans et diverses identités de genre"
+    value: trans_and_gender_diverse
+    excel_code: "TRANS AND GENDER DIVERSE"
+    order: 9.0
 - model: cpho.dimensionvalue
   pk: 87
   fields:
@@ -319,7 +384,8 @@
     name_en: "All genders"
     name_fr: "Tous les genres"
     value: all_genders
-    order: 7.0
+    excel_code: "ALL"
+    order: 10.0
 
 # dimension value for Living Arrangement
 - model: cpho.dimensionvalue
@@ -329,7 +395,9 @@
     name_en: "Males: Living alone"
     name_fr: "Hommes : Vivre seul"
     value: male_alone
+    excel_code: "MALES LIVING ALONE"
     order: 0.0
+
 - model: cpho.dimensionvalue
   pk: 30
   fields:
@@ -337,6 +405,7 @@
     name_en: "Males: In single-parent family"
     name_fr: "Hommes : Dans une famille monoparentale"
     value: male_single_parent_family
+    excel_code: "MALES IN SINGLE-PARENT FAMILY"
     order: 1.0
 - model: cpho.dimensionvalue
   pk: 31
@@ -345,6 +414,7 @@
     name_en: "Males: Living with others or other arrangements"
     name_fr: "Hommes : Vivre avec d'autres personnes ou d'autres arrangements"
     value: male_other
+    excel_code: "MALES LIVING WITH OTHERS OR OTHER ARRANGEMENTS"
     order: 2.0
 - model: cpho.dimensionvalue
   pk: 32
@@ -353,6 +423,7 @@
     name_en: "Males: Couple with children"
     name_fr: "Hommes : Couple avec enfants"
     value: male_couple_with_children
+    excel_code: "MALES COUPLE WITH CHILDREN"
     order: 3.0
 - model: cpho.dimensionvalue
   pk: 33
@@ -361,6 +432,7 @@
     name_en: "Males: Couple without children"
     name_fr: "Hommes : Couple sans enfant"
     value: male_couple_no_children
+    excel_code: "MALES COUPLE WITHOUT CHILDREN"
     order: 4.0
 - model: cpho.dimensionvalue
   pk: 34
@@ -369,6 +441,7 @@
     name_en: "Females: Living alone"
     name_fr: "Les femmes : Vivant seules"
     value: female_alone
+    excel_code: "FEMALES LIVING ALONE"
     order: 5.0
 - model: cpho.dimensionvalue
   pk: 35
@@ -376,6 +449,7 @@
     dimension_type: 7
     name_en: "Females: In single-parent family"
     name_fr: "Les femmes : Dans une famille monoparentale"
+    excel_code: "FEMALES IN SINGLE-PARENT FAMILY"
     value: female_single_parent_family
     order: 6.0
 - model: cpho.dimensionvalue
@@ -385,6 +459,7 @@
     name_en: "Females: Living with others or other arrangements"
     name_fr: "Les femmes : Vivre avec d'autres personnes ou d'autres arrangements"
     value: female_other
+    excel_code: "FEMALES LIVING WITH OTHERS OR OTHER ARRANGEMENTS"
     order: 7.0
 - model: cpho.dimensionvalue
   pk: 37
@@ -393,6 +468,7 @@
     name_en: "Females: Couple with children"
     name_fr: "Les femmes : Couple avec enfants"
     value: female_couple_with_children
+    excel_code: "FEMALES COUPLE WITH CHILDREN"
     order: 8.0
 - model: cpho.dimensionvalue
   pk: 38
@@ -401,6 +477,7 @@
     name_en: "Females: Couple without children"
     name_fr: "Les femmes : Couple sans enfant"
     value: female_couple_no_children
+    excel_code: "FEMALES COUPLE WITHOUT CHILDREN"
     order: 9.0
 - model: cpho.dimensionvalue
   pk: 39
@@ -409,6 +486,7 @@
     name_en: "Both Sexes: Living alone"
     name_fr: "Les deux sexes : Vivre seul"
     value: both_alone
+    excel_code: "BOTH SEXES LIVING ALONE"
     order: 10.0
 - model: cpho.dimensionvalue
   pk: 40
@@ -417,6 +495,7 @@
     name_en: "Both Sexes: In single-parent family"
     name_fr: "Les deux sexes : Dans les familles monoparentales"
     value: both_single_parent_family
+    excel_code: "BOTH SEXES IN SINGLE-PARENT FAMILY"
     order: 11.0
 - model: cpho.dimensionvalue
   pk: 41
@@ -425,6 +504,7 @@
     name_en: "Both Sexes: Living with others or other arrangements"
     name_fr: "Les deux sexes : Vivre avec d'autres personnes ou d'autres arrangements"
     value: both_other
+    excel_code: "BOTH SEXES LIVING WITH OTHERS OR OTHER ARRANGEMENTS"
     order: 12.0
 - model: cpho.dimensionvalue
   pk: 42
@@ -433,6 +513,7 @@
     name_en: "Both Sexes: Couple with children"
     name_fr: "Les deux sexes : Couple avec enfants"
     value: both_couple_with_children
+    excel_code: "BOTH SEXES COUPLE WITH CHILDREN"
     order: 13.0
 - model: cpho.dimensionvalue
   pk: 43
@@ -441,6 +522,7 @@
     name_en: "Both Sexes: Couple without children"
     name_fr: "Les deux sexes : Couple sans enfant"
     value: both_couple_no_children
+    excel_code: "BOTH SEXES COUPLE WITHOUT CHILDREN"
     order: 14.0
 
 
@@ -452,6 +534,7 @@
     name_en: "Males: Less than high school"
     name_fr: "Hommes : Moins d'un an d'études secondaires"
     value: males_less_than_high_school
+    excel_code: "MALES Less than high school"
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 45
@@ -460,6 +543,7 @@
     name_en: "Males: High school graduate"
     name_fr: "Hommes : Diplômés de l'enseignement secondaire"
     value: males_high_school_graduate
+    excel_code: "MALES High school graduate"
     order: 1.0
 - model: cpho.dimensionvalue
   pk: 46
@@ -468,6 +552,7 @@
     name_en: "Males: Community college/ Technical school/ University certificate"
     name_fr: "Hommes : Collège communautaire/ École technique/ Certificat universitaire"
     value: males_certificate
+    excel_code: "MALES Community college/ Technical school/ University certificate"
     order: 2.0
 - model: cpho.dimensionvalue
   pk: 47
@@ -476,6 +561,7 @@
     name_en: "Males: University graduate"
     name_fr: "Hommes : Diplôme universitaire"
     value: males_university_graduate
+    excel_code: "MALES University graduate"
     order: 3.0
 - model: cpho.dimensionvalue
   pk: 48
@@ -484,6 +570,7 @@
     name_en: "Males: Missing"
     name_fr: "Hommes : Manquant"
     value: males_education_missing
+    excel_code: "MALES Missing"
     order: 4.0
 - model: cpho.dimensionvalue
   pk: 49
@@ -492,6 +579,7 @@
     name_en: "Females: Less than high school"
     name_fr: "Femmes : Moins que l'école secondaire"
     value: females_less_than_high_school
+    excel_code: "FEMALES Less than high school"
     order: 5.0
 - model: cpho.dimensionvalue
   pk: 50
@@ -500,6 +588,7 @@
     name_en: "Females: High school graduate"
     name_fr: "Femmes : Diplôme d'études secondaires"
     value: females_high_school_graduate
+    excel_code: "FEMALES High school graduate"
     order: 6.0
 - model: cpho.dimensionvalue
   pk: 51
@@ -508,6 +597,7 @@
     name_en: "Females: Community college/ Technical school/ University certificate"
     name_fr: "Femmes : Collège communautaire/ École technique/ Certificat universitaire"
     value: females_certificate
+    excel_code: "FEMALES Community college/ Technical school/ University certificate"
     order: 7.0
 - model: cpho.dimensionvalue
   pk: 52
@@ -516,6 +606,7 @@
     name_en: "Females: University graduate"
     name_fr: "Femmes : Diplôme universitaire"
     value: females_university_graduate
+    excel_code: "FEMALES University graduate"
     order: 8.0
 - model: cpho.dimensionvalue
   pk: 53
@@ -524,6 +615,7 @@
     name_en: "Females: Missing"
     name_fr: "Femmes : Manquant"
     value: females_education_missing
+    excel_code: "FEMALES Missing"
     order: 9.0
 - model: cpho.dimensionvalue
   pk: 54
@@ -532,6 +624,7 @@
     name_en: "Both Sexes: Less than high school"
     name_fr: "Les deux sexes : Moins que l'école secondaire"
     value: both_less_than_high_school
+    excel_code: "BOTH SEXES Less than high school"
     order: 10.0
 - model: cpho.dimensionvalue
   pk: 55
@@ -540,6 +633,7 @@
     name_en: "Both Sexes: High school graduate"
     name_fr: "Les deux sexes : Diplôme d'études secondaires"
     value: both_high_school_graduate
+    excel_code: "BOTH SEXES High school graduate"
     order: 11.0
 - model: cpho.dimensionvalue
   pk: 56
@@ -548,6 +642,7 @@
     name_en: "Both Sexes: Community college/ Technical school/ University certificate "
     name_fr: "Les deux sexes : Collège communautaire/ École technique/ Certificat universitaire"
     value: both_certificate
+    excel_code: "BOTH SEXES Community college/ Technical school/ University certificate"
     order: 12.0
 - model: cpho.dimensionvalue
   pk: 57
@@ -556,6 +651,7 @@
     name_en: "Both Sexes: University graduate"
     name_fr: "Les deux sexes : Diplôme universitaire"
     value: both_university_graduate
+    excel_code: "BOTH SEXES University graduate"
     order: 13.0
 - model: cpho.dimensionvalue
   pk: 58
@@ -564,6 +660,7 @@
     name_en: "Both Sexes: Missing"
     name_fr: "Les deux sexes : Manquant"
     value: both_education_missing
+    excel_code: "BOTH SEXES Missing"
     order: 14.0
 
 # dimension value for Income Quintiles
@@ -574,6 +671,7 @@
     name_en: "Males: Quintile 1"
     name_fr: "Hommes : Quintile 1"
     value: male_quintile_1
+    excel_code: "MALES Quintile 1"
     order: 0.0
 - model: cpho.dimensionvalue
   pk: 60
@@ -582,6 +680,7 @@
     name_en: "Males: Quintile 2"
     name_fr: "Hommes : Quintile 2"
     value: male_quintile_2
+    excel_code: "MALES Quintile 2"
     order: 1.0
 - model: cpho.dimensionvalue
   pk: 61
@@ -590,6 +689,7 @@
     name_en: "Males: Quintile 3"
     name_fr: "Hommes : Quintile 3"
     value: male_quintile_3
+    excel_code: "MALES Quintile 3"
     order: 2.0
 - model: cpho.dimensionvalue
   pk: 62
@@ -598,6 +698,7 @@
     name_en: "Males: Quintile 4"
     name_fr: "Hommes : Quintile 4"
     value: male_quintile_4
+    excel_code: "MALES Quintile 4"
     order: 3.0
 - model: cpho.dimensionvalue
   pk: 63
@@ -606,6 +707,7 @@
     name_en: "Males: Quintile 5"
     name_fr: "Hommes : Quintile 5"
     value: male_quintile_5
+    excel_code: "MALES Quintile 5"
     order: 4.0
 - model: cpho.dimensionvalue
   pk: 64
@@ -614,6 +716,7 @@
     name_en: "Males: Missing"
     name_fr: "Hommes : Manquant"
     value: male_quintile_missing
+    excel_code: "MALES Missing"
     order: 5.0
 - model: cpho.dimensionvalue
   pk: 65
@@ -622,6 +725,7 @@
     name_en: "Females: Quintile 1"
     name_fr: "Femmes : Quintile 1"
     value: female_quintile_1
+    excel_code: "FEMALES Quintile 1"
     order: 6.0
 - model: cpho.dimensionvalue
   pk: 66
@@ -630,6 +734,7 @@
     name_en: "Females: Quintile 2"
     name_fr: "Femmes : Quintile 2"
     value: female_quintile_2
+    excel_code: "FEMALES Quintile 2"
     order: 7.0
 - model: cpho.dimensionvalue
   pk: 67
@@ -638,6 +743,7 @@
     name_en: "Females: Quintile 3"
     name_fr: "Femmes : Quintile 3"
     value: female_quintile_3
+    excel_code: "FEMALES Quintile 3"
     order: 8.0
 - model: cpho.dimensionvalue
   pk: 68
@@ -646,6 +752,7 @@
     name_en: "Females: Quintile 4"
     name_fr: "Femmes : Quintile 4"
     value: female_quintile_4
+    excel_code: "FEMALES Quintile 4"
     order: 9.0
 - model: cpho.dimensionvalue
   pk: 69
@@ -654,6 +761,7 @@
     name_en: "Females: Quintile 5"
     name_fr: "Femmes : Quintile 5"
     value: female_quintile_5
+    excel_code: "FEMALES Quintile 5"
     order: 10.0
 - model: cpho.dimensionvalue
   pk: 70
@@ -662,6 +770,7 @@
     name_en: "Females: Missing"
     name_fr: "Femmes : Manquant"
     value: female_quintile_missing
+    excel_code: "FEMALES Missing"
     order: 11.0
 - model: cpho.dimensionvalue
   pk: 71
@@ -670,6 +779,7 @@
     name_en: "Both Sexes: Quintile 1"
     name_fr: "Les deux sexes : Quintile 1"
     value: both_quintile_1
+    excel_code: "BOTH SEXES Quintile 1"
     order: 12.0
 - model: cpho.dimensionvalue
   pk: 72
@@ -678,6 +788,7 @@
     name_en: "Both Sexes: Quintile 2"
     name_fr: "Les deux sexes : Quintile 2"
     value: both_quintile_2
+    excel_code: "BOTH SEXES Quintile 2"
     order: 13.0
 - model: cpho.dimensionvalue
   pk: 73
@@ -686,6 +797,7 @@
     name_en: "Both Sexes: Quintile 3"
     name_fr: "Les deux sexes : Quintile 3"
     value: both_quintile_3
+    excel_code: "BOTH SEXES Quintile 3"
     order: 14.0
 - model: cpho.dimensionvalue
   pk: 74
@@ -694,6 +806,7 @@
     name_en: "Both Sexes: Quintile 4"
     name_fr: "Les deux sexes : Quintile 4"
     value: both_quintile_4
+    excel_code: "BOTH SEXES Quintile 4"
     order: 15.0
 - model: cpho.dimensionvalue
   pk: 75
@@ -702,6 +815,7 @@
     name_en: "Both Sexes: Quintile 5"
     name_fr: "Les deux sexes : Quintile 5"
     value: both_quintile_5
+    excel_code: "BOTH SEXES Quintile 5"
     order: 17.0
 - model: cpho.dimensionvalue
   pk: 76
@@ -710,6 +824,7 @@
     name_en: "Both Sexes: Missing"
     name_fr: "Les deux sexes : Manquant"
     value: both_quintile_missing
+    excel_code: "BOTH SEXES Missing"
     order: 18.0
 - model: cpho.dimensionvalue
   pk: 77
@@ -778,6 +893,5 @@
 
 # note:
 # ids 85,86,87 used up by new dimension values under sex/gender/prov
-
-
-
+# Aug 18: 
+# ids 88,89,90 used up by new dimension values under gender

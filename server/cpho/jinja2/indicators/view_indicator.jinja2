@@ -99,42 +99,44 @@
             <div class='card my-4'>
               <div class="card-header h3">{{ tm("periodic_data") }}</div>
               <div class="card-body">
-                <table class="table table-hover">
-                  <thead>
-                    <tr class="text-center">
-                      <th>{{ tm("year_of_dashboard_update") }}</th>
-                      <th>{{ tm("data_count") }}</th>
-                      <th>{{ tm("hso_submission") }}</th>
-                      <th>{{ tm("program_submission") }}</th>
-                      <th>{{ tm("actions") }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for period in sorted_all_shown_periods %}
-                      {% set data_count = data_counts_by_period[period] %}
-                      {% if data_count or period.is_current %}
-                        {% set submission_statuses = submission_statuses_by_period[period] %}
-                        {% set metadata_submission = false %}
-                        {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
-                          {% set button_text = tm("see_edit_data") %}
-                        {% else %}
-                          {% set button_text = tm("view_data") %}
-                        {% endif %}
+                <div style="overflow-x: auto; width: 100%;">
+                  <table class="table table-hover mb-0">
+                    <thead>
+                      <tr class="text-center">
+                        <th>{{ tm("year_of_dashboard_update") }}</th>
+                        <th>{{ tm("data_count") }}</th>
+                        <th>{{ tm("hso_submission") }}</th>
+                        <th>{{ tm("program_submission") }}</th>
+                        <th>{{ tm("actions") }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for period in sorted_all_shown_periods %}
+                        {% set data_count = data_counts_by_period[period] %}
+                        {% if data_count or period.is_current %}
+                          {% set submission_statuses = submission_statuses_by_period[period] %}
+                          {% set metadata_submission = false %}
+                          {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
+                            {% set button_text = tm("see_edit_data") %}
+                          {% else %}
+                            {% set button_text = tm("view_data") %}
+                          {% endif %}
  
-                        <tr class="text-center">
-                          <th>{{ period }}</th>
-                          <td>{{ data_count }}</td>
-                          <td>{{ submission_status_badge(submission_statuses['hso_global_status']) }}</td>
-                          <td>{{ submission_status_badge(submission_statuses['program_global_status']) }}</td>
-                          <td>
-                            <a class='btn btn-outline-dark'
-                               href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ button_text }}</a>
-                          </td>
-                        </tr>
-                      {% endif %}
-                    {% endfor %}
-                  </tbody>
-                </table>
+                          <tr class="text-center">
+                            <th>{{ period }}</th>
+                            <td>{{ data_count }}</td>
+                            <td>{{ submission_status_badge(submission_statuses['hso_global_status']) }}</td>
+                            <td>{{ submission_status_badge(submission_statuses['program_global_status']) }}</td>
+                            <td>
+                              <a class='btn btn-outline-dark'
+                                 href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ button_text }}</a>
+                            </td>
+                          </tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           {% endif %}

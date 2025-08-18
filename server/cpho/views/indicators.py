@@ -32,7 +32,6 @@ from .view_util import (
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
     age_group_sort,
-    export_mapper,
 )
 
 

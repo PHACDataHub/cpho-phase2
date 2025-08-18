@@ -76,31 +76,26 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                         record.dimension_value
                     )
 
-                writer.writerow(
-                    [
-                        ExportMapper.map_category(indicator.category),
-                        ExportMapper.map_topic(indicator.topic),
-                        indicator.name,
-                        indicator.detailed_indicator,
-                        indicator.sub_indicator_measurement,
-                        ExportMapper.map_data_quality(record.data_quality),
-                        record.value,
-                        record.value_lower_bound,
-                        record.value_upper_bound,
-                        ExportMapper.map_value_displayed(
-                            record.value_displayed
-                        ),
-                        record.single_year_timeframe,
-                        record.multi_year_timeframe,
-                        ExportMapper.map_dimension_type(record.dimension_type),
-                        deduced_dimension_value,
-                        record.period.code,
-                        ExportMapper.map_reason_for_null(
-                            record.reason_for_null
-                        ),
-                        ExportMapper.map_value_unit(record.value_unit),
-                        ExportMapper.map_arrow_flag(record.arrow_flag),
-                    ]
-                )
+                row = [
+                    ExportMapper.map_category(indicator.category),
+                    ExportMapper.map_topic(indicator.topic),
+                    indicator.name,
+                    indicator.detailed_indicator,
+                    indicator.sub_indicator_measurement,
+                    ExportMapper.map_data_quality(record.data_quality),
+                    record.value,
+                    record.value_lower_bound,
+                    record.value_upper_bound,
+                    ExportMapper.map_value_displayed(record.value_displayed),
+                    record.single_year_timeframe,
+                    record.multi_year_timeframe,
+                    ExportMapper.map_dimension_type(record.dimension_type),
+                    deduced_dimension_value,
+                    record.period.code,
+                    ExportMapper.map_reason_for_null(record.reason_for_null),
+                    ExportMapper.map_value_unit(record.value_unit),
+                    ExportMapper.map_arrow_flag(record.arrow_flag),
+                ]
+                writer.writerow(row)
 
         return response

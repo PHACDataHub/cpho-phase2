@@ -152,67 +152,31 @@
               </td>
             </tr>
             <tr>
-              <td>Dimension_Value</td>
-              <td>{{ tm("dimension_value") }}</td>
-              <td>
-                <div class="d-flex flex-row bd-highlight mb-3">
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("province_territory") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Province"] %}
-                        <li>{{ key }}</li>
-                      {% endfor %}
-                    </ul>
+              <td style="max-width:1px">Dimension_Value</td>
+              <td style="max-width:1px">{{ tm("dimension_value") }}</td>
+              <td style="max-width:100px">
+                <div>
+                  <div class="table table-responsive ">
+                    <table class="table-bordered table-sm">
+                      <tr>
+                        {% for dimension in mapper.get_dimension_type_mapper_dict() %}<th>{{ dimension }}</th>{% endfor %}
+                        <th>{{ tm("age_group") }}</th>
+                      </tr>
+                      <tr>
+                        {% for dimension in mapper.get_dimension_type_mapper_dict() %}
+                          <td class="align-top">
+                            <ul>
+                              {% for dim_val in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()[dimension] %}
+                                <li>{{ dim_val }}</li>
+                              {% endfor %}
+                            </ul>
+                          </td>
+                        {% endfor %}
+                        <td class="align-top">{{ tm("open_text_field") }}</td>
+                      </tr>
+                    </table>
                   </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("gender") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Gender"] %}
-                        <li>{{ key }}</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("province_territory") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Region"] %}
-                        <li>{{ key }}</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("sex") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Sex"] %}<li>{{ key }}</li>{% endfor %}
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("no_stratifier") }}</span>
-                    <hr>
-                    <ul>
-                      <li>CANADA</li>
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("age_group") }}</span>
-                    <hr>
-                    <ul>
-                      <li>{{ tm("open_text_field") }}</li>
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("living_arrangement") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Living Arrangement"] %}
-                        <li>{{ key }}</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
+
                 </td>
               </div>
             </tr>

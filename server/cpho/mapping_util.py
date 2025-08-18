@@ -93,267 +93,52 @@ def get_all_periods_dict() -> dict[str, Period]:
 def get_all_dimension_types_dict() -> dict[str, DimensionType]:
     return {
         dimension_type.code: dimension_type
-        for dimension_type in DimensionType.objects.all()
+        for dimension_type in DimensionType.objects.exclude(
+            is_literal=True
+        ).all()
     }
 
 
 @cache_within_request
-def get_all_dimension_values_dict() -> dict[str, DimensionValue]:
-    return {
-        dimension_value.value: dimension_value
-        for dimension_value in DimensionValue.objects.all()
-    }
+def get_all_dimension_values() -> dict[str, DimensionValue]:
+    return list(
+        DimensionValue.objects.order_by("order")
+        .prefetch_related("dimension_type")
+        .all()
+    )
 
 
 @cache_within_request
 def get_dimension_type_mapper_dict():
     all_dimension_dict = get_all_dimension_types_dict()
-    return {
-        "Province": all_dimension_dict["province"],
-        "Age Group": all_dimension_dict["age"],
-        "Sex": all_dimension_dict["sex"],
-        "Canada": all_dimension_dict["canada"],
-        "Region": all_dimension_dict["region"],
-        "Gender": all_dimension_dict["gender"],
-        "Living Arrangement": all_dimension_dict["living_arrangement"],
-        "Education Household": all_dimension_dict["education_household"],
-        "Income Quintiles": all_dimension_dict["income_quintiles"],
-    }
+
+    return {d.get_excel_code(): d for d in all_dimension_dict.values()}
 
 
 @cache_within_request
 def get_non_literal_dimension_mapper_dict():
-    all_dimension_val_dict = get_all_dimension_values_dict()
+    """
+    resulting dict helps map excel row values to dimension value lookups
+    indexed by excel-code pairs for dim-type and dim-values
+    e.g. { ("Province", "ON") : <DimensionValue for ontario...> , ... }
+    """
+    all_dimension_vals = get_all_dimension_values()
 
-    return {
-        ("Province", "ON"): all_dimension_val_dict["on"],
-        ("Province", "AB"): all_dimension_val_dict["ab"],
-        ("Province", "SK"): all_dimension_val_dict["sk"],
-        ("Province", "MB"): all_dimension_val_dict["mb"],
-        ("Province", "BC"): all_dimension_val_dict["bc"],
-        ("Province", "QC"): all_dimension_val_dict["qc"],
-        ("Province", "NB"): all_dimension_val_dict["nb"],
-        ("Province", "NS"): all_dimension_val_dict["ns"],
-        ("Province", "NL"): all_dimension_val_dict["nl"],
-        ("Province", "PE"): all_dimension_val_dict["pe"],
-        ("Province", "NU"): all_dimension_val_dict["nu"],
-        ("Province", "NT"): all_dimension_val_dict["nt"],
-        ("Province", "YT"): all_dimension_val_dict["yt"],
-        ("Province", "CANADA"): all_dimension_val_dict["canada"],
-        ("Region", "ATLANTIC"): all_dimension_val_dict["atlantic"],
-        ("Region", "PRAIRIE"): all_dimension_val_dict["prairies"],
-        ("Region", "TERRITORIES"): all_dimension_val_dict["territories"],
-        ("Gender", "MEN"): all_dimension_val_dict["men"],
-        ("Gender", "WOMEN"): all_dimension_val_dict["women"],
-        ("Gender", "BOYS"): all_dimension_val_dict["boys"],
-        ("Gender", "GIRLS"): all_dimension_val_dict["girls"],
-        ("Gender", "MEN+"): all_dimension_val_dict["men_plus"],
-        ("Gender", "WOMEN+"): all_dimension_val_dict["women_plus"],
-        ("Gender", "ALL"): all_dimension_val_dict["all_genders"],
-        ("Sex", "MALES"): all_dimension_val_dict["m"],
-        ("Sex", "FEMALES"): all_dimension_val_dict["f"],
-        ("Sex", "BOTH"): all_dimension_val_dict["both"],
-        ("Canada", "CANADA"): all_dimension_val_dict["canada"],
-        (
-            "Living Arrangement",
-            "MALES LIVING ALONE",
-        ): all_dimension_val_dict["male_alone"],
-        (
-            "Living Arrangement",
-            "MALES IN SINGLE-PARENT FAMILY",
-        ): all_dimension_val_dict["male_single_parent_family"],
-        (
-            "Living Arrangement",
-            "MALES LIVING WITH OTHERS OR OTHER ARRANGEMENTS",
-        ): all_dimension_val_dict["male_other"],
-        (
-            "Living Arrangement",
-            "MALES COUPLE WITH CHILDREN",
-        ): all_dimension_val_dict["male_couple_with_children"],
-        (
-            "Living Arrangement",
-            "MALES COUPLE WITHOUT CHILDREN",
-        ): all_dimension_val_dict["male_couple_no_children"],
-        (
-            "Living Arrangement",
-            "FEMALES LIVING ALONE",
-        ): all_dimension_val_dict["female_alone"],
-        (
-            "Living Arrangement",
-            "FEMALES IN SINGLE-PARENT FAMILY",
-        ): all_dimension_val_dict["female_single_parent_family"],
-        (
-            "Living Arrangement",
-            "FEMALES LIVING WITH OTHERS OR OTHER ARRANGEMENTS",
-        ): all_dimension_val_dict["female_other"],
-        (
-            "Living Arrangement",
-            "FEMALES COUPLE WITH CHILDREN",
-        ): all_dimension_val_dict["female_couple_with_children"],
-        (
-            "Living Arrangement",
-            "FEMALES COUPLE WITHOUT CHILDREN",
-        ): all_dimension_val_dict["female_couple_no_children"],
-        (
-            "Living Arrangement",
-            "BOTH SEXES LIVING ALONE",
-        ): all_dimension_val_dict["both_alone"],
-        (
-            "Living Arrangement",
-            "BOTH SEXES IN SINGLE-PARENT FAMILY",
-        ): all_dimension_val_dict["both_single_parent_family"],
-        (
-            "Living Arrangement",
-            "BOTH SEXES LIVING WITH OTHERS OR OTHER ARRANGEMENTS",
-        ): all_dimension_val_dict["both_other"],
-        (
-            "Living Arrangement",
-            "BOTH SEXES COUPLE WITH CHILDREN",
-        ): all_dimension_val_dict["both_couple_with_children"],
-        (
-            "Living Arrangement",
-            "BOTH SEXES COUPLE WITHOUT CHILDREN",
-        ): all_dimension_val_dict["both_couple_no_children"],
-        (
-            "Education Household",
-            "MALES Less than high school",
-        ): all_dimension_val_dict["males_less_than_high_school"],
-        (
-            "Education Household",
-            "MALES High school graduate",
-        ): all_dimension_val_dict["males_high_school_graduate"],
-        (
-            "Education Household",
-            "MALES Community college/ Technical school/ University certificate",
-        ): all_dimension_val_dict["males_certificate"],
-        (
-            "Education Household",
-            "MALES University graduate",
-        ): all_dimension_val_dict["males_university_graduate"],
-        (
-            "Education Household",
-            "MALES Missing",
-        ): all_dimension_val_dict["males_education_missing"],
-        (
-            "Education Household",
-            "FEMALES Less than high school",
-        ): all_dimension_val_dict["females_less_than_high_school"],
-        (
-            "Education Household",
-            "FEMALES High school graduate",
-        ): all_dimension_val_dict["females_high_school_graduate"],
-        (
-            "Education Household",
-            "FEMALES Community college/ Technical school/ University certificate",
-        ): all_dimension_val_dict["females_certificate"],
-        (
-            "Education Household",
-            "FEMALES University graduate",
-        ): all_dimension_val_dict["females_university_graduate"],
-        (
-            "Education Household",
-            "FEMALES Missing",
-        ): all_dimension_val_dict["females_education_missing"],
-        (
-            "Education Household",
-            "BOTH SEXES Less than high school",
-        ): all_dimension_val_dict["both_less_than_high_school"],
-        (
-            "Education Household",
-            "BOTH SEXES High school graduate",
-        ): all_dimension_val_dict["both_high_school_graduate"],
-        (
-            "Education Household",
-            "BOTH SEXES Community college/ Technical school/ University certificate",
-        ): all_dimension_val_dict["both_certificate"],
-        (
-            "Education Household",
-            "BOTH SEXES University graduate",
-        ): all_dimension_val_dict["both_university_graduate"],
-        (
-            "Education Household",
-            "BOTH SEXES Missing",
-        ): all_dimension_val_dict["both_education_missing"],
-        (
-            "Income Quintiles",
-            "MALES Quintile 1",
-        ): all_dimension_val_dict["male_quintile_1"],
-        (
-            "Income Quintiles",
-            "MALES Quintile 2",
-        ): all_dimension_val_dict["male_quintile_2"],
-        (
-            "Income Quintiles",
-            "MALES Quintile 3",
-        ): all_dimension_val_dict["male_quintile_3"],
-        (
-            "Income Quintiles",
-            "MALES Quintile 4",
-        ): all_dimension_val_dict["male_quintile_4"],
-        (
-            "Income Quintiles",
-            "MALES Quintile 5",
-        ): all_dimension_val_dict["male_quintile_5"],
-        (
-            "Income Quintiles",
-            "MALES Missing",
-        ): all_dimension_val_dict["male_quintile_missing"],
-        (
-            "Income Quintiles",
-            "FEMALES Quintile 1",
-        ): all_dimension_val_dict["female_quintile_1"],
-        (
-            "Income Quintiles",
-            "FEMALES Quintile 2",
-        ): all_dimension_val_dict["female_quintile_2"],
-        (
-            "Income Quintiles",
-            "FEMALES Quintile 3",
-        ): all_dimension_val_dict["female_quintile_3"],
-        (
-            "Income Quintiles",
-            "FEMALES Quintile 4",
-        ): all_dimension_val_dict["female_quintile_4"],
-        (
-            "Income Quintiles",
-            "FEMALES Quintile 5",
-        ): all_dimension_val_dict["female_quintile_5"],
-        (
-            "Income Quintiles",
-            "FEMALES Missing",
-        ): all_dimension_val_dict["female_quintile_missing"],
-        (
-            "Income Quintiles",
-            "BOTH SEXES Quintile 1",
-        ): all_dimension_val_dict["both_quintile_1"],
-        (
-            "Income Quintiles",
-            "BOTH SEXES Quintile 2",
-        ): all_dimension_val_dict["both_quintile_2"],
-        (
-            "Income Quintiles",
-            "BOTH SEXES Quintile 3",
-        ): all_dimension_val_dict["both_quintile_3"],
-        (
-            "Income Quintiles",
-            "BOTH SEXES Quintile 4",
-        ): all_dimension_val_dict["both_quintile_4"],
-        (
-            "Income Quintiles",
-            "BOTH SEXES Quintile 5",
-        ): all_dimension_val_dict["both_quintile_5"],
-        (
-            "Income Quintiles",
-            "BOTH SEXES Missing",
-        ): all_dimension_val_dict["both_quintile_missing"],
-    }
+    def key_for_row(dim_val: DimensionValue):
+        return (
+            dim_val.dimension_type.get_excel_code(),
+            dim_val.get_excel_code(),
+        )
+
+    r = {key_for_row(dim_val): dim_val for dim_val in all_dimension_vals}
+    return r
 
 
 def get_non_literal_dimension_mapper_dict_by_dimension_type():
     """
     nests the tuple key dict above
-    turns { (dimension_type, dimension_value): mapped_value, ... }
-    into { dimension_type: { dimension_value: mapped_value, ... }, ... }
+    turns { (dimension_code, dimension_code): mapped_value, ... }
+    into { dimension_code: { dimension_code: mapped_value, ... }, ... }
     """
     source = get_non_literal_dimension_mapper_dict()
 
@@ -424,28 +209,11 @@ class ExportMapper:
 
     @staticmethod
     def map_dimension_type(val):
-        mapper_dict = get_dimension_type_mapper_dict()
-        return inverted_dict(mapper_dict).get(val, "")
-
-    @staticmethod
-    @cache_within_request
-    def get_dimension_value_mapper_dict():
-        mapper_dict = get_non_literal_dimension_mapper_dict()
-        # these are pairs of (dimension_type, dimension_value)
-        # we just want the dimension value
-        just_values = {k[1]: v for k, v in mapper_dict.items()}
-
-        canada_val = DimensionValue.objects.get(
-            dimension_type__code="province", value="canada"
-        )
-        just_values[canada_val] = "CANADA"
-
-        return inverted_dict(just_values)
+        return val.get_excel_code()
 
     @classmethod
     def map_dimension_value(cls, val):
-        mapper_dict = cls.get_dimension_value_mapper_dict()
-        return mapper_dict.get(val, "")
+        return val.get_excel_code()
 
     @staticmethod
     def map_data_quality(val):

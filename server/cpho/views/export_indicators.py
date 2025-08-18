@@ -6,6 +6,7 @@ from django.views.generic import View
 
 from phac_aspc.rules import test_rule
 
+from cpho.mapping_util import ExportMapper
 from cpho.models import Indicator, IndicatorDatum
 from cpho.views.view_util import export_mapper
 
@@ -73,38 +74,34 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
                 if record.dimension_type.is_literal:
                     deduced_dimension_value = record.literal_dimension_val
                 else:
-                    deduced_dimension_value = mapper[
-                        "non_literal_dimension_value_mapper"
-                    ].get(record.dimension_value, "")
+                    deduced_dimension_value = ExportMapper.map_dimension_value(
+                        record.dimension_value
+                    )
 
                 writer.writerow(
                     [
-                        mapper["category_mapper"].get(indicator.category, ""),
-                        mapper["topic_mapper"].get(indicator.topic, ""),
+                        ExportMapper.map_category(indicator.category),
+                        ExportMapper.map_topic(indicator.topic),
                         indicator.name,
                         indicator.detailed_indicator,
                         indicator.sub_indicator_measurement,
-                        mapper["data_quality_mapper"].get(
-                            record.data_quality, ""
-                        ),
+                        ExportMapper.map_data_quality(record.data_quality),
                         record.value,
                         record.value_lower_bound,
                         record.value_upper_bound,
-                        mapper["value_displayed_mapper"].get(
-                            record.value_displayed, ""
+                        ExportMapper.map_value_displayed(
+                            record.value_displayed
                         ),
                         record.single_year_timeframe,
                         record.multi_year_timeframe,
-                        mapper["dimension_type_mapper"].get(
-                            record.dimension_type, ""
-                        ),
+                        ExportMapper.map_dimension_type(record.dimension_type),
                         deduced_dimension_value,
                         record.period.code,
-                        mapper["reason_for_null_mapper"].get(
-                            record.reason_for_null, ""
+                        ExportMapper.map_reason_for_null(
+                            record.reason_for_null
                         ),
-                        mapper["value_unit_mapper"].get(record.value_unit, ""),
-                        mapper["arrow_flag_mapper"].get(record.arrow_flag, ""),
+                        ExportMapper.map_value_unit(record.value_unit),
+                        ExportMapper.map_arrow_flag(record.arrow_flag),
                     ]
                 )
 

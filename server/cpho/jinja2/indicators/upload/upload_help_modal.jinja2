@@ -145,7 +145,7 @@
               <td>{{ tm("dimension_type") }}</td>
               <td>
                 <ul>
-                  {% for key in mapper["dimension_type_mapper"] %}
+                  {% for key in mapper.get_dimension_type_mapper_dict() %}
                     {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
@@ -160,8 +160,8 @@
                     <span class="fw-bold">{{ tm("province_territory") }}</span>
                     <hr>
                     <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Province" %}<li>{{ key[1] }}</li>{% endif %}
+                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Province"] %}
+                        <li>{{ key }}</li>
                       {% endfor %}
                     </ul>
                   </div>
@@ -169,8 +169,8 @@
                     <span class="fw-bold">{{ tm("gender") }}</span>
                     <hr>
                     <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Gender" %}<li>{{ key[1] }}</li>{% endif %}
+                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Gender"] %}
+                        <li>{{ key }}</li>
                       {% endfor %}
                     </ul>
                   </div>
@@ -178,8 +178,8 @@
                     <span class="fw-bold">{{ tm("province_territory") }}</span>
                     <hr>
                     <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Region" %}<li>{{ key[1] }}</li>{% endif %}
+                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Region"] %}
+                        <li>{{ key }}</li>
                       {% endfor %}
                     </ul>
                   </div>
@@ -187,9 +187,7 @@
                     <span class="fw-bold">{{ tm("sex") }}</span>
                     <hr>
                     <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Sex" %}<li>{{ key[1] }}</li>{% endif %}
-                      {% endfor %}
+                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Sex"] %}<li>{{ key }}</li>{% endfor %}
                     </ul>
                   </div>
                   <div class="p-2 border">
@@ -210,8 +208,8 @@
                     <span class="fw-bold">{{ tm("living_arrangement") }}</span>
                     <hr>
                     <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Living Arrangement" %}<li>{{ key[1] }}</li>{% endif %}
+                      {% for key in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()["Living Arrangement"] %}
+                        <li>{{ key }}</li>
                       {% endfor %}
                     </ul>
                   </div>
@@ -225,7 +223,7 @@
                 <div class="row">
                   <div class="col-4">
                     <ul>
-                      {% for key in mapper["period_mapper"] %}<li>{{ key }}</li>{% endfor %}
+                      {% for key in mapper.get_all_periods_dict() %}<li>{{ key }}</li>{% endfor %}
                     </ul>
                   </div>
                   <div class="col-8">

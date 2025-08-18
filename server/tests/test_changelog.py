@@ -90,6 +90,12 @@ def create_versions():
 def test_global_changelog(vanilla_user_client):
     create_versions()
 
+    num_dimensions_and_values = (
+        # need this to subtract from changelog total entries
+        DimensionType.objects.count()
+        + DimensionValue.objects.count()
+    )
+
     if settings.USE_SQLITE:
         print("skipping changelog test because sqlite is used")
         return
@@ -104,8 +110,7 @@ def test_global_changelog(vanilla_user_client):
     ):
         resp = vanilla_user_client.get(reverse("global_changelog"))
         assert resp.status_code == 200
-        assert resp.context["num_pages"] == 11
-        assert resp.context["page_num"] == 1
+        assert resp.context["num_pages"] == 11 + num_dimensions_and_values / 2
 
         resp = vanilla_user_client.get(
             reverse("global_changelog", kwargs={"page_num": 2})

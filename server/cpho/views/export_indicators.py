@@ -68,7 +68,7 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
         if self.indicator:
             for record in IndicatorDatum.active_objects.filter(
                 indicator=self.indicator
-            ):
+            ).order_by("period", "dimension_type", "dimension_value"):
                 if record.dimension_type.is_literal:
                     deduced_dimension_value = record.literal_dimension_val
                 else:

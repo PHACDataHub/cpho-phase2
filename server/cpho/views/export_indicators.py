@@ -8,7 +8,6 @@ from phac_aspc.rules import test_rule
 
 from cpho.mapping_util import ExportMapper
 from cpho.models import Indicator, IndicatorDatum
-from cpho.views.view_util import export_mapper
 
 from .view_util import MustPassAuthCheckMixin
 
@@ -67,7 +66,6 @@ class ExportIndicator(MustPassAuthCheckMixin, View):
         writer.writerow(header_row)
 
         if self.indicator:
-            mapper = export_mapper()
             for record in IndicatorDatum.active_objects.filter(
                 indicator=self.indicator
             ):

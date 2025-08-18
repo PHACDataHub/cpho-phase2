@@ -65,3 +65,11 @@ Note: if you set USE_SQLITE=True in your .env file, you don't need to set any of
 
 To connect to the remote DB from your local machine, download, chmod and ensure the cloud-sql-proxy is in your path, then run `source deploy/connect_cloud_sql_proxy.sh`. In a different shell, you can now run `./manage.py` commands directly against the remote DB. Be careful and make sure you close the script process when you're done.
 
+### Generating test coverage
+
+From the `server/` directory run the following
+1. `coverage run --source=. ./manage.py test tests/`
+2. `coverage html -i`
+3. `python -m http.server 1337`
+4. visit `http://localhost:1337/htmlcov/` and dig into modules to see which individual line coverage
+

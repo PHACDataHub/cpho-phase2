@@ -1,8 +1,18 @@
 from django.contrib.auth.views import LoginView as BaseLoginView
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import RedirectView
+
+
+class LogoutView(BaseLogoutView):
+    http_method_names = ["get", *BaseLogoutView.http_method_names]
+
+    def get_success_url(self):
+        return reverse("login")
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
 
 
 class LoginView(BaseLoginView):

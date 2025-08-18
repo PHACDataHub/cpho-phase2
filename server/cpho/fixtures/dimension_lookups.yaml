@@ -351,6 +351,33 @@
     excel_code: "WOMEN+"
     order: 6.0
 - model: cpho.dimensionvalue
+  pk: 88
+  fields:
+    dimension_type: 6
+    name_en: "Boys+"
+    name_fr: "Garçons+"
+    value: boys_plus
+    excel_code: "BOYS+"
+    order: 7.0
+- model: cpho.dimensionvalue
+  pk: 89
+  fields:
+    dimension_type: 6
+    name_en: "Girls+"
+    name_fr: "Filles+"
+    value: girls_plus
+    excel_code: "GIRLS+"
+    order: 8.0
+- model: cpho.dimensionvalue
+  pk: 90
+  fields:
+    dimension_type: 6
+    name_en: "Trans- and gender diverse"
+    name_fr: "Trans et diverses identités de genre"
+    value: trans_and_gender_diverse
+    excel_code: "TRANS AND GENDER DIVERSE"
+    order: 9.0
+- model: cpho.dimensionvalue
   pk: 87
   fields:
     dimension_type: 6
@@ -358,7 +385,7 @@
     name_fr: "Tous les genres"
     value: all_genders
     excel_code: "ALL"
-    order: 7.0
+    order: 10.0
 
 # dimension value for Living Arrangement
 - model: cpho.dimensionvalue
@@ -866,6 +893,5 @@
 
 # note:
 # ids 85,86,87 used up by new dimension values under sex/gender/prov
-
-
-
+# Aug 18: 
+# ids 88,89,90 used up by new dimension values under gender

@@ -29,6 +29,7 @@
     {% block extra_scripts_css %}{% endblock %}
   </head>
   <body hx-ext="morph">
+    <a class="visually-hidden-focusable" href="#main-content" id="skip-link">{{ tm("skip_to_main") }}</a>
     {{ phac_aspc.phac_aspc_wet_session_timeout_dialog(dict(request=request) , 'logout') }}
     <div id="modal-moint-point"></div>
     <script>
@@ -126,7 +127,7 @@
         </div>
       </nav>
     {% endblock %}
-    <main class="pb-5">
+    <main id="main-content" class="pb-5">
       {% if messages %}
         {% for message in messages %}
           <div role="alert"

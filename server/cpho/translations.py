@@ -1,4 +1,8 @@
 translation_entries = {
+    "skip_to_main": {
+        "en": "Skip to main content",
+        "fr": "Passer au contenu principal",
+    },
     "site_title": {
         "en": "CPHO Phase 2",
         "fr": "DSPC Phase 2",

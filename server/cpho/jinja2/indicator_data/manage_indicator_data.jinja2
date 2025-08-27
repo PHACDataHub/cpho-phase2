@@ -78,7 +78,7 @@
 {% endmacro %}
 
 {% block content %}
-  <h1>{{ tm("indicator_data") }} : {{ indicator.name }} ({{ period }})</h1>
+  <h1>{{ tm("indicator_data") }} : {{ indicator.bilingual_name }} ({{ period }})</h1>
   <a class="btn btn-warning btn-sm"
      href="{{ url('view_indicator_for_period', args=[indicator.id, period.id]) }}">{{ tm("cancel") }}</a>
   <div class="table-responsive">

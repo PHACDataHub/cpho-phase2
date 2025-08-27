@@ -15,7 +15,7 @@
 {% endmacro %}
 
 {% macro indicator(indicator, active) %}
-  {{ item(indicator.name , url('view_indicator', args=[indicator.id]) , active) }}
+  {{ item(indicator.bilingual_name , url('view_indicator', args=[indicator.id]) , active) }}
 {% endmacro %}
 
 {% macro indicator_period(indicator, period, active) %}

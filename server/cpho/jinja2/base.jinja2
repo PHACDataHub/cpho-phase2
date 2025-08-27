@@ -81,7 +81,9 @@
             {% block header_menu %}<!-- This block will be replaced by per-page overrides -->{% endblock %}
             <ul class="navbar-nav flex-fill justify-content-end">
               <li class="nav-item">
-                <a class="nav-link text-white" href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
+                <a class="nav-link text-white"
+                   lang="{{ get_other_lang_code() }}"
+                   href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
               </li>
               {% if user.is_authenticated %}
                 <li class="nav-item dropdown">

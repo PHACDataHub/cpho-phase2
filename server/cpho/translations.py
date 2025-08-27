@@ -3,6 +3,18 @@ translation_entries = {
         "en": "Skip to main content",
         "fr": "Passer au contenu principal",
     },
+    "required_explainer": {
+        "en": "Required fields are indicated with a red asterisk",
+        "fr": "Les champs obligatoires sont indiqués par une étoile rouge",
+    },
+    "please_select_an_option_below": {
+        "en": "Please select an option below",
+        "fr": "Veuillez sélectionner une option ci-dessous",
+    },
+    "symbol_of_the_government_of_canada": {
+        "en": "Symbol of the Government of Canada",
+        "fr": "Symbole du gouvernement du Canada",
+    },
     "site_title": {
         "en": "CPHO Phase 2",
         "fr": "DSPC Phase 2",

@@ -242,59 +242,61 @@
     </h5>
     <div class="card-body">
       <p class="my-2">{{ tm("quintile_metadata_description") }}</p>
-      <table class="table" style="overflow-x:auto; display:block">
-        <thead>
-          <tr class="text-center">
-            <th>{{ tm("quintile") }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g1') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g2_lower') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g2_upper') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g3_lower') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g3_upper') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g4_lower') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g4_upper') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g5') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {% set row_name = tm('quintile_values') %}
-            <td class='text-center'>{{ row_name }}</td>
-            <td>
-              <div class="form-group mb-3">{{ form.g1 }}</div>
-              {{ hidden_a11y_label(form.g1, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g2_lower }}</div>
-              {{ hidden_a11y_label(form.g2_lower, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g2_upper }}</div>
-              {{ hidden_a11y_label(form.g2_upper, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g3_lower }}</div>
-              {{ hidden_a11y_label(form.g3_lower, row_name ,) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g3_upper }}</div>
-              {{ hidden_a11y_label(form.g3_upper, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g4_lower }}</div>
-              {{ hidden_a11y_label(form.g4_lower, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g4_upper }}</div>
-              {{ hidden_a11y_label(form.g4_upper, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g5 }}</div>
-              {{ hidden_a11y_label(form.g5, row_name) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table" style="overflow-x:auto; display:block">
+          <thead>
+            <tr class="text-center">
+              <th>{{ tm("quintile") }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g1') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g2_lower') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g2_upper') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g3_lower') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g3_upper') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g4_lower') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g4_upper') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g5') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% set row_name = tm('quintile_values') %}
+              <td class='text-center'>{{ row_name }}</td>
+              <td>
+                <div class="form-group mb-3">{{ form.g1 }}</div>
+                {{ hidden_a11y_label(form.g1, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g2_lower }}</div>
+                {{ hidden_a11y_label(form.g2_lower, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g2_upper }}</div>
+                {{ hidden_a11y_label(form.g2_upper, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g3_lower }}</div>
+                {{ hidden_a11y_label(form.g3_lower, row_name ,) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g3_upper }}</div>
+                {{ hidden_a11y_label(form.g3_upper, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g4_lower }}</div>
+                {{ hidden_a11y_label(form.g4_lower, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g4_upper }}</div>
+                {{ hidden_a11y_label(form.g4_upper, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g5 }}</div>
+                {{ hidden_a11y_label(form.g5, row_name) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

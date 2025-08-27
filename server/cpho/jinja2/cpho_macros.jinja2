@@ -2,34 +2,36 @@
 
 {% macro indicator_data_table_w_submissions(data) %}
   {# assumes dimension_type and dimension_value are prefetched #}
-  <table class="table">
-    <thead>
-      <tr>
-        <th class="width-30">{{ tm("stratifier_value") }}</th>
-        <th>{{ tm("indicator_value") }}</th>
-        <th>{{ tm("last_modified") }}</th>
-        <th>{{ tm("hso_submission") }}</th>
-        <th>{{ tm("program_submission") }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for datum in data %}
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
         <tr>
-          <th>
-            {% if datum.dimension_type.is_literal %}
-              {{ datum.literal_dimension_val }}
-            {% else %}
-              {{ datum.dimension_value.name }}
-            {% endif %}
-          </th>
-          <td>{{ datum.value }}</td>
-          <td>{{ date_display(datum.last_version_date) }}</td>
-          <td>{{ submission_status_label(datum.submission_status(submission_type="hso") ) }}</td>
-          <td>{{ submission_status_label(datum.submission_status(submission_type="program") ) }}</td>
+          <th class="width-30">{{ tm("stratifier_value") }}</th>
+          <th>{{ tm("indicator_value") }}</th>
+          <th>{{ tm("last_modified") }}</th>
+          <th>{{ tm("hso_submission") }}</th>
+          <th>{{ tm("program_submission") }}</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for datum in data %}
+          <tr>
+            <th>
+              {% if datum.dimension_type.is_literal %}
+                {{ datum.literal_dimension_val }}
+              {% else %}
+                {{ datum.dimension_value.name }}
+              {% endif %}
+            </th>
+            <td>{{ datum.value }}</td>
+            <td>{{ date_display(datum.last_version_date) }}</td>
+            <td>{{ submission_status_label(datum.submission_status(submission_type="hso") ) }}</td>
+            <td>{{ submission_status_label(datum.submission_status(submission_type="program") ) }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endmacro %}
 
 {% macro submission_status_badge(submission_status) %}

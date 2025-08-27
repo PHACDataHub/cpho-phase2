@@ -80,13 +80,15 @@
 {% block content %}
   <h1>{{ tm("indicator_data") }} : {{ indicator.name }} ({{ period }})</h1>
   <a class="btn btn-warning btn-sm"
-     href="{{ url('view_indicator_for_period', args=[indicator.id, period.id]) }}">Cancel</a>
+     href="{{ url('view_indicator_for_period', args=[indicator.id, period.id]) }}">{{ tm("cancel") }}</a>
+  <div class="table-responsive">
 
-  <table class="d-none age-group-empty-form-container">
-    {# This is a form template to be used by 'add new form' feature #}
-    {# Parent must be a table, otherwise browser will strip the invalid tr/td tags #}
-    {{ age_group_form(age_group_formset.empty_form) }}
-  </table>
+    <table class="d-none age-group-empty-form-container">
+      {# This is a form template to be used by 'add new form' feature #}
+      {# Parent must be a table, otherwise browser will strip the invalid tr/td tags #}
+      {{ age_group_form(age_group_formset.empty_form) }}
+    </table>
+  </div>
   {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
     {% set mode = "edit" %}
   {% else %}

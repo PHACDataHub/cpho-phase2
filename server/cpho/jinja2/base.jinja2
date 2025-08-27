@@ -74,7 +74,7 @@
                   data-bs-target="#navbarSupportedContent"
                   aria-controls="navbarSupportedContent"
                   aria-expanded="false"
-                  aria-label="Toggle navigation">
+                  aria-label="{{ tm("toggle_navigation") }}">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -138,7 +138,7 @@
         <div id="content" class='container'>
           {% block content_breadcrumbs_container %}
             {# this is just here so templates can opt-out from breadcrumbs #}
-            <nav aria-label="breadcrumb">
+            <nav aria-label="{{ tm("breadcrumb_trail") }}">
               <ol class="breadcrumb">
                 {% block content_breadcrumbs %}
                 {% endblock content_breadcrumbs %}

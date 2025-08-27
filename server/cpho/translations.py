@@ -7,6 +7,15 @@ translation_entries = {
         "en": "Required fields are indicated with a red asterisk",
         "fr": "Les champs obligatoires sont indiqués par une étoile rouge",
     },
+    "toggle_navigation": {
+        "en": "Toggle navigation",
+        "fr": "Basculer la navigation",
+    },
+    "close": {
+        "en": "Close",
+        "fr": "Fermer",
+    },
+    "breadcrumb_trail": {"en": "Breadcrumb trail", "fr": "Fil d'Ariane"},
     "please_select_an_option_below": {
         "en": "Please select an option below",
         "fr": "Veuillez sélectionner une option ci-dessous",
@@ -55,6 +64,14 @@ translation_entries = {
         "fr": None,
         "translated_using": "Edit",
         "fr_auto": "Modifier",
+    },
+    "create_new_user": {
+        "en": "Create new user",
+        "fr": "Créer un nouvel utilisateur",
+    },
+    "indicator_directories": {
+        "en": "Indicator directories",
+        "fr": "Répertoires d'indicateurs",
     },
     "delete": {
         "en": "Delete",

@@ -23,7 +23,7 @@
       </div>
     </div>
   {% endif %}
- 
+
 {% endmacro %}
 
 {% macro fieldset_field(field, helptext=None) %}
@@ -62,7 +62,7 @@
       {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
     </div>
   </div>
- 
+
   <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tm("general_metadata") }}</h5>
     <div class="card-body">
@@ -128,7 +128,7 @@
     </div>
   </div>
 
- 
+
   <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tm("age_metadata") }}</h5>
     <div class="card-body">
@@ -302,5 +302,5 @@
 
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
-         value="{{ tm("submit") }}" />
+         value="{{ tm('submit') }}" />
 </form>

@@ -22,10 +22,10 @@
     </td>
   </tr>
 {% endmacro %}
- 
+
 {% block content %}
   {% set indicator = view.indicator %}
- 
+
   <div class="h2">{{ tm("review_metadata") }} : {{ view.indicator.bilingual_name }}</div>
   <div>
     <button type="button"
@@ -80,7 +80,7 @@
             <tbody>
               {{ field_tr(tm("name") , ind.name) }}
               {{ field_tr(tm("name_french") , ind.name_fr) }}
- 
+
               {{ field_tr(tm("category") , ind.get_category_display() ) }}
               {{ field_tr(tm("topic") , ind.get_topic_display() ) }}
 
@@ -99,11 +99,11 @@
               </tr>
 
               {{ header_tr(tm("general_metadata") ) }}
- 
- 
+
+
               {{ field_tr(tm("measure_text") , ind.measure_text) }}
               {{ field_tr(tm("measure_text_french") , ind.measure_text_fr) }}
- 
+
               {{ field_tr(tm("impact_text") , ind.impact_text) }}
               {{ field_tr(tm("impact_text_french") , ind.impact_text_fr) }}
 
@@ -127,7 +127,7 @@
 
               {{ field_tr(tm("recommendations_for_hso") , ind.recommendations_for_hso) }}
               {{ field_tr(tm("recommendations_for_hso_french") , ind.recommendations_for_hso_fr) }}
- 
+
               {{ header_tr(tm("sex_metadata") ) }}
               {{ field_tr(tm("title_sex") , ind.title_sex) }}
               {{ field_tr(tm("title_sex_french") , ind.title_sex_fr) }}
@@ -275,7 +275,7 @@
 
   <div class="card mt-5">
     <div class="card-header">
- 
+
       <div class="h5">{{ tm("benchmarking_metadata") }}</div>
       <div class="row">
         <div class="col">

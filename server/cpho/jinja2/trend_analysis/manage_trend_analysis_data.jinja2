@@ -17,7 +17,7 @@
 {% endmacro %}
 
 {% macro trend_analysis_form(form) %}
- 
+
   <tr class="trend-analysis-form" {% if form.errors %}{% endif %}>
     <td>{{ trend_analysis_form_field_with_errors(form.year) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.data_point) }}</td>
@@ -82,7 +82,7 @@
     </div>
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tm("save") }}">
+           value="{{ tm('save') }}">
   </form>
   <script>
     let addButton = document.querySelector("#add-form");

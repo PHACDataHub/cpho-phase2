@@ -2,7 +2,7 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% block content %}
-  <a href="{{ url("root") }}" class="btn btn-warning">{{ tm("back") }}</a>
+  <a href="{{ url('root') }}" class="btn btn-warning">{{ tm("back") }}</a>
 
   <h1>{{ tm("indicator_group") }}: {{ indicator_directory.name }}</h1>
   <div>
@@ -58,7 +58,7 @@
 
       <div class="text-end">
 
-        <input type="submit" value="{{ tm("save") }}" class="btn btn-success" />
+        <input type="submit" value="{{ tm('save') }}" class="btn btn-success" />
       </div>
     </form>
   </details>

@@ -272,6 +272,10 @@
       //newForm.outerHTML = `<tr class='age-group-form'>${newFormHtml}</tr>`;
       
       totalFormsInput.setAttribute('value', `${numForms}`)
+
+      // a11y: focus on first input of newly added form
+      newForm.querySelector('select,input').focus();
+
   }
     </script>
   {% endif %}

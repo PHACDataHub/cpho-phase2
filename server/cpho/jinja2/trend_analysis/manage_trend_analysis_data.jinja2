@@ -104,8 +104,12 @@
       let newForm = document.createElement("tr")
       newForm.classList.add("trend-analysis-form")
       newForm.innerHTML = newFormHtml;
-      container.appendChild(newForm)
-      totalFormsInput.setAttribute('value', `${numForms}`)
+      container.appendChild(newForm);
+      totalFormsInput.setAttribute('value', `${numForms}`);
+
+      // a11y: focus on first input of newly added form
+      newForm.querySelector('select,input').focus();
+
     }
   </script>
 

@@ -109,8 +109,11 @@
       let newForm = document.createElement("tr")
       newForm.classList.add("benchmarking-form")
       newForm.innerHTML = newFormHtml;
-      container.appendChild(newForm)
-      totalFormsInput.setAttribute('value', `${numForms}`)
+      container.appendChild(newForm);
+      totalFormsInput.setAttribute('value', `${numForms}`);
+
+      // focus on first input of newly added form
+      newForm.querySelector('select,input').focus();
     }
   </script>
 

@@ -1508,4 +1508,8 @@ translation_entries = {
         "en": "Export Benchmarking",
         "fr": "Exporter l'analyse comparative",
     },
+    "editor_for": {
+        "en": "Editor for",
+        "fr": "Éditeur pour",
+    },
 }

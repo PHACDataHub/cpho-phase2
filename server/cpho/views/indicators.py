@@ -43,6 +43,18 @@ class ModelMultipleChoiceFieldWithTranslation(forms.ModelMultipleChoiceField):
         return obj.name_en
 
 
+class CustomCkEditorWidget(CKEditorWidget):
+    def __init__(self, *args, label=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not label:
+            raise Exception("Ckeditor requires an explicit label")
+
+        title = tm("editor_for") + " : " + label
+
+        self.config["title"] = title
+
+
 class IndicatorForm(ModelForm):
     class Meta:
         model = Indicator
@@ -83,8 +95,10 @@ class IndicatorForm(ModelForm):
 
         return forms.CharField(
             required=required,
-            widget=CKEditorWidget(
-                config_name="notes", attrs={"class": class_string}
+            widget=CustomCkEditorWidget(
+                config_name="notes",
+                label=label,
+                attrs={"class": class_string},
             ),
             label=label if label else None,
         )

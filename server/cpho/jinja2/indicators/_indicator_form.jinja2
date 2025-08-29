@@ -27,16 +27,14 @@
 {% endmacro %}
 
 {% macro fieldset_field(field, helptext=None) %}
-  <fieldset class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
+  <fieldset class="row g-3 form-group mb-3 ">
+    <legend class="col-lg-3">
       <div class="row">
-        <fieldset>
-          <legend class="col col-form-label" style="font-size:1rem">{{ field.label }}</legend>
-        </fieldset>
+        <div class="col col-form-label " style="font-size:1rem">{{ field.label }}</div>
       </div>
       {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
-    </div>
-    <div class="col-lg-10">{{ field }}</div>
+    </legend>
+    <div class="col-lg-9">{{ field }}</div>
   </fieldset>
 {% endmacro %}
 
@@ -58,8 +56,11 @@
       {{ form_field(form.sub_indicator_measurement) }}
       {{ form_field(form.sub_indicator_measurement_fr) }}
 
-      {{ fieldset_field(form.relevant_dimensions, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
-      {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
+      {# TODO: re-add helptext #}
+      {# {{ fieldset_field(form.relevant_dimensions, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }} #}
+      {{ fieldset_field(form.relevant_dimensions,) }}
+      {# {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }} #}
+      {{ fieldset_field(form.relevant_period_types,) }}
     </div>
   </div>
 

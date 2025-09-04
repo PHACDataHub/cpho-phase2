@@ -7,10 +7,10 @@
   {{ bc.item(tm("benchmarking") , None, True) }}
 {% endblock %}
 
-{% macro benchmarking_form_field_with_errors(field) %}
+{% macro benchmarking_form_field_with_errors(form,field) %}
   {{ field }}
   {% if field.errors %}
-    <div class="error-display">
+    <div class="error-display" id="{{ form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
     </div>
   {% endif %}
@@ -18,12 +18,12 @@
 
 {% macro benchmarking_form(form) %}
   <tr class="benchmarking-form">
-    <td>{{ benchmarking_form_field_with_errors(form.oecd_country) }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form.value) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.oecd_country) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.value) }}</td>
     <td>{{ form.unit }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form.year) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.year) }}</td>
     {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
-    <td>{{ benchmarking_form_field_with_errors(form.comparison_to_oecd_avg) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form, form.comparison_to_oecd_avg) }}</td>
     <td>{{ form.labels }}</td>
     <td>{{ form.methodology_differences }}</td>
     <td>

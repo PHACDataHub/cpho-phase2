@@ -1,14 +1,27 @@
 {{ form.media }}
-{% from 'cpho_macros.jinja2' import hidden_a11y_label %}
+{% from 'cpho_macros.jinja2' import hidden_a11y_label, form_field_error_id, form_field_error %}
+{% from 'generic_macros.jinja2' import required_asterisk, required_explainer_alert %}
 
 {% macro form_field(field, rich=false) %}
   {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
   {% set non_hso_field_display = field.name not in form.hso_only_field_names %}
+
+  {% set attrs = {} %}
+  {% if field.errors %}
+    {% set attrs = {'aria-describedby': form_field_error_id(field)} %}
+  {% endif %}
+
   {% if (hso_field_display or non_hso_field_display) %}
+
     <div class="form-input-row row g-3 form-group mb-3">
+      {% if field.errors %}<div class="col-lg-12">{{ form_field_error(field) }}</div>{% endif %}
       <div class="col-lg-3">
         <div>
-          <div class="d-inline">{{ field.label_tag(attrs={'class': 'col col-form-label', 'aria-label': field.label }) }}</div>
+          <label class="col col-form-label" for="{{ field.id_for_label }}">
+            {% if field.field.required %}{{ required_asterisk() }}{% endif %}
+            {{ field.label }}
+          </label>
+
           {% if field.name in form.hso_only_field_names %}
             <sm class="h6 text-secondary"> <span class="badge bg-success">{{ tm("hso_only") }}</span></sm>
           {% endif %}
@@ -16,9 +29,9 @@
       </div>
       <div class="col-lg-9">
         {% if rich %}
-          {{ field|safe }}
+          {{ field.as_widget(attrs=attrs) |safe }}
         {% else %}
-          {{ field }}
+          {{ field.as_widget(attrs=attrs) }}
         {% endif %}
       </div>
     </div>
@@ -38,7 +51,9 @@
   </fieldset>
 {% endmacro %}
 
-<form method="POST" action=".">
+
+{{ required_explainer_alert() }}
+<form method="POST" action="." novalidate>
   {{ csrf_input }}
 
   <div class="card my-4 hideable-card">

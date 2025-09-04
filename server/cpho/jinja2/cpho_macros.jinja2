@@ -59,3 +59,17 @@
   <label for="{{ form_field.id_for_label }}"
          aria-label="{{ prefix }}, {{ form_field.label }}"></label>
 {% endmacro %}
+
+
+{# rm whitespace too #}
+{% macro form_field_error_id(field) -%}
+  {{ field.id_for_label }}_errormessage
+{%- endmacro %}
+
+{% macro form_field_error(field) %}
+  {% if field.errors %}
+    <div role="alert"
+         id="{{ form_field_error_id(field) }}"
+         class="alert alert-danger pb-1">{{ field.errors }}</div>
+  {% endif %}
+{% endmacro %}

@@ -10,7 +10,7 @@
 {% macro trend_analysis_form_field_with_errors(field) %}
   {{ field }}
   {% if field.errors %}
-    <div class="error-display">
+    <div class="error-display" id="{{ field.form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
     </div>
   {% endif %}

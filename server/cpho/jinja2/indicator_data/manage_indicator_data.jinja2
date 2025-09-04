@@ -9,9 +9,10 @@
   {{ bc.item(tm("edit") , None, True) }}
 {% endblock %}
 
-{% macro check_display_error(err, field) %}
-  {% if err %}
-    <div class="error-msg error-display mt-1">
+{% macro check_display_error(form,field) %}
+  {% if field.errors %}
+    <div class="error-msg error-display mt-1"
+         id="{{ form.error_id_for_field(field) }}">
       {% for error in field.errors %}{{ error|escape }}{% endfor %}
     </div>
   {% endif %}
@@ -27,7 +28,7 @@
     <td>
       {{ form.value }}
       {{ hidden_a11y_label(form.value, row_name) }}
-      {{ check_display_error(form.errors.value, form.value) }}
+      {{ check_display_error(form, form.value) }}
     </td>
     <td>
       {{ form.value_unit }}
@@ -36,12 +37,12 @@
     <td>
       {{ form.value_lower_bound }}
       {{ hidden_a11y_label(form.value_lower_bound, row_name) }}
-      {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
+      {{ check_display_error(form, form.value_lower_bound) }}
     </td>
     <td>
       {{ form.value_upper_bound }}
       {{ hidden_a11y_label(form.value_upper_bound, row_name) }}
-      {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
+      {{ check_display_error(form, form.value_upper_bound) }}
     </td>
     <td>
       {{ form.data_quality }}
@@ -50,12 +51,12 @@
     <td>
       {{ form.single_year_timeframe }}
       {{ hidden_a11y_label(form.single_year_timeframe, row_name) }}
-      {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
+      {{ check_display_error(form, form.single_year_timeframe) }}
     </td>
     <td>
       {{ form.multi_year_timeframe }}
       {{ hidden_a11y_label(form.multi_year_timeframe, row_name) }}
-      {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
+      {{ check_display_error(form, form.multi_year_timeframe) }}
     </td>
     <td>
       {{ form.value_displayed }}
@@ -132,7 +133,7 @@
                     <td>
                       {{ form.value }}
                       {{ hidden_a11y_label(form.value, row_name) }}
-                      {{ check_display_error(form.errors.value, form.value) }}
+                      {{ check_display_error(form, form.value) }}
                     </td>
                     <td>
                       {{ form.value_unit }}
@@ -141,12 +142,12 @@
                     <td>
                       {{ form.value_lower_bound }}
                       {{ hidden_a11y_label(form.value_lower_bound, row_name) }}
-                      {{ check_display_error(form.errors.value_lower_bound, form.value_lower_bound) }}
+                      {{ check_display_error(form, form.value_lower_bound) }}
                     </td>
                     <td>
                       {{ form.value_upper_bound }}
                       {{ hidden_a11y_label(form.value_upper_bound, row_name) }}
-                      {{ check_display_error(form.errors.value_upper_bound, form.value_upper_bound) }}
+                      {{ check_display_error(form, form.value_upper_bound) }}
                     </td>
                     <td>
                       {{ form.data_quality }}
@@ -155,12 +156,12 @@
                     <td>
                       {{ form.single_year_timeframe }}
                       {{ hidden_a11y_label(form.single_year_timeframe, row_name) }}
-                      {{ check_display_error(form.errors.single_year_timeframe, form.single_year_timeframe) }}
+                      {{ check_display_error(form, form.single_year_timeframe) }}
                     </td>
                     <td>
                       {{ form.multi_year_timeframe }}
                       {{ hidden_a11y_label(form.multi_year_timeframe, row_name) }}
-                      {{ check_display_error(form.errors.multi_year_timeframe, form.multi_year_timeframe) }}
+                      {{ check_display_error(form, form.multi_year_timeframe) }}
                     </td>
                     <td>
                       {{ form.value_displayed }}

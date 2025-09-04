@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block content %}
- 
-  <div class="h5">{{ tm("edit_indicator") }} : {{ object.name }}</div>
+
+  <div class="h5">{{ tm("edit_indicator") }} : {{ object.bilingual_name }}</div>
 
   {% if respects_rule('is_admin_or_hso') %}
     <div style="line-height: 2.25rem;" class="form-switch">

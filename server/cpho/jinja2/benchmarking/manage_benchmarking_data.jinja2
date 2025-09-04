@@ -7,10 +7,10 @@
   {{ bc.item(tm("benchmarking") , None, True) }}
 {% endblock %}
 
-{% macro benchmarking_form_field_with_errors(field) %}
+{% macro benchmarking_form_field_with_errors(form,field) %}
   {{ field }}
   {% if field.errors %}
-    <div class="error-display">
+    <div class="error-display" id="{{ form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
     </div>
   {% endif %}
@@ -18,12 +18,12 @@
 
 {% macro benchmarking_form(form) %}
   <tr class="benchmarking-form">
-    <td>{{ benchmarking_form_field_with_errors(form.oecd_country) }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form.value) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.oecd_country) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.value) }}</td>
     <td>{{ form.unit }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form.year) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.year) }}</td>
     {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
-    <td>{{ benchmarking_form_field_with_errors(form.comparison_to_oecd_avg) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form, form.comparison_to_oecd_avg) }}</td>
     <td>{{ form.labels }}</td>
     <td>{{ form.methodology_differences }}</td>
     <td>
@@ -34,41 +34,46 @@
 {% endmacro %}
 
 {% block content %}
-  <div class="h2">{{ tm("benchmarking_metadata") }} {{ tm("for") }} : {{ indicator.name }}</div>
+  <div class="h2">{{ tm("benchmarking_metadata") }} {{ tm("for") }} : {{ indicator.bilingual_name }}</div>
 
   <a class="btn btn-primary"
-     href="{{ url('export_benchmarking', args=[indicator.id]) }}">Export Benchmarking</a>
+     href="{{ url('export_benchmarking', args=[indicator.id]) }}">{{ tm("export_benchmarking") }}</a>
 
-  <table class="d-none benchmarking-empty-form-container">
-    {{ benchmarking_form(benchmarking_formset.empty_form) }}
-  </table>
+  <div class="table-responsive">
 
+    <table class="d-none benchmarking-empty-form-container">
+      {{ benchmarking_form(benchmarking_formset.empty_form) }}
+    </table>
+  </div>
   <form action="." method="post">
     {{ benchmarking_formset.management_form }}
     {{ csrf_input }}
 
-    <table class="table mt-3"
-           id="benchmarking-table"
-           style="overflow-x:auto;
-                  display:block">
-      <thead>
-        <tr>
-          <th>{{ tm("oecd_country") }}</th>
-          <th>{{ tm("value") }}</th>
-          <th>{{ tm("unit") }}</th>
-          <th>{{ tm("year") }}</th>
-          {# <th>{{ tdt("Standard Deviation") }}</th> #}
-          <th>{{ tm("comparison_to_oecd_average") }}</th>
-          <th>{{ tm("labels") }}</th>
-          <th>{{ tm("methodology_differences") }}</th>
-          <th>{{ tm("delete") }}</th>
-        </tr>
-      </thead>
-      <tbody id="benchmarking-table-body"
-             class="text-center benchmarking-form-list">
-        {% for form in benchmarking_formset %}{{ benchmarking_form(form) }}{% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+
+      <table class="table mt-3"
+             id="benchmarking-table"
+             style="overflow-x:auto;
+                    display:block">
+        <thead>
+          <tr>
+            <th>{{ tm("oecd_country") }}</th>
+            <th>{{ tm("value") }}</th>
+            <th>{{ tm("unit") }}</th>
+            <th>{{ tm("year") }}</th>
+            {# <th>{{ tdt("Standard Deviation") }}</th> #}
+            <th>{{ tm("comparison_to_oecd_average") }}</th>
+            <th>{{ tm("labels") }}</th>
+            <th>{{ tm("methodology_differences") }}</th>
+            <th>{{ tm("delete") }}</th>
+          </tr>
+        </thead>
+        <tbody id="benchmarking-table-body"
+               class="text-center benchmarking-form-list">
+          {% for form in benchmarking_formset %}{{ benchmarking_form(form) }}{% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% if benchmarking_formset.non_form_errors() %}
       <div class="error-div">{{ benchmarking_formset.non_form_errors() }}</div>
     {% endif %}
@@ -78,7 +83,7 @@
       </div>
       <input type="submit"
              class="btn btn-primary float-end my-3"
-             value="{{ tm("save") }}">
+             value="{{ tm('save') }}">
     {% endif %}
   </form>
 
@@ -104,8 +109,11 @@
       let newForm = document.createElement("tr")
       newForm.classList.add("benchmarking-form")
       newForm.innerHTML = newFormHtml;
-      container.appendChild(newForm)
-      totalFormsInput.setAttribute('value', `${numForms}`)
+      container.appendChild(newForm);
+      totalFormsInput.setAttribute('value', `${numForms}`);
+
+      // focus on first input of newly added form
+      newForm.querySelector('select,input').focus();
     }
   </script>
 

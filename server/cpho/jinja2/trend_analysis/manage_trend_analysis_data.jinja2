@@ -10,14 +10,14 @@
 {% macro trend_analysis_form_field_with_errors(field) %}
   {{ field }}
   {% if field.errors %}
-    <div class="error-display">
+    <div class="error-display" id="{{ field.form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
     </div>
   {% endif %}
 {% endmacro %}
 
 {% macro trend_analysis_form(form) %}
- 
+
   <tr class="trend-analysis-form" {% if form.errors %}{% endif %}>
     <td>{{ trend_analysis_form_field_with_errors(form.year) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.data_point) }}</td>
@@ -82,7 +82,7 @@
     </div>
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tm("save") }}">
+           value="{{ tm('save') }}">
   </form>
   <script>
     let addButton = document.querySelector("#add-form");
@@ -104,8 +104,12 @@
       let newForm = document.createElement("tr")
       newForm.classList.add("trend-analysis-form")
       newForm.innerHTML = newFormHtml;
-      container.appendChild(newForm)
-      totalFormsInput.setAttribute('value', `${numForms}`)
+      container.appendChild(newForm);
+      totalFormsInput.setAttribute('value', `${numForms}`);
+
+      // a11y: focus on first input of newly added form
+      newForm.querySelector('select,input').focus();
+
     }
   </script>
 

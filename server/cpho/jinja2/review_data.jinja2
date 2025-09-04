@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="h2">{{ tm("review_indicator_data_for") }} : {{ view.indicator.name }} {{ view.period }}</div>
+  <div class="h2">{{ tm("review_indicator_data_for") }} : {{ view.indicator.bilingual_name }} {{ view.period }}</div>
   <div>
     <button type="button"
             data-bs-toggle="modal"
@@ -30,7 +30,7 @@
           <div>
             <span class="fw-bold">{{ tm("program_submission") }}:</span>{{ submission_status_badge(view.submission_statuses['program_statuses_by_dimension_type_id'][dimension_type.id]) }}
           </div>
- 
+
           <div>{{ indicator_data_table_w_submissions(view.indicator_data_by_dimension_type[dimension_type.id]) }}</div>
         </div>
       {% endfor %}

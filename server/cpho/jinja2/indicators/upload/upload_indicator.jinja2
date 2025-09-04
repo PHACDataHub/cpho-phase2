@@ -17,16 +17,16 @@
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#expectedColumnModal">{{ tm("view_expected_column_names") }}</button>
- 
-    <a class="btn btn-primary" href="{{ url("export_indicator_template") }}">{{ tm("download_a_file_template") }}</a>
+
+    <a class="btn btn-primary" href="{{ url('export_indicator_template') }}">{{ tm("download_a_file_template") }}</a>
   </div>
- 
-  <form action="{{ url("upload_indicator") }}"
+
+  <form action="{{ url('upload_indicator') }}"
         method="post"
         enctype="multipart/form-data"
         onsubmit="openLoader()"
         class="form-horizontal mt-3">
- 
+
     {{ csrf_input }}
     <div>
       {{ form.csv_file }}
@@ -35,7 +35,7 @@
           <input type="submit"
                  id="submit-btn"
                  class="btn btn-primary mt-3 float-end"
-                 value="{{ tm("preview_file_data") }}">
+                 value="{{ tm('preview_file_data') }}">
         </div>
       </div>
       <div id="loadingModal" class="d-none mt-3 float-end">
@@ -44,7 +44,7 @@
       </div>
     </div>
   </form>
- 
+
   {% if form.csv_file.errors %}<div class="my-2 error-div">{{ form.csv_file.errors }}</div>{% endif %}
 
   {% include 'indicators/upload/upload_help_modal.jinja2' %}
@@ -55,5 +55,5 @@
       document.getElementById("loadingModal").classList.remove("d-none");
       }
   </script>
- 
+
 {% endblock %}

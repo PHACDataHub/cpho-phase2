@@ -2,7 +2,7 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% block content %}
-  <a href="{{ url("root") }}" class="btn btn-warning">{{ tm("back") }}</a>
+  <a href="{{ url('root') }}" class="btn btn-warning">{{ tm("back") }}</a>
 
   <h1>{{ tm("indicator_group") }}: {{ indicator_directory.name }}</h1>
   <div>
@@ -26,26 +26,29 @@
 
 
     <p class="h5">{{ tm("users") }}</p>
-    <table class="table table-striped">
-      <thead>
-        <th>{{ tm("user") }}</th>
-        <th>{{ tm("last_login") }}</th>
-      </thead>
-      <tbody>
-        {% for user in indicator_directory.users.all() %}
-          <tr>
-            <td>{{ user }}</td>
-            <td>
-              {% if user.last_login %}
-                {{ date_display(user.last_login) }}
-              {% else %}
-                {{ tm("never") }}
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+
+      <table class="table table-striped">
+        <thead>
+          <th>{{ tm("user") }}</th>
+          <th>{{ tm("last_login") }}</th>
+        </thead>
+        <tbody>
+          {% for user in indicator_directory.users.all() %}
+            <tr>
+              <td>{{ user }}</td>
+              <td>
+                {% if user.last_login %}
+                  {{ date_display(user.last_login) }}
+                {% else %}
+                  {{ tm("never") }}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <details class="border rounded p-3" {% if form.errors %}open{% endif %}>
@@ -55,7 +58,7 @@
 
       <div class="text-end">
 
-        <input type="submit" value="{{ tm("save") }}" class="btn btn-success" />
+        <input type="submit" value="{{ tm('save') }}" class="btn btn-success" />
       </div>
     </form>
   </details>

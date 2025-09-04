@@ -12,12 +12,12 @@
   <form id='upload-form'
         class="mt-4"
         onsubmit="showLoading()"
-        hx-post="{{ url("save_upload") }}">
+        hx-post="{{ url('save_upload') }}">
     <button id="upload-btn"
             class="btn btn-primary"
             type="submit"
             {% if not no_errors %}disabled{% endif %}>{{ tm("upload_data") }}</button>
-    <a href="{{ url("list_indicators") }}" class="btn btn-danger">{{ tm("cancel") }}</a>
+    <a href="{{ url('list_indicators') }}" class="btn btn-danger">{{ tm("cancel") }}</a>
   </form>
 
   <div id="status-div" class="d-none">
@@ -29,8 +29,8 @@
     {% if not no_errors %}<p class="text-danger">{{ tm("errors_in_file_please_review") }}</p>{% endif %}
     <p>{{ tm("upload_preview_expl") }}</p>
   </div>
- 
- 
+
+
   {% for indicator in grouped_data %}
     <div class='mt-5 card'>
       <div class="card-header">
@@ -38,18 +38,18 @@
           {{ tm("indicator") }} : {{ indicator[0] }}
           {% if grouped_data[indicator][0]["new_indicator"] %}<span class="new-ind-tag">{{ tm("new") }}</span>{% endif %}
         </div>
- 
+
 
       </div>
       <div class=" card-body">
 
         {{ (check_error(grouped_data[indicator][0], "Indicator") ) }}
- 
+
 
         <div class="p">
           <span class="fw-bold">{{ tm("detailed_indicator") }}</span> : {{ indicator[1] }}
         </div>
- 
+
         <div class="p">
           <span class="fw-bold">{{ tm("sub_indicator_measurement") }}</span> : {{ indicator[2] }}
         </div>
@@ -65,7 +65,7 @@
         </div>
 
         <div class="table-container mt-2" style="overflow-x: auto;">
- 
+
           <table class="table table-hover">
             <thead>
               <tr>
@@ -85,7 +85,7 @@
                 <th>{{ tm("arrow_flag") }}</th>
               </tr>
             </thead>
- 
+
             <tbody>
               {% for datum in grouped_data[indicator] %}
                 <tr>
@@ -107,7 +107,7 @@
               {% endfor %}
             </tbody>
           </table>
- 
+
         </div>
       </div>
     </div>
@@ -120,6 +120,6 @@
       document.getElementById("status-div").classList.remove("d-none");
     }
   </script>
- 
+
 
 {% endblock %}

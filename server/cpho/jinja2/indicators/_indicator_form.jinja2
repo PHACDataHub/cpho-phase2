@@ -1,14 +1,27 @@
 {{ form.media }}
-{% from 'cpho_macros.jinja2' import hidden_a11y_label %}
+{% from 'cpho_macros.jinja2' import hidden_a11y_label, form_field_error_id, form_field_error %}
+{% from 'generic_macros.jinja2' import required_asterisk, required_explainer_alert %}
 
 {% macro form_field(field, rich=false) %}
   {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
   {% set non_hso_field_display = field.name not in form.hso_only_field_names %}
+
+  {% set attrs = {} %}
+  {% if field.errors %}
+    {% set attrs = {'aria-describedby': form_field_error_id(field)} %}
+  {% endif %}
+
   {% if (hso_field_display or non_hso_field_display) %}
+
     <div class="form-input-row row g-3 form-group mb-3">
+      {% if field.errors %}<div class="col-lg-12">{{ form_field_error(field) }}</div>{% endif %}
       <div class="col-lg-3">
         <div>
-          <div class="d-inline">{{ field.label_tag(attrs={'class': 'col col-form-label', 'aria-label': field.label }) }}</div>
+          <label class="col col-form-label" for="{{ field.id_for_label }}">
+            {% if field.field.required %}{{ required_asterisk() }}{% endif %}
+            {{ field.label }}
+          </label>
+
           {% if field.name in form.hso_only_field_names %}
             <sm class="h6 text-secondary"> <span class="badge bg-success">{{ tm("hso_only") }}</span></sm>
           {% endif %}
@@ -16,31 +29,31 @@
       </div>
       <div class="col-lg-9">
         {% if rich %}
-          {{ field|safe }}
+          {{ field.as_widget(attrs=attrs) |safe }}
         {% else %}
-          {{ field }}
+          {{ field.as_widget(attrs=attrs) }}
         {% endif %}
       </div>
     </div>
   {% endif %}
- 
+
 {% endmacro %}
 
 {% macro fieldset_field(field, helptext=None) %}
-  <fieldset class="row g-3 form-group mb-3">
-    <div class="col-lg-2">
+  <fieldset class="row g-3 form-group mb-3 ">
+    <legend class="col-lg-3">
       <div class="row">
-        <fieldset>
-          <legend class="col col-form-label" style="font-size:1rem">{{ field.label }}</legend>
-        </fieldset>
+        <div class="col col-form-label " style="font-size:1rem">{{ field.label }}</div>
       </div>
       {% if helptext %}<div class="small-text subtext col col-form-label">{{ helptext }}</div>{% endif %}
-    </div>
-    <div class="col-lg-10">{{ field }}</div>
+    </legend>
+    <div class="col-lg-9">{{ field }}</div>
   </fieldset>
 {% endmacro %}
 
-<form method="POST" action=".">
+
+{{ required_explainer_alert() }}
+<form method="POST" action="." novalidate>
   {{ csrf_input }}
 
   <div class="card my-4 hideable-card">
@@ -58,11 +71,14 @@
       {{ form_field(form.sub_indicator_measurement) }}
       {{ form_field(form.sub_indicator_measurement_fr) }}
 
-      {{ fieldset_field(form.relevant_dimensions, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
-      {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }}
+      {# TODO: re-add helptext #}
+      {# {{ fieldset_field(form.relevant_dimensions, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }} #}
+      {{ fieldset_field(form.relevant_dimensions,) }}
+      {# {{ fieldset_field(form.relevant_period_types, helptext=tm("not_published_just_a_convenience_factor_to_filter_in_app_choices") ) }} #}
+      {{ fieldset_field(form.relevant_period_types,) }}
     </div>
   </div>
- 
+
   <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tm("general_metadata") }}</h5>
     <div class="card-body">
@@ -128,7 +144,7 @@
     </div>
   </div>
 
- 
+
   <div class="card my-4 hideable-card">
     <h5 class="card-header">{{ tm("age_metadata") }}</h5>
     <div class="card-body">
@@ -242,63 +258,65 @@
     </h5>
     <div class="card-body">
       <p class="my-2">{{ tm("quintile_metadata_description") }}</p>
-      <table class="table" style="overflow-x:auto; display:block">
-        <thead>
-          <tr class="text-center">
-            <th>{{ tm("quintile") }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g1') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g2_lower') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g2_upper') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g3_lower') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g3_upper') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g4_lower') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g4_upper') }}</th>
-            <th>{{ vb_name('cpho.Indicator', 'g5') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {% set row_name = tm('quintile_values') %}
-            <td class='text-center'>{{ row_name }}</td>
-            <td>
-              <div class="form-group mb-3">{{ form.g1 }}</div>
-              {{ hidden_a11y_label(form.g1, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g2_lower }}</div>
-              {{ hidden_a11y_label(form.g2_lower, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g2_upper }}</div>
-              {{ hidden_a11y_label(form.g2_upper, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g3_lower }}</div>
-              {{ hidden_a11y_label(form.g3_lower, row_name ,) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g3_upper }}</div>
-              {{ hidden_a11y_label(form.g3_upper, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g4_lower }}</div>
-              {{ hidden_a11y_label(form.g4_lower, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g4_upper }}</div>
-              {{ hidden_a11y_label(form.g4_upper, row_name) }}
-            </td>
-            <td>
-              <div class="form-group mb-3">{{ form.g5 }}</div>
-              {{ hidden_a11y_label(form.g5, row_name) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table" style="overflow-x:auto; display:block">
+          <thead>
+            <tr class="text-center">
+              <th>{{ tm("quintile") }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g1') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g2_lower') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g2_upper') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g3_lower') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g3_upper') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g4_lower') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g4_upper') }}</th>
+              <th>{{ vb_name('cpho.Indicator', 'g5') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% set row_name = tm('quintile_values') %}
+              <td class='text-center'>{{ row_name }}</td>
+              <td>
+                <div class="form-group mb-3">{{ form.g1 }}</div>
+                {{ hidden_a11y_label(form.g1, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g2_lower }}</div>
+                {{ hidden_a11y_label(form.g2_lower, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g2_upper }}</div>
+                {{ hidden_a11y_label(form.g2_upper, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g3_lower }}</div>
+                {{ hidden_a11y_label(form.g3_lower, row_name ,) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g3_upper }}</div>
+                {{ hidden_a11y_label(form.g3_upper, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g4_lower }}</div>
+                {{ hidden_a11y_label(form.g4_lower, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g4_upper }}</div>
+                {{ hidden_a11y_label(form.g4_upper, row_name) }}
+              </td>
+              <td>
+                <div class="form-group mb-3">{{ form.g5 }}</div>
+                {{ hidden_a11y_label(form.g5, row_name) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <input type="submit"
          class="btn btn-primary mt-4 float-end"
-         value="{{ tm("submit") }}" />
+         value="{{ tm('submit') }}" />
 </form>

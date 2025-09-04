@@ -17,6 +17,8 @@ from django.views.generic import FormView, TemplateView
 
 from phac_aspc.rules import test_rule
 
+from server.form_util import DescribedByErrorMixin, StandardFormMixin
+
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     Benchmarking,
@@ -39,7 +41,12 @@ from cpho.views.view_util import (
 )
 
 
-class BenchmarkingForm(RequiredIfNotDeletedMixin, ModelForm):
+class BenchmarkingForm(
+    RequiredIfNotDeletedMixin,
+    ModelForm,
+    DescribedByErrorMixin,
+    StandardFormMixin,
+):
     class Meta:
         model = Benchmarking
         fields = [
@@ -298,7 +305,12 @@ class ManageBenchmarkingData(MustPassAuthCheckMixin, TemplateView):
         return context
 
 
-class TrendAnalysisForm(RequiredIfNotDeletedMixin, ModelForm):
+class TrendAnalysisForm(
+    RequiredIfNotDeletedMixin,
+    ModelForm,
+    StandardFormMixin,
+    DescribedByErrorMixin,
+):
     class Meta:
         model = TrendAnalysis
         fields = [

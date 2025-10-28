@@ -23,7 +23,7 @@ RUN apt-get update && \
 RUN pip install --upgrade pip wheel setuptools
 
 # requirements and wheels
-COPY requirements.txt .
+COPY server/requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 #########
@@ -81,7 +81,7 @@ RUN python -m venv $VIRTUALENV && \
 RUN pip install --upgrade setuptools
 
 # Copy project files
-COPY --chown=$APP_USER:$APP_NAME src/ $APP_HOME
+COPY --chown=$APP_USER:$APP_NAME server/ $APP_HOME
 
 # copy sshd_config file
 COPY server/sshd_config /etc/ssh/

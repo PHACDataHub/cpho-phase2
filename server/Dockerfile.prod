@@ -84,7 +84,7 @@ RUN pip install --upgrade setuptools
 COPY --chown=$APP_USER:$APP_NAME src/ $APP_HOME
 
 # copy sshd_config file
-COPY src/sshd_config /etc/ssh/
+COPY server/sshd_config /etc/ssh/
 
 # copy version file
 # COPY version.txt $APP_HOME

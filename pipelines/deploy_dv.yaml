@@ -1,0 +1,43 @@
+trigger: none
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: PHACDataHub/ADO-Pipeline-Templates
+      # Service connection to GitHub configured in Azure DevOps
+      endpoint: DMIA
+
+parameters:
+  - name: Image
+    displayName: Image
+    type: string
+    default: 'App'
+    values:
+      - App
+
+jobs:
+- template: django_azure_app_service_deployment.yaml@templates
+  parameters:
+    env: 'Dev'
+    repository: 'nsp/spib-sdse-hopic-dv'
+    appName: 'was-spib-sdse-hopic-dv'
+    subscription: 'SPIB-SDSE-HOPIC-CICDLZSP-DT'
+    resourceGroup: 'rg-spib-sdse-hopic-dv'
+    poolName: spib-sdse-hopic-agents-dv
+    image: ${{ parameters.Image }}
+    containerCommand: 'gunicorn --bind 0.0.0.0:8000 omd.wsgi --timeout 1000'
+    envars: |
+      DB_HOST=pgsql-spib-sdse-hopic-dv.postgres.database.azure.com
+      DB_PORT=5432
+      DB_SSLMODE=require
+      SECRET_KEY=@Microsoft.KeyVault(SecretUri=https://kvspibsdsehopicdv.vault.azure.net/secrets/hopic-django-secret-key/)
+      WEBSITES_PORT=8000
+      LATEST_COMMIT_SHA=$(Build.SourceVersion)
+      ALLOWED_HOSTS=was-spib-sdse-hopic-dv.azurewebsites.net
+      CSRF_TRUSTED_ORIGINS=https://was-spib-sdse-hopic-dv.azurewebsites.net
+      DB_NAME=hopicdb
+      DB_PASSWORD=@Microsoft.KeyVault(SecretUri=https://kvspibsdsehopicdv.vault.azure.net/secrets/hopicapp-pgsql-password/)
+      DB_USER=hopicapp
+      ENV=dev
+      AZCOPY_AUTO_LOGIN_TYPE=MSI

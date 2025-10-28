@@ -96,7 +96,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 # Additional CORS allowed and CSRF trusted origins should be empty until if/when the app
 # is serving a REST/GraphQL API for external consumption
 CORS_ALLOWED_ORIGINS = []
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
 
 # Prod only security settings
 if not IS_DEV:

@@ -1,33 +1,22 @@
 trigger: none
 
-resources:
-  repositories:
-    - repository: templates
-      type: github
-      name: PHACDataHub/ADO-Pipeline-Templates
-      # Service connection to GitHub configured in Azure DevOps
-      endpoint: DMIA
-
 parameters:
   - name: Image
-    displayName: Image
+    displayName: Build Container Image
     type: string
-    default: 'App'
+    default: "prod"
     values:
-      - App
+      # - dev
+      - prod
 
-jobs:
-- template: django_azure_app_service_deployment.yaml@templates
-  parameters:
-    env: 'Dev'
-    repository: 'nsp/spib-sdse-hopic-dv'
-    appName: 'was-spib-sdse-hopic-dv'
-    subscription: 'SPIB-SDSE-HOPIC-CICDLZSP-DT'
-    resourceGroup: 'rg-spib-sdse-hopic-dv'
-    poolName: spib-sdse-hopic-agents-dv
-    image: ${{ parameters.Image }}
-    containerCommand: 'gunicorn --bind 0.0.0.0:8000 omd.wsgi --timeout 1000'
-    envars: |
+variables:
+  registry: "hcsccrrc.azurecr.io"
+  repository: "nsp/sdse-spib-hopic-dv"
+  tag: "$(Build.SourceVersion)"
+  appName: was-spib-sdse-hopic-dv
+  subscription: SPIB-SDSE-HOPIC-CICDLZSP-DT
+  resourceGroup: rg-spib-sdse-hopic-dv
+  envars: >
       DB_HOST=pgsql-spib-sdse-hopic-dv.postgres.database.azure.com
       DB_PORT=5432
       DB_SSLMODE=require
@@ -41,3 +30,62 @@ jobs:
       DB_USER=hopicapp
       ENV=dev
       AZCOPY_AUTO_LOGIN_TYPE=MSI
+
+
+pool:
+  name: spib-sdse-hopic-agents-dv
+
+jobs:
+  - job: Deploy_DV
+    steps:
+      - script: |
+          sudo apt-get update
+          sudo apt-get install unzip
+        displayName: "Install Unzip"
+
+      - script: |
+          sudo apt install -y docker.io
+          sudo apt install docker-buildx
+          sudo systemctl start docker
+          sudo usermod -aG docker $(id -un)
+          sudo chmod 666 /var/run/docker.sock
+        displayName: "Install and Configure Docker"
+
+      - script: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+        displayName: "Install AZ CLI"
+
+      - task: AzureCLI@2
+        displayName: "Login to ACR"
+        inputs:
+          azureSubscription: $(subscription)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az --version
+            az acr login --name hcsccrrc   
+      
+      - ${{ if eq(parameters.Image, 'prod')}}:
+        - script: |
+            docker build -t $(registry)/$(repository):$(tag) -f server/Dockerfile.prod .
+            docker push $(registry)/$(repository):$(tag)
+          displayName: "Build and Push $(repository) Image"
+
+      - task: AzureWebAppContainer@1
+        displayName: "Install $(repository) into $(appName)"
+        inputs:
+          azureSubscription: "$(subscription)"
+          appName: "$(appName)"
+          deployToSlotOrASE: true
+          resourceGroupName: "$(resourceGroup)"
+          containers: "$(registry)/$(repository):$(tag)"
+          containerCommand: "gunicorn --bind 0.0.0.0:8000 server.wsgi --timeout 1000"
+
+      - task: AzureCLI@2
+        displayName: "AppSettings for $(appName)"
+        inputs:
+          azureSubscription: $(subscription)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az webapp config appsettings set -g $(resourceGroup) -n $(appName) --settings ${{ variables.envars }}

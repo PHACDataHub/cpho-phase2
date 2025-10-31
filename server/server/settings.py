@@ -100,7 +100,7 @@ CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
 
 # Prod only security settings
 if not IS_DEV:
-    SECURE_SSL_REDIRECT = True
+    # SECURE_SSL_REDIRECT = True
     # For K8S Health Check
     SECURE_REDIRECT_EXEMPT = [
         "^healthcheck/",

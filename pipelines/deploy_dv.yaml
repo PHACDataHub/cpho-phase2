@@ -25,7 +25,7 @@ variables:
       LATEST_COMMIT_SHA=$(Build.SourceVersion)
       ALLOWED_HOSTS=was-spib-sdse-hopic-dv.azurewebsites.net
       CSRF_TRUSTED_ORIGINS=https://was-spib-sdse-hopic-dv.azurewebsites.net
-      DB_NAME=hopicdb
+      DB_NAME=hopicdb_migration_test
       DB_PASSWORD='@Microsoft.KeyVault(SecretUri=https://kvspibsdsehopicdv.vault.azure.net/secrets/hopicapp-pgsql-password/)'
       DB_USER=hopicapp
       ENV=dev

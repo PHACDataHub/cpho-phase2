@@ -93,9 +93,7 @@ def get_all_periods_dict() -> dict[str, Period]:
 def get_all_dimension_types_dict() -> dict[str, DimensionType]:
     return {
         dimension_type.code: dimension_type
-        for dimension_type in DimensionType.objects.exclude(
-            is_literal=True
-        ).all()
+        for dimension_type in DimensionType.objects.all()
     }
 
 

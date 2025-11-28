@@ -31,7 +31,7 @@
           {% endif %}
         </div>
         <div>
-          <a href="{{ url("upload_indicator") }}"
+          <a href="{{ url('upload_indicator') }}"
              class="btn w-100 btn-outline-dark my-1">
             <span aria-hidden="true" class="bi bi-file-earmark-arrow-up"></span>
             {{ tm("upload_data") }}
@@ -72,7 +72,7 @@
             </a>
           {% endif %}
         </div>
- 
+
         <div>
           {% if respects_rule('can_submit_indicator', indicator) %}
             <a href="{{ url('review_metadata', args=[indicator.id]) }}"
@@ -121,7 +121,7 @@
                           {% else %}
                             {% set button_text = tm("view_data") %}
                           {% endif %}
- 
+
                           <tr class="text-center">
                             <th>{{ period }}</th>
                             <td>{{ data_count }}</td>
@@ -142,11 +142,11 @@
           {% endif %}
           {% if respects_rule('can_view_non_current_periods', indicator) %}
             <div>
-              <span class="h3">{{ tm("add_data_for_new_periods") }}</span>
+              <span class="h3">{{ tm('add_data_for_new_periods') }}</span>
               <span class="badge bg-success" style="transform:translate(0,-0.75em);">{{ tm("hso_only") }}</span>
             </div>
             <div>
-              <ul aria-label="{{ tm("add_data_for_new_periods") }}">
+              <ul aria-label="{{ tm('add_data_for_new_periods') }}">
                 {% for period in alternate_periods %}
                   <li>
                     <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("add_data") }} {{ tm("for") }} {{ period }}</a>

@@ -11,7 +11,7 @@
 
 {% block content %}
   <div class="h2">{{ tm("indicator_data") }} : {{ object.name }} {{ period }}</div>
- 
+
   <div class="my-3">
     {% if respects_rule('can_edit_indicator_data', {"indicator": indicator, "period": period}) %}
       {% set button_text_all = tm("edit_all_data") %}
@@ -66,5 +66,5 @@
       {% endfor %}
     </div>
   </div>
- 
+
 {% endblock %}

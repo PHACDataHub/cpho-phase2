@@ -24,14 +24,14 @@
             {% if user.last_login %}{{ date_display(user.last_login) }}{% endif %}
           </td>
           <td>
-            <a href="{{ url("modify_user", args=[user.pk]) }}">{{ tdt("Modify") }}</a>
+            <a href="{{ url('modify_user', args=[user.pk]) }}">{{ tdt("Modify") }}</a>
           </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
   <div class="mt-3 mb-4">
-    <a href="{{ url("create_user") }}" class="btn btn-primary">{{ tdt("Create new user") }}</a>
+    <a href="{{ url('create_user') }}" class="btn btn-primary">{{ tdt("Create new user") }}</a>
   </div>
 
 
@@ -58,7 +58,7 @@
           </div>
           <div class='d-flex justify-content-end textend'>
             <a class="btn btn-sm btn-primary"
-               href="{{ url("edit_indicator_directory", args=[directory.pk]) }}">{{ tdt("edit") }}</a>
+               href="{{ url('edit_indicator_directory', args=[directory.pk]) }}">{{ tdt("edit") }}</a>
           </div>
         </div>
       </li>
@@ -66,8 +66,8 @@
   </ul>
   <div>
     <a class="btn btn-primary mt-3 mb-4"
-       href="{{ url("create_indicator_directory") }}">{{ tdt("Create new indicator directory") }}</a>
+       href="{{ url('create_indicator_directory') }}">{{ tdt("Create new indicator directory") }}</a>
   </div>
- 
+
 
 {% endblock %}

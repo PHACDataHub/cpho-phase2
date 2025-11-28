@@ -185,7 +185,6 @@ INSTALLED_APPS = configure_apps(
         *(
             [
                 "debug_toolbar",
-                "graphiql_debug_toolbar",
             ]
             if ENABLE_DEBUG_TOOLBAR
             else []
@@ -203,7 +202,7 @@ MIDDLEWARE = configure_middleware(
         "whitenoise.middleware.WhiteNoiseMiddleware",
         *(
             [
-                "graphiql_debug_toolbar.middleware.DebugToolbarMiddleware",
+                "debug_toolbar.middleware.DebugToolbarMiddleware",
             ]
             if ENABLE_DEBUG_TOOLBAR
             else []

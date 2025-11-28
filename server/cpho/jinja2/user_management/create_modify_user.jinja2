@@ -2,7 +2,7 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% block content %}
-  <a class="btn btn-warning mb-4" href="{{ url("manage_users") }}">{{ tdt("Back") }}</a>
+  <a class="btn btn-warning mb-4" href="{{ url('manage_users') }}">{{ tdt("Back") }}</a>
 
   {{ form.media }}
   {% if form.errors %}<div class="alert alert-danger">{{ form.errors }}</div>{% endif %}
@@ -34,7 +34,7 @@
       </div>
     {% endif %}
 
-    <input class="btn btn-primary" type="submit" value="{{ tdt("save") }}">
-    <a class="btn btn-secondary" href="{{ url("manage_users") }}">{{ tdt("cancel") }}</a>
+    <input class="btn btn-primary" type="submit" value="{{ tdt('save') }}">
+    <a class="btn btn-secondary" href="{{ url('manage_users') }}">{{ tdt("cancel") }}</a>
   </form>
 {% endblock %}

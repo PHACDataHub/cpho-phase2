@@ -13,11 +13,12 @@
           rel="icon"
           type="image/x-icon"
           class="wb-init wb-favicon-inited">
-    <link rel="stylesheet" href="{{ static("third_party/css/bootstrap.min.css") }}">
+    <link rel="stylesheet"
+          href="{{ static('third_party/css/bootstrap.min.css') }}">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
-    {# <link rel="stylesheet" href="{{ static('site.css') }}"/> #}
-    <link rel="stylesheet" href="{{ static("cpho.css") }}">
+    {# <link rel="stylesheet" href="{{ static('site.css') }}" /> #}
+    <link rel="stylesheet" href="{{ static('cpho.css') }}">
     {{ phac_aspc.phac_aspc_wet_css(base_only=True) }}
     <script src="{{ static('third_party/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ static('third_party/js/htmx.min.js') }}"></script>
@@ -62,9 +63,9 @@
           {{ phac_aspc.phac_aspc_inline_svg("phac_aspc_helpers/phac_logos/" + ("en" if get_lang_code() == "en-ca" else "fr") + "__dark.svg", style="height: 2rem; padding-right: 2rem;") }}
           {% block available_apps %}{% endblock %}
           <h1 class="nav-header">
-            <a href="{{ url("list_indicators") }}"
+            <a href="{{ url('list_indicators') }}"
                class="text-reset text-decoration-none">
-              {% block nav_header_text %}<abbr title="{{ tm("health_of_ppl_in_canada") }}">{{ tm("hopic") }}</abbr>{% endblock %}
+              {% block nav_header_text %}<abbr title="{{ tm('health_of_ppl_in_canada') }}">{{ tm("hopic") }}</abbr>{% endblock %}
             </a>
           </h1>
           <button class="navbar-toggler"
@@ -92,28 +93,28 @@
                      aria-haspopup="true"
                      aria-expanded="false">{{ request.user.pretty_name }}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url("logout") }}"> <span aria-hidden="true" class="bi bi-power"></span> {{ tm("logout") }} </a>
+                    <a class="dropdown-item" href="{{ url('logout') }}"> <span aria-hidden="true" class="bi bi-power"></span> {{ tm("logout") }} </a>
                     <a class="dropdown-item"
-                       href="{{ url("user_scoped_changelog",args=[request.user.id]) }}">
+                       href="{{ url('user_scoped_changelog',args=[request.user.id]) }}">
                       <span aria-hidden="true" class="bi bi-file-diff"></span>
                       {{ tm("view_own_changes") }}
                     </a>
                     {% if respects_rule('can_manage_users') %}
-                      <a class="dropdown-item" href="{{ url("manage_users") }}">
+                      <a class="dropdown-item" href="{{ url('manage_users') }}">
                         <span aria-hidden="true" class="bi bi-people"></span>
                         {{ tm("user_management") }}
                       </a>
-                      <a class="dropdown-item" href="{{ url("global_changelog") }}">
+                      <a class="dropdown-item" href="{{ url('global_changelog') }}">
                         <span aria-hidden="true" class="bi bi-file-diff"></span>
                         {{ tm("changelog") }}
                       </a>
-                      <a class="dropdown-item" href="{{ url("global_datum_changelog") }}">
+                      <a class="dropdown-item" href="{{ url('global_datum_changelog') }}">
                         <span aria-hidden="true" class="bi bi-file-diff"></span>
                         {{ tdt("datum changelog") }}
                       </a>
                     {% endif %}
                     {% if respects_rule('is_admin_or_hso') %}
-                      <a class="dropdown-item" href="{{ url("infobase_export") }}">
+                      <a class="dropdown-item" href="{{ url('infobase_export') }}">
                         <i aria-hidden="true" class="bi bi-file-earmark-excel"></i>
                         {{ tdt("Infobase export") }}
                       </a>
@@ -161,7 +162,13 @@
         <div class="row">
           <div class="col"></div>
           <div class="col-auto">
-            <object type="image/svg+xml" tabindex="-1" role="img" data="{{ static("third_party/img/wmms-blk.svg") }}" aria-label="Symbol of the Government of Canada" style="height: 2rem; margin: 1rem 0;"></object>
+            <object type="image/svg+xml"
+                    tabindex="-1"
+                    role="img"
+                    data="{{ static('third_party/img/wmms-blk.svg') }}"
+                    aria-label="Symbol of the Government of Canada"
+                    style="height: 2rem;
+                           margin: 1rem 0"></object>
           </div>
         </div>
       </div>

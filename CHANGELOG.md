@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.4](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.3...v1.4.4) (2025-11-28)
+
+
+### Bug Fixes
+
+* Accessibility issues - self review ([#432](https://github.com/PHACDataHub/cpho-phase2/issues/432)) ([c7ac9cf](https://github.com/PHACDataHub/cpho-phase2/commit/c7ac9cf2f7f5d377377a0be413c179fccf7a4040))
+* age group ([#441](https://github.com/PHACDataHub/cpho-phase2/issues/441)) ([8f559c5](https://github.com/PHACDataHub/cpho-phase2/commit/8f559c532f5a163f46bc4085eb6d191e0d5eb50c))
+* cleanup jquery dep ([#430](https://github.com/PHACDataHub/cpho-phase2/issues/430)) ([9919eeb](https://github.com/PHACDataHub/cpho-phase2/commit/9919eeb1842f83969ab0469572e93d7fe4006b12))
+* format all files since jinja/djlint upgrade ([#442](https://github.com/PHACDataHub/cpho-phase2/issues/442)) ([a0bbee2](https://github.com/PHACDataHub/cpho-phase2/commit/a0bbee2798fde2f20b546ceef799a8a65de85019))
+* rework excel value mappings ([#435](https://github.com/PHACDataHub/cpho-phase2/issues/435)) ([25b14e5](https://github.com/PHACDataHub/cpho-phase2/commit/25b14e57594e81c2f8a16df633daa3eab3e6a364))
+* upgrade dependencies (ditch graphiql toolbar, get jinja working in toolbar) ([dfa6c68](https://github.com/PHACDataHub/cpho-phase2/commit/dfa6c688c1a993eae23966bb54d4e5bc27c6f0fc))
+* upgrade deps (ditch graphiql toolbar, get jinja working in toolbar) ([#437](https://github.com/PHACDataHub/cpho-phase2/issues/437)) ([dfa6c68](https://github.com/PHACDataHub/cpho-phase2/commit/dfa6c688c1a993eae23966bb54d4e5bc27c6f0fc))
+
 ## [1.4.3](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.2...v1.4.3) (2025-05-15)
 
 

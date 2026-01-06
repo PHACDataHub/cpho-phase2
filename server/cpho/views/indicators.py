@@ -32,7 +32,6 @@ from .view_util import (
     MustPassAuthCheckMixin,
     SinglePeriodMixin,
     age_group_sort,
-    export_mapper,
 )
 
 
@@ -42,6 +41,18 @@ class ModelMultipleChoiceFieldWithTranslation(forms.ModelMultipleChoiceField):
         if get_lang_code() == "fr":
             return obj.name_fr
         return obj.name_en
+
+
+class CustomCkEditorWidget(CKEditorWidget):
+    def __init__(self, *args, label=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not label:
+            raise Exception("Ckeditor requires an explicit label")
+
+        title = tm("editor_for") + " : " + label
+
+        self.config["title"] = title
 
 
 class IndicatorForm(ModelForm):
@@ -84,8 +95,10 @@ class IndicatorForm(ModelForm):
 
         return forms.CharField(
             required=required,
-            widget=CKEditorWidget(
-                config_name="notes", attrs={"class": class_string}
+            widget=CustomCkEditorWidget(
+                config_name="notes",
+                label=label,
+                attrs={"class": class_string},
             ),
             label=label if label else None,
         )

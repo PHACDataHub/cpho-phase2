@@ -364,12 +364,14 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         config_name="notes", null=True, blank=True
     )
 
+    @property
+    def bilingual_name(self):
+        if get_lang_code() == "fr" and self.name_fr:
+            return self.name_fr + ""
+        return self.name + ""
+
     def __str__(self):
-        return " ".join(
-            [
-                str(self.name),
-            ]
-        )
+        return self.bilingual_name
 
     def get_relevant_periods(self):
         # filter Period. to years that have data or have the same type as the indicator's relevant_period_types

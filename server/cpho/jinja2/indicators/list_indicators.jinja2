@@ -24,7 +24,7 @@
       </ul>
     </div>
   {% endif %}
-  <div>
+  <div class="table-responsive">
     <table class="table table-hover">
       <thead>
         <tr>
@@ -38,13 +38,13 @@
         {% for indicator in object_list %}
           {% if respects_rule('can_access_indicator', indicator) %}
             <tr>
-              <td>{{ indicator.name }}</td>
+              <td>{{ indicator.bilingual_name }}</td>
               <td>{{ indicator.get_category_display() }}</td>
               <td>{{ indicator.get_topic_display() }}</td>
               <td>
                 <a class="btn btn-outline-dark"
                    href="{{ url('view_indicator', args=[indicator.pk]) }}"
-                   aria-label="{{ tm("view_indicator") }},  {{ indicator.name }}">{{ tm("view_indicator") }}</a>
+                   aria-label="{{ tm("view_indicator") }},  {{ indicator.bilingual_name }}">{{ tm("view_indicator") }}</a>
               </td>
             </tr>
           {% endif %}

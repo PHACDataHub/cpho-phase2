@@ -7,29 +7,36 @@
   {{ bc.item(tm("trend_analysis") , None, True) }}
 {% endblock %}
 
-{% macro trend_analysis_form_field_with_errors(field) %}
-  {{ field }}
+{% macro trend_analysis_form_field_with_errors(field,row_label_id) %}
+  {{ field.as_widget(attrs={"aria-labelledby": row_label_id}) }}
   {% if field.errors %}
-    <div class="error-display">
+    <div class="error-display" id="{{ field.form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
     </div>
   {% endif %}
 {% endmacro %}
 
 {% macro trend_analysis_form(form) %}
- 
+  {% set row_label_id = form.prefix ~ "-row-label" %}
+
   <tr class="trend-analysis-form" {% if form.errors %}{% endif %}>
-    <td>{{ trend_analysis_form_field_with_errors(form.year) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.data_point) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.line_of_best_fit_point) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.trend_segment) }}</td>
-    <td>{{ form.trend }}</td>
-    <td>{{ form.data_quality }}</td>
-    <td>{{ form.unit }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.data_point_lower_ci) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.data_point_upper_ci) }}</td>
     <td>
-      {{ form.is_deleted }}
+      {{ trend_analysis_form_field_with_errors(form.year, row_label_id) }}
+      <span id="{{ row_label_id }}" class="visually-hidden">
+        <span class="year-key"></span>
+      </span>
+
+    </td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point, row_label_id) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.line_of_best_fit_point, row_label_id) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.trend_segment, row_label_id) }}</td>
+    <td>{{ form.trend.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ form.data_quality.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ form.unit.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point_lower_ci, row_label_id) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point_upper_ci, row_label_id) }}</td>
+    <td>
+      {{ form.is_deleted.as_widget(attrs={"aria-labelledby": row_label_id}) }}
       {{ form.id }}
     </td>
   </tr>
@@ -82,31 +89,8 @@
     </div>
     <input type="submit"
            class="btn btn-primary float-end my-3"
-           value="{{ tm("save") }}">
+           value="{{ tm('save') }}">
   </form>
-  <script>
-    let addButton = document.querySelector("#add-form");
-    addButton.addEventListener('click', addForm);
-
-    function addForm(e) {
-      let forms = document.querySelectorAll(".trend-analysis-form-list > .trend-analysis-form");
-      let newFormIndex = forms.length;
-      let numForms = forms.length + 1;
-      let formTemplateNode = document.querySelector(".trend-analysis-empty-form-container");
-      let container = document.querySelector(".trend-analysis-form-list");
-      let totalFormsInput = document.querySelector("#id_trend_analysis-TOTAL_FORMS"); //management form inputs
-
-      e.preventDefault();
-      let formRegex = RegExp(`trend_analysis-__prefix__-`,'g')
-      console.log(formRegex);
-      let newFormHtml = formTemplateNode.innerHTML.replace(formRegex, `trend_analysis-${newFormIndex}-`)
-
-      let newForm = document.createElement("tr")
-      newForm.classList.add("trend-analysis-form")
-      newForm.innerHTML = newFormHtml;
-      container.appendChild(newForm)
-      totalFormsInput.setAttribute('value', `${numForms}`)
-    }
-  </script>
+  <script src="{{ static("js/manage_trend_analysis_script.js") }}" type="text/javascript"></script>
 
 {% endblock %}

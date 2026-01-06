@@ -2,7 +2,7 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% block content %}
-  <a href="{{ url("manage_users") }}" class="btn btn-warning">{{ tdt("Back") }}</a>
+  <a href="{{ url('manage_users') }}" class="btn btn-warning">{{ tdt("Back") }}</a>
 
   <form method="post">
 
@@ -10,7 +10,7 @@
 
     <div class="text-end">
 
-      <input type="submit" value="{{ tdt("Save") }}" class="btn btn-success" />
+      <input type="submit" value="{{ tdt('Save') }}" class="btn btn-success" />
     </div>
   </form>
 

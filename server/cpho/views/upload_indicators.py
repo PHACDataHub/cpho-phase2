@@ -11,6 +11,8 @@ from django.views.generic import FormView, TemplateView, View
 
 from phac_aspc.rules import test_rule
 
+from cpho import mapping_util
+from cpho.mapping_util import ImportMapper
 from cpho.models import (
     DimensionType,
     DimensionValue,
@@ -20,7 +22,7 @@ from cpho.models import (
 )
 from cpho.text import tdt, tm
 
-from .view_util import IndDataCleaner, MustPassAuthCheckMixin, upload_mapper
+from .view_util import IndDataCleaner, MustPassAuthCheckMixin
 
 
 class UploadForm(forms.Form):
@@ -86,7 +88,6 @@ class UploadForm(forms.Form):
             )
 
         errorlist = []
-        mapper = upload_mapper()
         # checking for invalid values in the csv
         for idx, data_row in enumerate(reader):
             for key, value in data_row.items():
@@ -95,77 +96,85 @@ class UploadForm(forms.Form):
             data_row["errors"] = {}
 
             error_dict = data_row["errors"]
-            # mapper errors for categorical values
+
             data_category = data_row["Category"]
-            category_mapper = mapper["category_mapper"]
-            if data_category not in category_mapper:
+            try:
+                ImportMapper.map_category(data_category)
+            except KeyError:
                 error_dict["Category"] = tdt(
                     f"Category: {data_category} is not valid"
                 )
 
             data_topic = data_row["Topic"]
-            topic_mapper = mapper["topic_mapper"]
-            if data_topic not in topic_mapper:
+            try:
+                ImportMapper.map_topic(data_topic)
+            except KeyError:
                 error_dict["Topic"] = tdt(f"Topic: {data_topic} is not valid")
 
             data_data_quality = data_row["Data_Quality"]
-            data_quality_mapper = mapper["data_quality_mapper"]
-            if data_data_quality not in data_quality_mapper:
+            try:
+                ImportMapper.map_data_quality(data_data_quality)
+            except KeyError:
                 error_dict["Data_Quality"] = tdt(
-                    f"Data quality: {data_data_quality} is not valid"
+                    f"Data Quality: {data_data_quality} is not valid"
                 )
 
             data_reason_for_null = data_row["Reason_for_Null_Data"]
-            reason_for_null_mapper = mapper["reason_for_null_mapper"]
-            if data_reason_for_null not in reason_for_null_mapper:
+            try:
+                ImportMapper.map_reason_for_null(data_reason_for_null)
+            except KeyError:
                 error_dict["Reason_for_Null_Data"] = tdt(
                     f"Reason for Null Data: {data_reason_for_null} is not valid"
                 )
 
             data_value_units = data_row["Value_Units"]
-            value_unit_mapper = mapper["value_unit_mapper"]
-            if data_value_units not in value_unit_mapper:
+            try:
+                ImportMapper.map_value_unit(data_value_units)
+            except KeyError:
                 error_dict["Value_Units"] = tdt(
                     f"Value Units: {data_value_units} is not valid"
                 )
 
             data_value_displayed = data_row["Value_Displayed"]
-            value_displayed_mapper = mapper["value_displayed_mapper"]
-            if data_value_displayed not in value_displayed_mapper:
+            try:
+                ImportMapper.map_value_displayed(data_value_displayed)
+            except KeyError:
                 error_dict["Value_Displayed"] = tdt(
                     f"Value displayed: {data_value_displayed} is not valid"
                 )
 
             data_dimension_type = data_row["Dimension_Type"]
-            dimension_type_mapper = mapper["dimension_type_mapper"]
-            if data_dimension_type not in dimension_type_mapper:
+            try:
+                ImportMapper.map_dimension_type(data_dimension_type)
+            except KeyError:
                 error_dict["Dimension_Type"] = tdt(
                     f"Dimension Type: {data_dimension_type} is not valid"
                 )
 
             if data_dimension_type != "Age Group":
                 data_dimension_value = data_row["Dimension_Value"]
-                non_literal_dimension_value_mapper = mapper[
-                    "non_literal_dimension_value_mapper"
-                ]
-                if (
-                    data_dimension_type,
-                    data_dimension_value,
-                ) not in non_literal_dimension_value_mapper:
+
+                try:
+                    ImportMapper.map_dimension_value(
+                        (data_dimension_type, data_dimension_value)
+                    )
+                except KeyError:
                     error_dict["Dimension_Value"] = tdt(
                         f"Combination of Dimension Type: {data_dimension_type} and Dimension Value: {data_dimension_value} is not valid"
                     )
 
             data_period = data_row["Period"]
-            period_mapper = mapper["period_mapper"]
-            if data_period not in period_mapper:
+            try:
+                ImportMapper.map_period(data_period)
+            except KeyError:
                 error_dict["Period"] = tdt(
                     f"Period: {data_period} is not valid"
                 )
 
             data_arrow_flag = data_row["Arrow_Flag"]
-            arrow_flag_mapper = mapper["arrow_flag_mapper"]
-            if data_arrow_flag not in arrow_flag_mapper:
+            try:
+                ImportMapper.map_arrow_flag(data_arrow_flag)
+            except KeyError:
                 error_dict["Arrow_Flag"] = tdt(
                     f"Arrow Flag: {data_arrow_flag} is not valid"
                 )
@@ -181,12 +190,19 @@ class UploadForm(forms.Form):
                         f"Value: {data_value} is not a valid number"
                     )
                 if error_dict.get("Value_Units") is None:
-                    err = IndDataCleaner.clean_value_data(
-                        data_value,
-                        value_unit_mapper[data_value_units],
-                    )
-                    if err:
-                        error_dict["Value"] = str(err)
+                    try:
+                        mapped_value_unit = ImportMapper.map_value_unit(
+                            data_value_units
+                        )
+
+                        err = IndDataCleaner.clean_value_data(
+                            data_value,
+                            mapped_value_unit,
+                        )
+                        if err:
+                            error_dict["Value"] = str(err)
+                    except KeyError:
+                        error_dict["Value_Units"] = str(err)
 
             data_value_lower = data_row["Value_LowerCI"]
             if data_value_lower != "":
@@ -239,8 +255,8 @@ class UploadForm(forms.Form):
             try:
                 indicator_obj = Indicator.objects.filter(
                     name=data_indicator,
-                    category=category_mapper[data_category],
-                    topic=topic_mapper[data_topic],
+                    category=ImportMapper.map_category(data_category),
+                    topic=ImportMapper.map_topic(data_topic),
                     detailed_indicator=data_detailed_indicator,
                     sub_indicator_measurement=data_sub_indicator,
                 ).first()
@@ -266,7 +282,7 @@ class UploadForm(forms.Form):
                 )
 
             if "Period" not in error_dict and "Indicator" not in error_dict:
-                period_obj = period_mapper[data_period]
+                period_obj = ImportMapper.map_period(data_period)
 
                 if indicator_obj is not None and not test_rule(
                     "can_edit_indicator_data",
@@ -303,7 +319,7 @@ class UploadIndicator(MustPassAuthCheckMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["mapper"] = upload_mapper()
+        context["mapper"] = mapping_util
         return context
 
     def get_success_url(self):
@@ -366,12 +382,11 @@ class SaveUpload(MustPassAuthCheckMixin, View):
         )
 
     def handle_indicator_save(self, datum):
-        mapper = upload_mapper()
         # try to find if indicator with same exact attributes exists first
         indicator_obj = Indicator.objects.filter(
             name=datum["Indicator"],
-            category=mapper["category_mapper"][datum["Category"]],
-            topic=mapper["topic_mapper"][datum["Topic"]],
+            category=ImportMapper.map_category(datum["Category"]),
+            topic=ImportMapper.map_topic(datum["Topic"]),
             detailed_indicator=datum["Detailed Indicator"],
             sub_indicator_measurement=datum["Sub_Indicator_Measurement"],
         ).first()
@@ -380,8 +395,8 @@ class SaveUpload(MustPassAuthCheckMixin, View):
             if test_rule("can_create_indicator", self.request.user):
                 indicator_obj = Indicator.objects.create(
                     name=datum["Indicator"],
-                    category=mapper["category_mapper"][datum["Category"]],
-                    topic=mapper["topic_mapper"][datum["Topic"]],
+                    category=ImportMapper.map_category(datum["Category"]),
+                    topic=ImportMapper.map_topic(datum["Topic"]),
                     detailed_indicator=datum["Detailed Indicator"],
                     sub_indicator_measurement=datum[
                         "Sub_Indicator_Measurement"
@@ -394,38 +409,37 @@ class SaveUpload(MustPassAuthCheckMixin, View):
         return indicator_obj
 
     def handle_indicator_data_save(self, indicator_obj, datum):
-        mapper = upload_mapper()
-
-        period_val = mapper["period_mapper"][datum["Period"]]
+        period_val = ImportMapper.map_period(datum["Period"])
 
         if not test_rule(
             "can_access_indicator", self.request.user, indicator_obj
         ):
             return None
 
-        dim_val = None
-        lit_dim_val = None
         if datum["Dimension_Type"] != "Age Group":
-            dim_val = mapper["non_literal_dimension_value_mapper"][
+            lit_dim_val = None
+            dim_val = ImportMapper.map_dimension_value(
                 (datum["Dimension_Type"], datum["Dimension_Value"])
-            ]
+            )
         else:
+            dim_val = None
             lit_dim_val = datum["Dimension_Value"]
+
         # filter data with all attributes equal to datum
         # to see if exact match exists
         indData_obj = IndicatorDatum.active_objects.filter(
             indicator=indicator_obj,
-            dimension_type=mapper["dimension_type_mapper"][
+            dimension_type=ImportMapper.map_dimension_type(
                 datum["Dimension_Type"]
-            ],
+            ),
             dimension_value=dim_val,
             literal_dimension_val=lit_dim_val,
             period=period_val,
-            data_quality=mapper["data_quality_mapper"][datum["Data_Quality"]],
-            arrow_flag=mapper["arrow_flag_mapper"][datum["Arrow_Flag"]],
-            reason_for_null=mapper["reason_for_null_mapper"][
+            data_quality=ImportMapper.map_data_quality(datum["Data_Quality"]),
+            arrow_flag=ImportMapper.map_arrow_flag(datum["Arrow_Flag"]),
+            reason_for_null=ImportMapper.map_reason_for_null(
                 datum["Reason_for_Null_Data"]
-            ],
+            ),
             value=(float(datum["Value"]) if datum["Value"] != "" else None),
             value_lower_bound=(
                 float(datum["Value_LowerCI"])
@@ -437,10 +451,10 @@ class SaveUpload(MustPassAuthCheckMixin, View):
                 if datum["Value_UpperCI"] != ""
                 else None
             ),
-            value_unit=mapper["value_unit_mapper"][datum["Value_Units"]],
-            value_displayed=mapper["value_displayed_mapper"][
+            value_unit=ImportMapper.map_value_unit(datum["Value_Units"]),
+            value_displayed=ImportMapper.map_value_displayed(
                 datum["Value_Displayed"]
-            ],
+            ),
             single_year_timeframe=datum["SingleYear_TimeFrame"],
             multi_year_timeframe=datum["MultiYear_TimeFrame"],
         ).first()
@@ -451,19 +465,19 @@ class SaveUpload(MustPassAuthCheckMixin, View):
         if indData_obj is None:
             indData_obj, created = IndicatorDatum.active_objects.get_or_create(
                 indicator=indicator_obj,
-                dimension_type=mapper["dimension_type_mapper"][
+                dimension_type=ImportMapper.map_dimension_type(
                     datum["Dimension_Type"]
-                ],
+                ),
                 dimension_value=dim_val,
                 period=period_val,
                 literal_dimension_val=lit_dim_val,
             )
-            indData_obj.data_quality = mapper["data_quality_mapper"][
+            indData_obj.data_quality = ImportMapper.map_data_quality(
                 datum["Data_Quality"]
-            ]
-            indData_obj.reason_for_null = mapper["reason_for_null_mapper"][
+            )
+            indData_obj.reason_for_null = ImportMapper.map_reason_for_null(
                 datum["Reason_for_Null_Data"]
-            ]
+            )
             indData_obj.value = (
                 float(datum["Value"]) if datum["Value"] != "" else None
             )
@@ -477,12 +491,12 @@ class SaveUpload(MustPassAuthCheckMixin, View):
                 if datum["Value_UpperCI"] != ""
                 else None
             )
-            indData_obj.value_unit = mapper["value_unit_mapper"][
+            indData_obj.value_unit = ImportMapper.map_value_unit(
                 datum["Value_Units"]
-            ]
-            indData_obj.value_displayed = mapper["value_displayed_mapper"][
+            )
+            indData_obj.value_displayed = ImportMapper.map_value_displayed(
                 datum["Value_Displayed"]
-            ]
+            )
             indData_obj.single_year_timeframe = datum["SingleYear_TimeFrame"]
             indData_obj.multi_year_timeframe = datum["MultiYear_TimeFrame"]
             indData_obj.save()

@@ -10,3 +10,18 @@
     <div class="fw-light fs-5 opacity-75">{{ text }}</div>
   </div>
 {% endmacro %}
+
+
+{% macro required_asterisk() %}
+  <span aria-hidden="true" class="text-danger">*</span>
+{% endmacro %}
+
+
+{% macro required_explainer_alert() %}
+  <div class="alert alert-secondary py-2 my-1">
+    <span>
+      {{ tm("required_explainer") }}
+      {{ required_asterisk() }}
+    </span>
+  </div>
+{% endmacro %}

@@ -10,7 +10,7 @@
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="modal"
-                aria-label="Close"></button>
+                aria-label="{{ tm('close') }}"></button>
       </div>
       <div class="modal-body" style="overflow-x:auto">
         <p>{{ tm("upload_using_csv_file_expl") }}</p>
@@ -145,76 +145,38 @@
               <td>{{ tm("dimension_type") }}</td>
               <td>
                 <ul>
-                  {% for key in mapper["dimension_type_mapper"] %}
+                  {% for key in mapper.get_dimension_type_mapper_dict() %}
                     {% if key != "" %}<li>{{ key }}</li>{% endif %}
                   {% endfor %}
                 </ul>
               </td>
             </tr>
             <tr>
-              <td>Dimension_Value</td>
-              <td>{{ tm("dimension_value") }}</td>
-              <td>
-                <div class="d-flex flex-row bd-highlight mb-3">
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("province_territory") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Province" %}<li>{{ key[1] }}</li>{% endif %}
-                      {% endfor %}
-                    </ul>
+              <td style="max-width:1px">Dimension_Value</td>
+              <td style="max-width:1px">{{ tm("dimension_value") }}</td>
+              <td style="max-width:100px">
+                <div>
+                  <div class="table table-responsive ">
+                    <table class="table-bordered table-sm">
+                      <tr>
+                        {% for dimension in mapper.get_dimension_type_mapper_dict() %}<th>{{ dimension }}</th>{% endfor %}
+                        <th>{{ tm("age_group") }}</th>
+                      </tr>
+                      <tr>
+                        {% for dimension in mapper.get_dimension_type_mapper_dict() %}
+                          <td class="align-top">
+                            <ul>
+                              {% for dim_val in mapper.get_non_literal_dimension_mapper_dict_by_dimension_type()[dimension] %}
+                                <li>{{ dim_val }}</li>
+                              {% endfor %}
+                            </ul>
+                          </td>
+                        {% endfor %}
+                        <td class="align-top">{{ tm("open_text_field") }}</td>
+                      </tr>
+                    </table>
                   </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("gender") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Gender" %}<li>{{ key[1] }}</li>{% endif %}
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("province_territory") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Region" %}<li>{{ key[1] }}</li>{% endif %}
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("sex") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Sex" %}<li>{{ key[1] }}</li>{% endif %}
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("no_stratifier") }}</span>
-                    <hr>
-                    <ul>
-                      <li>CANADA</li>
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("age_group") }}</span>
-                    <hr>
-                    <ul>
-                      <li>{{ tm("open_text_field") }}</li>
-                    </ul>
-                  </div>
-                  <div class="p-2 border">
-                    <span class="fw-bold">{{ tm("living_arrangement") }}</span>
-                    <hr>
-                    <ul>
-                      {% for key in mapper["non_literal_dimension_value_mapper"] %}
-                        {% if key[0] == "Living Arrangement" %}<li>{{ key[1] }}</li>{% endif %}
-                      {% endfor %}
-                    </ul>
-                  </div>
+
                 </td>
               </div>
             </tr>
@@ -225,7 +187,7 @@
                 <div class="row">
                   <div class="col-4">
                     <ul>
-                      {% for key in mapper["period_mapper"] %}<li>{{ key }}</li>{% endfor %}
+                      {% for key in mapper.get_all_periods_dict() %}<li>{{ key }}</li>{% endfor %}
                     </ul>
                   </div>
                   <div class="col-8">

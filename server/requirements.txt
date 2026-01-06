@@ -1,20 +1,19 @@
 beautifulsoup4==4.12.0
 django-cors-headers==4.4.0
-django-debug-toolbar==4.4.2
+django-debug-toolbar==4.4.6
 django-data-fetcher==2.2
-django-graphiql-debug-toolbar==0.2.0
 django-extensions==3.2.3
 django-htmx==1.21.0
 django-htmx-autocomplete==1.0.5
 django-phac_aspc-helpers==3.1.1
-Django==5.1.4
+Django==5.1.14
 django-versionator==2.0.1
 django-versionator[changelog]==2.0.1
 Faker==15.1.1
 freezegun==1.2.2
-gunicorn==22.0.0
+gunicorn==23.0.0
 ipython==8.10.0
-Jinja2==3.1.4
+Jinja2==3.1.6
 openpyxl==3.0.10
 promise==2.3
 # psycopg[binary,pool]==3.2.3
@@ -25,7 +24,7 @@ pytz==2022.2.1
 requests==2.32.0
 whitenoise==6.4.0
 rules==3.3
-django-ckeditor==6.7.1
+django-ckeditor==6.7.3
 
 PyYAML==6.0.1 # necessary to apply fixtures in prod
 

@@ -18,6 +18,12 @@ changelog_models = [
     models.TrendAnalysis,
 ]
 
+global_changelog_models = [
+    models.DimensionType,
+    models.DimensionValue,
+    *changelog_models,
+]
+
 from versionator.changelog import Changelog, ChangelogConfig
 
 
@@ -54,8 +60,9 @@ class GlobalChangelog(ChangelogView, MustBeAdminOrHsoMixin):
     template_name = "changelog/global_changelog.jinja2"
 
     def get_changelog_object(self):
+
         changelog_config = ChangelogConfig(
-            changelog_models,
+            global_changelog_models,
             page_size=self.get_page_size(),
         )
 

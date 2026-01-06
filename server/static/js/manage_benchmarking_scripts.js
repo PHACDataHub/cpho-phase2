@@ -31,12 +31,33 @@ function addForm(e) {
 
     // focus on first input of newly added form
     newForm.querySelector("select,input").focus();
+    updateInvisibleRowLabels();
 }
 
-// function updateInvisibleRowLabels() {
 
-// }
+let rowWord = "Entry";
+if (window.location.href.includes("fr-ca")) {
+    rowWord = "Entrée";
+}
+function updateInvisibleRowLabels() {
+    document.querySelectorAll(".benchmarking-form").forEach(function (row) {
+        const countrySelector = row.querySelector(
+            'select[name$="-oecd_country"]'
+        )
+        const countryText = countrySelector.options[countrySelector.selectedIndex].text;
+        const rowLabelSpan = row.querySelector('span[id$="-row-label"] .country-name');
+        if (countryText.replaceAll("-", "")) {
+            rowLabelSpan.textContent = countryText;
+        } else {
+            rowIndex = Array.from(row.parentNode.children).indexOf(row) + 1;
+            rowLabelSpan.textContent = `${rowWord} ${rowIndex}`;
+        }
+    });
+}
 
-// document.addEventListener("change", function (e) {
-//     updateInvisibleRowLabels();
-// });
+
+updateInvisibleRowLabels();
+
+document.addEventListener("change", function (e) {
+    updateInvisibleRowLabels();
+});

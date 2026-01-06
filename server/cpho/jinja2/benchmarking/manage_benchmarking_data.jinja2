@@ -7,8 +7,8 @@
   {{ bc.item(tm("benchmarking") , None, True) }}
 {% endblock %}
 
-{% macro benchmarking_form_field_with_errors(form,field) %}
-  {{ field }}
+{% macro benchmarking_form_field_with_errors(form,field,row_label_id) %}
+  {{ field.as_widget(attrs={"aria-labelledby": row_label_id}) }}
   {% if field.errors %}
     <div class="error-display" id="{{ form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
@@ -17,17 +17,23 @@
 {% endmacro %}
 
 {% macro benchmarking_form(form) %}
+  {% set row_label_id = form.prefix ~ "-row-label" %}
   <tr class="benchmarking-form">
-    <td>{{ benchmarking_form_field_with_errors(form,form.oecd_country) }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form,form.value) }}</td>
-    <td>{{ form.unit }}</td>
-    <td>{{ benchmarking_form_field_with_errors(form,form.year) }}</td>
-    {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
-    <td>{{ benchmarking_form_field_with_errors(form, form.comparison_to_oecd_avg) }}</td>
-    <td>{{ form.labels }}</td>
-    <td>{{ form.methodology_differences }}</td>
     <td>
-      {{ form.is_deleted }}
+      {{ benchmarking_form_field_with_errors(form,form.oecd_country, row_label_id) }}
+      <span id="{{ row_label_id }}" class="visually-hidden">
+        <span class="country-name"></span>
+      </span>
+    </td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.value, row_label_id) }}</td>
+    <td>{{ form.unit.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ benchmarking_form_field_with_errors(form,form.year, row_label_id) }}</td>
+    {# <td>{{ benchmarking_form_field_with_errors(form.standard_deviation) }}</td> #}
+    <td>{{ benchmarking_form_field_with_errors(form, form.comparison_to_oecd_avg, row_label_id) }}</td>
+    <td>{{ form.labels.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ form.methodology_differences.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>
+      {{ form.is_deleted.as_widget(attrs={"aria-labelledby": row_label_id}) }}
       {{ form.id }}
     </td>
   </tr>

@@ -31,4 +31,33 @@ function addForm(e) {
 
     // a11y: focus on first input of newly added form
     newForm.querySelector("select,input").focus();
+    updateInvisibleRowLabels();
 }
+
+
+let rowWord = "Entry";
+if (window.location.href.includes("fr-ca")) {
+    rowWord = "Entrée";
+}
+function updateInvisibleRowLabels() {
+    document.querySelectorAll(".trend-analysis-form").forEach(function (row) {
+        const yearInput = row.querySelector(
+            'input[name$="-year"]'
+        )
+        const yearText = yearInput.value;
+        const rowLabelSpan = row.querySelector('span[id$="-row-label"] .year-key');
+        if (yearText.trim()) {
+            rowLabelSpan.textContent = yearText;
+        } else {
+            rowIndex = Array.from(row.parentNode.children).indexOf(row) + 1;
+            rowLabelSpan.textContent = `${rowWord} ${rowIndex}`;
+        }
+    });
+}
+
+
+updateInvisibleRowLabels();
+
+document.addEventListener("change", function (e) {
+    updateInvisibleRowLabels();
+});

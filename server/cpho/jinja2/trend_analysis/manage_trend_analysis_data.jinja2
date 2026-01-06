@@ -7,8 +7,8 @@
   {{ bc.item(tm("trend_analysis") , None, True) }}
 {% endblock %}
 
-{% macro trend_analysis_form_field_with_errors(field) %}
-  {{ field }}
+{% macro trend_analysis_form_field_with_errors(field,row_label_id) %}
+  {{ field.as_widget(attrs={"aria-labelledby": row_label_id}) }}
   {% if field.errors %}
     <div class="error-display" id="{{ field.form.error_id_for_field(field) }}">
       {% for error in field.errors %}<strong>{{ error|escape }}</strong>{% endfor %}
@@ -17,19 +17,26 @@
 {% endmacro %}
 
 {% macro trend_analysis_form(form) %}
+  {% set row_label_id = form.prefix ~ "-row-label" %}
 
   <tr class="trend-analysis-form" {% if form.errors %}{% endif %}>
-    <td>{{ trend_analysis_form_field_with_errors(form.year) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.data_point) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.line_of_best_fit_point) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.trend_segment) }}</td>
-    <td>{{ form.trend }}</td>
-    <td>{{ form.data_quality }}</td>
-    <td>{{ form.unit }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.data_point_lower_ci) }}</td>
-    <td>{{ trend_analysis_form_field_with_errors(form.data_point_upper_ci) }}</td>
     <td>
-      {{ form.is_deleted }}
+      {{ trend_analysis_form_field_with_errors(form.year, row_label_id) }}
+      <span id="{{ row_label_id }}" class="visually-hidden">
+        <span class="year-key"></span>
+      </span>
+
+    </td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point, row_label_id) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.line_of_best_fit_point, row_label_id) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.trend_segment, row_label_id) }}</td>
+    <td>{{ form.trend.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ form.data_quality.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ form.unit.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point_lower_ci, row_label_id) }}</td>
+    <td>{{ trend_analysis_form_field_with_errors(form.data_point_upper_ci, row_label_id) }}</td>
+    <td>
+      {{ form.is_deleted.as_widget(attrs={"aria-labelledby": row_label_id}) }}
       {{ form.id }}
     </td>
   </tr>

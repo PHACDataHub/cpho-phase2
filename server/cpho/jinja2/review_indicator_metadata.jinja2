@@ -68,9 +68,7 @@
         <div class='my-3'>
           <strong>{{ tm("indicator_details") }}</strong>
         </div>
-        <<<<<<< HEAD
-        <div class="table-responsive">
-          =======
+        <div class="table-responsive" tabindex="0">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -84,347 +82,316 @@
 
               {{ field_tr(tm("category") , ind.get_category_display() ) }}
               {{ field_tr(tm("topic") , ind.get_topic_display() ) }}
-              >>>>>>> main
 
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>{{ tm("field") }}</th>
-                    <th>{{ tm("value") }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {{ field_tr(tm("name") , ind.name) }}
-                  {{ field_tr(tm("name_french") , ind.name_fr) }}
+              {{ field_tr(tm("detailed_indicator") , ind.detailed_indicator) }}
+              {{ field_tr(tm("detailed_indicator_french") , ind.detailed_indicator_fr) }}
 
-                  {{ field_tr(tm("category") , ind.get_category_display() ) }}
-                  {{ field_tr(tm("topic") , ind.get_topic_display() ) }}
+              {{ field_tr(tm("sub_indicator_measurement") , ind.sub_indicator_measurement) }}
+              {{ field_tr(tm("sub_indicator_measurement_french") , ind.sub_indicator_measurement_fr) }}
+              <tr>
+                <td>{{ tm("relevant_dimensions") }}</td>
+                <td>
+                  <ul>
+                    {% for item in ind.relevant_dimensions.all() %}
+                      {#  #}
+                      <li>{{ item.name }}</li>
+                      {#  #}
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
 
-                  <<<<<<< HEAD
-                  {{ field_tr(tm("detailed_indicator") , ind.detailed_indicator) }}
-                  {{ field_tr(tm("detailed_indicator_french") , ind.detailed_indicator_fr) }}
-                  =======
-                  {{ header_tr(tm("general_metadata") ) }}
-
-
-                  {{ field_tr(tm("measure_text") , ind.measure_text) }}
-                  {{ field_tr(tm("measure_text_french") , ind.measure_text_fr) }}
-
-                  {{ field_tr(tm("impact_text") , ind.impact_text) }}
-                  {{ field_tr(tm("impact_text_french") , ind.impact_text_fr) }}
-                  >>>>>>> main
-
-                  {{ field_tr(tm("sub_indicator_measurement") , ind.sub_indicator_measurement) }}
-                  {{ field_tr(tm("sub_indicator_measurement_french") , ind.sub_indicator_measurement_fr) }}
-                  <tr>
-                    <td>{{ tm("relevant_dimensions") }}</td>
-                    <td>
-                      <ul>
-                        {% for item in ind.relevant_dimensions.all() %}<li>{{ item.name }}</li>{% endfor %}
-                      </ul>
-                    </td>
-                  </tr>
-
-                  {{ header_tr(tm("general_metadata") ) }}
+              {{ header_tr(tm("general_metadata") ) }}
 
 
-                  {{ field_tr(tm("measure_text") , ind.measure_text) }}
-                  {{ field_tr(tm("measure_text_french") , ind.measure_text_fr) }}
+              {{ field_tr(tm("measure_text") , ind.measure_text) }}
+              {{ field_tr(tm("measure_text_french") , ind.measure_text_fr) }}
 
-                  {{ field_tr(tm("impact_text") , ind.impact_text) }}
-                  {{ field_tr(tm("impact_text_french") , ind.impact_text_fr) }}
+              {{ field_tr(tm("impact_text") , ind.impact_text) }}
+              {{ field_tr(tm("impact_text_french") , ind.impact_text_fr) }}
 
-                  {{ field_tr(tm("title_overall") , ind.title_overall) }}
-                  {{ field_tr(tm("title_overall_french") , ind.title_overall_fr) }}
+              {{ field_tr(tm("title_overall") , ind.title_overall) }}
+              {{ field_tr(tm("title_overall_french") , ind.title_overall_fr) }}
 
-                  <<<<<<< HEAD
-                  {{ field_tr(tm("table_title_overall") , ind.table_title_overall) }}
-                  {{ field_tr(tm("table_title_overall_french") , ind.table_title_overall_fr) }}
-                  =======
-                  {{ field_tr(tm("recommendations_for_hso") , ind.recommendations_for_hso) }}
-                  {{ field_tr(tm("recommendations_for_hso_french") , ind.recommendations_for_hso_fr) }}
+              {{ field_tr(tm("table_title_overall") , ind.table_title_overall) }}
+              {{ field_tr(tm("table_title_overall_french") , ind.table_title_overall_fr) }}
 
-                  {{ header_tr(tm("sex_metadata") ) }}
-                  {{ field_tr(tm("title_sex") , ind.title_sex) }}
-                  {{ field_tr(tm("title_sex_french") , ind.title_sex_fr) }}
-                  >>>>>>> main
+              {{ field_tr(tm("sdg_goal") , ind.sdg_goal) }}
+              {{ field_tr(tm("sdg_goal_french") , ind.sdg_goal_fr) }}
 
-                  {{ field_tr(tm("sdg_goal") , ind.sdg_goal) }}
-                  {{ field_tr(tm("sdg_goal_french") , ind.sdg_goal_fr) }}
+              {{ field_tr(tm("general_footnotes") , ind.general_footnotes) }}
+              {{ field_tr(tm("general_footnotes_french") , ind.general_footnotes_fr) }}
 
-                  {{ field_tr(tm("general_footnotes") , ind.general_footnotes) }}
-                  {{ field_tr(tm("general_footnotes_french") , ind.general_footnotes_fr) }}
+              {{ field_tr(tm("main_source_english") , ind.main_source_english) }}
+              {{ field_tr(tm("main_source_french") , ind.main_source_fr) }}
 
-                  {{ field_tr(tm("main_source_english") , ind.main_source_english) }}
-                  {{ field_tr(tm("main_source_french") , ind.main_source_fr) }}
+              {{ field_tr(tm("other_relevant_sources_english") , ind.other_relevant_sources_english) }}
+              {{ field_tr(tm("other_relevant_sources_french") , ind.other_relevant_sources_fr) }}
 
-                  {{ field_tr(tm("other_relevant_sources_english") , ind.other_relevant_sources_english) }}
-                  {{ field_tr(tm("other_relevant_sources_french") , ind.other_relevant_sources_fr) }}
+              {{ field_tr(tm("recommendations_for_hso") , ind.recommendations_for_hso) }}
+              {{ field_tr(tm("recommendations_for_hso_french") , ind.recommendations_for_hso_fr) }}
 
-                  {{ field_tr(tm("recommendations_for_hso") , ind.recommendations_for_hso) }}
-                  {{ field_tr(tm("recommendations_for_hso_french") , ind.recommendations_for_hso_fr) }}
+              {{ header_tr(tm("sex_metadata") ) }}
+              {{ field_tr(tm("title_sex") , ind.title_sex) }}
+              {{ field_tr(tm("title_sex_french") , ind.title_sex_fr) }}
 
-                  {{ header_tr(tm("sex_metadata") ) }}
-                  {{ field_tr(tm("title_sex") , ind.title_sex) }}
-                  {{ field_tr(tm("title_sex_french") , ind.title_sex_fr) }}
+              {{ field_tr(tm("table_title_sex") , ind.table_title_sex) }}
+              {{ field_tr(tm("table_title_sex_french") , ind.table_title_sex_fr) }}
 
-                  {{ field_tr(tm("table_title_sex") , ind.table_title_sex) }}
-                  {{ field_tr(tm("table_title_sex_french") , ind.table_title_sex_fr) }}
+              {{ header_tr(tm("grade_metadata") ) }}
+              {{ field_tr(tm("title_grade") , ind.title_grade) }}
+              {{ field_tr(tm("title_grade_french") , ind.title_grade_fr) }}
 
-                  {{ header_tr(tm("grade_metadata") ) }}
-                  {{ field_tr(tm("title_grade") , ind.title_grade) }}
-                  {{ field_tr(tm("title_grade_french") , ind.title_grade_fr) }}
+              {{ field_tr(tm("table_title_grade") , ind.table_title_grade) }}
+              {{ field_tr(tm("table_title_grade_french") , ind.table_title_grade_fr) }}
 
-                  {{ field_tr(tm("table_title_grade") , ind.table_title_grade) }}
-                  {{ field_tr(tm("table_title_grade_french") , ind.table_title_grade_fr) }}
+              {{ header_tr(tm("hospital_setting_metadata") ) }}
+              {{ field_tr(tm("title_hospital_setting") , ind.title_hospital_setting) }}
+              {{ field_tr(tm("title_hospital_setting_french") , ind.title_hospital_setting_fr) }}
 
-                  {{ header_tr(tm("hospital_setting_metadata") ) }}
-                  {{ field_tr(tm("title_hospital_setting") , ind.title_hospital_setting) }}
-                  {{ field_tr(tm("title_hospital_setting_french") , ind.title_hospital_setting_fr) }}
+              {{ field_tr(tm("table_title_hospital_setting") , ind.table_title_hospital_setting) }}
+              {{ field_tr(tm("table_title_hospital_setting_french") , ind.table_title_hospital_setting_fr) }}
 
-                  {{ field_tr(tm("table_title_hospital_setting") , ind.table_title_hospital_setting) }}
-                  {{ field_tr(tm("table_title_hospital_setting_french") , ind.table_title_hospital_setting_fr) }}
+              {{ header_tr(tm("age_metadata") ) }}
+              {{ field_tr(tm("title_age") , ind.title_age) }}
+              {{ field_tr(tm("title_age_french") , ind.title_age_fr) }}
 
-                  {{ header_tr(tm("age_metadata") ) }}
-                  {{ field_tr(tm("title_age") , ind.title_age) }}
-                  {{ field_tr(tm("title_age_french") , ind.title_age_fr) }}
+              {{ field_tr(tm("table_title_age") , ind.table_title_age) }}
+              {{ field_tr(tm("table_title_age_french") , ind.table_title_age_fr) }}
 
-                  {{ field_tr(tm("table_title_age") , ind.table_title_age) }}
-                  {{ field_tr(tm("table_title_age_french") , ind.table_title_age_fr) }}
+              {{ header_tr(tm("province_metadata") ) }}
+              {{ field_tr(tm("title_province_territory") , ind.title_province_territory) }}
+              {{ field_tr(tm("title_province_territory_french") , ind.title_province_territory_fr) }}
 
-                  {{ header_tr(tm("province_metadata") ) }}
-                  {{ field_tr(tm("title_province_territory") , ind.title_province_territory) }}
-                  {{ field_tr(tm("title_province_territory_french") , ind.title_province_territory_fr) }}
+              {{ field_tr(tm("table_title_province_territory") , ind.table_title_province_territory) }}
+              {{ field_tr(tm("table_title_province_territory_french") , ind.table_title_province_territory_fr) }}
 
-                  {{ field_tr(tm("table_title_province_territory") , ind.table_title_province_territory) }}
-                  {{ field_tr(tm("table_title_province_territory_french") , ind.table_title_province_territory_fr) }}
+              {{ field_tr(tm("pt_dynamic_text") , ind.pt_dynamic_text) }}
+              {{ field_tr(tm("pt_dynamic_text_french") , ind.pt_dynamic_text_fr) }}
 
-                  {{ field_tr(tm("pt_dynamic_text") , ind.pt_dynamic_text) }}
-                  {{ field_tr(tm("pt_dynamic_text_french") , ind.pt_dynamic_text_fr) }}
+              {{ header_tr(tm("living_arrangement_metadata") ) }}
+              {{ field_tr(tm("title_living_arrangement") , ind.title_living_arrangement) }}
+              {{ field_tr(tm("title_living_arrangement_french") , ind.title_living_arrangement_fr) }}
 
-                  {{ header_tr(tm("living_arrangement_metadata") ) }}
-                  {{ field_tr(tm("title_living_arrangement") , ind.title_living_arrangement) }}
-                  {{ field_tr(tm("title_living_arrangement_french") , ind.title_living_arrangement_fr) }}
+              {{ field_tr(tm("table_title_living_arrangement") , ind.table_title_living_arrangement) }}
+              {{ field_tr(tm("table_title_living_arrangement_french") , ind.table_title_living_arrangement_fr) }}
 
-                  {{ field_tr(tm("table_title_living_arrangement") , ind.table_title_living_arrangement) }}
-                  {{ field_tr(tm("table_title_living_arrangement_french") , ind.table_title_living_arrangement_fr) }}
+              {{ header_tr(tm("education_household_metadata") ) }}
+              {{ field_tr(tm("title_education_household") , ind.title_education_household) }}
+              {{ field_tr(tm("title_education_household_french") , ind.title_education_household_fr) }}
 
-                  {{ header_tr(tm("education_household_metadata") ) }}
-                  {{ field_tr(tm("title_education_household") , ind.title_education_household) }}
-                  {{ field_tr(tm("title_education_household_french") , ind.title_education_household_fr) }}
+              {{ field_tr(tm("table_title_education_household") , ind.table_title_education_household) }}
+              {{ field_tr(tm("table_title_education_household_french") , ind.table_title_education_household_fr) }}
 
-                  {{ field_tr(tm("table_title_education_household") , ind.table_title_education_household) }}
-                  {{ field_tr(tm("table_title_education_household_french") , ind.table_title_education_household_fr) }}
+              {{ header_tr(tm("income_quintiles_metadata") ) }}
+              {{ field_tr(tm("title_income_quintiles") , ind.title_income_quintiles) }}
+              {{ field_tr(tm("title_income_quintiles_french") , ind.title_income_quintiles_fr) }}
 
-                  {{ header_tr(tm("income_quintiles_metadata") ) }}
-                  {{ field_tr(tm("title_income_quintiles") , ind.title_income_quintiles) }}
-                  {{ field_tr(tm("title_income_quintiles_french") , ind.title_income_quintiles_fr) }}
+              {{ field_tr(tm("table_title_income_quintiles") , ind.table_title_income_quintiles) }}
+              {{ field_tr(tm("table_title_income_quintiles_french") , ind.table_title_income_quintiles_fr) }}
 
-                  {{ field_tr(tm("table_title_income_quintiles") , ind.table_title_income_quintiles) }}
-                  {{ field_tr(tm("table_title_income_quintiles_french") , ind.table_title_income_quintiles_fr) }}
+              {{ header_tr(tm("trend_analysis_metadata") ) }}
+              {{ field_tr(tm("title_trend") , ind.title_trend) }}
+              {{ field_tr(tm("title_trend_french") , ind.title_trend_fr) }}
 
-                  {{ header_tr(tm("trend_analysis_metadata") ) }}
-                  {{ field_tr(tm("title_trend") , ind.title_trend) }}
-                  {{ field_tr(tm("title_trend_french") , ind.title_trend_fr) }}
+              {{ field_tr(tm("table_title_trend") , ind.table_title_trend) }}
+              {{ field_tr(tm("table_title_trend_french") , ind.table_title_trend_fr) }}
 
-                  {{ field_tr(tm("table_title_trend") , ind.table_title_trend) }}
-                  {{ field_tr(tm("table_title_trend_french") , ind.table_title_trend_fr) }}
+              {{ field_tr(tm("visual_description_trend") , ind.visual_description_trend) }}
+              {{ field_tr(tm("visual_description_trend_french") , ind.visual_description_trend_fr) }}
 
-                  {{ field_tr(tm("visual_description_trend") , ind.visual_description_trend) }}
-                  {{ field_tr(tm("visual_description_trend_french") , ind.visual_description_trend_fr) }}
+              {{ field_tr(tm("x_axis_trend") , ind.x_axis_trend) }}
+              {{ field_tr(tm("x_axis_trend_french") , ind.x_axis_trend_fr) }}
 
-                  {{ field_tr(tm("x_axis_trend") , ind.x_axis_trend) }}
-                  {{ field_tr(tm("x_axis_trend_french") , ind.x_axis_trend_fr) }}
+              {{ field_tr(tm("y_axis_trend") , ind.y_axis_trend) }}
+              {{ field_tr(tm("y_axis_trend_french") , ind.y_axis_trend_fr) }}
 
-                  {{ field_tr(tm("y_axis_trend") , ind.y_axis_trend) }}
-                  {{ field_tr(tm("y_axis_trend_french") , ind.y_axis_trend_fr) }}
+              {{ field_tr(tm("y_axis_trend_min") , ind.y_axis_trend_min) }}
+              {{ field_tr(tm("y_axis_trend_max") , ind.y_axis_trend_max) }}
 
-                  {{ field_tr(tm("y_axis_trend_min") , ind.y_axis_trend_min) }}
-                  {{ field_tr(tm("y_axis_trend_max") , ind.y_axis_trend_max) }}
+              {{ field_tr(tm("trend_footnotes") , ind.trend_footnotes) }}
+              {{ field_tr(tm("trend_footnotes_french") , ind.trend_footnotes_fr) }}
 
-                  {{ field_tr(tm("trend_footnotes") , ind.trend_footnotes) }}
-                  {{ field_tr(tm("trend_footnotes_french") , ind.trend_footnotes_fr) }}
+              {{ header_tr(tm("benchmarking_metadata") ) }}
+              {{ field_tr(tm("title_benchmark") , ind.title_benchmark) }}
+              {{ field_tr(tm("title_benchmark_french") , ind.title_benchmark_fr) }}
 
-                  {{ header_tr(tm("benchmarking_metadata") ) }}
-                  {{ field_tr(tm("title_benchmark") , ind.title_benchmark) }}
-                  {{ field_tr(tm("title_benchmark_french") , ind.title_benchmark_fr) }}
+              {{ field_tr(tm("table_title_benchmark") , ind.table_title_benchmark) }}
+              {{ field_tr(tm("table_title_benchmark_french") , ind.table_title_benchmark_fr) }}
 
-                  {{ field_tr(tm("table_title_benchmark") , ind.table_title_benchmark) }}
-                  {{ field_tr(tm("table_title_benchmark_french") , ind.table_title_benchmark_fr) }}
+              {{ field_tr(tm("x_axis_benchmark") , ind.x_axis_benchmark) }}
+              {{ field_tr(tm("x_axis_benchmark_french") , ind.x_axis_benchmark_fr) }}
 
-                  {{ field_tr(tm("x_axis_benchmark") , ind.x_axis_benchmark) }}
-                  {{ field_tr(tm("x_axis_benchmark_french") , ind.x_axis_benchmark_fr) }}
+              {{ field_tr(tm("benchmarking_dynamic_text") , ind.benchmarking_dynamic_text) }}
+              {{ field_tr(tm("benchmarking_dynamic_text_french") , ind.benchmarking_dynamic_text_fr) }}
 
-                  {{ field_tr(tm("benchmarking_dynamic_text") , ind.benchmarking_dynamic_text) }}
-                  {{ field_tr(tm("benchmarking_dynamic_text_french") , ind.benchmarking_dynamic_text_fr) }}
+              {{ field_tr(tm("benchmarking_footnotes") , ind.benchmarking_footnotes) }}
+              {{ field_tr(tm("benchmarking_footnotes_french") , ind.benchmarking_footnotes_fr) }}
 
-                  {{ field_tr(tm("benchmarking_footnotes") , ind.benchmarking_footnotes) }}
-                  {{ field_tr(tm("benchmarking_footnotes_french") , ind.benchmarking_footnotes_fr) }}
-
-                  {{ field_tr(tm("benchmarking_sources_english") , ind.benchmarking_sources_english) }}
-                  {{ field_tr(tm("benchmarking_sources_french") , ind.benchmarking_sources_fr) }}
+              {{ field_tr(tm("benchmarking_sources_english") , ind.benchmarking_sources_english) }}
+              {{ field_tr(tm("benchmarking_sources_french") , ind.benchmarking_sources_fr) }}
 
 
-                </tbody>
-              </table>
-            </div>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="mt-5">
+          <strong>{{ tm("quintile_values") }}</strong>
+        </div>
+        <p class="my-2">{{ tm("quintile_metadata_description") }}</p>
+        <div class="table-responsive" tabindex="0">
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>{{ tm("quintile") }}</th>
+                <th>G1</th>
+                <th>G2 {{ tm("lower") }}</th>
+                <th>G2 {{ tm("upper") }}</th>
+                <th>G3 {{ tm("lower") }}</th>
+                <th>G3 {{ tm("upper") }}</th>
+                <th>G4 {{ tm("lower") }}</th>
+                <th>G4 {{ tm("upper") }}</th>
+                <th>G5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ tm("quintile_values") }}</td>
+                <td>{{ ind.g1 }}</td>
+                <td>{{ ind.g2_lower }}</td>
+                <td>{{ ind.g2_upper }}</td>
+                <td>{{ ind.g3_lower }}</td>
+                <td>{{ ind.g3_upper }}</td>
+                <td>{{ ind.g4_lower }}</td>
+                <td>{{ ind.g4_upper }}</td>
+                <td>{{ ind.g5 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-5">
+    <div class="card-header">
+
+      <div class="h5">{{ tm("benchmarking_metadata") }}</div>
+      <div class="row">
+        <div class="col">
+          <div>
+            <span class="fw-bold">{{ tm("hso_submission") }}:</span> {{ submission_status_badge(submission_statuses['hso_benchmarking_status']) }}
           </div>
           <div>
-            <div class="mt-5">
-              <strong>{{ tm("quintile_values") }}</strong>
-            </div>
-            <p class="my-2">{{ tm("quintile_metadata_description") }}</p>
-            <div class="table-responsive">
-
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>{{ tm("quintile") }}</th>
-                    <th>G1</th>
-                    <th>G2 {{ tm("lower") }}</th>
-                    <th>G2 {{ tm("upper") }}</th>
-                    <th>G3 {{ tm("lower") }}</th>
-                    <th>G3 {{ tm("upper") }}</th>
-                    <th>G4 {{ tm("lower") }}</th>
-                    <th>G4 {{ tm("upper") }}</th>
-                    <th>G5</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ tm("quintile_values") }}</td>
-                    <td>{{ ind.g1 }}</td>
-                    <td>{{ ind.g2_lower }}</td>
-                    <td>{{ ind.g2_upper }}</td>
-                    <td>{{ ind.g3_lower }}</td>
-                    <td>{{ ind.g3_upper }}</td>
-                    <td>{{ ind.g4_lower }}</td>
-                    <td>{{ ind.g4_upper }}</td>
-                    <td>{{ ind.g5 }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <span class="fw-bold">{{ tm("program_submission") }}:</span> {{ submission_status_badge(submission_statuses['program_benchmarking_status']) }}
           </div>
+        </div>
+        <div class="col">
+          {% if respects_rule('can_edit_benchmarking', view.indicator) %}
+            <div>
+              <a href="{{ url('manage_benchmarking_data', args=[view.indicator.id]) }}"
+                 class="btn btn-outline-dark float-end">{{ tm("edit_benchmarking_metadata") }}</a>
+            </div>
+          {% endif %}
         </div>
       </div>
 
-      <div class="card mt-5">
-        <div class="card-header">
+    </div>
+    <div class="card-body">
+      <div class="table-responsive" tabindex="0">
 
-          <div class="h5">{{ tm("benchmarking_metadata") }}</div>
-          <div class="row">
-            <div class="col">
-              <div>
-                <span class="fw-bold">{{ tm("hso_submission") }}:</span> {{ submission_status_badge(submission_statuses['hso_benchmarking_status']) }}
-              </div>
-              <div>
-                <span class="fw-bold">{{ tm("program_submission") }}:</span> {{ submission_status_badge(submission_statuses['program_benchmarking_status']) }}
-              </div>
-            </div>
-            <div class="col">
-              {% if respects_rule('can_edit_benchmarking', view.indicator) %}
-                <div>
-                  <a href="{{ url('manage_benchmarking_data', args=[view.indicator.id]) }}"
-                     class="btn btn-outline-dark float-end">{{ tm("edit_benchmarking_metadata") }}</a>
-                </div>
-              {% endif %}
-            </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">{{ tm("oecd_country") }}</th>
+              <th scope="col">{{ tm("value") }}</th>
+              <th scope="col">{{ tm("unit") }}</th>
+              <th scope="col">{{ tm("year") }}</th>
+              <th scope="col">{{ tm("comparison_to_oecd_average") }}</th>
+              <th scope="col">{{ tm("labels") }}</th>
+              <th scope="col">{{ tm("methodology_differences") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in metadata["benchmarking"].order_by('labels', 'value') %}
+              <tr>
+                <th scope="row">{{ item.oecd_country }}</th>
+                <td>{{ item.value }}</td>
+                <td>{{ item.get_unit_display() }}</td>
+                <td>{{ item.year }}</td>
+                <td>{{ item.get_comparison_to_oecd_avg_display() }}</td>
+                <td>{{ item.get_labels_display() }}</td>
+                <td>{{ tm(item.get_methodology_differences_display() ) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-5">
+    <div class="card-header">
+      <div class="h5">{{ tm("trend_analysis_metadata") }}</div>
+      <div class="row">
+        <div class="col">
+          <div>
+            <span class="fw-bold">{{ tm("hso_submission") }}:</span> {{ submission_status_badge(submission_statuses['hso_trend_status']) }}
           </div>
-
+          <div>
+            <span class="fw-bold">{{ tm("program_submission") }}:</span> {{ submission_status_badge(submission_statuses['program_trend_status']) }}
+          </div>
         </div>
-        <div class="card-body">
-          <div class="table-responsive">
-
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">{{ tm("oecd_country") }}</th>
-                  <th scope="col">{{ tm("value") }}</th>
-                  <th scope="col">{{ tm("unit") }}</th>
-                  <th scope="col">{{ tm("year") }}</th>
-                  <th scope="col">{{ tm("comparison_to_oecd_average") }}</th>
-                  <th scope="col">{{ tm("labels") }}</th>
-                  <th scope="col">{{ tm("methodology_differences") }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in metadata["benchmarking"].order_by('labels', 'value') %}
-                  <tr>
-                    <th scope="row">{{ item.oecd_country }}</th>
-                    <td>{{ item.value }}</td>
-                    <td>{{ item.get_unit_display() }}</td>
-                    <td>{{ item.year }}</td>
-                    <td>{{ item.get_comparison_to_oecd_avg_display() }}</td>
-                    <td>{{ item.get_labels_display() }}</td>
-                    <td>{{ tm(item.get_methodology_differences_display() ) }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+        <div class="col">
+          {% if respects_rule('can_edit_trend_analysis', indicator) %}
+            <div>
+              <a href="{{ url('manage_trend_analysis_data', args=[view.indicator.id]) }}"
+                 class="btn btn-outline-dark float-end">{{ tm("edit_trend_analysis_metadata") }}</a>
+            </div>
+          {% endif %}
         </div>
       </div>
-
-      <div class="card mt-5">
-        <div class="card-header">
-          <div class="h5">{{ tm("trend_analysis_metadata") }}</div>
-          <div class="row">
-            <div class="col">
-              <div>
-                <span class="fw-bold">{{ tm("hso_submission") }}:</span> {{ submission_status_badge(submission_statuses['hso_trend_status']) }}
-              </div>
-              <div>
-                <span class="fw-bold">{{ tm("program_submission") }}:</span> {{ submission_status_badge(submission_statuses['program_trend_status']) }}
-              </div>
-            </div>
-            <div class="col">
-              {% if respects_rule('can_edit_trend_analysis', indicator) %}
-                <div>
-                  <a href="{{ url('manage_trend_analysis_data', args=[view.indicator.id]) }}"
-                     class="btn btn-outline-dark float-end">{{ tm("edit_trend_analysis_metadata") }}</a>
-                </div>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">{{ tm("year_or_range") }}</th>
-                  <th scope="col">{{ tm("data_point") }}</th>
-                  <th scope="col">{{ tm("line_of_best_fit_point") }}</th>
-                  <th scope="col">{{ tm("trend_segment") }}</th>
-                  <th scope="col">{{ tm("trend") }}</th>
-                  <th scope="col">{{ tm("data_quality") }}</th>
-                  <th scope="col">{{ tm("unit") }}</th>
-                  <th scope="col">{{ tm("data_lower_ci") }}</th>
-                  <th scope="col">{{ tm("data_upper_ci") }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in metadata["trend"] %}
-                  <tr>
-                    <th scope="row">{{ item.year }}</th>
-                    <td>{{ item.data_point }}</td>
-                    <td>{{ item.line_of_best_fit_point }}</td>
-                    <td>{{ item.trend_segment }}</td>
-                    <td>{{ item.get_trend_display() }}</td>
-                    <td>{{ item.get_data_quality_display() }}</td>
-                    <td>{{ item.get_unit_display() }}</td>
-                    <td>{{ item.data_point_lower_ci }}</td>
-                    <td>{{ item.data_point_upper_ci }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive" tabindex="0">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">{{ tm("year_or_range") }}</th>
+              <th scope="col">{{ tm("data_point") }}</th>
+              <th scope="col">{{ tm("line_of_best_fit_point") }}</th>
+              <th scope="col">{{ tm("trend_segment") }}</th>
+              <th scope="col">{{ tm("trend") }}</th>
+              <th scope="col">{{ tm("data_quality") }}</th>
+              <th scope="col">{{ tm("unit") }}</th>
+              <th scope="col">{{ tm("data_lower_ci") }}</th>
+              <th scope="col">{{ tm("data_upper_ci") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in metadata["trend"] %}
+              <tr>
+                <th scope="row">{{ item.year }}</th>
+                <td>{{ item.data_point }}</td>
+                <td>{{ item.line_of_best_fit_point }}</td>
+                <td>{{ item.trend_segment }}</td>
+                <td>{{ item.get_trend_display() }}</td>
+                <td>{{ item.get_data_quality_display() }}</td>
+                <td>{{ item.get_unit_display() }}</td>
+                <td>{{ item.data_point_lower_ci }}</td>
+                <td>{{ item.data_point_upper_ci }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
+    </div>
+  </div>
 
-      {% set submission_url = url('submit_metadata', args=[view.indicator.id]) %}
-      {% set modal_title = tm("confirm_metadata_approval") %}
-      {% include 'modals/submission_modal.jinja2' %}
-    {% endblock %}
+  {% set submission_url = url('submit_metadata', args=[view.indicator.id]) %}
+  {% set modal_title = tm("confirm_metadata_approval") %}
+  {% include 'modals/submission_modal.jinja2' %}
+{% endblock %}

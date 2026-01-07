@@ -73,3 +73,11 @@ From the `server/` directory run the following
 3. `python -m http.server 1337`
 4. visit `http://localhost:1337/htmlcov/` and dig into modules to see which individual line coverage
 
+
+## Selenium tests
+
+There are a few tests that use a live browser to test interaction. These do not run by default. You'll have to run them via `python manage.py test --selenium tests/selenium/`. 
+
+These tests should work both in postgres and sqlite. But when using postgres, if anything goes wrong, the DB may not reset correctly and you may have to reset it (see dropdb test db command above).
+
+You can run regular tests or these tests, never both at the same time. Do not attempt to run regular tests with --selenium or selenium tests without it, or else it will error and you will need to reset the test DB. 

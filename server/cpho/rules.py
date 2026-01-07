@@ -73,7 +73,8 @@ def can_use_indicator_upload(user):
 
 @auto_rule
 def can_manage_users(user):
-    return is_admin_or_hso(user)
+    # return is_admin_or_hso(user)
+    return is_admin(user)
 
 
 @auto_rule

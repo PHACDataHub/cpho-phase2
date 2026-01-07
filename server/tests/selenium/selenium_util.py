@@ -1,11 +1,12 @@
-from selenium.webdriver.common.by import By
-
-
 def get_element(driver, selector):
+    from selenium.webdriver.common.by import By
+
     return driver.find_element(By.CSS_SELECTOR, selector)
 
 
 def get_elements(driver, selector):
+    from selenium.webdriver.common.by import By
+
     return driver.find_elements(By.CSS_SELECTOR, selector)
 
 

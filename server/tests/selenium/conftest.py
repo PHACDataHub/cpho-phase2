@@ -7,7 +7,6 @@ from django.contrib.auth import (
 from django.contrib.sessions.backends.db import SessionStore
 
 import pytest
-from selenium import webdriver
 
 
 # override the global autouse fixture just for selenium tests in this package
@@ -19,6 +18,8 @@ def enable_db_access_for_all_tests(transactional_db):
 
 @pytest.fixture(scope="session")
 def driver():
+    from selenium import webdriver
+
     options = webdriver.ChromeOptions()
     options.add_argument("--headless=new")
     d = webdriver.Chrome(options=options)

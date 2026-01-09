@@ -6,9 +6,9 @@ django-extensions==3.2.3
 django-htmx==1.21.0
 django-htmx-autocomplete==1.0.5
 django-phac_aspc-helpers==3.1.1
-Django==5.1.14
-django-versionator==2.0.1
-django-versionator[changelog]==2.0.1
+Django==5.1.15
+django-versionator==2.1
+django-versionator[changelog]==2.1
 Faker==15.1.1
 freezegun==1.2.2
 gunicorn==23.0.0

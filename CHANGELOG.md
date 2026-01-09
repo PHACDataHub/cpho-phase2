@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.5](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.4...v1.4.5) (2026-01-09)
+
+
+### Bug Fixes
+
+* add copilot instructions ([#446](https://github.com/PHACDataHub/cpho-phase2/issues/446)) ([2ffda37](https://github.com/PHACDataHub/cpho-phase2/commit/2ffda37cf4fe6857b741e80649cbb22f6b242f27))
+* Changelog additions ([#449](https://github.com/PHACDataHub/cpho-phase2/issues/449)) ([cd8aec7](https://github.com/PHACDataHub/cpho-phase2/commit/cd8aec7aea15adee4bf9d9e2d98bc48c0c7549cb))
+
 ## [1.4.4](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.3...v1.4.4) (2025-11-28)
 
 

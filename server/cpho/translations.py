@@ -1483,4 +1483,12 @@ translation_entries = {
         "en": "End Date",
         "fr": "Date de fin",
     },
+    "copy_to_clipboard": {
+        "en": "Copy to Clipboard",
+        "fr": "Copier dans le presse-papiers",
+    },
+    "copied": {
+        "en": "Copied!",
+        "fr": "Copié !",
+    },
 }

@@ -7,9 +7,115 @@
   <h1>{{ tm("global_changelog") }}</h1>
   <style>{% include 'changelog/_changelog_styles.css' %}</style>
 
+
+
+  <details class="border p-3 rounded" {% if request.GET %}open{% endif %}>
+    <summary>{{ tm("Filter") }}</summary>
+    <div>
+      <form method="get">
+        <div class="row">
+          <div class="col-md-6">
+            {{ filter_form.start_date.label_tag() }}
+            {{ filter_form.start_date }}
+          </div>
+          <div class="col-md-6">
+            {{ filter_form.end_date.label_tag() }}
+            {{ filter_form.end_date }}
+          </div>
+        </div>
+        <div>
+          {% if filter_form.models %}
+            <fieldset>
+              <legend class="text-reset">{{ filter_form.models.label }}</legend>
+              {{ filter_form.models }}
+            </fieldset>
+          {% endif %}
+        </div>
+        <input class="btn btn-success my-3" type="submit" value="{{ tm('Filter') }}">
+      </form>
+    </div>
+  </details>
+
+
   {{ changelog_table(edit_entries,True) }}
   {% include "changelog/_changelog_pagination.jinja2" %}
 
+  <div>
+    <button id="copy-to-clipboard" class="btn btn-secondary my-3">{{ tm("copy_to_clipboard") }}</button>
+  </div>
 
+  <script>
+    document.getElementById('copy-to-clipboard').addEventListener('click', async function() {
+      const table = document.getElementById('changelog-table');
+      if (!table) {
+        alert('Table not found');
+        return;
+      }
+
+      // Convert table to TSV (Tab-Separated Values) for Excel/Sheets compatibility
+      const rows = table.querySelectorAll('tr');
+      const tsvData = [];
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('th, td');
+        const rowData = [];
+        cells.forEach(cell => {
+          // Get text content and clean it up
+          let text = cell.textContent.trim();
+          // Replace tabs with spaces to avoid breaking TSV format
+          text = text.replace(/\t/g, ' ');
+          // Replace multiple spaces/newlines with single space
+          text = text.replace(/\s+/g, ' ');
+          rowData.push(text);
+        });
+        tsvData.push(rowData.join('\t'));
+      });
+
+      const tsvString = tsvData.join('\n');
+
+      // Copy to clipboard using modern API
+      try {
+        await navigator.clipboard.writeText(tsvString);
+        
+        // Visual feedback
+        const originalText = this.textContent;
+        this.textContent = '✓ {{ tm("copied") }}!';
+        this.classList.add('btn-success');
+        this.classList.remove('btn-secondary');
+        
+        setTimeout(() => {
+          this.textContent = originalText;
+          this.classList.add('btn-secondary');
+          this.classList.remove('btn-success');
+        }, 2000);
+      } catch (err) {
+        // Fallback for older browsers or permission issues
+        const textArea = document.createElement('textarea');
+        textArea.value = tsvString;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        
+        try {
+          document.execCommand('copy');
+          const originalText = this.textContent;
+          this.textContent = '✓ {{ tm("copied") }}!';
+          this.classList.add('btn-success');
+          this.classList.remove('btn-secondary');
+          
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.classList.add('btn-secondary');
+            this.classList.remove('btn-success');
+          }, 2000);
+        } catch (fallbackErr) {
+          alert('Failed to copy table. Please try again.');
+        } finally {
+          document.body.removeChild(textArea);
+        }
+      }
+    });
+  </script>
 
 {% endblock %}

@@ -1471,4 +1471,16 @@ translation_entries = {
         "en": "Hospital Setting Metadata",
         "fr": "Métadonnées de cadre hospitalier",
     },
+    "filter": {
+        "en": "Filter",
+        "fr": "Trier",
+    },
+    "start_date": {
+        "en": "Start Date",
+        "fr": "Date de début",
+    },
+    "end_date": {
+        "en": "End Date",
+        "fr": "Date de fin",
+    },
 }

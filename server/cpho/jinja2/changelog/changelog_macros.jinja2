@@ -1,7 +1,10 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% macro changelog_table(edit_entries, show_model_type=True, show_user=True) %}
-  <table style="width:100%" cellspacing="15" class="table table-striped">
+  <table id="changelog-table"
+         style="width:100%"
+         cellspacing="15"
+         class="table table-striped">
     <thead class="thead-dark">
       <tr>
         <th>{{ tm("date") }}</th>

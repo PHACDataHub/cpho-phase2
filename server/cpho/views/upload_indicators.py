@@ -416,14 +416,15 @@ class SaveUpload(MustPassAuthCheckMixin, View):
         ):
             return None
 
-        dim_val = None
-        lit_dim_val = None
         if datum["Dimension_Type"] != "Age Group":
+            lit_dim_val = None
             dim_val = ImportMapper.map_dimension_value(
                 (datum["Dimension_Type"], datum["Dimension_Value"])
             )
         else:
+            dim_val = None
             lit_dim_val = datum["Dimension_Value"]
+
         # filter data with all attributes equal to datum
         # to see if exact match exists
         indData_obj = IndicatorDatum.active_objects.filter(

@@ -16,7 +16,7 @@ from pathlib import Path
 
 from django.urls import reverse_lazy
 
-from decouple import Csv
+from decouple import Csv, config
 
 from server.config_util import get_project_config, is_running_tests
 
@@ -25,7 +25,7 @@ from server.config_util import get_project_config, is_running_tests
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-config = get_project_config()
+# config = get_project_config()
 
 IS_LOCAL = config("IS_LOCAL", cast=bool, default=False)
 IS_DEV = config("IS_DEV", cast=bool, default=False)
@@ -96,7 +96,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 # Additional CORS allowed and CSRF trusted origins should be empty until if/when the app
 # is serving a REST/GraphQL API for external consumption
 CORS_ALLOWED_ORIGINS = []
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
 
 # Prod only security settings
 if not IS_DEV:

@@ -1,60 +1,104 @@
-######################
-# DEPENDENCY BUILDER #
-######################
-# NOTE: builder layer must mach python and distribution versions of distroless runtime layer!
-FROM python:3.11-bookworm as build_env
+# Builds a Prod Image expecting to write to ACR and run the image in an app service container
 
-# MUST keep these envs in sync with the Dockerfile.prod "FINAL" layer AND with Dockerfile.dev-management
-ENV HOME=/cpho
-ENV APP_HOME=$HOME/web
-ENV PYTHON_DEPS=$HOME/python_deps
+###########
+# BUILDER #
+###########
+FROM python:3.11-slim-bookworm as builder
 
-RUN mkdir "${HOME}" && \
-    mkdir "${APP_HOME}" && \
-    mkdir "${PYTHON_DEPS}"
+# set work directory
+WORKDIR /usr/src/app
 
-# Update pip
-RUN pip install --upgrade pip
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-COPY ./requirements.txt .
-COPY ./requirements_dev.txt .
-COPY ./requirements_formatting.txt .
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-ARG DEPENDENCY_SET="prod"
+RUN pip install --upgrade pip wheel setuptools
 
-RUN [ "${DEPENDENCY_SET}" = "prod" ] \
-    && pip install --no-cache-dir --target "${PYTHON_DEPS}" -r requirements.txt \
-    || :
-
-RUN [ "${DEPENDENCY_SET}" = "test" ] \
-    && pip install --no-cache-dir --target "${PYTHON_DEPS}" -r requirements.txt -r requirements_dev.txt -r requirements_formatting.txt \
-    || :
+# requirements and wheels
+COPY server/requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 #########
 # FINAL #
 #########
-FROM gcr.io/distroless/python3-debian12
+# pull official base image
+FROM python:3.11-slim-bookworm
 
-# MUST keep these envs in sync with the Dockerfile.prod "DEPENDENCY BUILDER" layer AND with Dockerfile.dev-management
-ENV HOME=/cpho
+# Make sure setuptools is always up to date
+RUN pip install --upgrade pip setuptools
+
+# Environment Variables
+ENV APP_NAME=hopicapp
+ENV APP_USER=${APP_NAME}user
+ENV HOME=/${APP_NAME}
 ENV APP_HOME=$HOME/web
-ENV PYTHON_DEPS=$HOME/python_deps
+ENV VIRTUALENV=$HOME/env
+ENV WHEELDIR=$HOME/wheels
+ENV PATH=$VIRTUALENV/bin:$PATH
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# this is the ID of the distroless "nonroot" user, using ID instead of user name because the k8s runAsNonRoot security context
-# can't verify non-rootness when the docker file sets user by name
-# https://github.com/GoogleContainerTools/distroless/blob/9c5d2c431825d7aa21017551b2ec75c29c1f23c6/common/variables.bzl#L18
-ENV NONROOT_USER_ID=65532
+EXPOSE 8000
 
-ENV PATH="${PYTHON_DEPS}/bin:${PATH}"
-ENV PYTHONPATH="${PYTHON_DEPS}:${PYTHONPATH}"
-
-COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID --from=build_env $HOME $HOME
-COPY --chown=$NONROOT_USER_ID:$NONROOT_USER_ID . $APP_HOME
+# Install minimal runtime dependencies
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    gosu \
+    libpq5 \
+    netcat-traditional \
+    openssh-server \
+    postgresql-common \
+    && addgroup --system $APP_NAME \
+    && adduser --disabled-password --shell /bin/bash $APP_USER --system --ingroup $APP_NAME --home $HOME \
+    && mkdir -p $APP_HOME $VIRTUALENV $WHEELDIR \
+    && chown -R $APP_USER:$APP_NAME $HOME \
+    && echo "root:Docker!" | chpasswd \
+    && echo -e "HOPIC Container\n\nFor management commands run: \ncd $APP_HOME \npython manage\n\n" > /etc/motd \
+    && echo -e "cd $APP_HOME\n" >> /etc/profile
 
 WORKDIR $APP_HOME
 
-USER $NONROOT_USER_ID
+# Copy wheels from builder stage
+COPY --chown=$APP_USER:$APP_NAME --from=builder /usr/src/app/wheels $WHEELDIR
 
-EXPOSE 8080
 
-ENTRYPOINT [ "python", "./entrypoint.prod.py" ]
+
+# Create and configure virtual environment
+RUN python -m venv $VIRTUALENV && \
+    $VIRTUALENV/bin/pip install --no-cache-dir $WHEELDIR/* && \
+    rm -rf $WHEELDIR
+
+# Make sure setuptools is always up to date
+RUN pip install --upgrade setuptools
+
+# Copy project files
+COPY --chown=$APP_USER:$APP_NAME server/ $APP_HOME
+
+# copy sshd_config file
+COPY server/sshd_config /etc/ssh/
+
+# copy version file
+# COPY version.txt $APP_HOME
+
+# Setup entrypoint and create staticfiles
+RUN chmod +x $APP_HOME/entrypoint.prod.sh && \
+    rm -f $APP_HOME/sshd_config && \
+    mkdir -p $APP_HOME/staticfiles && \
+    SECRET_KEY=t ALLOWED_HOSTS=* DB_NAME=d DB_USER=d DB_PASSWORD=d DB_HOST=d DB_PORT=1 python -m manage collectstatic --no-input
+
+# Set entrypoint and default command
+# Wrapping the dynamic entrypoint call to ensure parameters are passed through correctly
+RUN echo '#!/bin/bash\n"${APP_HOME}/entrypoint.prod.sh" "$@"' > /entrypoint-wrapper.sh && \
+    chmod +x /entrypoint-wrapper.sh
+
+ENTRYPOINT ["/entrypoint-wrapper.sh"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "server.wsgi"]

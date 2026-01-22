@@ -1,72 +1,75 @@
 {% from 'generic_macros.jinja2' import date_display %}
 
 {% macro changelog_table(edit_entries, show_model_type=True, show_user=True) %}
-  <table id="changelog-table"
-         style="width:100%"
-         cellspacing="15"
-         class="table table-striped">
-    <thead class="thead-dark">
-      <tr>
-        <th>{{ tm("date") }}</th>
-        {% if show_user %}<th>{{ tm("author") }}</th>{% endif %}
-        <th>{{ tm("action") }}</th>
-        {% if show_model_type %}<th>{{ tm("object_type") }}</th>{% endif %}
-        <th>{{ tm("name") }}</th>
-        <th>{{ tm("field") }}</th>
-        <th>{{ tm("previous_change") }}</th>
-        <th>{{ tm("this_change") }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for edit_entry in edit_entries %}
-        {% if not edit_entry.diffs %}
-          <tr>
-            <td>{{ date_display(edit_entry.right_version.timestamp) }}</td>
-            {% if show_user %}
+  <div class="table-responsive">
+
+    <table id="changelog-table"
+           style="width:100%"
+           cellspacing="15"
+           class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>{{ tm("date") }}</th>
+          {% if show_user %}<th>{{ tm("author") }}</th>{% endif %}
+          <th>{{ tm("action") }}</th>
+          {% if show_model_type %}<th>{{ tm("object_type") }}</th>{% endif %}
+          <th>{{ tm("name") }}</th>
+          <th>{{ tm("field") }}</th>
+          <th>{{ tm("previous_change") }}</th>
+          <th>{{ tm("this_change") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for edit_entry in edit_entries %}
+          {% if not edit_entry.diffs %}
+            <tr>
+              <td>{{ date_display(edit_entry.right_version.timestamp) }}</td>
+              {% if show_user %}
+                <td>
+                  {% if edit_entry.author %}
+                    {{ edit_entry.author.pretty_name }}
+                  {% else %}
+                    {{ tm("n/a") }}
+                  {% endif %}
+                </td>
+              {% endif %}
+              <td class='font-weight-bold'>{{ tm("saved") }}</td>
+              {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
+              <td>{{ edit_entry.live_name }}</td>
+              <td colspan="3">{{ tm("no_change_detected_compared_to_previous_version") }}</td>
+            </tr>
+          {% endif %}
+          {% for diff in edit_entry.diffs %}
+            <tr>
+              <td>{{ date_display(edit_entry.right_version.timestamp) }}</td>
+              {% if show_user %}
+                <td>
+                  {% if edit_entry.author %}
+                    {{ edit_entry.author.pretty_name }}
+                  {% else %}
+                    {{ tm("n/a") }}
+                  {% endif %}
+                </td>
+              {% endif %}
+              <td class='font-weight-bold'>{{ diff.action }}</td>
+              {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
+              <td>{{ edit_entry.live_name }}</td>
               <td>
-                {% if edit_entry.author %}
-                  {{ edit_entry.author.pretty_name }}
-                {% else %}
-                  {{ tm("n/a") }}
-                {% endif %}
+                {% if diff.field %}{{ diff.field.verbose_name }}{% endif %}
               </td>
-            {% endif %}
-            <td class='font-weight-bold'>{{ tm("saved") }}</td>
-            {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
-            <td>{{ edit_entry.live_name }}</td>
-            <td colspan="3">{{ tm("no_change_detected_compared_to_previous_version") }}</td>
-          </tr>
-        {% endif %}
-        {% for diff in edit_entry.diffs %}
-          <tr>
-            <td>{{ date_display(edit_entry.right_version.timestamp) }}</td>
-            {% if show_user %}
-              <td>
-                {% if edit_entry.author %}
-                  {{ edit_entry.author.pretty_name }}
-                {% else %}
-                  {{ tm("n/a") }}
-                {% endif %}
-              </td>
-            {% endif %}
-            <td class='font-weight-bold'>{{ diff.action }}</td>
-            {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
-            <td>{{ edit_entry.live_name }}</td>
-            <td>
-              {% if diff.field %}{{ diff.field.verbose_name }}{% endif %}
-            </td>
-            {###############autoescape content is escaped ######################}
-            {% autoescape false %}
-              <td>{{ diff.get_before_diff() }}</td>
-            {% endautoescape %}
-            {% autoescape false %}
-              <td>{{ diff.get_after_diff() }}</td>
-            {% endautoescape %}
-            {% block extra_columns %}{% endblock %}
-          </tr>
+              {###############autoescape content is escaped ######################}
+              {% autoescape false %}
+                <td>{{ diff.get_before_diff() }}</td>
+              {% endautoescape %}
+              {% autoescape false %}
+                <td>{{ diff.get_after_diff() }}</td>
+              {% endautoescape %}
+              {% block extra_columns %}{% endblock %}
+            </tr>
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
 {% endmacro %}

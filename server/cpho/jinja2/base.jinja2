@@ -30,6 +30,7 @@
     {% block extra_scripts_css %}{% endblock %}
   </head>
   <body hx-ext="morph">
+    <a class="visually-hidden-focusable" href="#main-content" id="skip-link">{{ tm("skip_to_main") }}</a>
     {{ phac_aspc.phac_aspc_wet_session_timeout_dialog(dict(request=request) , 'logout') }}
     <div id="modal-moint-point"></div>
     <script>
@@ -74,14 +75,16 @@
                   data-bs-target="#navbarSupportedContent"
                   aria-controls="navbarSupportedContent"
                   aria-expanded="false"
-                  aria-label="Toggle navigation">
+                  aria-label="{{ tm('toggle_navigation') }}">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             {% block header_menu %}<!-- This block will be replaced by per-page overrides -->{% endblock %}
             <ul class="navbar-nav flex-fill justify-content-end">
               <li class="nav-item">
-                <a class="nav-link text-white" href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
+                <a class="nav-link text-white"
+                   lang="{{ get_other_lang_code() }}"
+                   href="{{ url_to_other_lang() }}">{{ get_other_lang() }}</a>
               </li>
               {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
@@ -127,7 +130,7 @@
         </div>
       </nav>
     {% endblock %}
-    <main class="pb-5">
+    <main id="main-content" class="pb-5">
       {% if messages %}
         {% for message in messages %}
           <div role="alert"
@@ -138,7 +141,7 @@
         <div id="content" class='container'>
           {% block content_breadcrumbs_container %}
             {# this is just here so templates can opt-out from breadcrumbs #}
-            <nav aria-label="breadcrumb">
+            <nav aria-label="{{ tm('breadcrumb_trail') }}">
               <ol class="breadcrumb">
                 {% block content_breadcrumbs %}
                 {% endblock content_breadcrumbs %}
@@ -166,7 +169,7 @@
                     tabindex="-1"
                     role="img"
                     data="{{ static('third_party/img/wmms-blk.svg') }}"
-                    aria-label="Symbol of the Government of Canada"
+                    aria-label="{{ tm('symbol_of_the_government_of_canada') }}"
                     style="height: 2rem;
                            margin: 1rem 0"></object>
           </div>

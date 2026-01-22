@@ -104,7 +104,7 @@
   fields:
     dimension_type: 1
     name_en: Male
-    name_fr: Male 
+    name_fr: Mâle
     value: m
     excel_code: "MALES"
     order: 0.0
@@ -113,7 +113,7 @@
   fields:
     dimension_type: 1
     name_en: Female
-    name_fr: Female
+    name_fr: Femelle
     value: f
     excel_code: "FEMALES"
     order: 1.0

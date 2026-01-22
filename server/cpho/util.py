@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.utils.translation import get_language
 
 import pytz
+from data_fetcher import cache_within_request
 
 from cpho.constants import ADMIN_GROUP_NAME, HSO_GROUP_NAME
 from cpho.text import tdt, tm
@@ -37,12 +38,12 @@ class classproperty(property):
 
 class GroupFetcher:
     @classproperty
-    @lru_cache
+    @cache_within_request
     def admin_group(cls):
         return Group.objects.get_or_create(name=ADMIN_GROUP_NAME)[0]
 
     @classproperty
-    @lru_cache
+    @cache_within_request
     def hso_group(cls):
         return Group.objects.get_or_create(name=HSO_GROUP_NAME)[0]
 

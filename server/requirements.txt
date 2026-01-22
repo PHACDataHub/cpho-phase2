@@ -24,7 +24,7 @@ pytz==2022.2.1
 requests==2.32.0
 whitenoise==6.4.0
 rules==3.3
-django-ckeditor==6.7.1
+django-ckeditor==6.7.3
 
 PyYAML==6.0.1 # necessary to apply fixtures in prod
 

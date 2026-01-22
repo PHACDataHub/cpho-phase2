@@ -109,6 +109,11 @@ class SubmissionHelpersMixin:
 @add_to_admin
 @track_versions_with_editor_and_submission
 class Indicator(models.Model, SubmissionHelpersMixin):
+
+    class Meta:
+        verbose_name = tm("indicator")
+        verbose_name_plural = tm("indicators")
+
     excluded_diff_fields = ["relevant_period_types"]
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     CATEGORY_CHOICES = [
@@ -451,6 +456,10 @@ class IndicatorDatum(models.Model, SubmissionHelpersMixin):
     changelog_live_name_fetcher_class = IndicatorDatumChangelogNameFetcher
 
     class Meta:
+
+        verbose_name = tm("indicator_data")
+        verbose_name_plural = tm("indicator_data")
+
         unique_together = [
             (
                 "indicator",
@@ -630,6 +639,8 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
                 "labels",
             ),
         ]
+        verbose_name = tm("benchmarking")
+        verbose_name_plural = tm("benchmarking")
 
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()
@@ -713,6 +724,8 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
                 "deletion_time",
             ),
         ]
+        verbose_name = tm("trend_analysis")
+        verbose_name_plural = tm("trend_analysis")
 
     objects = models.Manager.from_queryset(SubmissionQueryset)()
     active_objects = ActiveObjManager.from_queryset(SubmissionQueryset)()

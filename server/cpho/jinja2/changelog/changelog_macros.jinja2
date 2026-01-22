@@ -3,7 +3,10 @@
 {% macro changelog_table(edit_entries, show_model_type=True, show_user=True) %}
   <div class="table-responsive">
 
-    <table style="width:100%" cellspacing="15" class="table table-striped">
+    <table id="changelog-table"
+           style="width:100%"
+           cellspacing="15"
+           class="table table-striped">
       <thead class="thead-dark">
         <tr>
           <th>{{ tm("date") }}</th>

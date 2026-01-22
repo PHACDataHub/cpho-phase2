@@ -1512,4 +1512,24 @@ translation_entries = {
         "en": "Editor for",
         "fr": "Éditeur pour",
     },
+    "filter": {
+        "en": "Filter",
+        "fr": "Trier",
+    },
+    "start_date": {
+        "en": "Start Date",
+        "fr": "Date de début",
+    },
+    "end_date": {
+        "en": "End Date",
+        "fr": "Date de fin",
+    },
+    "copy_to_clipboard": {
+        "en": "Copy to Clipboard",
+        "fr": "Copier dans le presse-papiers",
+    },
+    "copied": {
+        "en": "Copied!",
+        "fr": "Copié !",
+    },
 }

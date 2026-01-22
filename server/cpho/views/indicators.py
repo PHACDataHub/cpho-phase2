@@ -48,20 +48,35 @@ class IndicatorForm(ModelForm):
         model = Indicator
         fields = "__all__"
 
+    def _add_french_field_names(self, field_names):
+        fields_with_french = set(field_names)
+        all_field_names = set(self.fields.keys())
+
+        for field_name in field_names:
+            french_name = f"{field_name}_fr"
+            if french_name in all_field_names:
+                fields_with_french.add(french_name)
+
+        return list(fields_with_french)
+
     def __init__(self, *args, **kwargs):
         user = None
         if "user" in kwargs:
             user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        fr_fields = [field for field in self.fields if field.endswith("_fr")]
-        self.hso_only_field_names = self.hso_only_field_names + fr_fields
+        self.hso_only_field_names = self._add_french_field_names(
+            self.base_hso_only_field_names
+        )
+
+        self.non_hso_readonly_fields = self._add_french_field_names(
+            self.base_non_hso_readonly_fields
+        )
 
         if user and not test_rule("is_admin_or_hso", user):
             for field in (
                 self.hso_only_field_names + self.non_hso_readonly_fields
             ):
-                # for field in self.non_hso_readonly_fields:
 
                 self.fields[field].disabled = True
 
@@ -89,7 +104,9 @@ class IndicatorForm(ModelForm):
             label=label if label else None,
         )
 
-    non_hso_readonly_fields = [
+    # Non-HSO users can look but they can't touch
+    # (french fields are automatically added later)
+    base_non_hso_readonly_fields = [
         "name",
         "category",
         "topic",
@@ -107,7 +124,9 @@ class IndicatorForm(ModelForm):
         "g5",
     ]
 
-    hso_only_field_names = [
+    # These are completely hidden for non-HSO users
+    # (french fields are automatically added later)
+    base_hso_only_field_names = [
         "title_overall",
         "table_title_overall",
         "title_sex",
@@ -596,7 +615,7 @@ class EditIndicator(MustPassAuthCheckMixin, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, tm("saved_successfully"))
-        return reverse("view_indicator", kwargs={"pk": self.object.pk})
+        return reverse("edit_indicator", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):
         return {

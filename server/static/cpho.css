@@ -171,3 +171,42 @@ span.new-ind-tag {
     outline-style: solid;
     outline-width: 0.25rem;
 }
+
+
+
+/* Corner ribbons */
+
+.corner-ribbon {
+    width: 210px;
+    padding: 7px 10px;
+    position: absolute;
+    text-align: center;
+    color: #fff;
+    position: fixed;
+    top: 13px;
+    left: -72px;
+    transform: rotate(-45deg);
+    z-index: 100;
+    text-transform: uppercase;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    opacity: 0.75;
+    display: none;
+    z-index: 10000;
+}
+
+.corner-ribbon.dev {
+    background: var(--bs-green);
+    display: block;
+    font-size: 1.2em;
+}
+
+.corner-ribbon.production {
+    background: var(--bs-orange);
+    display: block;
+    opacity: 0.5;
+    font-size: 0.8em;
+    top: 25px;
+    left: -60px;
+    color: black;
+}

@@ -76,7 +76,7 @@ COPY --chown=$APP_USER:$APP_NAME --from=builder /usr/src/app/wheels $WHEELDIR
 RUN python -m venv $VIRTUALENV && \
     $VIRTUALENV/bin/pip install --upgrade pip && \
     $VIRTUALENV/bin/pip install --no-cache-dir $WHEELDIR/* && \
-    $VIRTUALENV/bin/pip install --upgrade setuptools && \
+    $VIRTUALENV/bin/pip install --force-reinstall setuptools && \
     rm -rf $WHEELDIR
 
 # Copy project files

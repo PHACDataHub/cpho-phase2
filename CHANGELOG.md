@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.6](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.5...v1.4.6) (2026-02-11)
+
+
+### Bug Fixes
+
+* add conditional banner when RIBBON_ENV is set to 'dev' or 'production' ([#454](https://github.com/PHACDataHub/cpho-phase2/issues/454)) ([9b885e8](https://github.com/PHACDataHub/cpho-phase2/commit/9b885e84478dbf4e439f0991d430c16b7e78e53f))
+* woops, remove default 'dev' ribbon env-var ([#456](https://github.com/PHACDataHub/cpho-phase2/issues/456)) ([e5cbd89](https://github.com/PHACDataHub/cpho-phase2/commit/e5cbd89377f01944064f65c994574a59835aeb7d))
+
 ## [1.4.5](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.4...v1.4.5) (2026-01-22)
 
 

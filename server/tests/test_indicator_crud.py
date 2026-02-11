@@ -69,7 +69,7 @@ def test_edit_indicator(vanilla_user_client):
     with patch_rules(can_edit_indicator=True):
         resp = vanilla_user_client.post(url, data=data)
         assert resp.status_code == 302
-        assert resp.url == reverse("view_indicator", args=[ind.id])
+        assert resp.url == reverse("edit_indicator", args=[ind.id])
 
 
 def test_hso_fields_hidden_and_disabled(vanilla_user_client):

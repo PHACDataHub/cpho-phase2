@@ -214,6 +214,7 @@ def environment(**options):
             "ENABLE_LEGACY_LOG_IN": config(
                 "ENABLE_LEGACY_LOG_IN", cast=bool, default=False
             ),
+            "RIBBON_ENV": config("RIBBON_ENV", default=""),
         }
     )
     env.filters["quote"] = lambda x: quote(str(x))

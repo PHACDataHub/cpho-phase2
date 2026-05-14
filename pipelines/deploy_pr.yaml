@@ -15,6 +15,7 @@ variables:
   tag: "$(Build.SourceVersion)"
   appName: was-spib-sdse-hopic-pr
   subscription: SPIB-SDSE-HOPIC-CICDLZSP-PR
+  acrSubscription: SPIB-SDSE-HOPIC-CICDLZSP-DT
   resourceGroup: rg-spib-sdse-hopic-pr
   envars: >
       DB_HOST=pgsql-spib-sdse-hopic-pr.postgres.database.azure.com
@@ -58,7 +59,7 @@ jobs:
       - task: AzureCLI@2
         displayName: "Login to ACR"
         inputs:
-          azureSubscription: $(subscription)
+          azureSubscription: $(acrSubscription)
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |

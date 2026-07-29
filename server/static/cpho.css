@@ -160,10 +160,22 @@ span.new-ind-tag {
     width: 5%
 }
 
-/* Accessibility */
-.btn:focus {
-    color: white;
-    background-color: #0535d2;
+
+
+.form-control,
+.form-select,
+.phac_aspc_form_autocomplete.phac_aspc_form_autocomplete {
+    border-color: #8594A3;
+}
+
+
+.btn:focus,
+.form-select:focus,
+.form-control:focus,
+.phac_aspc_form_autocomplete_focus_ring.active,
+a:focus,
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
     outline-offset: 0.125rem;
     border-color: #0535d2;
     box-shadow: 0 0 0 0.125rem white;

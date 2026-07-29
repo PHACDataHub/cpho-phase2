@@ -26,26 +26,29 @@
 
 
     <p class="h5">{{ tm("users") }}</p>
-    <table class="table table-striped">
-      <thead>
-        <th>{{ tm("user") }}</th>
-        <th>{{ tm("last_login") }}</th>
-      </thead>
-      <tbody>
-        {% for user in indicator_directory.users.all() %}
-          <tr>
-            <td>{{ user }}</td>
-            <td>
-              {% if user.last_login %}
-                {{ date_display(user.last_login) }}
-              {% else %}
-                {{ tm("never") }}
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+
+      <table class="table table-striped">
+        <thead>
+          <th>{{ tm("user") }}</th>
+          <th>{{ tm("last_login") }}</th>
+        </thead>
+        <tbody>
+          {% for user in indicator_directory.users.all() %}
+            <tr>
+              <td>{{ user }}</td>
+              <td>
+                {% if user.last_login %}
+                  {{ date_display(user.last_login) }}
+                {% else %}
+                  {{ tm("never") }}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <details class="border rounded p-3" {% if form.errors %}open{% endif %}>

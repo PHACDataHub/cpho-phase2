@@ -102,6 +102,33 @@ class YesNoMixin(forms.Form):
                 choices[i] = (value, _("no"))
 
 
+class DescribedByErrorMixin(forms.Form):
+    """
+    adds aria-describedby attributes for error messages
+    assumes error messages follow the field naming convention
+    """
+
+    def error_id_for_field(self, bound_field):
+        id_for_label = bound_field.id_for_label
+        error_id = f"{id_for_label}_errormessage"
+        return error_id
+
+    def full_clean(self):
+        r = super().full_clean()
+        for bound_field in self.visible_fields():
+            if self.errors.get(bound_field.name):
+                error_id = self.error_id_for_field(bound_field)
+                widget = bound_field.field.widget
+                current_aria_describedby = widget.attrs.get(
+                    "aria-describedby", ""
+                )
+                widget.attrs["aria-describedby"] = (
+                    current_aria_describedby + " " + error_id
+                )
+
+        return r
+
+
 class StandardFormMixin(
     FormControlMixin,
     NumberInputMixin,

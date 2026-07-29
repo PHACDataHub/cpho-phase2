@@ -14,6 +14,8 @@ from django.views.generic import TemplateView
 
 from phac_aspc.rules import test_rule
 
+from server.form_util import DescribedByErrorMixin, StandardFormMixin
+
 from cpho.constants import SUBMISSION_STATUSES
 from cpho.models import (
     DimensionType,
@@ -51,7 +53,11 @@ class InstanceProvidingFormSet(BaseFormSet):
         }
 
 
-class IndicatorDatumForm(ModelForm):
+class IndicatorDatumForm(
+    ModelForm,
+    StandardFormMixin,
+    DescribedByErrorMixin,
+):
     class Meta:
         model = IndicatorDatum
         fields = [
@@ -428,8 +434,6 @@ class ManageIndicatorData(
                 )
         else:
             # get will just render the forms and their errors
-            print(self.predefined_values_formset.errors)
-            print(self.age_group_formset.errors)
             messages.error(self.request, tm("error_saving_form"))
             return self.get(*args, **kwargs)
 

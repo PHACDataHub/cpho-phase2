@@ -31,6 +31,7 @@
   </head>
   <body hx-ext="morph">
     <a class="visually-hidden-focusable" href="#main-content" id="skip-link">{{ tm("skip_to_main") }}</a>
+    {% if RIBBON_ENV %}<div class="corner-ribbon d-print-none {{ RIBBON_ENV }}">{{ RIBBON_ENV }}</div>{% endif %}
     {{ phac_aspc.phac_aspc_wet_session_timeout_dialog(dict(request=request) , 'logout') }}
     <div id="modal-moint-point"></div>
     <script>

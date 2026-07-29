@@ -1,5 +1,5 @@
 # Note: image should match the build env layer of Dockerfile.prod
-FROM python:3.11-bookworm
+FROM python:3.13-bookworm
 
 # MUST keep these envs in sync with Dockerfile.prod
 ENV HOME=/cpho

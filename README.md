@@ -6,7 +6,7 @@ See the CPHO slack channel's link bar for the dev app's URL
 
 Note: run all this in the repo's root directory
 
-1. install python3.10 
+1. install python3.13
 2. install postgres [instructions here](https://github.com/PHACDataHub/phac-django-docs/blob/master/local-dev.md#installing-and-using-postgres-wout-sci-ops-on-windows) 
 3. clone repo
 4. create a virtual environment in repo root (python -m venv venv)

@@ -3,7 +3,7 @@
 ###########
 # BUILDER #
 ###########
-FROM python:3.11-slim-bookworm as builder
+FROM python:3.13-slim-bookworm as builder
 
 # set work directory
 WORKDIR /usr/src/app
@@ -30,7 +30,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 # FINAL #
 #########
 # pull official base image
-FROM python:3.11-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 # Make sure setuptools is always up to date
 RUN pip install --upgrade pip setuptools

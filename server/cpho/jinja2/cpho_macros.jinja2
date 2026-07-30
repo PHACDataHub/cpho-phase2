@@ -25,8 +25,8 @@
             </th>
             <td>{{ datum.value }}</td>
             <td>{{ date_display(datum.last_version_date) }}</td>
-            <td>{{ submission_status_label(datum.submission_status(submission_type="hso") ) }}</td>
-            <td>{{ submission_status_label(datum.submission_status(submission_type="program") ) }}</td>
+            <td>{{ submission_status_label(datum.submission_status(submission_type="hso")) }}</td>
+            <td>{{ submission_status_label(datum.submission_status(submission_type="program")) }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -56,8 +56,10 @@
 {% endmacro %}
 
 {% macro hidden_a11y_label(form_field, prefix) %}
-  <label for="{{ form_field.id_for_label }}"
-         aria-label="{{ prefix }}, {{ form_field.label }}"></label>
+  <label
+    for="{{ form_field.id_for_label }}"
+    aria-label="{{ prefix }}, {{ form_field.label }}"
+  ></label>
 {% endmacro %}
 
 
@@ -68,8 +70,10 @@
 
 {% macro form_field_error(field) %}
   {% if field.errors %}
-    <div role="alert"
-         id="{{ form_field_error_id(field) }}"
-         class="alert alert-danger pb-1">{{ field.errors }}</div>
+    <div
+      role="alert"
+      id="{{ form_field_error_id(field) }}"
+      class="alert alert-danger pb-1"
+    >{{ field.errors }}</div>
   {% endif %}
 {% endmacro %}

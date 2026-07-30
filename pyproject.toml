@@ -43,7 +43,9 @@ skip_glob=['*/migrations/*.py']
 indent=2
 profile="jinja"
 extension='jinja2'
+single_attribute_per_line=true
 preserve_blank_lines=true
+preserve_class_newlines=true
 
 # Template linting is opinionated so we turned off some annoying errors.
 # We're not actively linting templates, but if errors get in the way 

@@ -1,6 +1,8 @@
 {% macro item(label, href, active) %}
-  <li class="breadcrumb-item {% if active %}active{% endif %}"
-      {% if active %}aria-current="page"{% endif %}>
+  <li
+    class="breadcrumb-item {% if active %}active{% endif %}"
+    {% if active %}aria-current="page"{% endif %}
+  >
     {% if href and not active %}
       <a href="{{ href }}">{{ label }}</a>
     {% else %}

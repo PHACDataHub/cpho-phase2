@@ -42,9 +42,11 @@
               <td>{{ indicator.get_category_display() }}</td>
               <td>{{ indicator.get_topic_display() }}</td>
               <td>
-                <a class="btn btn-outline-dark"
-                   href="{{ url('view_indicator', args=[indicator.pk]) }}"
-                   aria-label="{{ tm("view_indicator") }},  {{ indicator.bilingual_name }}">{{ tm("view_indicator") }}</a>
+                <a
+                  class="btn btn-outline-dark"
+                  href="{{ url('view_indicator', args=[indicator.pk]) }}"
+                  aria-label="{{ tm('view_indicator') }},  {{ indicator.bilingual_name }}"
+                >{{ tm("view_indicator") }}</a>
               </td>
             </tr>
           {% endif %}

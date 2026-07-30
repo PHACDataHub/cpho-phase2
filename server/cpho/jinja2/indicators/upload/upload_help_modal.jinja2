@@ -1,16 +1,20 @@
-<div class="modal fade modal-xl"
-     id="expectedColumnModal"
-     tabindex="-1"
-     aria-labelledby="expectedColumnModalLabel"
-     aria-hidden="true">
+<div
+  class="modal fade modal-xl"
+  id="expectedColumnModal"
+  tabindex="-1"
+  aria-labelledby="expectedColumnModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog" style="max-width: 90%;">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="expectedColumnModalLabel">{{ tm("expected_column_names") }}</h5>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="{{ tm('close') }}"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="{{ tm('close') }}"
+        ></button>
       </div>
       <div class="modal-body" style="overflow-x:auto">
         <p>{{ tm("upload_using_csv_file_expl") }}</p>

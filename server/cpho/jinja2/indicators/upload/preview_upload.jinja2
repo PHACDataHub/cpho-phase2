@@ -9,14 +9,18 @@
     </td>
   {% endmacro %}
 
-  <form id='upload-form'
-        class="mt-4"
-        onsubmit="showLoading()"
-        hx-post="{{ url('save_upload') }}">
-    <button id="upload-btn"
-            class="btn btn-primary"
-            type="submit"
-            {% if not no_errors %}disabled{% endif %}>{{ tm("upload_data") }}</button>
+  <form
+    id='upload-form'
+    class="mt-4"
+    onsubmit="showLoading()"
+    hx-post="{{ url('save_upload') }}"
+  >
+    <button
+      id="upload-btn"
+      class="btn btn-primary"
+      type="submit"
+      {% if not no_errors %}disabled{% endif %}
+    >{{ tm("upload_data") }}</button>
     <a href="{{ url('list_indicators') }}" class="btn btn-danger">{{ tm("cancel") }}</a>
   </form>
 
@@ -54,12 +58,16 @@
           <span class="fw-bold">{{ tm("sub_indicator_measurement") }}</span> : {{ indicator[2] }}
         </div>
 
-        <div class="p {{ check_error_class(grouped_data[indicator][0], 'Category').strip() }}">
+        <div
+          class="p {{ check_error_class(grouped_data[indicator][0], 'Category').strip() }}"
+        >
           <span class="fw-bold">{{ tm("category") }}</span> : {{ indicator[3] }}
           {{ (check_error(grouped_data[indicator][0], "Category") ) }}
         </div>
 
-        <div class="p {{ check_error_class(grouped_data[indicator][0], 'Topic').strip() }}">
+        <div
+          class="p {{ check_error_class(grouped_data[indicator][0], 'Topic').strip() }}"
+        >
           <span class="fw-bold">{{ tm("topic") }}</span> : {{ indicator[4] }}
           {{ check_error(grouped_data[indicator][0], "Topic") }}
         </div>

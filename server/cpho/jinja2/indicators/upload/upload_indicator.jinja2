@@ -13,29 +13,35 @@
   <p>{{ tm("only_csv_expl") }}</p>
 
   <div class="mt-2">
-    <button type="button mt-5"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#expectedColumnModal">{{ tm("view_expected_column_names") }}</button>
+    <button
+      type="button mt-5"
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#expectedColumnModal"
+    >{{ tm("view_expected_column_names") }}</button>
 
     <a class="btn btn-primary" href="{{ url('export_indicator_template') }}">{{ tm("download_a_file_template") }}</a>
   </div>
 
-  <form action="{{ url('upload_indicator') }}"
-        method="post"
-        enctype="multipart/form-data"
-        onsubmit="openLoader()"
-        class="form-horizontal mt-3">
+  <form
+    action="{{ url('upload_indicator') }}"
+    method="post"
+    enctype="multipart/form-data"
+    onsubmit="openLoader()"
+    class="form-horizontal mt-3"
+  >
 
     {{ csrf_input }}
     <div>
       {{ form.csv_file }}
       <div class="row">
         <div id="submit-btn-div" class="form-group">
-          <input type="submit"
-                 id="submit-btn"
-                 class="btn btn-primary mt-3 float-end"
-                 value="{{ tm('preview_file_data') }}">
+          <input
+            type="submit"
+            id="submit-btn"
+            class="btn btn-primary mt-3 float-end"
+            value="{{ tm('preview_file_data') }}"
+          >
         </div>
       </div>
       <div id="loadingModal" class="d-none mt-3 float-end">

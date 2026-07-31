@@ -3,10 +3,12 @@
 {% macro changelog_table(edit_entries, show_model_type=True, show_user=True) %}
   <div class="table-responsive">
 
-    <table id="changelog-table"
-           style="width:100%"
-           cellspacing="15"
-           class="table table-striped">
+    <table
+      id="changelog-table"
+      style="width:100%"
+      cellspacing="15"
+      class="table table-striped"
+    >
       <thead class="thead-dark">
         <tr>
           <th>{{ tm("date") }}</th>
@@ -54,9 +56,7 @@
               <td class='font-weight-bold'>{{ diff.action }}</td>
               {% if show_model_type %}<td>{{ edit_entry.eternal._meta.verbose_name }}</td>{% endif %}
               <td>{{ edit_entry.live_name }}</td>
-              <td>
-                {% if diff.field %}{{ diff.field.verbose_name }}{% endif %}
-              </td>
+              <td>{% if diff.field %}{{ diff.field.verbose_name }}{% endif %}</td>
               {###############autoescape content is escaped ######################}
               {% autoescape false %}
                 <td>{{ diff.get_before_diff() }}</td>

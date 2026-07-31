@@ -14,8 +14,10 @@
       <div class="col-md-2 mt-4">
         <div>
           {% if respects_rule('can_edit_indicator', indicator) %}
-            <a href="{{ url('edit_indicator', args=[indicator.id]) }}"
-               class="btn w-100 btn-outline-dark my-1">
+            <a
+              href="{{ url('edit_indicator', args=[indicator.id]) }}"
+              class="btn w-100 btn-outline-dark my-1"
+            >
               <span aria-hidden="true" class="bi bi-pen"></span>
               {{ tm("edit_indicator") }}
             </a>
@@ -23,23 +25,29 @@
         </div>
         <div>
           {% if respects_rule('can_access_indicator', indicator) %}
-            <a href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
-               class="btn w-100 btn-outline-dark my-1">
+            <a
+              href="{{ url('indicator_scoped_changelog', args=[indicator.id]) }}"
+              class="btn w-100 btn-outline-dark my-1"
+            >
               <span aria-hidden="true"  class="bi bi-file-diff"></span>
               {{ tm("indicator_changelog") }}
             </a>
           {% endif %}
         </div>
         <div>
-          <a href="{{ url('upload_indicator') }}"
-             class="btn w-100 btn-outline-dark my-1">
+          <a
+            href="{{ url('upload_indicator') }}"
+            class="btn w-100 btn-outline-dark my-1"
+          >
             <span aria-hidden="true" class="bi bi-file-earmark-arrow-up"></span>
             {{ tm("upload_data") }}
           </a>
         </div>
         <div>
-          <a href="{{ url('export_indicator', args=[indicator.id]) }}"
-             class="btn w-100 btn-outline-dark my-1">
+          <a
+            href="{{ url('export_indicator', args=[indicator.id]) }}"
+            class="btn w-100 btn-outline-dark my-1"
+          >
             <span aria-hidden="true" class="bi bi-file-earmark-arrow-down"></span>
             {{ tm("export_data") }}
           </a>
@@ -47,15 +55,19 @@
 
         <div>
           {% if respects_rule('can_edit_benchmarking', indicator) %}
-            <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
-               class="btn w-100 btn-outline-dark my-1">
+            <a
+              href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
+              class="btn w-100 btn-outline-dark my-1"
+            >
               <span aria-hidden="true" class="bi bi-clipboard-data"></span>
               {{ tm("benchmarking") }}
             </a>
           {% else %}
             {% if respects_rule('can_view_benchmarking', indicator) %}
-              <a href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
-                 class="btn w-100 btn-outline-dark my-1">
+              <a
+                href="{{ url('manage_benchmarking_data', args=[indicator.id]) }}"
+                class="btn w-100 btn-outline-dark my-1"
+              >
                 <span aria-hidden="true" class="bi bi-clipboard-data"></span>
                 {{ tm("benchmarking") }}
               </a>
@@ -65,8 +77,10 @@
 
         <div>
           {% if respects_rule('can_edit_trend_analysis', indicator) %}
-            <a href="{{ url('manage_trend_analysis_data', args=[indicator.id]) }}"
-               class="btn w-100 btn-outline-dark my-1">
+            <a
+              href="{{ url('manage_trend_analysis_data', args=[indicator.id]) }}"
+              class="btn w-100 btn-outline-dark my-1"
+            >
               <span aria-hidden="true" class="bi bi-graph-up-arrow"></span>
               {{ tm("trend_analysis") }}
             </a>
@@ -75,8 +89,10 @@
 
         <div>
           {% if respects_rule('can_submit_indicator', indicator) %}
-            <a href="{{ url('review_metadata', args=[indicator.id]) }}"
-               class="btn w-100 btn-outline-dark my-1">
+            <a
+              href="{{ url('review_metadata', args=[indicator.id]) }}"
+              class="btn w-100 btn-outline-dark my-1"
+            >
               <span aria-hidden="true" class="bi bi-journal-check"></span>
               {{ tm("review_metadata") }}
             </a>
@@ -129,8 +145,10 @@
                             <td>{{ submission_status_badge(submission_statuses['hso_global_status']) }}</td>
                             <td>{{ submission_status_badge(submission_statuses['program_global_status']) }}</td>
                             <td>
-                              <a class='btn btn-outline-dark'
-                                 href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ button_text }}</a>
+                              <a
+                                class='btn btn-outline-dark'
+                                href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}"
+                              >{{ button_text }}</a>
                             </td>
                           </tr>
                         {% endif %}
@@ -143,14 +161,16 @@
           {% endif %}
           {% if respects_rule('can_view_non_current_periods', indicator) %}
             <div>
-              <span class="h3">{{ tm('add_data_for_new_periods') }}</span>
+              <span class="h3">{{ tm("add_data_for_new_periods") }}</span>
               <span class="badge bg-success" style="transform:translate(0,-0.75em);">{{ tm("hso_only") }}</span>
             </div>
             <div>
               <ul aria-label="{{ tm('add_data_for_new_periods') }}">
                 {% for period in alternate_periods %}
                   <li>
-                    <a href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}">{{ tm("add_data") }} {{ tm("for") }} {{ period }}</a>
+                    <a
+                      href="{{ url('view_indicator_for_period', args=[indicator.id, period.pk]) }}"
+                    >{{ tm("add_data") }} {{ tm("for") }} {{ period }}</a>
                   </li>
                 {% endfor %}
               </ul>

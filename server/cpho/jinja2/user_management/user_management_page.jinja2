@@ -22,9 +22,7 @@
               {% if user.is_admin %}{{ tdt("Admin") }}{% endif %}
               {% if user.is_hso %}{{ tdt("HSO") }}{% endif %}
             </td>
-            <td>
-              {% if user.last_login %}{{ date_display(user.last_login) }}{% endif %}
-            </td>
+            <td>{% if user.last_login %}{{ date_display(user.last_login) }}{% endif %}</td>
             <td>
               <a href="{{ url('modify_user', args=[user.pk]) }}">{{ tm("edit") }}</a>
             </td>
@@ -60,16 +58,20 @@
             </div>
           </div>
           <div class='d-flex justify-content-end textend'>
-            <a class="btn btn-sm btn-primary"
-               href="{{ url('edit_indicator_directory', args=[directory.pk]) }}">{{ tdt("edit") }}</a>
+            <a
+              class="btn btn-sm btn-primary"
+              href="{{ url('edit_indicator_directory', args=[directory.pk]) }}"
+            >{{ tdt("edit") }}</a>
           </div>
         </div>
       </li>
     {% endfor %}
   </ul>
   <div>
-    <a class="btn btn-primary mt-3 mb-4"
-       href="{{ url('create_indicator_directory') }}">{{ tdt("Create new indicator directory") }}</a>
+    <a
+      class="btn btn-primary mt-3 mb-4"
+      href="{{ url('create_indicator_directory') }}"
+    >{{ tdt("Create new indicator directory") }}</a>
   </div>
 
 

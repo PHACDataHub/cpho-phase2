@@ -1,17 +1,21 @@
 
-<div class="modal fade"
-     id="confirmApproveModal"
-     tabindex="-1"
-     aria-labelledby="confirmApproveModalLabel"
-     aria-hidden="true">
+<div
+  class="modal fade"
+  id="confirmApproveModal"
+  tabindex="-1"
+  aria-labelledby="confirmApproveModalLabel"
+  aria-hidden="true"
+>
   <form class="modal-dialog" action="{{ submission_url }}" method="post">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="confirmApproveModalLabel">{{ modal_title }}</h5>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="{{ tm('close') }}"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="{{ tm('close') }}"
+        ></button>
       </div>
       <div class="modal-body">
         <p>{{ tm("submission_text") }}</p>
@@ -23,37 +27,45 @@
 
         <div class="{{ input_class }}">
           <div>
-            <input type="radio"
-                   name="submission_type"
-                   id="submission_program"
-                   value="program"
-                   {% if respects_rule("is_inputting_user") %}checked{% endif %}>
+            <input
+              type="radio"
+              name="submission_type"
+              id="submission_program"
+              value="program"
+              {% if respects_rule("is_inputting_user") %}checked{% endif %}
+            >
             <label for="submission_program">Surveillance program submission</label>
             <br>
-            <input type="radio"
-                   name="submission_type"
-                   id="submission_hso"
-                   value="hso"
-                   {% if respects_rule("is_hso") %}checked{% endif %}>
+            <input
+              type="radio"
+              name="submission_type"
+              id="submission_hso"
+              value="hso"
+              {% if respects_rule("is_hso") %}checked{% endif %}
+            >
             <label for="submission_hso">HSO submission</label>
             {{ csrf_input }}
             <br>
           </div>
         </div>
         <div class="form-check my-3">
-          <input class="form-check-input"
-                 type="checkbox"
-                 id="confirmCheckbox"
-                 required>
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="confirmCheckbox"
+            required
+          >
           <label class="form-check-label" for="confirmCheckbox">{{ tm("submission_confirmation_text") }}</label>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ tdt("Close") }}</button>
-        <input type="submit"
-               id="confirmApproveBtn"
-               class="btn btn-primary float-end my-3"
-               value="{{ tdt('Confirm Approval') }}">
+        <input
+          type="submit"
+          id="confirmApproveBtn"
+          class="btn btn-primary float-end my-3"
+          value="{{ tdt('Confirm Approval') }}"
+        >
       </div>
     </div>
   </form>

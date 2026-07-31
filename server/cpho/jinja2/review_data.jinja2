@@ -13,10 +13,12 @@
 {% block content %}
   <div class="h2">{{ tm("review_indicator_data_for") }} : {{ view.indicator.bilingual_name }} {{ view.period }}</div>
   <div>
-    <button type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#confirmApproveModal"
-            class="btn btn-success my-3">{{ tm("approve_data") }}</button>
+    <button
+      type="button"
+      data-bs-toggle="modal"
+      data-bs-target="#confirmApproveModal"
+      class="btn btn-success my-3"
+    >{{ tm("approve_data") }}</button>
   </div>
   <div>
     <div>

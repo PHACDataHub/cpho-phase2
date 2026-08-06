@@ -687,6 +687,8 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("depression", tm("depression")),
         ("women", tm("women")),
         ("men", tm("men")),
+        ("male", tm("male")),
+        ("female", tm("female")),
     ]
     labels = fields.CharField(
         max_length=50, blank=True, null=True, choices=LABEL_CHOICES

@@ -793,6 +793,14 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
         max_length=50, blank=True, null=True, default=""
     )
 
+    ARROW_FLAG_CHOICES = [
+        ("", "--"),
+        ("up", "\u2191"),
+        ("down", "\u2193"),
+    ]
+
+    arrow_flag = fields.CharField(max_length=50, null=True)
+
     def __str__(self):
         return "Trend: " + str(self.indicator) + " : " + str(self.year)
 

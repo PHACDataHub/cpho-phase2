@@ -35,6 +35,7 @@
     <td>{{ form.unit.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.data_point_lower_ci, row_label_id) }}</td>
     <td>{{ trend_analysis_form_field_with_errors(form.data_point_upper_ci, row_label_id) }}</td>
+    <td>{{ form.arrow_flag.as_widget(attrs={"aria-labelledby": row_label_id}) }}</td>
     <td>
       {{ form.is_deleted.as_widget(attrs={"aria-labelledby": row_label_id}) }}
       {{ form.id }}
@@ -75,6 +76,7 @@
           <th>{{ tm("unit") }}</th>
           <th>{{ tm("data_lower_ci") }}</th>
           <th>{{ tm("data_upper_ci") }}</th>
+          <th class="width-9">{{ tm("arrow_flag") }}</th>
           <th>{{ tm("delete") }}</th>
         </tr>
       </thead>

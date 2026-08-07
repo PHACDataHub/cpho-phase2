@@ -253,6 +253,7 @@ trend_columns = [
     ChoiceColumn(TrendAnalysisHistory, "unit"),
     ModelColumn(TrendAnalysisHistory, "data_point_lower_ci"),
     ModelColumn(TrendAnalysisHistory, "data_point_upper_ci"),
+    ModelColumn(TrendAnalysisHistory, "arrow_flag"),
 ]
 
 

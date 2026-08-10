@@ -13,7 +13,7 @@ relevant_indicator_ids = [
     162,  # diabetes
 ]
 
-from cpho.views.indicators import IndicatorForm
+from cpho.views.indicator_forms import IndicatorForm
 
 FIELDS_TO_RESTORE = [
     *IndicatorForm.hso_only_field_names,

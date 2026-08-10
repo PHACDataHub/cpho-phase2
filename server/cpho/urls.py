@@ -1,6 +1,14 @@
 from django.urls import path, re_path
 
 from . import views
+from .views.benchmarking import ManageBenchmarkingData
+from .views.indicator_forms import CreateIndicator, EditIndicator
+from .views.indicator_nav import (
+    ListIndicators,
+    ViewIndicator,
+    ViewIndicatorForPeriod,
+)
+from .views.trend_analysis import ManageTrendAnalysisData
 
 urlpatterns = [
     path("manage_users/", views.ManageUsers.as_view(), name="manage_users"),
@@ -27,27 +35,25 @@ urlpatterns = [
         views.IndicatorDirectoryHome.as_view(),
         name="indicator_directory_home",
     ),
-    path(
-        "indicators/", views.ListIndicators.as_view(), name="list_indicators"
-    ),
+    path("indicators/", ListIndicators.as_view(), name="list_indicators"),
     path(
         "indicators/<int:pk>/",
-        views.ViewIndicator.as_view(),
+        ViewIndicator.as_view(),
         name="view_indicator",
     ),
     path(
         "indicators/<int:pk>/<int:period_pk>/",
-        views.ViewIndicatorForPeriod.as_view(),
+        ViewIndicatorForPeriod.as_view(),
         name="view_indicator_for_period",
     ),
     path(
         "indicators/<int:pk>/edit/",
-        views.EditIndicator.as_view(),
+        EditIndicator.as_view(),
         name="edit_indicator",
     ),
     path(
         "indicators/create/",
-        views.CreateIndicator.as_view(),
+        CreateIndicator.as_view(),
         name="create_indicator",
     ),
     path(
@@ -157,12 +163,12 @@ urlpatterns = [
     ),
     path(
         "indicators/<int:indicator_id>/benchmarking/",
-        views.ManageBenchmarkingData.as_view(),
+        ManageBenchmarkingData.as_view(),
         name="manage_benchmarking_data",
     ),
     path(
         "indicators/<int:indicator_id>/trend_analysis/",
-        views.ManageTrendAnalysisData.as_view(),
+        ManageTrendAnalysisData.as_view(),
         name="manage_trend_analysis_data",
     ),
     path(

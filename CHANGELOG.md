@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.7](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.6...v1.4.7) (2026-08-10)
+
+
+### Bug Fixes
+
+* a11y fixes ([#436](https://github.com/PHACDataHub/cpho-phase2/issues/436)) ([dc027cb](https://github.com/PHACDataHub/cpho-phase2/commit/dc027cb3e8f2c202e1906e8d37f7bc8bb15a9a17))
+* cleanup up large modules in models and views ([#468](https://github.com/PHACDataHub/cpho-phase2/issues/468)) ([8e59077](https://github.com/PHACDataHub/cpho-phase2/commit/8e590773d1ffdfea835216b4b3678b7b9c48db37))
+* delete old GCP-related files ([#469](https://github.com/PHACDataHub/cpho-phase2/issues/469)) ([f5c62da](https://github.com/PHACDataHub/cpho-phase2/commit/f5c62dac359173fd04270a477aa5ee7bf3500409))
+* misc August changes ([#467](https://github.com/PHACDataHub/cpho-phase2/issues/467)) ([0ec6ae5](https://github.com/PHACDataHub/cpho-phase2/commit/0ec6ae59523d4a3c4f3a0f2772c37ce9f2132204))
+* upgrade to django6/python3.13 ([#466](https://github.com/PHACDataHub/cpho-phase2/issues/466)) ([63448e7](https://github.com/PHACDataHub/cpho-phase2/commit/63448e7b3247d936194e2e229d91545a354e3ef5))
+
 ## [1.4.6](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.5...v1.4.6) (2026-02-11)
 
 

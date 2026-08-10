@@ -97,6 +97,16 @@
     excel_code: "School Grade"
     is_literal: false
     order: 9.0
+- model: cpho.dimensiontype
+  pk: 12
+  fields:
+    name_en: Type of violence
+    name_fr: Type de violence
+    code: type_of_violence
+    excel_code: "Type of violence"
+    is_literal: false
+    order: 10.0
+
 
 # dimension value for Sex
 - model: cpho.dimensionvalue
@@ -895,3 +905,40 @@
 # ids 85,86,87 used up by new dimension values under sex/gender/prov
 # Aug 18: 
 # ids 88,89,90 used up by new dimension values under gender
+
+
+- model: cpho.dimensionvalue
+  pk: 91
+  fields:
+    dimension_type: 12
+    name_en: "Physical assault"
+    name_fr: "Les voies de fait"
+    value: "physical_assault"
+    order: 1.0
+
+- model: cpho.dimensionvalue
+  pk: 92
+  fields:
+    dimension_type: 12
+    name_en: "Sexual offence"
+    name_fr: "Les agressions sexuelles"
+    value: "sexual_offence"
+    order: 2.0
+  
+- model: cpho.dimensionvalue
+  pk: 93
+  fields:
+    dimension_type: 12
+    name_en: "Criminal harassment"
+    name_fr: "Le harcèlement criminel"
+    value: "criminal_harassment"
+    order: 3.0
+
+- model: cpho.dimensionvalue
+  pk: 94
+  fields:
+    dimension_type: 12
+    name_en: "Uttering threats"
+    name_fr: "Proférer des menaces"
+    value: "uttering_threats"
+    order: 4.0

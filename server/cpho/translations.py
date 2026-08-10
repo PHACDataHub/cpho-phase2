@@ -1045,6 +1045,8 @@ translation_entries = {
     "depression": {"en": "Depression", "fr": "Dépression"},
     "women": {"en": "Women", "fr": "Femmes"},
     "men": {"en": "Men", "fr": "Hommes"},
+    "male": {"en": "Males", "fr": "Mâles"},
+    "female": {"en": "Females", "fr": "Femelles"},
     # trend
     "stable": {"en": "Stable", "fr": "Stable"},
     "increasing": {"en": "Increasing", "fr": "En hausse"},

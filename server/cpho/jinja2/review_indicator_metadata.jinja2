@@ -377,6 +377,7 @@
               <th scope="col">{{ tm("unit") }}</th>
               <th scope="col">{{ tm("data_lower_ci") }}</th>
               <th scope="col">{{ tm("data_upper_ci") }}</th>
+              <th scope="col">{{ tm("arrow_flag") }}</th>
             </tr>
           </thead>
           <tbody>
@@ -391,6 +392,7 @@
                 <td>{{ item.get_unit_display() }}</td>
                 <td>{{ item.data_point_lower_ci }}</td>
                 <td>{{ item.data_point_upper_ci }}</td>
+                <td>{{ item.arrow_flag }}</td>
               </tr>
             {% endfor %}
           </tbody>

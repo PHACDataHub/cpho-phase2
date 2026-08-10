@@ -687,6 +687,8 @@ class Benchmarking(models.Model, SubmissionHelpersMixin):
         ("depression", tm("depression")),
         ("women", tm("women")),
         ("men", tm("men")),
+        ("male", tm("male")),
+        ("female", tm("female")),
     ]
     labels = fields.CharField(
         max_length=50, blank=True, null=True, choices=LABEL_CHOICES
@@ -790,6 +792,14 @@ class TrendAnalysis(models.Model, SubmissionHelpersMixin):
     deletion_time = fields.CharField(
         max_length=50, blank=True, null=True, default=""
     )
+
+    ARROW_FLAG_CHOICES = [
+        ("", "--"),
+        ("up", "\u2191"),
+        ("down", "\u2193"),
+    ]
+
+    arrow_flag = fields.CharField(max_length=50, null=True)
 
     def __str__(self):
         return "Trend: " + str(self.indicator) + " : " + str(self.year)

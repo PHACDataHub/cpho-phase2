@@ -324,6 +324,7 @@ class TrendAnalysisForm(
             "data_point_lower_ci",
             "data_point_upper_ci",
             "unit",
+            "arrow_flag",
         ]
 
     year = forms.CharField(
@@ -409,6 +410,17 @@ class TrendAnalysisForm(
             }
         ),
         label=tm("data_upper_ci"),
+    )
+
+    arrow_flag = forms.ChoiceField(
+        required=False,
+        choices=TrendAnalysis.ARROW_FLAG_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+        label=tm("arrow_flag"),
     )
 
     is_deleted = forms.BooleanField(

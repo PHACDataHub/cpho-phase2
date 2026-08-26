@@ -1,7 +1,7 @@
 import importlib
 
 from django.conf import settings
-from django.db import models
+from django.db import migrations, models
 from django.utils import timezone
 
 from versionator import VersionModel
@@ -88,3 +88,32 @@ track_versions_with_editor = create_history_decorator(
 track_versions_with_editor_and_submission = create_history_decorator(
     ApprovableCustomVersionModelWithEditor
 )
+
+
+class EnvironmentDependentMigration(migrations.Migration):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.should_run():
+            self.operations = []
+
+    def should_skip(self):
+        raise NotImplementedError("Subclasses must implement this method")
+
+
+class DevProdTestMigration(EnvironmentDependentMigration):
+    def should_run(self):
+        attrs_to_check = ["apply_in_tests", "apply_in_prod", "apply_in_dev"]
+        if any([not hasattr(self.__class__, attr) for attr in attrs_to_check]):
+            raise NotImplementedError(
+                "DevProdTestMigration must specify apply_in_tests, apply_in_prod and apply_in_dev bool attributes"
+            )
+
+        if settings.IS_RUNNING_TESTS:
+            return self.__class__.apply_in_tests is True
+
+        if settings.IS_DEV:
+            return self.__class__.apply_in_dev is True
+
+        # TODO: have a more explicit check for prov and raise if none of dev/prod/test are true
+        return self.__class__.apply_in_prod is True

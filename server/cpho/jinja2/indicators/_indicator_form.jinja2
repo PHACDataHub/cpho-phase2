@@ -2,7 +2,7 @@
 {% from 'cpho_macros.jinja2' import hidden_a11y_label, form_field_error_id, form_field_error %}
 {% from 'generic_macros.jinja2' import required_asterisk, required_explainer_alert %}
 
-{% macro form_field(field, rich=false) %}
+{% macro form_field(field, rich=false, helptext=false) %}
   {% set hso_field_display = field.name in form.hso_only_field_names and respects_rule('is_admin_or_hso') %}
   {% set non_hso_field_display = field.name not in form.hso_only_field_names %}
 
@@ -20,6 +20,7 @@
           <label class="col col-form-label" for="{{ field.id_for_label }}">
             {% if field.field.required %}{{ required_asterisk() }}{% endif %}
             {{ field.label }}
+            {% if helptext %}<div class="small-text subtext col col-form-label pt-0">{{ helptext }}</div>{% endif %}
           </label>
 
           {% if field.name in form.hso_only_field_names %}
@@ -104,6 +105,9 @@
 
       {{ form_field(form.recommendations_for_hso, rich=true) }}
       {{ form_field(form.recommendations_for_hso_fr, rich=true) }}
+
+
+      {{ form_field(form.exclude_from_infobase, helptext=tm("exclude_from_infobase_helptext")) }}
     </div>
   </div>
 

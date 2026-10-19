@@ -265,8 +265,13 @@ class ExportHelpers:
         Returns a list of indicator version ids that have been submitted
         """
         indicator_data = (
-            Indicator.objects.all().with_last_submitted_version_id()
-        ).order_by("name")
+            (Indicator.objects.all().with_last_submitted_version_id())
+            .order_by("name")
+            .filter(
+                exclude_from_infobase=False,
+                last_submitted_version_id__isnull=False,
+            )
+        )
         indicator_version_ids = [
             x.last_submitted_version_id
             for x in indicator_data

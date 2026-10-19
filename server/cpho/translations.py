@@ -349,6 +349,14 @@ translation_entries = {
         "en": "Title Overall",
         "fr": "Titre général",
     },
+    "exclude_from_infobase": {
+        "en": "Exclude from Infobase",
+        "fr": "Exclure de l'Infobase",
+    },
+    "exclude_from_infobase_helptext" : {
+        "en": "Excludes this indicator from the infobase export",
+        "fr": "Exclut cet indicateur de l'exportation de l'infobase",
+    },
     "general_footnotes": {
         "en": "General Footnotes",
         "fr": "Notes de bas de page générales",

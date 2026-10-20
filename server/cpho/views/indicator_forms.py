@@ -151,6 +151,7 @@ class IndicatorForm(ModelForm):
         "sdg_goal",
         "y_axis_trend_min",
         "y_axis_trend_max",
+        "exclude_from_infobase",
     ]
     name = charField(required=True, label=tm("name"))
     name_fr = charField(french=True, label=tm("name_french"))
@@ -243,6 +244,11 @@ class IndicatorForm(ModelForm):
     )
     recommendations_for_hso_fr = ckEditorField(
         french=True, label=tm("recommendations_for_hso_french")
+    )
+
+    exclude_from_infobase = forms.BooleanField(
+        required=False,
+        label=tm("exclude_from_infobase"),
     )
 
     # SEX

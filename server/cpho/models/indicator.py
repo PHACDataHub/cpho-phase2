@@ -275,6 +275,8 @@ class Indicator(models.Model, SubmissionHelpersMixin):
         config_name="notes", null=True, blank=True
     )
 
+    exclude_from_infobase = fields.BooleanField(null=False, default=False)
+
     @property
     def bilingual_name(self):
         if get_lang_code() == "fr" and self.name_fr:

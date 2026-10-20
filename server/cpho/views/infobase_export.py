@@ -1,5 +1,6 @@
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+from django.utils import translation
 from django.utils.functional import cached_property
 from django.views import View
 
@@ -28,12 +29,27 @@ from cpho.models import (
 )
 from cpho.util import get
 
+
+class FrenchChoiceColumn(ChoiceColumn):
+    # Assumes it's called in english mode
+    def get_header(self):
+        header_value = super().get_header()
+        return header_value + "_fr"
+
+    def get_value(self, record):
+        with translation.override("fr-ca"):
+            value = super().get_value(record)
+        return value
+
+
 indicator_columns = [
     CustomColumn("id", lambda x: x.eternal_id),
     ModelColumn(IndicatorHistory, "name"),
     ModelColumn(IndicatorHistory, "name_fr"),
     ChoiceColumn(IndicatorHistory, "category"),
+    FrenchChoiceColumn(IndicatorHistory, "category"),
     ChoiceColumn(IndicatorHistory, "topic"),
+    FrenchChoiceColumn(IndicatorHistory, "topic"),
     ModelColumn(IndicatorHistory, "detailed_indicator"),
     ModelColumn(IndicatorHistory, "detailed_indicator_fr"),
     ModelColumn(IndicatorHistory, "sub_indicator_measurement"),
@@ -174,12 +190,16 @@ indicator_data_columns = [
     ),
     # value columns
     ChoiceColumn(IndicatorDatumHistory, "data_quality"),
+    FrenchChoiceColumn(IndicatorDatumHistory, "data_quality"),
     ChoiceColumn(IndicatorDatumHistory, "reason_for_null"),
+    FrenchChoiceColumn(IndicatorDatumHistory, "reason_for_null"),
     ModelColumn(IndicatorDatumHistory, "value"),
     ModelColumn(IndicatorDatumHistory, "value_lower_bound"),
     ModelColumn(IndicatorDatumHistory, "value_upper_bound"),
     ChoiceColumn(IndicatorDatumHistory, "value_unit"),
+    FrenchChoiceColumn(IndicatorDatumHistory, "value_unit"),
     ChoiceColumn(IndicatorDatumHistory, "value_displayed"),
+    FrenchChoiceColumn(IndicatorDatumHistory, "value_displayed"),
     ModelColumn(IndicatorDatumHistory, "single_year_timeframe"),
     ModelColumn(IndicatorDatumHistory, "multi_year_timeframe"),
     ModelColumn(IndicatorDatumHistory, "arrow_flag"),
@@ -208,6 +228,7 @@ benchmarking_columns = [
         ).sub_indicator_measurement,
     ),
     ChoiceColumn(BenchmarkingHistory, "unit"),
+    FrenchChoiceColumn(BenchmarkingHistory, "unit"),
     CustomColumn(
         "oecd_country",
         lambda x: get(x, "oecd_country.name_en"),
@@ -215,7 +236,9 @@ benchmarking_columns = [
     ModelColumn(BenchmarkingHistory, "value"),
     ModelColumn(BenchmarkingHistory, "year"),
     ChoiceColumn(BenchmarkingHistory, "comparison_to_oecd_avg"),
+    FrenchChoiceColumn(BenchmarkingHistory, "comparison_to_oecd_avg"),
     ChoiceColumn(BenchmarkingHistory, "labels"),
+    FrenchChoiceColumn(BenchmarkingHistory, "labels"),
     CustomColumn(
         "Methodology differences",
         lambda x: "True" if x.methodology_differences else "False",
@@ -249,8 +272,11 @@ trend_columns = [
     ModelColumn(TrendAnalysisHistory, "line_of_best_fit_point"),
     ModelColumn(TrendAnalysisHistory, "trend_segment"),
     ChoiceColumn(TrendAnalysisHistory, "trend"),
+    FrenchChoiceColumn(TrendAnalysisHistory, "trend"),
     ChoiceColumn(TrendAnalysisHistory, "data_quality"),
+    FrenchChoiceColumn(TrendAnalysisHistory, "data_quality"),
     ChoiceColumn(TrendAnalysisHistory, "unit"),
+    FrenchChoiceColumn(TrendAnalysisHistory, "unit"),
     ModelColumn(TrendAnalysisHistory, "data_point_lower_ci"),
     ModelColumn(TrendAnalysisHistory, "data_point_upper_ci"),
     ModelColumn(TrendAnalysisHistory, "arrow_flag"),
@@ -265,8 +291,13 @@ class ExportHelpers:
         Returns a list of indicator version ids that have been submitted
         """
         indicator_data = (
-            Indicator.objects.all().with_last_submitted_version_id()
-        ).order_by("name")
+            (Indicator.objects.all().with_last_submitted_version_id())
+            .order_by("name")
+            .filter(
+                exclude_from_infobase=False,
+                last_submitted_version_id__isnull=False,
+            )
+        )
         indicator_version_ids = [
             x.last_submitted_version_id
             for x in indicator_data

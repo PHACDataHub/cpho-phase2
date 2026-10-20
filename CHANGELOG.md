@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.8](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.7...v1.4.8) (2026-10-20)
+
+
+### Bug Fixes
+
+* infobase export tweaks ([#473](https://github.com/PHACDataHub/cpho-phase2/issues/473)) ([4725256](https://github.com/PHACDataHub/cpho-phase2/commit/4725256a1cbd64a676bfc4ae48e3d306a1934c07))
+
 ## [1.4.7](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.6...v1.4.7) (2026-08-10)
 
 

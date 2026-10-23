@@ -1,9 +1,12 @@
+ARG PINNED_PIP_REQUIREMENT="pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
+
 # Builds a Prod Image expecting to write to ACR and run the image in an app service container
 
 ###########
 # BUILDER #
 ###########
 FROM python:3.13-slim-bookworm as builder
+ARG PINNED_PIP_REQUIREMENT
 
 # set work directory
 WORKDIR /usr/src/app
@@ -20,20 +23,23 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip wheel setuptools
+RUN python -m pip install "$PINNED_PIP_REQUIREMENT" && \
+    python -m pip install --upgrade wheel setuptools
 
 # requirements and wheels
 COPY server/requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN python -m pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 #########
 # FINAL #
 #########
 # pull official base image
 FROM python:3.13-slim-bookworm
+ARG PINNED_PIP_REQUIREMENT
 
 # Make sure setuptools is always up to date
-RUN pip install --upgrade pip setuptools
+RUN python -m pip install "$PINNED_PIP_REQUIREMENT" && \
+    python -m pip install --upgrade setuptools
 
 # Environment Variables
 ENV APP_NAME=hopicapp
@@ -73,10 +79,11 @@ COPY --chown=$APP_USER:$APP_NAME --from=builder /usr/src/app/wheels $WHEELDIR
 
 
 # Create and configure virtual environment
-RUN python -m venv $VIRTUALENV && \
-    $VIRTUALENV/bin/pip install --upgrade pip && \
-    $VIRTUALENV/bin/pip install --no-cache-dir $WHEELDIR/* && \
-    $VIRTUALENV/bin/pip install --force-reinstall setuptools && \
+# Bootstrap with the pinned system pip instead of Python's bundled pip.
+RUN /usr/local/bin/python -m venv --without-pip "$VIRTUALENV" && \
+    /usr/local/bin/python -m pip --python "$VIRTUALENV" install "$PINNED_PIP_REQUIREMENT" && \
+    $VIRTUALENV/bin/python -m pip install --no-cache-dir $WHEELDIR/* && \
+    $VIRTUALENV/bin/python -m pip install --force-reinstall setuptools && \
     rm -rf $WHEELDIR
 
 # Copy project files

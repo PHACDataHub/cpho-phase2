@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.9](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.8...v1.4.9) (2026-10-26)
+
+
+### Bug Fixes
+
+* pip vulnerability ([#475](https://github.com/PHACDataHub/cpho-phase2/issues/475)) ([d36f252](https://github.com/PHACDataHub/cpho-phase2/commit/d36f252da71f28f02d430e6a2e4988c911762b68))
+
 ## [1.4.8](https://github.com/PHACDataHub/cpho-phase2/compare/v1.4.7...v1.4.8) (2026-10-20)
 
 
